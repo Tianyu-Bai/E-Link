@@ -1,4 +1,4 @@
-# Neural Interface Pedestal Connector
+# High-density, modular pedestal connector system for 256-channel neural recording interfaces.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Hardware Status](https://img.shields.io/badge/Hardware-Verified-green)](https://github.com/yourusername/repo)
@@ -23,7 +23,51 @@ The system is optimized for Rats/Non-Human Primates, focusing on minimizing impl
 * **Lightweight Construction:** Total assembly weight is approximately **6.4 g**, minimizing torque on the skull.
 * **Surgical Integration:** Features textured sidewalls and anchor points for secure adhesion with dental cement or UV-curable resin.
 * **Modular Design:** Separates the PCB interposer from the structural housing for easier testing and replacement.
+# Pedestal-256
 
+*The publication of this work can be found at [DOI Link]. The raw design files corresponding to the publication can be found at [Data Link].*
+
+> [!NOTE]
+> Detailed assembly guides and surgical documentation are available at [Link to Docs].
+
+![Pedestal Assembly](./images/pedestal-system.jpg)
+
+| Component | Description |
+| :--: | :---------- |
+| [Housing-V1](housing/README.md)  | 3D-printed/machined PEEK housing for securing the connector and protecting the headstage interface. |
+| [Interposer-PCB](pcb/README.md) | High-density interconnect PCB routing signals from neural probes to the Omnetics/Intan connectors. |
+| [Surgical-Cap](cap/README.md) | Protective cap design for maintaining connector integrity during the experimental timeline. |
+
+
+## File Structure
+
+| Folder  | Description    |
+| :-----: | :------------- |
+| housing | SolidWorks CAD files and STEP exports for the mechanical pedestal structure. |
+| pcb     | Altium/KiCad design files for the signal routing interposer. |
+| cap     | Design files for the protective surgical cap. |
+| images  | Image files used in README and documentation. |
+
+## EDA Tools used in the Development
+
+| EDA Tool     | Version | Usage           |
+| :----------: | :-----: | :-------------- |
+| SolidWorks   | 2024    | Design of mechanical housing and assembly. |
+| Altium Designer | 24.0 | Design of Interposer PCBs. |
+| KiCad        | 8.0.0   | Legacy/Open-source PCB design files. |
+
+## Developers
+
+* [Your Lab Name], Dartmouth College, Hanover, NH
+* [Collaborator Name], [Institution]
+
+## License
+
+Copyright [Your Name] 2025.
+
+This source describes Open Hardware and is licensed under CERN-OHL-P v2.
+
+You may redistribute and modify this source and make products using it under the terms of the CERN-OHL-P v2 ([https://cern.ch/cern-ohl](https://cern.ch/cern-ohl)). This source is distributed WITHOUT ANY EXPRESS OR IMPLIED WARRANTY, INCLUDING OF MERCHANTABILITY, SATISFACTORY QUALITY AND FITNESS FOR A PARTICULAR PURPOSE. Please see the CERN-OHL-P v2 for applicable conditions.
 ## 📂 Repository Structure
 
 ```text
