@@ -1,83 +1,90 @@
-# High-density, modular pedestal connector system for 256-channel neural recording interfaces.
+PEDAL-256
+An Open-Source, Solderless, High-Density Pedestal Connector for Neural Interfaces
+<p align="center"> <img src="Images/render_iso.png" alt="PEDAL-256 Isometric View" width="620"> </p> <p align="center"> <em>Figure 1 · Isometric render of the assembled PEDAL-256 pedestal connector.</em> </p> <p align="center"> <a href="LICENSE"><img src="https://img.shields.io/badge/License-CERN--OHL--P_v2-blue.svg"></a> <img src="https://img.shields.io/badge/Hardware-Verified-brightgreen.svg"> <img src="https://img.shields.io/badge/CAD-SolidWorks_2024-red.svg"> <img src="https://img.shields.io/badge/PCB-Altium_%7C_KiCad-orange.svg"> </p>
+📖 Overview
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Hardware Status](https://img.shields.io/badge/Hardware-Verified-green)](https://github.com/yourusername/repo)
-[![CAD Software](https://img.shields.io/badge/CAD-SolidWorks-red)](https://www.solidworks.com/)
+PEDAL-256 (Pedestal Elastomeric Dense Array Link) is an open-source, solderless, and scalable pedestal connector system designed for high-density chronic neural recording.
+It provides a mechanically robust and electrically reliable interface between thin-film implanted neural probes and external headstages, with a form factor optimized for freely moving animal studies.
 
-## 📖 Overview
+The system integrates a high-density interposer PCB, an anisotropic elastomeric contact interface, and a lightweight pedestal housing into a fully integrated, headstage-ready solution.
+PEDAL-256 is validated for 256-channel acquisition and architected to support future scaling toward higher channel counts without increasing the volumetric footprint.
 
-This repository contains the mechanical and electrical design files for a high-density **Pedestal Connector** customized for chronic neural recording applications. The design serves as the interface between implanted neural probes and external headstages.
+The design has been optimized for rats and non-human primates, prioritizing minimal implant mass, mechanical stability, and long-term durability under behavioral conditions.
 
-The system is optimized for Rats/Non-Human Primates, focusing on minimizing implant weight and maximizing structural integrity during behavioral experiments.
+✨ Key Features
 
-<p align="center">
-  <img src="Images/render_iso.png" alt="Connector Isometric View" width="600">
-  <br>
-  <em>Figure 1: Isometric render of the assembled pedestal connector.</em>
-</p>
+256-Channel High-Density Interface
+Compact pedestal footprint supporting up to 256 recording channels.
 
-## ✨ Key Features
+Solderless Elastomeric Interconnect
+Anisotropic conductive elastomer enables repeatable, alignment-tolerant electrical contact without soldering.
 
-* **High Channel Density:** Supports up to 256 channels in a compact footprint.
-* **Headstage Compatibility:** Designed to mate perfectly with Intan RHD standard controllers.
-* **Lightweight Construction:** Total assembly weight is approximately **6.4 g**, minimizing torque on the skull.
-* **Surgical Integration:** Features textured sidewalls and anchor points for secure adhesion with dental cement or UV-curable resin.
-* **Modular Design:** Separates the PCB interposer from the structural housing for easier testing and replacement.
-# Pedestal-256
+Headstage-Ready Integration
+Direct compatibility with Intan RHD-series headstages and commutator-based freely moving setups.
 
-*The publication of this work can be found at [DOI Link]. The raw design files corresponding to the publication can be found at [Data Link].*
+Lightweight Mechanical Design
+Total assembled mass of approximately 6.4 g, minimizing skull torque during chronic implantation.
 
-> [!NOTE]
-> Detailed assembly guides are available at [Link to Docs].
+Surgical-Grade Pedestal Housing
+Textured sidewalls and anchoring features for secure fixation using dental cement or UV-curable resin.
 
-![Pedestal Assembly](./images/pedestal-system.jpg)
+Modular Architecture
+Mechanical housing, interposer PCB, and protective cap are separable for rapid iteration, testing, and replacement.
 
-| Component | Description |
-| :--: | :---------- |
-| [Housing](housing/README.md)  | 3D-printed/machined PEEK housing for securing the connector and protecting the headstage interface. |
-| [Interposer-PCB](pcb/README.md) | High-density interconnect PCB routing signals from neural probes to the Omnetics/Intan connectors. |
-| [Surgical-Cap](cap/README.md) | Protective cap design for maintaining connector integrity during the experimental timeline. |
-
-
-## File Structure
-
-| Folder  | Description    |
-| :-----: | :------------- |
-| housing | SolidWorks CAD files and STEP exports for the mechanical pedestal structure. |
-| pcb     | Altium/KiCad design files for the signal routing interposer. |
-| cap     | Design files for the protective surgical cap. |
-| images  | Image files used in README and documentation. |
-
-## EDA Tools used in the Development
-
-| EDA Tool     | Version | Usage           |
-| :----------: | :-----: | :-------------- |
-| SolidWorks   | 2024    | Design of mechanical housing and assembly. |
-| Altium Designer | 24.0 | Design of Interposer PCBs. |
-| KiCad        | 8.0.0   | Legacy/Open-source PCB design files. |
-
-## Developers
-*  Main developers: Tianyu Bai, Dr. Gen Li, Dr. Hui Fang
-*  Multifunctional Integrated NeuroElectronics (MINE) Lab, Dartmouth College, Hanover, NH
-
-## License
-
-Copyright Tianyu Bai 2025.
-
-This source describes Open Hardware and is licensed under CERN-OHL-P v2.
-
-You may redistribute and modify this source and make products using it under the terms of the CERN-OHL-P v2 ([https://cern.ch/cern-ohl](https://cern.ch/cern-ohl)). This source is distributed WITHOUT ANY EXPRESS OR IMPLIED WARRANTY, INCLUDING OF MERCHANTABILITY, SATISFACTORY QUALITY AND FITNESS FOR A PARTICULAR PURPOSE. Please see the CERN-OHL-P v2 for applicable conditions.
-## 📂 Repository Structure
-
-```text
-├── CAD/                 # Mechanical Design Files
-│   ├── SolidWorks/      # .SLDPRT and .SLDASM source files
-│   └── STEP/            # Exported step files for universal compatibility
-├── PCB/                 # Circuit Board Design
-│   ├── Altium_Designer/ # Source project files (PrjPcb)
-│   ├── Gerbers/         # Manufacturing files
-│   └── BOM/             # Bill of Materials (.csv)
-├── Docs/                # Technical Documentation
+🧩 System Components
+<p align="center"> <img src="./images/pedestal-system.jpg" alt="PEDAL-256 System Overview" width="640"> </p>
+Component	Description
+Housing	3D-printed or machined PEEK pedestal providing mechanical protection and cranial fixation.
+Interposer PCB	High-density routing interface connecting thin-film probes to Intan/Omnetics connectors.
+Surgical Cap	Protective cap preserving connector integrity throughout the experimental timeline.
+📂 Repository Structure
+├── CAD/                 # Mechanical design files
+│   ├── SolidWorks/      # Native .SLDPRT / .SLDASM files
+│   └── STEP/            # Neutral STEP exports
+├── PCB/                 # Electrical design files
+│   ├── Altium_Designer/ # Source PCB projects
+│   ├── KiCad/           # Open-source PCB equivalents
+│   ├── Gerbers/         # Manufacturing outputs
+│   └── BOM/             # Bill of Materials
+├── Docs/                # Documentation
 │   ├── Assembly_Guide/  # Step-by-step assembly instructions
-│   └── Datasheets/      # Component datasheets (Connectors, etc.)
-└── Images/              # Renders and photos of the physical prototype
+│   └── Datasheets/      # Key component datasheets
+└── Images/              # Renders and photographs
+
+🛠 Tools Used in Development
+Tool	Version	Purpose
+SolidWorks	2024	Mechanical design and assembly
+Altium Designer	24.0	High-density PCB design
+KiCad	8.0.0	Open-source PCB design support
+📄 Publication
+
+This work is described in the following publication:
+
+T. Bai et al., “A Scalable, Solderless 256-Channel Pedestal Connector for Thin-Film Neural Interfaces,” IEEE Journal on Flexible Electronics, 2025.
+DOI: [to be added]
+
+All design files in this repository correspond directly to the published system.
+
+👥 Developers
+
+Tianyu Bai
+
+Gen Li, Ph.D.
+
+Hui Fang, Ph.D.
+
+Multifunctional Integrated NeuroElectronics (MINE) Lab
+Thayer School of Engineering, Dartmouth College
+Hanover, NH, USA
+
+📜 License
+
+Copyright © 2025 Tianyu Bai.
+
+This project is released as Open Hardware under the
+CERN Open Hardware Licence Version 2 – Permissive (CERN-OHL-P v2).
+
+You may redistribute and modify this design and manufacture products based on it under the terms of the license.
+This work is provided without warranty of any kind.
+See https://cern.ch/cern-ohl
+ for full license text.
