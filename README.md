@@ -2,20 +2,12 @@
   <h1 style="margin-bottom: 0px; border-bottom: none;">🚀 PEDAL-256</h1>
   <h3 style="margin-top: 5px; margin-bottom: 20px;">An Open-Source, Solderless, High-Density Pedestal Connector for Neural Interfaces</h3>
 
-  <img src="Images/001.PNG" alt="Exploded-view schematic of the PEDAL-256" width="750">
+  <img src="Images/001.PNG" alt="Exploded-view" width="750">
 
-  <video src="https://github.com/user-attachments/assets/241eccd0-93b3-4fb7-8e3f-9a8841d4254b" 
-         muted 
-         autoplay 
-         loop 
-         playsinline 
-         width="750" 
-         style="margin-top: 20px; border-radius: 4px;">
-    Your browser does not support the video tag.
-  </video>
+  <img src="Videos/DEMO.gif" alt="Mating Dynamics" width="750" style="margin-top: 20px; border-radius: 4px;">
 
   <p style="margin-top: 15px;">
-    <b>Figure 1 · Mating Dynamics and Structural Breakdown of the PEDAL-256 (256-Channel)</b>
+    <b>· Mating Dynamics and Structural Breakdown of the PEDAL-256</b>
   </p>
 </div>
 
