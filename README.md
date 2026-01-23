@@ -1,12 +1,10 @@
 <div align="center">
-  <h1 style="margin-bottom: 0px; border-bottom: none;">🚀 PEDAL-256</h1>
-  
-  <h3 style="margin-top: 5px; margin-bottom: 15px;">An Open-Source, Solderless, High-Density Pedestal Connector for Neural Interfaces</h3>
+  <h1 style="margin-bottom: 0px; border-bottom: none;">🚀 PEDAL-256:An Open-Source, Solderless, High-Density Pedestal Connector for Neural Interfaces </h3>
 
   <img src="Images/01.PNG" alt="Exploded-view schematic illustrating the assembly components of the modular 256-channel pedestal connector" width="750">
   
   <p style="margin-top: 10px;">
-    <b> Exploded-view schematic illustrating the assembly components of the modular 256-channel pedestal connector </b>
+    <b> Mating Dynamics and Structural Breakdown of the PEDAL-256 </b>
   </p>
 </div>
 
@@ -22,7 +20,7 @@
 
 ### 📊 Quick Specifications
 
-| Specification | Value |
+| Specification | PEDAL-256_V1.1 |
 | :--- | :--- |
 | **Channel Count** | 128 or 256 Channels (Single/Dual SPI Port support) |
 | **Total Mass** | ~6.6 g (with housing)<br>~2.8 g (without housing) |
@@ -62,7 +60,7 @@
 | **Surgical Cap** | Protective enclosure preserving electrical and mechanical integrity throughout chronic experiments. |
 ---
 
-##👥 Developers & Lab
+## 👥 Developers & Lab
 This project is developed by the Multifunctional Integrated NeuroElectronics (MINE) Lab at Dartmouth College.
 
 Tianyu Bai - Lead Designer
