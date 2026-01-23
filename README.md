@@ -42,7 +42,15 @@
     Separable housing, PCB, and protective cap for rapid iteration and troubleshooting.
 * **🧪 Surgical-Grade Design**
     Textured sidewalls for superior adhesion with dental cement or UV-curable resin.
+<div align="center">
+  <br />
 
+  <img src="Videos/Explode new.gif" 
+       alt="PEDAL-256 Explosive Demo" 
+       width="750" 
+       style="border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); display: block;">
+  </p>
+</div>
 ---
 
 ## 🧩 System Components
