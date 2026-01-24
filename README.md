@@ -3,10 +3,12 @@
   <h3 style="font-weight: normal; margin-top: 0; color: #555;">An Open-Source, Solderless, High-Density Pedestal Connector for Neural Interfaces</h3>
 
   <p style="margin-top: 15px;">
-    <a href="https://engineering.dartmouth.edu/research/labs/multifunctional-integrated-neuroelectronics-lab">
+    <a href="https://sites.dartmouth.edu/fang-group/">
       <img src="https://img.shields.io/badge/Dartmouth-MINE--Lab-00693E?style=flat-square" alt="MINE Lab">
     </a>
     <img src="https://img.shields.io/badge/Copyright-%C2%A9%20Tianyu%20Bai-blue?style=flat-square" alt="Copyright">
+   <a href="inkedin.com/in/tianyubai/">
+    <img src="https://img.shields.io/badge/-LinkedIn-0077B5?style=flat-square&logo=linkedin&logoColor=white" alt="LinkedIn">
     <img src="https://img.shields.io/badge/Verified-128%20%2F%20256ch%20Tested-brightgreen?style=flat-square" alt="Verified">
     <img src="https://img.shields.io/badge/License-MIT-red?style=flat-square" alt="License">
 
@@ -82,6 +84,17 @@
   </p>
 </div>
 
+### 🧩 Bill of Materials (BOM) of the headstage
+
+| Component | Part Number / Description | Qty | Package | Notes |
+| :--- | :--- | :--- | :--- | :--- |
+| **Amplifier IC** | Intan RHD2164 | 4 | BGA | **Critical:** Ensure correct orientation |
+| **SPI Connector** | Omnetics A7621 | 2 | - | 12-wire cable harness (32 AWG) |
+| **Resistors** | Standard SMD | 7 | 0402 | - |
+| **Capacitors** | Standard SMD | 8 | 0603 | - |
+| **Power LED** | Green LED | 1 | 0402 | Power Indicator |
+| **Solder Balls** | 0.4 mm Lead-free | ~300 | - | For BGA rework/assembly |
+
 
 ## 👥 Developers & Lab
 This project is developed by the Multifunctional Integrated NeuroElectronics (MINE) Lab at Dartmouth College.
@@ -95,7 +108,7 @@ Yongli Qi, Ph.D.
 Hui Fang, Ph.D. - Principal Investigator
 
 <p align="left">
-  <a href="https://engineering.dartmouth.edu/research/labs/multifunctional-integrated-neuroelectronics-lab">
+  <a href="[https://engineering.dartmouth.edu/research/labs/multifunctional-integrated-neuroelectronics-lab](https://sites.dartmouth.edu/fang-group/)">
     <img src="https://img.shields.io/badge/Dartmouth-MINE--Lab-00693E?style=flat-square" alt="MINE Lab">
   </a>
 </p>
