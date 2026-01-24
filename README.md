@@ -8,7 +8,8 @@
     </a>
     <img src="https://img.shields.io/badge/Copyright-%C2%A9%20Tianyu%20Bai-blue?style=flat-square" alt="Copyright">
     <img src="https://img.shields.io/badge/Verified-128%20%2F%20256ch%20Tested-brightgreen?style=flat-square" alt="Verified">
-    <img src="https://img.shields.io/badge/License-CERN--OHL--W-red?style=flat-square" alt="License">
+    <img src="https://img.shields.io/badge/License-MIT-red?style=flat-square" alt="License">
+
   </p>
 
 </div>
@@ -122,5 +123,4 @@ The developers gratefully acknowledge support from the **NIH (R01MH139342)** and
 Special thanks to the members of the **MINE Lab** and the **Thayer School of Engineering** for their technical support and feedback throughout the development of the PEDAL-256 system.
 
 ## 📜 License
-Copyright © 2026 Tianyu Bai. Licensed under the CERN Open Hardware Licence Version 2 – Permissive (CERN-OHL-P v2).
-
+Copyright © 2026 Tianyu Bai. Copyright © 2026 Tianyu Bai. This project is licensed under the MIT License. See the LICENSE file for details.
