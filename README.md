@@ -43,6 +43,7 @@
 | **Housing Material** | 3D-Printed PEEK / Surgical Grade Resin |
  </p>
 </div>
+
 ---
 
 ## ✨ Key Features
@@ -102,6 +103,7 @@
 | **Solder Balls** | 0.4 mm Lead-free | ~300 | - | For BGA rework/assembly |
  </p>
 </div>
+
 ---
 
 ## 👥 Developers & Lab
