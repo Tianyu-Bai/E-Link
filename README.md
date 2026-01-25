@@ -7,7 +7,7 @@
 
 
   <p style="margin-top: 15px;">
-    <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-red?style=flat-square" alt="License"></a>
+    <img src="https://img.shields.io/badge/License-MIT-A31F34?style=flat-square&logo=opensourceinitiative&logoColor=white" alt="License"></a>
     <a href="https://sites.dartmouth.edu/fang-group/"><img src="https://img.shields.io/badge/Dartmouth-MINE--Lab-00693E?style=flat-square" alt="MINE Lab"></a>
     <img src="https://img.shields.io/badge/Verified-256ch-FFA500?style=flat-square" /></a>
     <img src="https://img.shields.io/badge/Copyright-%C2%A9%20Tianyu%20Bai-blue?style=flat-square" alt="Copyright">
@@ -62,6 +62,8 @@
        style="border-radius: 6px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); display: block;">
 </div>
 
+---
+
 ## 🧩 System Components
 <div align="center">
 <p align="center">
@@ -81,6 +83,8 @@
   </p>
 </div>
 
+---
+
 ### 🧩 Bill of Materials (BOM) of the headstage
 
 | Component | Part Number / Description | Qty | Package | Notes |
@@ -92,6 +96,7 @@
 | **Power LED** | Green LED | 1 | 0402 | Power Indicator |
 | **Solder Balls** | 0.4 mm Lead-free | ~300 | - | For BGA rework/assembly |
 
+---
 
 ## 👥 Developers & Lab
 This project is developed by the Multifunctional Integrated NeuroElectronics (MINE) Lab at Dartmouth College <a href="[https://engineering.dartmouth.edu/research/labs/multifunctional-integrated-neuroelectronics-lab](https://sites.dartmouth.edu/fang-group/)">
@@ -105,6 +110,7 @@ This project is developed by the Multifunctional Integrated NeuroElectronics (MI
 
 <p><strong>Hui Fang, Ph.D.</strong> <img src="https://img.shields.io/badge/Principal%20Investigator-444444?style=flat-square&logoColor=white" /></p>
 
+---
 
 ## 📑 Citation & Feedback
 
@@ -129,4 +135,11 @@ The developers gratefully acknowledge support from the **NIH (R01MH139342)** and
 Special thanks to the members of the **MINE Lab** and the **Thayer School of Engineering** for their technical support and feedback throughout the development of the PEDAL-256 system.
 
 ## 📜 License
-Copyright © 2026 Tianyu Bai. This project is licensed under the MIT License. See the LICENSE file for details.
+
+Copyright © 2026 **<font color="#00693E">Tianyu Bai</font>**.
+
+This project is open-source and available under the **MIT License**. Click the badge for full license details.
+
+<a href="LICENSE">
+  <img src="https://img.shields.io/badge/License-MIT-A31F34?style=flat-square&logo=opensourceinitiative&logoColor=white" alt="License">
+</a>
