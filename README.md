@@ -31,15 +31,18 @@
 > **Key Innovation:** The system integrates a high-density interposer PCB, an anisotropic elastomeric contact interface, and a lightweight pedestal housing into a fully integrated, headstage-ready solution.
 
 ### 📊 Quick Specifications
-
+<div align="center">
+<p align="center">
+  
 | Specification | PEDAL-256_V1.1 |
-| :--- | :--- |
+| :---: | :---: |
 | **Channel Count** | 128 or 256 Channels (Single/Dual SPI Port support) |
 | **Total Mass** | ~6.6 g (with housing)<br>~2.8 g (without housing) |
 | **Interconnect Type** | Solderless Anisotropic Elastomer |
-| **Compatible Acquisition System** | Intan Recording Controller (512ch or 1024ch)<br>Open-Ephys acquisition box<br>NeuroNexus Smartbox |
+| **Compatible Acquisition System** | Intan Recording Controller(512ch/1024ch)<br>Open-Ephys DAQ box<br>NeuroNexus Smartbox |
 | **Housing Material** | 3D-Printed PEEK / Surgical Grade Resin |
-
+ </p>
+</div>
 ---
 
 ## ✨ Key Features
@@ -67,14 +70,14 @@
 ## 🧩 System Components
 <div align="center">
 <p align="center">
-
+  
 | Component | Description |
-| :--- | :--- |
-| **Pedestal Housing** | 3D-printed/machined pedestal providing structural support and cranial fixation. |
-| **Customized 256Ch Headstage** | Form-factor optimized recording interface for high-density 128/256-channel signal acquisition. |
-| **Foam Washer** | Provides compliant compression to ensure uniform electrical contact across the elastomeric interface. |
-| **Adapter PCB** | High-density interposer PCB for routing signals from thin-film probes to standardized connector arrays. |
-| **Surgical Cap** | Protective enclosure preserving electrical and mechanical integrity throughout chronic experiments. |
+| :---: | :---: |
+| **Pedestal Housing** | 3D-printed/machined pedestal providing structural support and cranial fixation |
+| **Customized 256Ch Headstage** | Form-factor optimized recording interface for high-density 128/256-channel signal acquisition |
+| **Foam Washer** | Provides compliant compression to ensure uniform electrical contact across the elastomeric interface |
+| **Adapter PCB** | High-density interposer PCB for routing signals from thin-film probes to standardized connector arrays |
+| **Surgical Cap** | Protective enclosure preserving electrical and mechanical integrity throughout chronic experiments |
 
   <img src="Images/001.PNG" alt="PEDAL-256 Exploded View" width="750">
 
@@ -86,16 +89,19 @@
 ---
 
 ### 🧩 Bill of Materials (BOM) of the headstage
-
-| Component | Part Number / Description | Qty | Package | Notes |
-| :--- | :--- | :--- | :--- | :--- |
+<div align="center">
+<p align="center">
+  
+| Component | Description | Qty | Package | Notes |
+| :---: | :---: | :---: | :---: | :---: |
 | **Amplifier IC** | Intan RHD2164 | 4 | BGA | **Critical:** Ensure correct orientation |
 | **SPI Connector** | Omnetics A7621 | 2 | - | 12-wire cable harness (32 AWG) |
 | **Resistors** | Standard SMD | 7 | 0402 | - |
 | **Capacitors** | Standard SMD | 8 | 0603 | - |
 | **Power LED** | Green LED | 1 | 0402 | Power Indicator |
 | **Solder Balls** | 0.4 mm Lead-free | ~300 | - | For BGA rework/assembly |
-
+ </p>
+</div>
 ---
 
 ## 👥 Developers & Lab
