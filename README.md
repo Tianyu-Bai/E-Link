@@ -41,50 +41,38 @@
 ### 📊 Quick Specifications
 
 <div align="center">
-  
-  <table border="1" style="border-collapse: collapse; width: 80%; text-align: center;">
+  <table style="margin-left: auto; margin-right: auto; width: 80%; text-align: center; border-collapse: collapse; border: 1px solid #e1e4e8;">
     <thead>
-      <tr style="background-color: #f2f2f2;">
-        <th>Specification</th>
-        <th>PEDAL-256_V1.0</th>
+      <tr style="background-color: #f6f8fa; border-bottom: 2px solid #e1e4e8;">
+        <th style="padding: 10px; border: 1px solid #e1e4e8;">Specification</th>
+        <th style="padding: 10px; border: 1px solid #e1e4e8;">PEDAL-256_V1.0</th>
       </tr>
     </thead>
     <tbody>
       <tr>
-        <td><b>Channel Count</b></td>
-        <td>128 or 256 Channels (Single/Dual SPI Port support)</td>
+        <td style="padding: 8px; border: 1px solid #e1e4e8;"><b>Channel Count</b></td>
+        <td style="padding: 8px; border: 1px solid #e1e4e8;">128 or 256 Channels (Single/Dual SPI Port support)</td>
       </tr>
       <tr>
-        <td><b>Total Mass</b></td>
-        <td>~6.6 g (with housing)<br>~2.8 g (without housing)</td>
+        <td style="padding: 8px; border: 1px solid #e1e4e8;"><b>Total Mass</b></td>
+        <td style="padding: 8px; border: 1px solid #e1e4e8;">~6.6 g (with housing)<br>~2.8 g (without housing)</td>
       </tr>
       <tr>
-        <td><b>Interconnect Type</b></td>
-        <td>Solderless Anisotropic Elastomer</td>
+        <td style="padding: 8px; border: 1px solid #e1e4e8;"><b>Interconnect Type</b></td>
+        <td style="padding: 8px; border: 1px solid #e1e4e8;">Solderless Anisotropic Elastomer</td>
       </tr>
       <tr>
-        <td><b>Compatible Acquisition System</b></td>
-        <td>Intan Recording Controller (512ch/1024ch)<br>Open-Ephys DAQ box<br>NeuroNexus Smartbox</td>
+        <td style="padding: 8px; border: 1px solid #e1e4e8;"><b>Compatible Acquisition System</b></td>
+        <td style="padding: 8px; border: 1px solid #e1e4e8;">Intan Recording Controller (512ch/1024ch)<br>Open-Ephys DAQ box<br>NeuroNexus Smartbox</td>
       </tr>
       <tr>
-        <td><b>Housing Material</b></td>
-        <td>3D-Printed PEEK / Surgical Grade Resin</td>
+        <td style="padding: 8px; border: 1px solid #e1e4e8;"><b>Housing Material</b></td>
+        <td style="padding: 8px; border: 1px solid #e1e4e8;">3D-Printed PEEK / Surgical Grade Resin</td>
       </tr>
     </tbody>
   </table>
 </div>
 
-<div align="center">
-
-| Specification | PEDAL-256_V1.0 |
-| :---: | :---: |
-| **Channel Count** | 128 or 256 Channels (Single/Dual SPI Port support) |
-| **Total Mass** | ~6.6 g (with housing)<br>~2.8 g (without housing) |
-| **Interconnect Type** | Solderless Anisotropic Elastomer |
-| **Compatible Acquisition System** | Intan Recording Controller (512ch/1024ch)<br>Open-Ephys DAQ box<br>NeuroNexus Smartbox |
-| **Housing Material** | 3D-Printed PEEK / Surgical Grade Resin |
-
-</div>
 ---
 
 ## ✨ Key Features
@@ -149,58 +137,58 @@
 ### 🧩 Bill of Materials (BOM) of the headstage
 
 <div align="center">
-  <table border="1" style="border-collapse: collapse; width: 90%; text-align: center;">
+  <table style="margin-left: auto; margin-right: auto; width: 90%; text-align: center; border-collapse: collapse; border: 1px solid #e1e4e8;">
     <thead>
-      <tr style="background-color: #f2f2f2;">
-        <th>Component</th>
-        <th>Description</th>
-        <th>Qty</th>
-        <th>Package</th>
-        <th>Notes</th>
+      <tr style="background-color: #f6f8fa; border-bottom: 2px solid #e1e4e8;">
+        <th style="padding: 10px; border: 1px solid #e1e4e8; text-align: center;">Component</th>
+        <th style="padding: 10px; border: 1px solid #e1e4e8; text-align: center;">Description</th>
+        <th style="padding: 10px; border: 1px solid #e1e4e8; text-align: center;">Qty</th>
+        <th style="padding: 10px; border: 1px solid #e1e4e8; text-align: center;">Package</th>
+        <th style="padding: 10px; border: 1px solid #e1e4e8; text-align: center;">Notes</th>
       </tr>
     </thead>
     <tbody>
       <tr>
-        <td><b>Amplifier IC</b></td>
-        <td>Intan RHD2164</td>
-        <td>4</td>
-        <td>BGA</td>
-        <td><b>Critical:</b> Ensure correct orientation</td>
+        <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;"><b>Amplifier IC</b></td>
+        <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">Intan RHD2164</td>
+        <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">4</td>
+        <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">BGA</td>
+        <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;"><b>Critical:</b> Ensure correct orientation</td>
       </tr>
       <tr>
-        <td><b>SPI Connector</b></td>
-        <td>Omnetics A7621</td>
-        <td>2</td>
-        <td>-</td>
-        <td>12-wire cable harness (32 AWG)</td>
+        <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;"><b>SPI Connector</b></td>
+        <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">Omnetics A7621</td>
+        <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">2</td>
+        <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">-</td>
+        <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">12-wire cable harness (32 AWG)</td>
       </tr>
       <tr>
-        <td><b>Resistors</b></td>
-        <td>Standard SMD</td>
-        <td>7</td>
-        <td>0402</td>
-        <td>-</td>
+        <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;"><b>Resistors</b></td>
+        <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">Standard SMD</td>
+        <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">7</td>
+        <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">0402</td>
+        <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">-</td>
       </tr>
       <tr>
-        <td><b>Capacitors</b></td>
-        <td>Standard SMD</td>
-        <td>8</td>
-        <td>0603</td>
-        <td>-</td>
+        <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;"><b>Capacitors</b></td>
+        <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">Standard SMD</td>
+        <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">8</td>
+        <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">0603</td>
+        <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">-</td>
       </tr>
       <tr>
-        <td><b>Power LED</b></td>
-        <td>Green LED</td>
-        <td>1</td>
-        <td>0402</td>
-        <td>Power Indicator</td>
+        <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;"><b>Power LED</b></td>
+        <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">Green LED</td>
+        <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">1</td>
+        <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">0402</td>
+        <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">Power Indicator</td>
       </tr>
       <tr>
-        <td><b>Solder Balls</b></td>
-        <td>0.4 mm Lead-free</td>
-        <td>~300</td>
-        <td>-</td>
-        <td>For BGA rework/assembly</td>
+        <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;"><b>Solder Balls</b></td>
+        <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">0.4 mm Lead-free</td>
+        <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">~300</td>
+        <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">-</td>
+        <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">For BGA rework/assembly</td>
       </tr>
     </tbody>
   </table>
@@ -210,9 +198,7 @@
 
 ## 👥 Developers & Lab
 
-This project is developed by the **Multifunctional Integrated NeuroElectronics (MINE) Lab** at Dartmouth College.
-
-<a href="https://sites.dartmouth.edu/fang-group/">
+This project is developed by the **Multifunctional Integrated NeuroElectronics (MINE) Lab** at Dartmouth College. <a href="https://sites.dartmouth.edu/fang-group/">
   <img src="https://img.shields.io/badge/MINE--Lab-00693E?style=flat-square" alt="MINE Lab">
 </a>
 
