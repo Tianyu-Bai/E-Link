@@ -1,3 +1,9 @@
+<style>
+  header {
+    display: none !important;
+  }
+</style>
+
 <div align="center">
   <h1 style="border-bottom: none; margin-bottom: 5px;">🚀 PEDAL-256</h1>
   
