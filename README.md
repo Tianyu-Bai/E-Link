@@ -1,3 +1,12 @@
+<p align="center">
+  <a href="#-overview"><img src="https://img.shields.io/badge/📖_Overview-F2F2F2?style=for-the-badge&labelColor=white&logoColor=black" alt="Overview"></a>
+  <a href="#-key-features"><img src="https://img.shields.io/badge/✨_Features-F2F2F2?style=for-the-badge&labelColor=white&logoColor=black" alt="Features"></a>
+  <a href="#-quick-specifications"><img src="https://img.shields.io/badge/📊_Specs-F2F2F2?style=for-the-badge&labelColor=white&logoColor=black" alt="Specs"></a>
+  <a href="#-system-components"><img src="https://img.shields.io/badge/🧩_Components-F2F2F2?style=for-the-badge&labelColor=white&logoColor=black" alt="Components"></a>
+  <a href="#-bill-of-materials-bom-of-the-headstage"><img src="https://img.shields.io/badge/🛠_BOM-F2F2F2?style=for-the-badge&labelColor=white&logoColor=black" alt="BOM"></a>
+  <a href="#-repository--downloads"><img src="https://img.shields.io/badge/🔗_Downloads-F2F2F2?style=for-the-badge&labelColor=white&logoColor=black" alt="Downloads"></a>
+</p>
+
 <div align="center">
   <h1 style="border-bottom: none; margin-bottom: 5px;">🚀 PEDAL-256</h1>
 
@@ -54,7 +63,7 @@
       </tr>
       <tr>
         <td style="padding: 8px; border: 1px solid #e1e4e8;"><b>Compatible Acquisition System</b></td>
-        <td style="padding: 8px; border: 1px solid #e1e4e8;">Intan Recording Controller (512ch/1024ch)<br>Open-Ephys DAQ box<br>NeuroNexus Smartbox</td>
+        <td style="padding: 8px; border: 1px solid #e1e4e8;">Intan Recording Controller (512ch/1024ch)<br>Open-Ephys DAQ box<br>NeuroNexus Smartbox<br>OmniPlex DAQ box</td>
       </tr>
       <tr>
         <td style="padding: 8px; border: 1px solid #e1e4e8;"><b>Housing Material</b></td>
