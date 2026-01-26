@@ -141,7 +141,7 @@
 
 ---
 
-### 🧩 Bill of Materials (BOM) of the headstage
+### 🛠 Bill of Materials (BOM) of the headstage
 
 <div align="center">
   <table style="margin-left: auto; margin-right: auto; width: 90%; text-align: center; border-collapse: collapse; border: 1px solid #e1e4e8;">
