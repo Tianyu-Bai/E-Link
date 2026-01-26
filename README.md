@@ -39,13 +39,38 @@
 
 ### 📊 Quick Specifications
 
-| Specification | PEDAL-256_V1.0 |
-| :---: | :---: |
-| **Channel Count** | 128 or 256 Channels (Single/Dual SPI Port support) |
-| **Total Mass** | ~6.6 g (with housing)<br>~2.8 g (without housing) |
-| **Interconnect Type** | Solderless Anisotropic Elastomer |
-| **Compatible Acquisition System** | Intan Recording Controller (512ch/1024ch)<br>Open-Ephys DAQ box<br>NeuroNexus Smartbox |
-| **Housing Material** | 3D-Printed PEEK / Surgical Grade Resin |
+<div align="center">
+  <table border="1" style="border-collapse: collapse; width: 80%; text-align: center;">
+    <thead>
+      <tr style="background-color: #f2f2f2;">
+        <th>Specification</th>
+        <th>PEDAL-256_V1.0</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><b>Channel Count</b></td>
+        <td>128 or 256 Channels (Single/Dual SPI Port support)</td>
+      </tr>
+      <tr>
+        <td><b>Total Mass</b></td>
+        <td>~6.6 g (with housing)<br>~2.8 g (without housing)</td>
+      </tr>
+      <tr>
+        <td><b>Interconnect Type</b></td>
+        <td>Solderless Anisotropic Elastomer</td>
+      </tr>
+      <tr>
+        <td><b>Compatible Acquisition System</b></td>
+        <td>Intan Recording Controller (512ch/1024ch)<br>Open-Ephys DAQ box<br>NeuroNexus Smartbox</td>
+      </tr>
+      <tr>
+        <td><b>Housing Material</b></td>
+        <td>3D-Printed PEEK / Surgical Grade Resin</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
 
 ---
 
@@ -73,33 +98,100 @@
 
 ## 🧩 System Components
 
-| Component | Description |
-| :---: | :---: |
-| **Pedestal Housing** | 3D-printed/machined pedestal providing structural support and cranial fixation |
-| **Customized 256Ch Headstage** | Form-factor optimized recording interface for high-density 128/256-channel signal acquisition |
-| **Foam Washer** | Provides compliant compression to ensure uniform electrical contact across the elastomeric interface |
-| **Adapter PCB** | High-density 4-layer PCB for routing signals from thin-film probes to headstage ball array pattern |
-| **Surgical Cap** | Protective enclosure preserving electrical and mechanical integrity throughout chronic experiments |
-
 <div align="center">
-  <img src="Images/001.PNG" alt="PEDAL-256 Exploded View" width="750">
-  <p style="margin-top: 5px; font-size: 0.95em; color: #333;">
-    <b>Mating Dynamics (left) and Structural Breakdown (right) of the PEDAL-256</b>
-  </p>
+  <table border="1" style="border-collapse: collapse; width: 90%; text-align: center;">
+    <thead>
+      <tr style="background-color: #f2f2f2;">
+        <th>Component</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><b>Pedestal Housing</b></td>
+        <td>3D-printed/machined pedestal providing structural support and cranial fixation</td>
+      </tr>
+      <tr>
+        <td><b>Customized 256Ch Headstage</b></td>
+        <td>Form-factor optimized recording interface for high-density 128/256-channel signal acquisition</td>
+      </tr>
+      <tr>
+        <td><b>Foam Washer</b></td>
+        <td>Provides compliant compression to ensure uniform electrical contact across the elastomeric interface</td>
+      </tr>
+      <tr>
+        <td><b>Adapter PCB</b></td>
+        <td>High-density 4-layer PCB for routing signals from thin-film probes to headstage ball array pattern</td>
+      </tr>
+      <tr>
+        <td><b>Surgical Cap</b></td>
+        <td>Protective enclosure preserving electrical and mechanical integrity throughout chronic experiments</td>
+      </tr>
+    </tbody>
+  </table>
 </div>
 
 ---
 
 ### 🧩 Bill of Materials (BOM) of the headstage
 
-| Component | Description | Qty | Package | Notes |
-| :---: | :---: | :---: | :---: | :---: |
-| **Amplifier IC** | Intan RHD2164 | 4 | BGA | **Critical:** Ensure correct orientation |
-| **SPI Connector** | Omnetics A7621 | 2 | - | 12-wire cable harness (32 AWG) |
-| **Resistors** | Standard SMD | 7 | 0402 | - |
-| **Capacitors** | Standard SMD | 8 | 0603 | - |
-| **Power LED** | Green LED | 1 | 0402 | Power Indicator |
-| **Solder Balls** | 0.4 mm Lead-free | ~300 | - | For BGA rework/assembly |
+<div align="center">
+  <table border="1" style="border-collapse: collapse; width: 90%; text-align: center;">
+    <thead>
+      <tr style="background-color: #f2f2f2;">
+        <th>Component</th>
+        <th>Description</th>
+        <th>Qty</th>
+        <th>Package</th>
+        <th>Notes</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><b>Amplifier IC</b></td>
+        <td>Intan RHD2164</td>
+        <td>4</td>
+        <td>BGA</td>
+        <td><b>Critical:</b> Ensure correct orientation</td>
+      </tr>
+      <tr>
+        <td><b>SPI Connector</b></td>
+        <td>Omnetics A7621</td>
+        <td>2</td>
+        <td>-</td>
+        <td>12-wire cable harness (32 AWG)</td>
+      </tr>
+      <tr>
+        <td><b>Resistors</b></td>
+        <td>Standard SMD</td>
+        <td>7</td>
+        <td>0402</td>
+        <td>-</td>
+      </tr>
+      <tr>
+        <td><b>Capacitors</b></td>
+        <td>Standard SMD</td>
+        <td>8</td>
+        <td>0603</td>
+        <td>-</td>
+      </tr>
+      <tr>
+        <td><b>Power LED</b></td>
+        <td>Green LED</td>
+        <td>1</td>
+        <td>0402</td>
+        <td>Power Indicator</td>
+      </tr>
+      <tr>
+        <td><b>Solder Balls</b></td>
+        <td>0.4 mm Lead-free</td>
+        <td>~300</td>
+        <td>-</td>
+        <td>For BGA rework/assembly</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
 
 ---
 
