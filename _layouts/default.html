@@ -10,18 +10,37 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=JetBrains+Mono&display=swap" rel="stylesheet">
     
     <style>
-      /* --- 全局 --- */
-      body { margin: 0; padding: 0; background-color: #f8fafc; color: #334155; font-family: 'Inter', -apple-system, sans-serif; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+      /* --- 全局重置 --- */
+      body { 
+        margin: 0; 
+        padding: 0; 
+        background-color: #f8fafc; /* 浅灰底色 */
+        color: #334155; 
+        font-family: 'Inter', -apple-system, sans-serif; 
+        line-height: 1.6; 
+      }
       
-      /* --- 容器 (电脑端) --- */
-      .container { max-width: 860px; margin: 60px auto; padding: 60px 80px; background: #ffffff; border-radius: 12px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05); border-top: 4px solid #3b82f6; position: relative; z-index: 10; }
+      /* --- 容器 (核心布局) --- */
+      .container { 
+        max-width: 860px; 
+        margin: 60px auto; 
+        padding: 60px 80px; 
+        background: #ffffff; 
+        border-radius: 12px; 
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); /* 简单的阴影 */
+        border-top: 4px solid #3b82f6; 
+      }
       
-      /* --- 手机端适配 (关键) --- */
+      /* --- 手机适配 (Media Query) --- */
       @media screen and (max-width: 768px) { 
-        .container { width: auto; margin: 15px; padding: 30px 20px; border-radius: 8px; } 
+        .container { 
+          width: auto; 
+          margin: 15px; 
+          padding: 30px 20px; /* 手机上留白减小 */
+          border-radius: 8px; 
+        } 
         body { font-size: 16px; } 
         h1 { font-size: 1.75rem; } 
-        pre { font-size: 0.85rem; } 
       }
       
       /* --- 排版 --- */
@@ -30,49 +49,47 @@
       h3 { color: #334155; margin-top: 1.5rem; font-weight: 600; }
       a { color: #2563eb; text-decoration: none; font-weight: 500; }
       
-      /* --- 图片与徽章 (允许并排) --- */
-      img { max-width: 100%; height: auto; border-radius: 6px; display: inline-block; vertical-align: middle; margin: 4px 2px; }
-      p { text-align: left; margin-bottom: 1.2rem; }
+      /* --- 图片 & 徽章 --- */
+      img { 
+        max-width: 100%; 
+        height: auto; 
+        border-radius: 6px; 
+        display: inline-block; 
+        vertical-align: middle; 
+        margin: 4px 2px; 
+      }
       
+      /* --- 导航徽章特效 --- */
+      .nav-badges { margin: 2rem 0; }
+      .nav-badges a { border-bottom: none !important; }
+      .nav-badges img { transition: transform 0.2s ease; }
+      .nav-badges a:hover img { transform: translateY(-2px); }
+
       /* --- 代码块 --- */
       pre { background: #f1f5f9; padding: 15px; border-radius: 8px; overflow-x: auto; border: 1px solid #e2e8f0; font-size: 0.9rem; }
       code { font-family: 'JetBrains Mono', monospace; background: rgba(0,0,0,0.05); padding: 2px 4px; border-radius: 4px; color: #0369a1; }
       pre code { background: none; padding: 0; color: inherit; }
-      
-      /* --- 背景层 --- */
-      #particles-js { position: fixed; width: 100%; height: 100%; top: 0; left: 0; z-index: 0; }
-
-      /* --- 导航徽章的优化 --- */
-      .nav-badges {
-        margin: 2rem 0; /* 上下多留点空隙，更有呼吸感 */
-      }
-
-      .nav-badges a {
-        border-bottom: none !important; /* 🈲 禁止鼠标悬停时出现蓝色下划线 */
-        text-decoration: none !important;
-      }
-
-      .nav-badges img {
-        margin: 4px 6px !important;     /* ↔️ 增加左右间距，别挤在一起 */
-        transition: transform 0.2s ease; /* 🎬 添加平滑动画 */
-        box-shadow: 0 2px 5px rgba(0,0,0,0.05); /* ☁️ 加一点点阴影，更像按钮 */
-      }
-
-      /* 🖱️ 鼠标悬停特效：微微放大 + 阴影加深 */
-      .nav-badges a:hover img {
-        transform: translateY(-2px); /* 👆 向上浮动一点点 */
-        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-      }
-    
     </style>
 
-    <link rel="apple-touch-icon" sizes="180x180" href="Images/icon/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="Images/icon/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="Images/icon/favicon-16x16.png">
-    <link rel="icon" href="Images/icon/favicon.ico">
-    <link rel="manifest" href="Images/icon/site.webmanifest">
-    <meta name="theme-color" content="#ffffff">
-
     <link rel="stylesheet" href="assets/css/academicons.css"/>
+    <script type="text/x-mathjax-config"> MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: "all" } } }); </script>
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({ tex2jax: { inlineMath: [ ['$','$'], ["\\(","\\)"] ], processEscapes: true } });
+    </script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/latest.js?config=TeX-MML-AM_CHTML' async></script>
 
-    <script type="text/x-mathjax-config"> MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: "all" } } }); </
+  </head>
+
+  <body>
+    <div class="container">
+      <section id="main_content">
+        {{ content }}
+      </section>
+      
+      <footer style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #f1f5f9; text-align: center; color: #94a3b8; font-size: 0.85rem;">
+        <p>PEDAL-256 • Open Source Neural Interfaces</p>
+      </footer>
+    </div>
+    
+    </body>
+</html>
