@@ -54,27 +54,50 @@
       .container { 
         position: relative; padding: 60px 80px; background: rgba(255, 255, 255, 0.75); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
         border-radius: 20px; box-shadow: 0 20px 50px rgba(168, 85, 247, 0.15); border: 1px solid rgba(255, 255, 255, 0.8); border-top: 4px solid #a855f7; 
-        opacity: 0; animation: fadeUp 0.8s ease-out 0.3s forwards; transform-style: preserve-3d; transition: transform 0.1s ease-out; 
+        opacity: 0; animation: fadeUp 0.8s ease-out 0.3s forwards; transform-style: preserve-3d; transition: transform 0.1s ease-out, border-top-color 0.3s ease; 
       }
 
       /* 机器人核心样式 */
       #bot-container { position: absolute; top: -45px; left: 50%; transform: translateX(-50%); width: 120px; height: 70px; z-index: 9999; cursor: pointer; opacity: 0; animation: botEnter 0.8s ease-out 0.8s forwards; transition: transform 0.3s ease; }
-      .bot-head { width: 100px; height: 50px; background: #ffffff; border: 2px solid #e9d5ff; border-bottom: none; border-radius: 50px 50px 20px 20px; margin: 0 auto; position: relative; display: flex; justify-content: center; align-items: center; gap: 10px; animation: float-bot 3s ease-in-out infinite; }
-      .bot-eye { width: 28px; height: 28px; background: #f3e8ff; border-radius: 50%; position: relative; overflow: hidden; }
-      .bot-pupil { width: 14px; height: 14px; background: #7e22ce; border-radius: 50%; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }
-      .bot-antenna { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); width: 2px; height: 15px; background: #e9d5ff; }
+      .bot-head { width: 100px; height: 50px; background: #ffffff; border: 2px solid #e9d5ff; border-bottom: none; border-radius: 50px 50px 20px 20px; margin: 0 auto; position: relative; display: flex; justify-content: center; align-items: center; gap: 10px; animation: float-bot 3s ease-in-out infinite; transition: border-color 0.3s ease; }
+      .bot-eye { width: 28px; height: 28px; background: #f3e8ff; border-radius: 50%; position: relative; overflow: hidden; transition: background 0.3s ease; }
+      .bot-pupil { width: 14px; height: 14px; background: #7e22ce; border-radius: 50%; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); transition: background 0.3s ease; }
+      .bot-antenna { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); width: 2px; height: 15px; background: #e9d5ff; transition: background 0.3s ease; }
       .bot-antenna::after { content: ''; position: absolute; top: -6px; left: -3px; width: 8px; height: 8px; background: #a855f7; border-radius: 50%; animation: pulse-antenna 2s infinite; transition: background 0.3s ease; }
 
-      /* 🚀 神经超载模式：悬停在导航项时天线变绿变快 */
+      /* 🚀 神经超载模式：全方位激光绿呼吸效果 */
+      
+      /* 1. 天线变色与加速闪烁 */
       #bot-container.overload .bot-antenna::after { 
         background: #22c55e !important; 
-        animation: pulse-antenna-fast 0.5s infinite !important; 
-        box-shadow: 0 0 10px #22c55e;
+        animation: pulse-antenna-fast 0.5s infinite ease-in-out !important; 
+        box-shadow: 0 0 12px #22c55e;
+      }
+
+      /* 2. 眼睛瞳孔呼吸效果 */
+      #bot-container.overload .bot-pupil {
+        background: #22c55e !important;
+        animation: laser-breathing 0.8s infinite ease-in-out !important;
+      }
+      #bot-container.overload .bot-eye { background: #dcfce7; }
+
+      /* 3. 顶部横条变绿并呼吸 */
+      #bot-container.overload + .container {
+        border-top-color: #22c55e !important;
+        animation: border-glow-breathing 0.8s infinite ease-in-out;
       }
 
       /* 动画库 */
+      @keyframes laser-breathing {
+        0%, 100% { background-color: #22c55e; box-shadow: 0 0 5px #22c55e; }
+        50% { background-color: #166534; box-shadow: 0 0 2px #22c55e; }
+      }
+      @keyframes border-glow-breathing {
+        0%, 100% { border-top-color: #22c55e; box-shadow: 0 20px 50px rgba(168, 85, 247, 0.15), 0 -4px 12px rgba(34, 197, 94, 0.3); }
+        50% { border-top-color: #166534; box-shadow: 0 20px 50px rgba(168, 85, 247, 0.15), 0 -2px 6px rgba(34, 197, 94, 0.1); }
+      }
       @keyframes pulse-antenna { 0% { box-shadow: 0 0 0 0 rgba(168, 85, 247, 0.7); } 70% { box-shadow: 0 0 0 5px rgba(168, 85, 247, 0); } 100% { box-shadow: 0 0 0 0 rgba(168, 85, 247, 0); } }
-      @keyframes pulse-antenna-fast { 0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); } 70% { box-shadow: 0 0 0 8px rgba(34, 197, 94, 0); } 100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); } }
+      @keyframes pulse-antenna-fast { 0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.8); } 70% { box-shadow: 0 0 0 10px rgba(34, 197, 94, 0); } 100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); } }
       @keyframes float-bot { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
       @keyframes botEnter { from { opacity: 0; transform: translateX(-50%) translateY(20px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
       @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
@@ -131,8 +154,7 @@
         const pupils = document.querySelectorAll('.bot-pupil');
         const eyes = document.querySelectorAll('.bot-eye');
 
-        // 🚀 核心改动：监听所有导航链接（Badges, Overview, BOM, Spec 等）
-        // 只要是 nav-badges 里的链接，或者包含这几个关键词的链接，都会触发超载
+        // 监听交互链接触发超载模式
         const interactiveLinks = document.querySelectorAll('.nav-badges a, a[href*="BOM"], a[href*="Spec"], a[href*="Overview"]');
         
         interactiveLinks.forEach(link => {
@@ -146,7 +168,7 @@
           });
         });
 
-        // 鼠标追踪逻辑
+        // 鼠标追踪与视差效果
         window.addEventListener('mousemove', (e) => {
           const { clientX: x, clientY: y } = e;
           document.querySelector('.cursor-dot').style.left = `${x}px`;
@@ -157,9 +179,6 @@
             const rotY = (window.innerWidth / 2 - x) / 50;
             const rotX = (window.innerHeight / 2 - y) / 50;
             container.style.transform = `rotateY(${-rotY}deg) rotateX(${rotX}deg)`;
-            const r = container.getBoundingClientRect();
-            container.style.setProperty('--mouse-x', `${x - r.left}px`);
-            container.style.setProperty('--mouse-y', `${y - r.top}px`);
           }
 
           pupils.forEach((p, i) => {
