@@ -1,27 +1,28 @@
-<link rel="apple-touch-icon" sizes="180x180" href="Images/icon/apple-touch-icon.png">
-
-<link rel="icon" type="image/png" sizes="32x32" href="Images/icon/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="Images/icon/favicon-16x16.png">
-
-<link rel="icon" href="Images/icon/favicon.ico">
-
-<link rel="manifest" href="Images/icon/site.webmanifest">
+<link rel="apple-touch-icon" sizes="180x180" href="/Images/icon/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/Images/icon/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/Images/icon/favicon-16x16.png">
+<link rel="shortcut icon" href="/Images/icon/favicon.ico">
+<link rel="manifest" href="/Images/icon/site.webmanifest">
 
 <meta name="msapplication-TileColor" content="#000000">
-<meta name="msapplication-TileImage" content="Images/icon/mstile-144x144.png?v=M44lzPylqQ">
-<meta name="msapplication-config" content="Images/icon/browserconfig.xml?v=M44lzPylqQ">
-
+<meta name="msapplication-TileImage" content="/Images/icon/mstile-144x144.png?v=M44lzPylqQ">
+<meta name="msapplication-config" content="/Images/icon/browserconfig.xml?v=M44lzPylqQ">
 <meta name="theme-color" content="#ffffff">
 
-<link rel="stylesheet" href="assets/css/academicons.css"/>
+<link rel="stylesheet" href="/assets/css/academicons.css"/>
 
-<script type="text/x-mathjax-config"> MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: "all" } } }); </script>
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Config({
-    tex2jax: {
-      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-      processEscapes: true
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']], // 支持 $ 符号
+      processEscapes: true,
+      tags: 'ams' // 自动编号
+    },
+    options: {
+      renderActions: {
+        addMenu: [] // 禁用右键菜单以提升一点点加载速度
+      }
     }
-  });
+  };
 </script>
-<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/latest.js?config=TeX-MML-AM_CHTML' async></script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script" async></script>
