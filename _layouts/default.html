@@ -42,24 +42,48 @@
       body.hovering .cursor-outline { width: 60px; height: 60px; background-color: rgba(168, 85, 247, 0.1); border-color: transparent; }
       @media (max-width: 768px) { .cursor-dot, .cursor-outline { display: none; } }
 
-      /* --- 2. 进度条 --- */
-      #progress-bar {
-        position: fixed; top: 0; left: 0; height: 3px;
-        background: linear-gradient(90deg, #a855f7, #3b82f6); 
-        width: 0%; z-index: 99999; transition: width 0.1s;
-      }
+/* --- 2. 进度条：从“调查问卷”升级为“激光扫描” --- */
+#progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  /* 1. 极致精细：从 3px 降到 2px，模拟激光线 */
+  height: 2px;
+  /* 2. 核心颜色：使用与你光标一致的紫色 #a855f7 */
+  background: #a855f7; 
+  z-index: 99999;
+  /* 3. 丝滑动画：使用贝塞尔曲线，增加机械滑动的质感 */
+  transition: width 0.1s cubic-bezier(0.25, 1, 0.5, 1);
+  
+  /* 4. 霓虹光晕效果：增加深度感，使其看起来像是浮在屏幕上的 */
+  box-shadow: 0 0 10px #a855f7, 0 0 5px rgba(59, 130, 246, 0.5);
+}
 
-      /* --- 3. 背景 --- */
+/* 5. 扫描头效果：在进度条的最前端增加一个更亮的点，模拟实时数据写入 */
+#progress-bar::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 40px;
+  height: 100%;
+  /* 从透明到亮白再到紫色的渐变，营造扫描感 */
+  background: linear-gradient(to right, transparent, #ffffff, #a855f7);
+  box-shadow: 0 0 8px #ffffff;
+  filter: blur(1px);
+}
+
+      /* --- 6. 背景 --- */
       #vanta-bg { position: fixed; z-index: -5; top: 0; left: 0; width: 100%; height: 100%; background: #f3e8ff; }
 
-      /* --- 4. 布局包裹器 (3D 效果容器) --- */
+      /* --- 7. 布局包裹器 (3D 效果容器) --- */
       .layout-wrapper {
         position: relative; max-width: 860px; margin: 80px auto 60px; z-index: 10;
         /* 开启 3D 透视 */
         perspective: 1000px;
       }
 
-      /* --- 5. 机器人 (点击交互升级) --- */
+      /* --- 8. 机器人 (点击交互升级) --- */
       #bot-container {
         position: absolute; top: -45px; left: 50%; transform: translateX(-50%);
         width: 120px; height: 70px; z-index: 9999; 
@@ -79,7 +103,7 @@
       .bot-antenna { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); width: 2px; height: 15px; background: #e9d5ff; }
       .bot-antenna::after { content: ''; position: absolute; top: -6px; left: -3px; width: 8px; height: 8px; background: #a855f7; border-radius: 50%; animation: pulse-antenna 2s infinite; }
 
-      /* --- 6. 玻璃容器 (增加 3D 旋转属性) --- */
+      /* --- 9. 玻璃容器 (增加 3D 旋转属性) --- */
       .container { 
         position: relative;
         padding: 60px 80px; 
