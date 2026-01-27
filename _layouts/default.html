@@ -6,126 +6,111 @@
     <title>{{ page.title }}</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=JetBrains+Mono&display=swap" rel="stylesheet">
     
     <style>
-      /* --- 1. 全局设置 --- */
+      /* --- 1. 全局基础 --- */
       body {
         margin: 0;
         padding: 0;
-        background-color: #f8fafc; /* 极浅的蓝灰底色，护眼 */
-        color: #334155; /* 深灰字，比纯黑更优雅 */
-        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-        line-height: 1.7; /* 增加行高，阅读更透气 */
+        background-color: #f8fafc; /* 浅蓝灰底色 */
+        color: #334155; /* 深灰字 */
+        font-family: 'Inter', -apple-system, sans-serif;
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased; /* 让手机字体更清晰 */
       }
 
-      /* --- 2. 布局容器 (白纸效果) --- */
+      /* --- 2. 容器布局 (关键修改点) --- */
       .container {
-        max-width: 860px; /* 最佳阅读宽度 */
-        margin: 60px auto; /* 上下留白 */
-        padding: 60px 80px; /* 内部留白 */
-        background: #ffffff; /* 纯白背景 */
-        border-radius: 12px; /* 圆角 */
-        box-shadow: 
-          0 1px 3px 0 rgba(0, 0, 0, 0.05), 
-          0 10px 30px -5px rgba(0, 0, 0, 0.05); /* 漂浮感阴影 */
-        border-top: 4px solid #3b82f6; /* 顶部一道科技蓝条，点睛之笔 */
+        /* 电脑端默认样式 */
+        max-width: 860px;
+        margin: 60px auto; 
+        padding: 60px 80px; /* 大留白 */
+        background: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        border-top: 4px solid #3b82f6; /* 顶部蓝条 */
         position: relative;
         z-index: 10;
       }
 
-      /* --- 3. 粒子背景层 --- */
+      /* --- 3. 手机端适配 (Media Query) --- */
+      /* 当屏幕宽度小于 768px (手机/平板) 时，强制执行下面的样式 */
+      @media screen and (max-width: 768px) {
+        .container {
+          width: auto;           /* 宽度自动 */
+          margin: 15px;          /* 外边距变小 */
+          padding: 30px 20px;    /* 内边距大幅减小 (左右只留20px) */
+          border-radius: 8px;    /* 圆角变小 */
+        }
+        
+        body {
+          font-size: 16px;       /* 手机上保证字号够大 */
+        }
+
+        h1 {
+          font-size: 1.75rem;    /* 标题稍微改小一点，防止换行太丑 */
+        }
+        
+        ul, ol {
+          padding-left: 20px;    /* 列表缩进减小 */
+        }
+      }
+
+      /* --- 4. 排版细节 --- */
+      h1 {
+        font-size: 2.25rem;
+        font-weight: 700;
+        color: #0f172a;
+        margin-bottom: 1.5rem;
+        letter-spacing: -0.02em;
+      }
+      
+      h2 { color: #1e293b; margin-top: 2rem; font-weight: 600; }
+      h3 { color: #334155; margin-top: 1.5rem; font-weight: 600; }
+
+      a { color: #2563eb; text-decoration: none; font-weight: 500; }
+      
+      /* --- 5. 图片与徽章 (智能混合模式) --- */
+      img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 6px;
+        display: inline-block; /* 允许并排 */
+        vertical-align: middle;
+        margin: 4px 2px; /* 稍微留点空隙 */
+      }
+      
+      /* 针对大图的容器优化 */
+      p { text-align: left; margin-bottom: 1.2rem; }
+
+      /* --- 6. 代码块 (防止手机撑破屏幕) --- */
+      pre {
+        background: #f1f5f9;
+        padding: 15px;
+        border-radius: 8px;
+        overflow-x: auto; /* 手机上代码太长可以左右滑动 */
+        border: 1px solid #e2e8f0;
+        font-size: 0.9rem;
+      }
+      code {
+        font-family: 'JetBrains Mono', monospace;
+        background: rgba(0,0,0,0.05);
+        padding: 2px 4px;
+        border-radius: 4px;
+        color: #0369a1;
+      }
+      pre code { background: none; padding: 0; color: inherit; }
+
+      /* --- 7. 粒子背景 --- */
       #particles-js {
         position: fixed;
         width: 100%;
         height: 100%;
         top: 0;
         left: 0;
-        z-index: 0; /* 在白纸下面 */
+        z-index: 0;
       }
-
-      /* --- 4. 标题排版 --- */
-      h1 {
-        font-size: 2.25rem;
-        font-weight: 700;
-        color: #0f172a;
-        letter-spacing: -0.025em;
-        margin-bottom: 1.5rem;
-        padding-bottom: 1rem;
-        border-bottom: 1px solid #e2e8f0;
-      }
-      
-      h2 {
-        font-size: 1.5rem;
-        font-weight: 600;
-        color: #1e293b;
-        margin-top: 2.5rem;
-        margin-bottom: 1rem;
-      }
-
-      h3 {
-        font-size: 1.25rem;
-        font-weight: 600;
-        color: #334155;
-        margin-top: 2rem;
-      }
-
-      /* --- 5. 链接与交互 --- */
-      a {
-        color: #2563eb; /* 经典的链接蓝 */
-        text-decoration: none;
-        border-bottom: 1px solid transparent;
-        transition: border-color 0.2s;
-      }
-      a:hover {
-        border-bottom: 1px solid #2563eb; /* 鼠标悬停出现下划线 */
-      }
-
-      /* --- 6. 代码块 (像 Notion 一样干净) --- */
-      pre {
-        background: #f1f5f9; /* 浅灰底 */
-        padding: 1rem;
-        border-radius: 8px;
-        overflow-x: auto;
-        border: 1px solid #e2e8f0;
-      }
-      code {
-        font-family: 'JetBrains Mono', monospace;
-        font-size: 0.9em;
-        background: rgba(0,0,0,0.05);
-        padding: 0.2em 0.4em;
-        border-radius: 4px;
-        color: #0f172a;
-      }
-      pre code {
-        background: none;
-        padding: 0;
-      }
-
-      /* --- 7. 图片优化 --- */
-  /* --- 7. 图片与徽章优化 (修复版) --- */
-      img {
-        max-width: 100%;
-        height: auto;
-        border-radius: 6px;
-        
-        /* 关键修改：默认允许并排显示 */
-        display: inline-block; 
-        vertical-align: middle; 
-        
-        /* 给图片之间留一点呼吸空间，防止徽章粘在一起 */
-        margin: 4px; 
-      }
-
-      /* 针对大图的优化：如果你在 Markdown 里把图片单独放在一行 */
-      /* 这里利用了 CSS 的特性：如果 P 标签里只有一张图，就让它居中 */
-      p {
-        text-align: left; /* 默认文字左对齐 */
-      }
-      
-      /* 如果你想让某个大图居中，只需在 Markdown 里这样写：
-         <div align="center">![图](...)</div> 
-         或者不用改代码，直接用下面的自动规则 */
     </style>
   </head>
 
@@ -138,25 +123,24 @@
         {{ content }}
       </section>
       
-      <footer style="margin-top: 60px; padding-top: 20px; border-top: 1px solid #f1f5f9; text-align: center; font-size: 0.875rem; color: #94a3b8;">
+      <footer style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #f1f5f9; text-align: center; color: #94a3b8; font-size: 0.85rem;">
         <p>PEDAL-256 • Open Source Neural Interfaces</p>
       </footer>
     </div>
 
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     <script>
-      /* 配置：极其细腻的浅灰色粒子 */
       particlesJS("particles-js", {
         "particles": {
-          "number": { "value": 40 }, /* 粒子少一点，更干净 */
-          "color": { "value": "#94a3b8" }, /* 浅灰色粒子 */
+          "number": { "value": 30 }, /* 手机性能考虑，粒子稍微减少 */
+          "color": { "value": "#cbd5e1" },
           "shape": { "type": "circle" },
-          "opacity": { "value": 0.4, "random": false },
-          "size": { "value": 3, "random": true },
+          "opacity": { "value": 0.5 },
+          "size": { "value": 3 },
           "line_linked": {
             "enable": true,
             "distance": 150,
-            "color": "#cbd5e1", /* 极淡的连线 */
+            "color": "#cbd5e1",
             "opacity": 0.4,
             "width": 1
           },
@@ -165,14 +149,11 @@
         "interactivity": {
           "detect_on": "canvas",
           "events": {
-            "onhover": { "enable": true, "mode": "grab" }, /* 鼠标靠近会吸附连线 */
+            "onhover": { "enable": true, "mode": "grab" },
             "onclick": { "enable": true, "mode": "push" }
           },
           "modes": {
-            "grab": {
-              "distance": 140,
-              "line_linked": { "opacity": 0.6, "color": "#3b82f6" } /* 互动时变蓝色！ */
-            }
+             "grab": { "distance": 140, "line_linked": { "opacity": 0.8, "color": "#3b82f6" } }
           }
         },
         "retina_detect": true
