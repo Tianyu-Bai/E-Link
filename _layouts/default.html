@@ -10,84 +10,94 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=JetBrains+Mono&display=swap" rel="stylesheet">
     
     <style>
-      /* --- 全局重置 --- */
+      /* --- 1. 全局基础 --- */
       body { 
         margin: 0; 
         padding: 0; 
-        background-color: #f8fafc; /* 浅灰底色 */
+        background-color: #f8fafc; 
         color: #334155; 
         font-family: 'Inter', -apple-system, sans-serif; 
         line-height: 1.6; 
       }
       
-      /* --- 容器 (核心布局) --- */
+      /* --- 2. 容器 (电脑端) --- */
       .container { 
         max-width: 860px; 
         margin: 60px auto; 
         padding: 60px 80px; 
         background: #ffffff; 
         border-radius: 12px; 
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); /* 简单的阴影 */
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); 
         border-top: 4px solid #3b82f6; 
       }
       
-      /* --- 手机适配 (Media Query) --- */
+      /* --- 3. 手机端适配 --- */
       @media screen and (max-width: 768px) { 
         .container { 
           width: auto; 
           margin: 15px; 
-          padding: 30px 20px; /* 手机上留白减小 */
+          padding: 30px 20px; 
           border-radius: 8px; 
         } 
         body { font-size: 16px; } 
-        h1 { font-size: 1.75rem; } 
+        h1 { font-size: 1.8rem; } 
       }
       
-      /* --- 排版 --- */
+      /* --- 4. 排版细节 --- */
       h1 { font-size: 2.25rem; font-weight: 700; color: #0f172a; margin-bottom: 1.5rem; letter-spacing: -0.02em; }
       h2 { color: #1e293b; margin-top: 2rem; font-weight: 600; }
       h3 { color: #334155; margin-top: 1.5rem; font-weight: 600; }
       a { color: #2563eb; text-decoration: none; font-weight: 500; }
       
-      /* --- 图片 & 徽章 --- */
+      /* --- 5. 普通图片 --- */
       img { 
         max-width: 100%; 
         height: auto; 
         border-radius: 6px; 
         display: inline-block; 
         vertical-align: middle; 
-        margin: 4px 2px; 
       }
       
-      /* --- 导航徽章特效 --- */
-      .nav-badges {
-        margin: 2.5rem 0;          /* 上下留白更多 */
-        display: flex;             /* 使用弹性布局 */
-        flex-wrap: wrap;           /* 手机上自动换行 */
-        justify-content: center;   /* 居中对齐 */
-        gap: 12px;                 /* 按钮之间的间距 */
-      }
+      /* --- 6. 代码块 --- */
+      pre { background: #f1f5f9; padding: 15px; border-radius: 8px; overflow-x: auto; border: 1px solid #e2e8f0; font-size: 0.9rem; }
+      code { font-family: 'JetBrains Mono', monospace; background: rgba(0,0,0,0.05); padding: 2px 4px; border-radius: 4px; color: #0369a1; }
+      pre code { background: none; padding: 0; color: inherit; }
 
+      /* --- 🌟 7. 徽章导航 (大按钮特效版) --- */
+      .nav-badges {
+        margin: 2.5rem 0;          
+        display: flex;             
+        flex-wrap: wrap;           
+        justify-content: center;   
+        gap: 12px;                 
+      }
       .nav-badges a {
         border-bottom: none !important; 
         text-decoration: none !important;
-        line-height: 0;            /* 消除链接自带的行高干扰 */
+        line-height: 0;            
       }
-
       .nav-badges img {
-        height: 36px !important;   /* 🔥 关键：强制变大！(默认只有20px) */
-        width: auto;               /* 宽度自动保持比例 */
-        border-radius: 6px;        /* 稍微圆润一点 */
-        box-shadow: 0 4px 6px rgba(59, 130, 246, 0.15); /* 加点蓝色投影 */
-        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* 🚀 弹性果冻动画效果 */
+        height: 36px !important;   /* 🔥 强制变大 */
+        width: auto;               
+        border-radius: 6px;        
+        box-shadow: 0 4px 6px rgba(59, 130, 246, 0.15); 
+        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* 果冻弹性 */
+        margin: 0 !important;      /* 覆盖默认边距 */
       }
-
-      /* 🖱️ 鼠标悬停时的特效 */
+      /* 鼠标悬停 */
       .nav-badges a:hover img {
-        transform: scale(1.15) translateY(-3px); /* 放大 1.15 倍 + 上浮 */
-        box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3); /* 投影变大变深 */
-        z-index: 10; /* 保证放大的时候压在别人上面 */
+        transform: scale(1.15) translateY(-3px); 
+        box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3); 
+        z-index: 10;
       }
+    </style>
+
+    <link rel="stylesheet" href="assets/css/academicons.css"/>
+    <script type="text/x-mathjax-config"> MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: "all" } } }); </script>
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({ tex2jax: { inlineMath: [ ['$','$'], ["\\(","\\)"] ], processEscapes: true } });
+    </script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/latest.js?config=TeX-MML-AM_CHTML' async></script>
 
   </head>
 
@@ -101,6 +111,5 @@
         <p>PEDAL-256 • Open Source Neural Interfaces</p>
       </footer>
     </div>
-    
-    </body>
+  </body>
 </html>
