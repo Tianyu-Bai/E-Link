@@ -70,39 +70,38 @@
       code { font-family: 'JetBrains Mono', monospace; background: rgba(168, 85, 247, 0.1); padding: 2px 4px; border-radius: 4px; color: #7e22ce; }
       pre code { background: none; padding: 0; color: inherit; }
 
-      /* --- 🪐 导航区域 (灵动版) --- */
+      /* --- 🪐 导航区域 (交互唤醒版) --- */
       .nav-badges { 
         margin: 2rem 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; 
         opacity: 0; animation: fadeUp 0.8s ease-out 0.2s forwards; 
       }
       .nav-badges a { border-bottom: none !important; text-decoration: none !important; line-height: 0; }
       
-      /* 按钮本体 */
+      /* 按钮本体 (默认状态：静止) */
       .nav-badges img { 
         height: 28px !important; width: auto; border-radius: 50px; 
         box-shadow: 0 2px 6px rgba(168, 85, 247, 0.15); 
         border: 1.5px solid white; 
-        transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* 平滑过渡 */
         margin: 0 !important; cursor: pointer;
-        animation: float-capsule 3s ease-in-out infinite;
+        /* 注意：这里没有 animation 了 */
       }
       
-      /* 随机延迟 */
-      .nav-badges a:nth-child(1) img { animation-delay: 0.0s; }
-      .nav-badges a:nth-child(2) img { animation-delay: 0.3s; }
-      .nav-badges a:nth-child(3) img { animation-delay: 0.6s; }
-      .nav-badges a:nth-child(4) img { animation-delay: 0.9s; }
-      .nav-badges a:nth-child(5) img { animation-delay: 1.2s; }
-      .nav-badges a:nth-child(6) img { animation-delay: 1.5s; }
+      /* ✨ 悬停特效：只有鼠标放上去，才开始漂浮 ✨ */
+      .nav-badges a:hover img { 
+        /* 这里的动画包含了 scale(1.15)，保证它在放大的同时漂浮 */
+        animation: float-hover 2s ease-in-out infinite;
+        box-shadow: 0 8px 20px rgba(168, 85, 247, 0.35); 
+        z-index: 10; 
+      }
       
-      /* 悬停特效 */
-      .nav-badges a:hover img { transform: scale(1.15) translateY(-2px); box-shadow: 0 8px 20px rgba(168, 85, 247, 0.35); z-index: 10; }
-      
-      /* 🔥 点击按下状态 (变暗、缩小) 🔥 */
+      /* 🔥 点击按下状态 (最优先) 🔥 */
       .nav-badges a.clicked img { 
+        animation: none !important; /* 必须停止漂浮动画，否则按不下去 */
         transform: scale(0.9) !important; 
-        filter: brightness(0.85); /* 稍微深一点，更明显 */
-        box-shadow: 0 0 0 rgba(0,0,0,0) !important; /* 阴影消失 */
+        filter: brightness(0.85); 
+        box-shadow: 0 0 0 rgba(0,0,0,0) !important; 
+        transition: transform 0.1s ease; /* 按下要快 */
       }
 
       /* --- 表格 --- */
@@ -113,7 +112,13 @@
       /* --- 🎬 动画定义 --- */
       @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
       @keyframes gradientMove { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-      @keyframes float-capsule { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+      
+      /* 🔥 新增：悬停专用漂浮动画 (带放大效果) */
+      @keyframes float-hover {
+        0%   { transform: scale(1.15) translateY(-2px); } /* 初始：放大并稍微上浮 */
+        50%  { transform: scale(1.15) translateY(-6px); } /* 中间：浮得更高 */
+        100% { transform: scale(1.15) translateY(-2px); } /* 结束：回落 */
+      }
     </style>
 
     <link rel="stylesheet" href="assets/css/academicons.css"/>
@@ -159,29 +164,21 @@
             const targetUrl = this.href;
             const element = this;
             
-            // 1. 按下 (变暗变小)
+            // 1. 按下 (强制停止漂浮，变暗变小)
             element.classList.add('clicked');
             
-            // 2. 300毫秒后自动回弹 (变回原样)
-            setTimeout(() => {
-               element.classList.remove('clicked');
-            }, 300);
+            // 2. 300ms 后回弹
+            setTimeout(() => { element.classList.remove('clicked'); }, 300);
 
-            // 3. 400毫秒后才跳转 (让用户看到它弹起来了)
-            setTimeout(() => {
-               window.location.href = targetUrl;
-            }, 400); 
+            // 3. 400ms 后跳转
+            setTimeout(() => { window.location.href = targetUrl; }, 400); 
           });
         });
 
-        // 🔥 修复：如果用户按了浏览器“返回”键，强制复原所有按钮
         window.addEventListener('pageshow', function(event) {
-            links.forEach(link => {
-                link.classList.remove('clicked');
-            });
+            links.forEach(link => { link.classList.remove('clicked'); });
         });
 
-        // 滚动进度条
         window.addEventListener('scroll', () => {
           const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
           const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
