@@ -5,14 +5,14 @@
   <a href="#-system-components"><img src="https://img.shields.io/badge/🧩_Components-F2F2F2?style=for-the-badge&labelColor=white&logoColor=black" alt="Components"></a>
   <a href="#-bill-of-materials-bom-of-the-headstage"><img src="https://img.shields.io/badge/🛠_BOM-F2F2F2?style=for-the-badge&labelColor=white&logoColor=black" alt="BOM"></a>
   <a href="#-repository--downloads"><img src="https://img.shields.io/badge/🔗_Downloads-F2F2F2?style=for-the-badge&labelColor=white&logoColor=black" alt="Downloads"></a>
-<div>
+</div>
   
 <div align="center">
   <h1 style="border-bottom: none; margin-bottom: 5px;">🚀 PEDAL-256</h1>
 
-  <p align="center">
+  <div align="center">
     <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=24&pause=1000&color=00693E&center=true&vCenter=true&width=750&lines=An+Open-Source,+Solderless,+High-Density;Pedestal+Connector+for+Neural+Interfaces" />
-  </p>
+  </div>
 
   <div  align="center" style="margin-top: 15px;">
     <a href="https://sites.dartmouth.edu/fang-group/"><img src="https://img.shields.io/badge/Dartmouth-MINE--Lab-00693E?style=flat-square" alt="MINE Lab"></a>
@@ -20,7 +20,7 @@
     <a href="https://tianyu-bai.github.io/"><img src="https://img.shields.io/badge/Website-Tianyu%20Bai-0077B5?style=flat-square&logo=github&logoColor=white" alt="Website"></a>
     <a href="https://www.linkedin.com/in/tianyubai/"><img src="https://img.shields.io/badge/LinkedIn-Profile-0A66C2?style=flat-square&logo=linkedin&logoColor=white" alt="LinkedIn"></a>
      <a href="https://github.com/tianyu-bai/PEDAL-256/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-MIT-A31F34?style=flat-square&logo=opensourceinitiative&logoColor=white" alt="License"></a>
-  <div>
+  </div>
 
   <br />
   <img src="Videos/Demo%20new%20new.gif" 
