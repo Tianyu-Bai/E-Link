@@ -138,25 +138,30 @@
       pre { background: #faf5ff; padding: 15px; border-radius: 8px; overflow-x: auto; border: 1px solid #e9d5ff; font-size: 0.9rem; color: #475569; }
       code { font-family: 'JetBrains Mono', monospace; background: rgba(168, 85, 247, 0.1); padding: 2px 4px; border-radius: 4px; color: #7e22ce; }
       pre code { background: none; padding: 0; color: inherit; }
-
-      /* 🚀 PEDAL-256 演示 GIF 专属融合样式 */
-        .gif-blend {
-       /* 核心：正片叠底。让白色(rgb 255,255,255)变透明，深色保留。 */
+      
+          /* 🚀 PEDAL-256 演示 GIF 专属融合样式 */
+.gif-blend {
+  /* 核心：正片叠底。让白色部分透明化，使 GIF 线条直接浮在紫色背景上 */
   mix-blend-mode: multiply !important;
 
-  /* 关键辅助：增强对比度和亮度。
-     如果 GIF 的背景是 99% 白而不是 100% 白，这个滤镜能把它强制变成 100% 白，
-     从而让 mix-blend-mode 彻底过滤掉它。*/
+  /* 滤镜组合：对比度略微调高，确保 GIF 背景被彻底“漂白”从而被 multiply 过滤 */
   filter: contrast(1.15) brightness(1.05) !important;
 
-  /* 确保图片自身没有背景色干扰 */
+  /* 布局与美化 */
+  display: block;
+  margin: 0 auto;
   background-color: transparent !important;
-  
-  /* 保持原有的圆角设计，融合后效果更好 */
   border-radius: 12px;
-  
-  /* 确保作为块级元素显示，避免行内间距问题 */
-  display: block; 
+  border: none !important;
+  box-shadow: none !important;
+
+  /* 交互效果 */
+  opacity: 0.9;
+  transition: opacity 0.3s ease;
+}
+
+.gif-blend:hover {
+  opacity: 1;
 }
       
       /* --- 导航 --- */
@@ -186,6 +191,7 @@
       @keyframes blink { 0%, 48%, 52%, 100% { height: 0%; } 50% { height: 100%; } }
       @keyframes pulse-antenna { 0% { box-shadow: 0 0 0 0 rgba(168, 85, 247, 0.7); } 70% { box-shadow: 0 0 0 5px rgba(168, 85, 247, 0); } 100% { box-shadow: 0 0 0 0 rgba(168, 85, 247, 0); } }
       @keyframes botEnter { from { opacity: 0; transform: translateX(-50%) translateY(20px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
+  
       /* 机器人开心的动画 */
       @keyframes spin-happy { 0% { transform: rotate(0deg) scale(1); } 50% { transform: rotate(10deg) scale(1.1); } 75% { transform: rotate(-10deg) scale(1.1); } 100% { transform: rotate(0deg) scale(1); } }
     </style>
