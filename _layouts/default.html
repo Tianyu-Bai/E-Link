@@ -11,21 +11,22 @@
     <style>
       /* --- 核心样式开始 --- */
       
-      /* 全局深色背景 */
+      /* 全局背景：银灰色渐变，模拟无菌环境 */
       body {
         margin: 0;
         padding: 0;
-        background-color: #0b1120; /* 深空蓝黑 */
-        color: #e2e8f0; /* 浅灰白文字 */
+        background-color: #f8fafc; /* 非常浅的蓝灰色 */
+        background-image: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+        color: #334155; /* 深蓝灰色文字，阅读舒适 */
         font-family: 'Inter', sans-serif;
         line-height: 1.6;
       }
 
-      /* 链接样式 - 科技蓝 */
-      a { color: #38bdf8; text-decoration: none; transition: 0.3s; }
-      a:hover { color: #7dd3fc; text-shadow: 0 0 8px rgba(56, 189, 248, 0.6); }
+      /* 链接样式 - 科技深蓝 */
+      a { color: #0284c7; text-decoration: none; transition: 0.3s; font-weight: 500; }
+      a:hover { color: #0ea5e9; text-decoration: underline; }
 
-      /* 粒子背景容器 */
+      /* 粒子背景层 */
       #particles-js {
         position: fixed;
         width: 100%;
@@ -33,45 +34,64 @@
         top: 0;
         left: 0;
         z-index: -1;
-        background-image: radial-gradient(circle at 50% 50%, #1e293b 0%, #0b1120 100%);
       }
 
-      /* 主容器：毛玻璃效果 */
+      /* 主容器：像一张悬浮的实验报告 */
       .container {
         max-width: 900px;
         margin: 60px auto;
-        padding: 40px;
-        background: rgba(15, 23, 42, 0.7); /* 半透明深色 */
-        backdrop-filter: blur(12px); /* 模糊滤镜 */
-        -webkit-backdrop-filter: blur(12px);
-        border: 1px solid rgba(56, 189, 248, 0.2); /* 淡淡的蓝边框 */
-        border-radius: 16px;
-        box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        padding: 50px;
+        background: rgba(255, 255, 255, 0.85); /* 半透明白色 */
+        backdrop-filter: blur(20px); /* 磨砂玻璃感 */
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid #ffffff;
+        border-radius: 12px;
+        box-shadow: 
+          0 4px 6px -1px rgba(0, 0, 0, 0.05), 
+          0 10px 15px -3px rgba(0, 0, 0, 0.05),
+          0 0 0 1px rgba(0,0,0,0.02); /* 极其细腻的阴影 */
       }
 
       /* 标题优化 */
-      h1, h2, h3 {
-        color: #f8fafc;
-        border-bottom: 1px solid rgba(255,255,255,0.1);
-        padding-bottom: 10px;
+      h1 {
+        color: #0f172a; /* 接近纯黑的深蓝 */
+        font-weight: 700;
+        letter-spacing: -0.025em;
+        border-bottom: 2px solid #e2e8f0;
+        padding-bottom: 15px;
+      }
+      
+      h2, h3 {
+        color: #1e293b;
         margin-top: 1.5em;
       }
 
       /* 代码块优化 */
       pre, code {
         font-family: 'JetBrains Mono', monospace;
-        background: rgba(0, 0, 0, 0.3);
-        padding: 2px 6px;
-        border-radius: 4px;
-        color: #818cf8;
+        background: #f1f5f9; /* 浅灰底色 */
+        padding: 3px 6px;
+        border-radius: 6px;
+        color: #0369a1; /* 深蓝色代码文字 */
+        border: 1px solid #e2e8f0;
+      }
+
+      /* 引用块 */
+      blockquote {
+        border-left: 4px solid #0ea5e9;
+        background: #f0f9ff;
+        margin: 0;
+        padding: 10px 20px;
+        color: #0c4a6e;
       }
       
-      /* 图片自适应优化 */
+      /* 图片样式 */
       img {
         max-width: 100%;
         border-radius: 8px;
-        /* 如果你的图表是白底的，加一点透明度让它融合，或者不加这行 */
-        opacity: 0.95; 
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1); /* 给图片加一点立体感 */
+        display: block;
+        margin: 20px auto;
       }
       
       /* --- 核心样式结束 --- */
@@ -88,38 +108,31 @@
         {{ content }}
       </section>
       
-      <footer style="margin-top: 50px; text-align: center; font-size: 0.8rem; color: #64748b;">
-        <p>Designed for Neural Interfaces & High-Density Systems</p>
+      <footer style="margin-top: 60px; padding-top: 20px; border-top: 1px solid #e2e8f0; text-align: center; font-size: 0.85rem; color: #94a3b8;">
+        <p>Neural Interfaces & High-Density Electronics • Dartmouth College</p>
       </footer>
     </div>
 
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     <script>
+      /* 这里的粒子颜色改成了灰色和蓝色，适应浅色背景 */
       particlesJS("particles-js", {
         "particles": {
-          "number": { "value": 60 },
-          "color": { "value": "#38bdf8" }, /* 粒子颜色 */
+          "number": { "value": 50 },
+          "color": { "value": "#64748b" }, /* 粒子颜色：深灰色 */
           "shape": { "type": "circle" },
-          "opacity": { "value": 0.5, "random": true },
+          "opacity": { "value": 0.5, "random": false },
           "size": { "value": 3, "random": true },
           "line_linked": {
             "enable": true,
             "distance": 150,
-            "color": "#38bdf8", /* 连线颜色 */
-            "opacity": 0.25,
+            "color": "#94a3b8", /* 连线颜色：浅灰色 */
+            "opacity": 0.4,
             "width": 1
           },
-          "move": { "enable": true, "speed": 1.5 }
+          "move": { "enable": true, "speed": 1 }
         },
         "interactivity": {
           "detect_on": "canvas",
           "events": {
-            "onhover": { "enable": true, "mode": "grab" },
-            "onclick": { "enable": true, "mode": "push" }
-          }
-        },
-        "retina_detect": true
-      });
-    </script>
-  </body>
-</html>
+            "onhover": { "
