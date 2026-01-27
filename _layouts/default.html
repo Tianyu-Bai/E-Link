@@ -3,15 +3,18 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
+    
     <title>{{ page.title }}</title>
 
-    <!-- ★ MOD: 防止 Chrome fallback 请求导致 favicon 转圈 -->
-    <link rel="icon" href="data:,">
-
     <link rel="shortcut icon" type="image/x-icon" href="{{ '/Images/icon/favicon.ico' | relative_url }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ '/Images/icon/favicon-32x32.png' | relative_url }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ '/Images/icon/favicon-16x16.png' | relative_url }}">
     <link rel="apple-touch-icon" sizes="180x180" href="{{ '/Images/icon/apple-touch-icon.png' | relative_url }}">
     <link rel="manifest" href="{{ '/Images/icon/site.webmanifest' | relative_url }}">
+
+    <meta name="msapplication-TileColor" content="#000000">
+    <meta name="msapplication-TileImage" content="{{ 'Images/icon/mstile-144x144.png?v=M44lzPylqQ' | relative_url }}">
+    <meta name="msapplication-config" content="{{ 'Images/icon/browserconfig.xml?v=M44lzPylqQ' | relative_url }}">
     <meta name="theme-color" content="#ffffff">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -21,165 +24,106 @@
 
     <style>
       /* --- 0. 全局设置 --- */
-      body {
-        margin: 0; padding: 0; color: #475569;
-        font-family: 'Inter', -apple-system, sans-serif;
-        line-height: 1.6; overflow-x: hidden;
-        cursor: none;
+      body { 
+        margin: 0; padding: 0; color: #475569; 
+        font-family: 'Inter', -apple-system, sans-serif; 
+        line-height: 1.6; overflow-x: hidden; 
+        cursor: none; /* 隐藏默认光标 */
         scrollbar-width: thin; scrollbar-color: #d8b4fe transparent;
       }
+      /* 移动端恢复默认光标 */
       @media (pointer: coarse) { body { cursor: auto; } }
 
       ::-webkit-scrollbar { width: 6px; }
+      ::-webkit-scrollbar-track { background: transparent; }
       ::-webkit-scrollbar-thumb { background: rgba(168, 85, 247, 0.3); border-radius: 10px; }
-      ::selection { background: #a855f7; color: #ffffff; }
+      ::-webkit-scrollbar-thumb:hover { background: rgba(168, 85, 247, 0.6); }
+      ::selection { background: #a855f7; color: #ffffff; text-shadow: 0 0 8px rgba(255, 255, 255, 0.8); }
 
       /* --- 1. 自定义光标 --- */
       .cursor-dot, .cursor-outline {
-        position: fixed; top: 0; left: 0;
-        transform: translate(-50%, -50%);
-        border-radius: 50%; z-index: 99999; pointer-events: none;
+        position: fixed; top: 0; left: 0; 
+        transform: translate(-50%, -50%); border-radius: 50%; z-index: 99999; pointer-events: none;
       }
       .cursor-dot { width: 8px; height: 8px; background-color: #a855f7; }
-      .cursor-outline {
-        width: 40px; height: 40px;
-        border: 1px solid rgba(168, 85, 247, 0.5);
+      .cursor-outline { 
+        width: 40px; height: 40px; border: 1px solid rgba(168, 85, 247, 0.5); 
         transition: width 0.2s, height 0.2s, background-color 0.2s;
       }
-      body.hovering .cursor-outline {
-        width: 60px; height: 60px;
-        background-color: rgba(168, 85, 247, 0.1);
-        border-color: transparent;
+      body.hovering .cursor-outline { width: 60px; height: 60px; background-color: rgba(168, 85, 247, 0.1); border-color: transparent; }
+      @media (max-width: 768px) { .cursor-dot, .cursor-outline { display: none; } }
+
+      /* --- 2. 进度条与背景 --- */
+      #progress-bar {
+        position: fixed; top: 0; left: 0; height: 3px;
+        background: linear-gradient(90deg, #a855f7, #3b82f6); 
+        width: 0%; z-index: 99999; transition: width 0.1s;
       }
+      #vanta-bg { position: fixed; z-index: -5; top: 0; left: 0; width: 100%; height: 100%; background: #f3e8ff; }
+
+      /* --- 3. 布局与 3D 效果 --- */
+      .layout-wrapper { position: relative; max-width: 860px; margin: 80px auto 60px; z-index: 10; perspective: 1000px; }
+      
+      .container { 
+        position: relative; padding: 60px 80px; 
+        background: rgba(255, 255, 255, 0.75); 
+        backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+        border-radius: 20px; box-shadow: 0 20px 50px rgba(168, 85, 247, 0.15);
+        border: 1px solid rgba(255, 255, 255, 0.8); border-top: 4px solid #a855f7; 
+        opacity: 0; animation: fadeUp 0.8s ease-out 0.3s forwards; 
+        z-index: 1; transform-style: preserve-3d; transition: transform 0.1s ease-out; 
+      }
+      .container::before {
+        content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; 
+        border-radius: 20px; background: radial-gradient(800px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(168, 85, 247, 0.08), transparent 40%);
+        opacity: 0; transition: opacity 0.5s ease; pointer-events: none;
+      }
+      .container:hover::before { opacity: 1; }
 
       /* --- 4. 机器人 UI --- */
       #bot-container {
-        position: absolute; top: -45px; left: 50%;
-        transform: translateX(-50%);
-        width: 120px; height: 70px;
-        z-index: 9999; cursor: pointer;
-        opacity: 0; animation: botEnter 0.8s ease-out 0.8s forwards;
-        transition: transform 0.3s ease;
+        position: absolute; top: -45px; left: 50%; transform: translateX(-50%);
+        width: 120px; height: 70px; z-index: 9999; cursor: pointer;
+        opacity: 0; animation: botEnter 0.8s ease-out 0.8s forwards; transition: transform 0.3s ease;
       }
+      #bot-container:hover { transform: translateX(-50%) translateY(-5px) scale(1.05); }
+      #bot-container.dizzy .bot-head { animation: spin-happy 1s ease-in-out; }
 
-      .bot-head {
-        width: 100px; height: 50px;
-        background: #ffffff;
-        border: 2px solid #e9d5ff;
-        border-bottom: none;
-        border-radius: 50px 50px 20px 20px;
-        margin: 0 auto;
-        position: relative;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        gap: 10px;
-        padding-top: 5px;
-        animation: float-bot 3s ease-in-out infinite;
+      .bot-head { width: 100px; height: 50px; background: #ffffff; border: 2px solid #e9d5ff; border-bottom: none; border-radius: 50px 50px 20px 20px; margin: 0 auto; position: relative; box-shadow: 0 -5px 15px rgba(168, 85, 247, 0.15); display: flex; justify-content: center; align-items: center; gap: 10px; padding-top: 5px; animation: float-bot 3s ease-in-out infinite; }
+      .bot-eye { width: 28px; height: 28px; background: #f3e8ff; border-radius: 50%; border: 1px solid #d8b4fe; position: relative; overflow: hidden; }
+      .bot-pupil { width: 14px; height: 14px; background: #7e22ce; border-radius: 50%; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+      .bot-lid { position: absolute; top: 0; left: 0; width: 100%; height: 0%; background: #ffffff; z-index: 10; animation: blink 4s infinite; }
+      .bot-antenna { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); width: 2px; height: 15px; background: #e9d5ff; }
+      .bot-antenna::after { content: ''; position: absolute; top: -6px; left: -3px; width: 8px; height: 8px; background: #a855f7; border-radius: 50%; animation: pulse-antenna 2s infinite; }
+
+      /* --- 5. 排版与融合 --- */
+      h1 { 
+        font-size: 2.25rem; font-weight: 700; margin-bottom: 1.5rem; letter-spacing: -0.02em; 
+        background: linear-gradient(45deg, #7e22ce, #3b82f6, #db2777); background-size: 200% 200%; 
+        -webkit-background-clip: text; background-clip: text; color: transparent; 
+        animation: gradientMove 6s ease infinite, fadeUp 0.8s ease-out forwards; opacity: 0; 
       }
-
-      .bot-eye {
-        width: 28px; height: 28px;
-        background: #f3e8ff;
-        border-radius: 50%;
-        border: 1px solid #d8b4fe;
-        position: relative;
-        overflow: hidden;
+      img { 
+        max-width: 100%; height: auto; border-radius: 8px; 
+        mix-blend-mode: multiply; filter: contrast(1);
       }
+      .nav-badges img { mix-blend-mode: normal !important; height: 28px !important; border-radius: 50px; border: 1.5px solid white; }
 
-      .bot-pupil {
-        width: 14px; height: 14px;
-        background: #7e22ce;
-        border-radius: 50%;
-        position: absolute;
-        top: 50%; left: 50%;
-        transform: translate(-50%, -50%);
-      }
+      /* --- 6. 动画库 --- */
+      @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+      @keyframes gradientMove { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+      @keyframes float-bot { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+      @keyframes blink { 0%, 48%, 52%, 100% { height: 0%; } 50% { height: 100%; } }
+      @keyframes pulse-dot { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(0.95); } }
+      @keyframes spin-happy { 0% { transform: rotate(0deg); } 50% { transform: rotate(15deg) scale(1.1); } 100% { transform: rotate(0deg); } }
+      @keyframes botEnter { from { opacity: 0; transform: translateX(-50%) translateY(20px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
+      @keyframes pulse-antenna { 0% { box-shadow: 0 0 0 0 rgba(168, 85, 247, 0.7); } 70% { box-shadow: 0 0 0 5px rgba(168, 85, 247, 0); } 100% { box-shadow: 0 0 0 0 rgba(168, 85, 247, 0); } }
 
-      .bot-lid {
-        position: absolute;
-        top: 0; left: 0;
-        width: 100%; height: 0%;
-        background: #ffffff;
-        z-index: 10;
-        animation: blink 4s infinite;
-      }
-
-      .bot-antenna {
-        position: absolute;
-        top: -15px; left: 50%;
-        transform: translateX(-50%);
-        width: 2px; height: 15px;
-        background: #e9d5ff;
-      }
-
-      .bot-antenna::after {
-        content: '';
-        position: absolute;
-        top: -6px; left: -3px;
-        width: 8px; height: 8px;
-        background: #a855f7;
-        border-radius: 50%;
-        animation: pulse-antenna 2s infinite;
-      }
-
-      /* ========================= */
-      /* ★ ADD: LASER MODE 样式 */
-      /* ========================= */
-      #bot-container.laser .bot-eye {
-        background: #052e16;
-        border-color: #22c55e;
-        box-shadow: 0 0 12px rgba(34,197,94,0.7);
-      }
-
-      #bot-container.laser .bot-pupil {
-        background: #22c55e;
-        box-shadow: 0 0 6px #22c55e, 0 0 14px rgba(34,197,94,0.9);
-      }
-
-      #bot-container.laser .bot-eye::after {
-        content: '';
-        position: absolute;
-        left: -100%;
-        top: 50%;
-        width: 200%;
-        height: 2px;
-        background: linear-gradient(90deg, transparent, #22c55e, transparent);
-        animation: laser-scan 1.2s linear infinite;
-      }
-
-      #bot-container.laser .bot-antenna {
-        background: #22c55e;
-      }
-
-      #bot-container.laser .bot-antenna::after {
-        background: #22c55e;
-        animation: antenna-breath 1s infinite ease-in-out;
-      }
-
-      @keyframes laser-scan {
-        from { transform: translateY(-50%) translateX(-30%); }
-        to   { transform: translateY(-50%) translateX(30%); }
-      }
-
-      @keyframes antenna-breath {
-        0%,100% { box-shadow: 0 0 4px rgba(34,197,94,0.4); }
-        50%     { box-shadow: 0 0 16px rgba(34,197,94,1); }
-      }
-
-      @keyframes blink {
-        0%, 48%, 52%, 100% { height: 0%; }
-        50% { height: 100%; }
-      }
-
-      @keyframes float-bot {
-        0%,100% { transform: translateY(0); }
-        50% { transform: translateY(-5px); }
-      }
-
-      @keyframes botEnter {
-        from { opacity: 0; transform: translateX(-50%) translateY(20px); }
-        to { opacity: 1; transform: translateX(-50%) translateY(0); }
+      @media screen and (max-width: 768px) { 
+        .layout-wrapper { margin: 15px; perspective: none; }
+        .container { padding: 30px 15px; border-radius: 12px; transform: none !important; } 
+        #bot-container { display: none; } 
+        h1 { font-size: 1.45rem !important; } 
       }
     </style>
   </head>
@@ -187,9 +131,11 @@
   <body>
     <div class="cursor-dot"></div>
     <div class="cursor-outline"></div>
+    <div id="progress-bar"></div>
+    <div id="vanta-bg"></div>
 
     <div class="layout-wrapper">
-      <div id="bot-container">
+      <div id="bot-container" title="Click me!">
         <div class="bot-antenna"></div>
         <div class="bot-head">
           <div class="bot-eye"><div class="bot-pupil"></div><div class="bot-lid"></div></div>
@@ -198,23 +144,105 @@
       </div>
 
       <div class="container">
-        {{ content }}
+        <section id="main_content">
+          {{ content }}
+        </section>
 
-        <footer style="text-align:center;margin-top:40px;">
-          <img
-            class="nav-badges"
-            src="https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Ftianyu-bai.github.io"
-            style="height:18px;cursor:pointer;">
+        <footer style="margin-top: 60px; padding: 30px 0; border-top: 1px solid rgba(168, 85, 247, 0.2); text-align: center; font-family: 'JetBrains Mono', monospace;">
+          <p style="color: #94a3b8; font-size: 0.85rem; margin-bottom: 12px; letter-spacing: 0.5px;">
+            PEDAL-256 • &copy; 2026 Tianyu Bai. All Rights Reserved.
+          </p>
+          <div style="display: inline-flex; align-items: center; gap: 8px; font-size: 0.8rem; opacity: 0.8; background: rgba(168, 85, 247, 0.05); padding: 6px 15px; border-radius: 20px;">
+            <span style="color: #a855f7;">[SYS_MONITOR]</span> 
+            <span style="color: #64748b;">Traffic:</span> 
+            <img src="https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Ftianyu-bai.github.io&count_bg=%237E22CE00&title_bg=%2355555500&icon=&icon_color=%23E7E7E7&title=%20&edge_flat=true" 
+                 style="height: 18px; vertical-align: middle; mix-blend-mode: multiply; filter: contrast(1.2) hue-rotate(280deg);">
+            <span style="animation: pulse-dot 2s infinite ease-in-out; display: inline-block; color: #3fb950; font-weight: bold; margin-left: 2px;">● LIVE</span>
+          </div>
         </footer>
       </div>
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.net.min.js"></script>
+    
     <script>
-      document.addEventListener("DOMContentLoaded", () => {
-        const bot = document.getElementById("bot-container");
-        document.querySelectorAll(".nav-badges, footer img").forEach(badge => {
-          badge.addEventListener("mouseenter", () => bot.classList.add("laser"));
-          badge.addEventListener("mouseleave", () => bot.classList.remove("laser"));
+      window.MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']],
+          processEscapes: true,
+          tags: 'ams'
+        }
+      };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script" async></script>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function() {
+        // Vanta 初始化
+        if (typeof VANTA !== 'undefined') {
+          VANTA.NET({
+            el: "#vanta-bg",
+            mouseControls: true, touchControls: true, scale: 1.00, scaleMobile: 1.00,
+            color: 0xa855f7, backgroundColor: 0xfdf4ff, 
+            points: 11.00, maxDistance: 23.00, spacing: 17.00, showDots: true
+          });
+        }
+
+        const cursorDot = document.querySelector('.cursor-dot');
+        const cursorOutline = document.querySelector('.cursor-outline');
+        const container = document.querySelector('.container');
+        const pupils = document.querySelectorAll('.bot-pupil');
+        const eyes = document.querySelectorAll('.bot-eye');
+        const botContainer = document.getElementById('bot-container');
+
+        // 鼠标移动逻辑 (光标、3D 倾斜、眼球追踪)
+        window.addEventListener('mousemove', (e) => {
+          const { clientX: posX, clientY: posY } = e;
+          
+          // 光标
+          cursorDot.style.left = `${posX}px`;
+          cursorDot.style.top = `${posY}px`;
+          cursorOutline.animate({ left: `${posX}px`, top: `${posY}px` }, { duration: 500, fill: "forwards" });
+
+          // 3D 倾斜
+          if (window.innerWidth > 768 && container) {
+            const x = (window.innerWidth / 2 - posX) / 50;
+            const y = (window.innerHeight / 2 - posY) / 50;
+            container.style.transform = `rotateY(${x * -1}deg) rotateX(${y}deg)`;
+            const rect = container.getBoundingClientRect();
+            container.style.setProperty('--mouse-x', `${posX - rect.left}px`);
+            container.style.setProperty('--mouse-y', `${posY - rect.top}px`);
+          }
+
+          // 眼球
+          pupils.forEach((pupil, i) => {
+            const rect = eyes[i].getBoundingClientRect();
+            const angle = Math.atan2(posY - (rect.top + rect.height / 2), posX - (rect.left + rect.width / 2));
+            const dist = Math.min(6, Math.hypot(posX - (rect.left + rect.width / 2), posY - (rect.top + rect.height / 2)));
+            pupil.style.transform = `translate(calc(-50% + ${Math.cos(angle) * dist}px), calc(-50% + ${Math.sin(angle) * dist}px))`;
+          });
+        });
+
+        // 交互反馈
+        const items = document.querySelectorAll('a, button, .nav-badges img, #bot-container');
+        items.forEach(el => {
+          el.addEventListener('mouseenter', () => document.body.classList.add('hovering'));
+          el.addEventListener('mouseleave', () => document.body.classList.remove('hovering'));
+        });
+
+        if(botContainer) {
+          botContainer.addEventListener('click', () => {
+            botContainer.classList.add('dizzy');
+            setTimeout(() => botContainer.classList.remove('dizzy'), 1000);
+          });
+        }
+
+        // 滚动进度
+        window.addEventListener('scroll', () => {
+          const winScroll = document.documentElement.scrollTop;
+          const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+          document.getElementById("progress-bar").style.width = (winScroll / height) * 100 + "%";
         });
       });
     </script>
