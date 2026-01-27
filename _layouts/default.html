@@ -34,41 +34,38 @@
       /* --- 背景层 --- */
       #vanta-bg { position: fixed; z-index: -2; top: 0; left: 0; width: 100%; height: 100%; background: #f3e8ff; }
 
-      /* --- 🌠 流星层 (隐逸多方向版) --- */
+      /* --- 🌠 流星层 (修复版) --- */
       #stars-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; overflow: hidden; }
       .star {
         position: absolute; 
-        width: 150px; height: 1px; /* 🔥 极细线条 */
-        /* 🔥 极淡的颜色：透明 -> 淡紫 -> 透明 */
-        background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(168, 85, 247, 0.4) 50%, rgba(255,255,255,0) 100%);
-        box-shadow: none; /* 去掉发光 */
+        width: 140px; height: 2px; /* 稍微加粗一点点，确保能看见 */
+        /* 颜色调整：从透明 -> 亮紫 -> 透明 */
+        background: linear-gradient(90deg, rgba(255,255,255,0) 0%, #a855f7 50%, rgba(255,255,255,0) 100%);
         opacity: 0;
+        /* 关键：使用 CSS 变量来保持旋转角度 */
+        transform: rotate(var(--angle));
       }
       
-      /* 🔥 分别定义不同流星的位置、角度、速度 🔥 */
-      /* 流星1: 左上往右下 (经典角度) - 速度中等 */
+      /* 定义每颗流星的参数：位置、角度、动画时长 */
       .star:nth-child(1) { 
-        top: 10%; left: -10%; 
-        transform: rotate(-45deg); 
-        animation: shooting 5s linear infinite 2s; 
+        top: 15%; left: -10%; 
+        --angle: -45deg; 
+        animation: shooting 10s linear infinite 0s; /* 立即出现一颗测试 */
       }
-      /* 流星2: 右上往左下 (反方向) - 速度最慢 */
       .star:nth-child(2) { 
-        top: 5%; right: -10%; /* 从右边出来 */
-        transform: rotate(45deg); /* 角度反转 */
-        animation: shooting 12s linear infinite 8s; 
+        top: 5%; right: -10%; 
+        --angle: 45deg; /* 从右往左 */
+        animation: shooting 15s linear infinite 5s; 
       }
-      /* 流星3: 左侧平缓划过 - 速度较快 */
       .star:nth-child(3) { 
         top: 60%; left: -10%; 
-        transform: rotate(-15deg); /* 比较平的角度 */
-        animation: shooting 16s linear infinite 12s; 
+        --angle: -25deg; 
+        animation: shooting 12s linear infinite 8s; 
       }
-      /* 流星4: 顶部陡峭划过 - 速度中等 */
       .star:nth-child(4) { 
         top: -10%; left: 40%; 
-        transform: rotate(-80deg); /* 接近垂直 */
-        animation: shooting 22s linear infinite 5s; 
+        --angle: 80deg; /* 垂直向下 */
+        animation: shooting 18s linear infinite 2s; 
       }
 
       
@@ -83,16 +80,31 @@
         border: 1px solid rgba(255, 255, 255, 0.8); 
         border-top: 4px solid #a855f7; 
         opacity: 0; animation: fadeUp 0.8s ease-out 0.3s forwards; 
+        /* 🚨 关键修复：允许机器人溢出显示 */
+        overflow: visible !important;
       }
+      
+      /* 鼠标追光层 (修正 overflowing 问题) */
       .container::before {
-        content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; border-radius: 20px;
+        content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; 
+        border-radius: 20px;
+        /* 这里加上 hidden 是为了光晕不跑出去，但不影响 container 外部的机器人 */
+        overflow: hidden; 
         background: radial-gradient(800px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(168, 85, 247, 0.06), transparent 40%);
         opacity: 0; transition: opacity 0.5s ease; pointer-events: none;
       }
       .container:hover::before { opacity: 1; }
 
+
       /* --- 🤖 机器人样式 --- */
-      #bot-container { position: absolute; top: -65px; left: 50%; transform: translateX(-50%); width: 120px; height: 70px; z-index: 20; pointer-events: none; }
+      #bot-container { 
+        position: absolute; 
+        top: -65px; /* 向上偏移，趴在容器顶上 */
+        left: 50%; transform: translateX(-50%); 
+        width: 120px; height: 70px; 
+        z-index: 999; /* 确保层级最高 */
+        pointer-events: none; 
+      }
       .bot-head { width: 100px; height: 50px; background: #ffffff; border: 2px solid #e9d5ff; border-bottom: none; border-radius: 50px 50px 20px 20px; margin: 0 auto; position: relative; box-shadow: 0 -5px 15px rgba(168, 85, 247, 0.1); display: flex; justify-content: center; align-items: center; gap: 10px; padding-top: 5px; animation: float-bot 3s ease-in-out infinite; }
       .bot-eye { width: 28px; height: 28px; background: #f3e8ff; border-radius: 50%; border: 1px solid #d8b4fe; position: relative; overflow: hidden; box-shadow: inset 0 2px 5px rgba(0,0,0,0.05); }
       .bot-pupil { width: 14px; height: 14px; background: #7e22ce; border-radius: 50%; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); box-shadow: 0 0 4px rgba(126, 34, 206, 0.6); }
@@ -104,7 +116,7 @@
       /* --- 手机适配 --- */
       @media screen and (max-width: 768px) { 
         .container { width: auto; margin: 15px; padding: 30px 15px; border-radius: 12px; } 
-        #bot-container { display: none; }
+        #bot-container { display: none; } /* 手机隐藏机器人 */
         body { font-size: 16px; } 
         h1 { font-size: 1.45rem !important; line-height: 1.3; } 
       }
@@ -155,12 +167,12 @@
       @keyframes blink { 0%, 48%, 52%, 100% { height: 0%; } 50% { height: 100%; } }
       @keyframes pulse-antenna { 0% { box-shadow: 0 0 0 0 rgba(168, 85, 247, 0.7); } 70% { box-shadow: 0 0 0 5px rgba(168, 85, 247, 0); } 100% { box-shadow: 0 0 0 0 rgba(168, 85, 247, 0); } }
       
-      /* 🌠 流星动画核心 (通用) */
+      /* 🌠 修正后的流星动画 */
       @keyframes shooting {
-        0% { transform: translateX(0); opacity: 0; }
-        10% { opacity: 0.3; } /* 🔥 最高不透明度只有 0.3，非常淡 */
+        0% { transform: rotate(var(--angle)) translateX(0); opacity: 0; }
+        10% { opacity: 0.8; } /* 不透明度提高到 0.8，保证可见 */
         70% { opacity: 0; }
-        100% { transform: translateX(1500px); opacity: 0; } /* 飞得更远 */
+        100% { transform: rotate(var(--angle)) translateX(1500px); opacity: 0; }
       }
     </style>
 
@@ -212,20 +224,25 @@
         const eyes = document.querySelectorAll('.bot-eye');
         
         window.addEventListener('mousemove', (e) => {
+           // 🤖 机器人眼球追踪逻辑
            pupils.forEach((pupil, index) => {
              const eye = eyes[index];
              const rect = eye.getBoundingClientRect();
              const eyeCenterX = rect.left + rect.width / 2;
              const eyeCenterY = rect.top + rect.height / 2;
              const angle = Math.atan2(e.clientY - eyeCenterY, e.clientX - eyeCenterX);
+             // 限制眼珠移动范围
              const distance = Math.min(6, Math.hypot(e.clientX - eyeCenterX, e.clientY - eyeCenterY));
              pupil.style.transform = `translate(calc(-50% + ${Math.cos(angle) * distance}px), calc(-50% + ${Math.sin(angle) * distance}px))`;
            });
+           
+           // 🔦 光晕逻辑
            const rect = container.getBoundingClientRect();
            container.style.setProperty('--mouse-x', `${e.clientX - rect.left}px`);
            container.style.setProperty('--mouse-y', `${e.clientY - rect.top}px`);
         });
 
+        // 🌊 导航栏波浪逻辑
         const links = Array.from(document.querySelectorAll('.nav-badges a'));
         links.forEach((link, clickedIndex) => {
           link.addEventListener('click', function(e) {
