@@ -38,6 +38,8 @@
 > [!NOTE]
 > **Key Innovation:** The system integrates two high-density PCBs, an anisotropic elastomeric contact interface, and a lightweight pedestal housing into a fully integrated, headstage-ready solution.
 
+---
+
 ### 📊 Quick Specifications
 
 <div align="center">
