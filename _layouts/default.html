@@ -3,161 +3,53 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    
     <title>{{ page.title }}</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=JetBrains+Mono&display=swap" rel="stylesheet">
     
     <style>
-      /* --- 1. 全局基础 --- */
-      body {
-        margin: 0;
-        padding: 0;
-        background-color: #f8fafc; /* 浅蓝灰底色 */
-        color: #334155; /* 深灰字 */
-        font-family: 'Inter', -apple-system, sans-serif;
-        line-height: 1.6;
-        -webkit-font-smoothing: antialiased; /* 让手机字体更清晰 */
-      }
-
-      /* --- 2. 容器布局 (关键修改点) --- */
-      .container {
-        /* 电脑端默认样式 */
-        max-width: 860px;
-        margin: 60px auto; 
-        padding: 60px 80px; /* 大留白 */
-        background: #ffffff;
-        border-radius: 12px;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-        border-top: 4px solid #3b82f6; /* 顶部蓝条 */
-        position: relative;
-        z-index: 10;
-      }
-
-      /* --- 3. 手机端适配 (Media Query) --- */
-      /* 当屏幕宽度小于 768px (手机/平板) 时，强制执行下面的样式 */
-      @media screen and (max-width: 768px) {
-        .container {
-          width: auto;           /* 宽度自动 */
-          margin: 15px;          /* 外边距变小 */
-          padding: 30px 20px;    /* 内边距大幅减小 (左右只留20px) */
-          border-radius: 8px;    /* 圆角变小 */
-        }
-        
-        body {
-          font-size: 16px;       /* 手机上保证字号够大 */
-        }
-
-        h1 {
-          font-size: 1.75rem;    /* 标题稍微改小一点，防止换行太丑 */
-        }
-        
-        ul, ol {
-          padding-left: 20px;    /* 列表缩进减小 */
-        }
-      }
-
-      /* --- 4. 排版细节 --- */
-      h1 {
-        font-size: 2.25rem;
-        font-weight: 700;
-        color: #0f172a;
-        margin-bottom: 1.5rem;
-        letter-spacing: -0.02em;
+      /* --- 全局 --- */
+      body { margin: 0; padding: 0; background-color: #f8fafc; color: #334155; font-family: 'Inter', -apple-system, sans-serif; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+      
+      /* --- 容器 (电脑端) --- */
+      .container { max-width: 860px; margin: 60px auto; padding: 60px 80px; background: #ffffff; border-radius: 12px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05); border-top: 4px solid #3b82f6; position: relative; z-index: 10; }
+      
+      /* --- 手机端适配 (关键) --- */
+      @media screen and (max-width: 768px) { 
+        .container { width: auto; margin: 15px; padding: 30px 20px; border-radius: 8px; } 
+        body { font-size: 16px; } 
+        h1 { font-size: 1.75rem; } 
+        pre { font-size: 0.85rem; } 
       }
       
+      /* --- 排版 --- */
+      h1 { font-size: 2.25rem; font-weight: 700; color: #0f172a; margin-bottom: 1.5rem; letter-spacing: -0.02em; }
       h2 { color: #1e293b; margin-top: 2rem; font-weight: 600; }
       h3 { color: #334155; margin-top: 1.5rem; font-weight: 600; }
-
       a { color: #2563eb; text-decoration: none; font-weight: 500; }
       
-      /* --- 5. 图片与徽章 (智能混合模式) --- */
-      img {
-        max-width: 100%;
-        height: auto;
-        border-radius: 6px;
-        display: inline-block; /* 允许并排 */
-        vertical-align: middle;
-        margin: 4px 2px; /* 稍微留点空隙 */
-      }
-      
-      /* 针对大图的容器优化 */
+      /* --- 图片与徽章 (允许并排) --- */
+      img { max-width: 100%; height: auto; border-radius: 6px; display: inline-block; vertical-align: middle; margin: 4px 2px; }
       p { text-align: left; margin-bottom: 1.2rem; }
-
-      /* --- 6. 代码块 (防止手机撑破屏幕) --- */
-      pre {
-        background: #f1f5f9;
-        padding: 15px;
-        border-radius: 8px;
-        overflow-x: auto; /* 手机上代码太长可以左右滑动 */
-        border: 1px solid #e2e8f0;
-        font-size: 0.9rem;
-      }
-      code {
-        font-family: 'JetBrains Mono', monospace;
-        background: rgba(0,0,0,0.05);
-        padding: 2px 4px;
-        border-radius: 4px;
-        color: #0369a1;
-      }
-      pre code { background: none; padding: 0; color: inherit; }
-
-      /* --- 7. 粒子背景 --- */
-      #particles-js {
-        position: fixed;
-        width: 100%;
-        height: 100%;
-        top: 0;
-        left: 0;
-        z-index: 0;
-      }
-    </style>
-  </head>
-
-  <body>
-
-    <div id="particles-js"></div>
-
-    <div class="container">
-      <section id="main_content">
-        {{ content }}
-      </section>
       
-      <footer style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #f1f5f9; text-align: center; color: #94a3b8; font-size: 0.85rem;">
-        <p>PEDAL-256 • Open Source Neural Interfaces</p>
-      </footer>
-    </div>
+      /* --- 代码块 --- */
+      pre { background: #f1f5f9; padding: 15px; border-radius: 8px; overflow-x: auto; border: 1px solid #e2e8f0; font-size: 0.9rem; }
+      code { font-family: 'JetBrains Mono', monospace; background: rgba(0,0,0,0.05); padding: 2px 4px; border-radius: 4px; color: #0369a1; }
+      pre code { background: none; padding: 0; color: inherit; }
+      
+      /* --- 背景层 --- */
+      #particles-js { position: fixed; width: 100%; height: 100%; top: 0; left: 0; z-index: 0; }
+    </style>
 
-    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
-    <script>
-      particlesJS("particles-js", {
-        "particles": {
-          "number": { "value": 30 }, /* 手机性能考虑，粒子稍微减少 */
-          "color": { "value": "#cbd5e1" },
-          "shape": { "type": "circle" },
-          "opacity": { "value": 0.5 },
-          "size": { "value": 3 },
-          "line_linked": {
-            "enable": true,
-            "distance": 150,
-            "color": "#cbd5e1",
-            "opacity": 0.4,
-            "width": 1
-          },
-          "move": { "enable": true, "speed": 1 }
-        },
-        "interactivity": {
-          "detect_on": "canvas",
-          "events": {
-            "onhover": { "enable": true, "mode": "grab" },
-            "onclick": { "enable": true, "mode": "push" }
-          },
-          "modes": {
-             "grab": { "distance": 140, "line_linked": { "opacity": 0.8, "color": "#3b82f6" } }
-          }
-        },
-        "retina_detect": true
-      });
-    </script>
-  </body>
-</html>
+    <link rel="apple-touch-icon" sizes="180x180" href="Images/icon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="Images/icon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="Images/icon/favicon-16x16.png">
+    <link rel="icon" href="Images/icon/favicon.ico">
+    <link rel="manifest" href="Images/icon/site.webmanifest">
+    <meta name="theme-color" content="#ffffff">
+
+    <link rel="stylesheet" href="assets/css/academicons.css"/>
+
+    <script type="text/x-mathjax-config"> MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: "all" } } }); </
