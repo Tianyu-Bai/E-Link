@@ -19,7 +19,7 @@
     <img src="https://img.shields.io/badge/Verified-256ch-FFA500?style=flat-square" alt="Verified" />
     <a href="https://tianyu-bai.github.io/"><img src="https://img.shields.io/badge/Website-Tianyu%20Bai-0077B5?style=flat-square&logo=github&logoColor=white" alt="Website"></a>
     <a href="https://www.linkedin.com/in/tianyubai/"><img src="https://img.shields.io/badge/LinkedIn-Profile-0A66C2?style=flat-square&logo=linkedin&logoColor=white" alt="LinkedIn"></a>
-     <a href="https://github.com/tianyu-bai/PEDAL-256/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-MIT-A31F34?style=flat-square&logo=opensourceinitiative&logoColor=white" alt="License"></a>
+     <a href="https://github.com/tianyu-bai/Elink-256/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-MIT-A31F34?style=flat-square&logo=opensourceinitiative&logoColor=white" alt="License"></a>
   </div>
 
   <br />
@@ -48,7 +48,7 @@
     <thead>
       <tr style="background-color: #f6f8fa; border-bottom: 2px solid #e1e4e8;">
         <th style="padding: 10px; border: 1px solid #e1e4e8;">Specification</th>
-        <th style="padding: 10px; border: 1px solid #e1e4e8;">PEDAL-256_V1.0</th>
+        <th style="padding: 10px; border: 1px solid #e1e4e8;">ELINK-256_V1.0</th>
       </tr>
     </thead>
     <tbody>
@@ -92,7 +92,7 @@
   Textured sidewalls for superior adhesion with dental cement or UV-curable resin.
 <div align="center">
   <img src="Videos/Animation%20repeat.gif" 
-       alt="PEDAL-256 Animation GIF" 
+       alt="ELINK-256 Animation GIF" 
        class="gif-blend" 
        width="500" 
        style="border-radius: 6px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); display: block;">
@@ -139,7 +139,7 @@
   <br>
   <img src="Images/001.PNG" alt="PEDAL-256 Exploded View" width="750">
   <p style="margin-top: 5px; font-size: 0.95em; color: #333;">
-    <b>Mating Dynamics (left) and Structural Breakdown (right) of the PEDAL-256</b>
+    <b>Mating Dynamics (left) and Structural Breakdown (right) of the Elink-256</b>
   </p>
 </div>
 
@@ -232,7 +232,7 @@ The hardware designs and visual assets in this repository correspond directly to
 
 For academic use, please cite this repository until our formal publication is released. We also welcome feedback and collaboration from the neuroengineering community!
 
-* **Current Reference:** PEDAL-256 Open Source Hardware (V1.0), MINE Lab, Dartmouth College.
+* **Current Reference:** ELINK-256 Open Source Hardware (V1.0), MINE Lab, Dartmouth College.
 
 ---
 
