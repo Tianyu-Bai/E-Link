@@ -223,16 +223,17 @@ This work is currently **under review**.
 
 The hardware designs and visual assets in this repository correspond directly to the system described in our submitted manuscript. To maintain the integrity of the peer-review process:
 * **Full Citation:** Will be updated here upon formal acceptance.
-* **Inquiries:** For access to the full manuscript or technical design files, please contact **Tianyu Bai(Tianyu.Bai.TH@Dartmouth.edu)** or **Prof. Hui Fang(Hui.Fang@Dartmouth.edu)**.
+* **Inquiries:** For access to the full manuscript or technical design files, please contact **Tianyu Bai(Tianyu.Bai.TH@Dartmouth.edu)**
+  or **Prof. Hui Fang(Hui.Fang@Dartmouth.edu)**.
 * **Full Paper:** *Coming Soon.*
 
 ---
 
-## 📑 Citation & Feedback
+## 📑 Citation & DOI
 
-For academic use, please cite this repository until our formal publication is released. We also welcome feedback and collaboration from the neuroengineering community!
-
-* **Current Reference:** ELINK-256 Open Source Hardware (V1.0), MINE Lab, Dartmouth College.
+If you utilize these designs or assets in your research, please cite this repository using the following Digital Object Identifier (DOI) provided by Zenodo:
+* **Current Reference:** T. Bai, et al., "E-Link," v1.0, MINE Lab, Dartmouth College, 2026. DOI:10.5281/zenodo.18440105
+* We also welcome feedback and collaboration from the neuroengineering community!
 
 ---
 
