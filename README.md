@@ -226,7 +226,8 @@ The hardware designs and visual assets in this repository correspond directly to
 * **Full Citation**: A permanent link to the final paper will be updated here immediately upon formal acceptance.
 * **Preprint/Full Paper**: *Coming Soon.*
   
-* **We also welcome feedback and collaboration from the neuroengineering community!**
+* We welcome feedback and collaboration from the neuroengineering community!
+
 * **Inquiries**: For access to the technical design files or questions, please contact:
     * **Tianyu Bai** ([Tianyu.Bai.TH@Dartmouth.edu](mailto:Tianyu.Bai.TH@Dartmouth.edu))
     * **Prof. Hui Fang** ([Hui.Fang@Dartmouth.edu](mailto:Hui.Fang@Dartmouth.edu))
