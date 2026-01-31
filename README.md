@@ -139,7 +139,7 @@
   <br>
   <img src="Images/001.PNG" alt="PEDAL-256 Exploded View" width="750">
   <p style="margin-top: 5px; font-size: 0.95em; color: #333;">
-    <b>Mating Dynamics (left) and Structural Breakdown (right) of the Elink-256</b>
+    <b>Mating Dynamics (left) and Structural Breakdown (right) of the E-Link(256) </b>
   </p>
 </div>
 
