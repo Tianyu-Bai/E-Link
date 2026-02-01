@@ -268,7 +268,7 @@ Special thanks to the members of the **MINE Lab** and the **Thayer School of Eng
 
 ## 📜 License
 
-Copyright © 2026 Tianyu Bai</font>   <a href="https://tianyu-bai.github.io/"><img src="https://img.shields.io/badge/Website-Tianyu%20Bai-0077B5?style=flat-square&logo=github&logoColor=white" alt="Website"></a>
+Copyright © 2026 Tianyu Bai  <a href="https://tianyu-bai.github.io/"><img src="https://img.shields.io/badge/Website-Tianyu%20Bai-0077B5?style=flat-square&logo=github&logoColor=white" alt="Website"></a>
 
 This project is open-source and available under the **MIT License**. Click the badge below for full license details.
 
