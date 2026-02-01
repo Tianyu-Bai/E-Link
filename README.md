@@ -229,8 +229,8 @@ The hardware designs and visual assets in this repository correspond directly to
 * We welcome feedback and collaboration from the neuroengineering community!
 
 * **Inquiries**: For access to the technical design files or questions, please contact:
-    * **Tianyu Bai** ([Tianyu.Bai.TH@Dartmouth.edu](mailto:Tianyu.Bai.TH@Dartmouth.edu))
-    * **Prof. Hui Fang** ([Hui.Fang@Dartmouth.edu](mailto:Hui.Fang@Dartmouth.edu))
+    * **Tianyu Bai** ([<font color="#60a5fa">Tianyu.Bai.TH@Dartmouth.edu</font>](mailto:Tianyu.Bai.TH@Dartmouth.edu))
+    * **Prof. Hui Fang** ([<font color="#60a5fa">Hui.Fang@Dartmouth.edu</font>](mailto:Hui.Fang@Dartmouth.edu))
 
 ---
 
