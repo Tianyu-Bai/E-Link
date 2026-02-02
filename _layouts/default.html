@@ -70,24 +70,22 @@
     /* --- 4. 布局包裹器 --- */
     .layout-wrapper {
       position: relative; max-width: 860px; 
-      /* [修复1] 增加顶部距离，给机器人留出空间，防止被切头 */
+      /* PC端默认顶部边距 (给机器人留位置) */
       margin: 140px auto 60px; 
       z-index: 10;
       perspective: 1000px;
     }
  
-    /* --- 5. 机器人核心 (CSS 状态管理) --- */
+    /* --- 5. 机器人核心 (独立于容器，直接定位) --- */
     #bot-container { 
-      /* [默认状态 - PC顶部] 使用 Absolute 跟随页面滚动 */
+      /* [默认状态 - PC顶部] Absolute 相对于 body */
       position: absolute; 
-      /* [修复2] 调整初始位置，确保在容器上方 */
-      top: -65px; 
+      top: 70px; /* 距离页面顶部 */
       left: 50%; 
       transform: translateX(-50%); 
       width: 120px; height: 70px; 
       z-index: 9999; cursor: pointer; 
       opacity: 0; 
-      /* [修复3] 移除延迟，直接显示，防止看不见 */
       animation: botEnter 0.5s ease-out forwards;
       transition: all 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55); 
     }
@@ -112,11 +110,18 @@
     #bot-container.hint-removed .pulse-ring { opacity: 0; animation: none; }
 
     .bot-head { width: 100px; height: 50px; background: #ffffff; border: 2px solid #e0e7ff; border-bottom: none; border-radius: 50px 50px 20px 20px; margin: 0 auto; position: relative; box-shadow: 0 -5px 15px rgba(59, 130, 246, 0.15); display: flex; justify-content: center; align-items: center; gap: 10px; padding-top: 5px; animation: float-bot 3s ease-in-out infinite; }
-    .bot-eye { width: 28px; height: 28px; background: #bfdbfe; border-radius: 50%; border: 1px solid #93c5fd; position: relative; overflow: hidden; }
-    .bot-pupil { width: 14px; height: 14px; background: #1e3a8a; border-radius: 50%; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+    
+    /* 眼睛 & 微笑特效 */
+    .bot-eye { width: 28px; height: 28px; background: #bfdbfe; border-radius: 50%; border: 1px solid #93c5fd; position: relative; overflow: hidden; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+    .bot-pupil { width: 14px; height: 14px; background: #1e3a8a; border-radius: 50%; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); transition: opacity 0.2s; }
     .bot-lid { position: absolute; top: 0; left: 0; width: 100%; height: 0%; background: #ffffff; z-index: 10; animation: blink 4s infinite; }
+    
+    #bot-container.speaking .bot-eye { height: 12px; border-radius: 50% 50% 0 0; background: transparent; border: 3px solid #3b82f6; border-bottom: none; box-shadow: none; margin-top: 5px; }
+    #bot-container.speaking .bot-pupil, #bot-container.speaking .bot-lid { opacity: 0; }
+
+    /* 天线 & 呼吸灯 */
     .bot-antenna { position: absolute; top: -25px; left: 50%; transform: translateX(-50%); width: 2px; height: 25px; background: #e0e7ff; }
-    .bot-antenna::after { content: ''; position: absolute; top: -6px; left: -3px; width: 8px; height: 8px; background: #3b82f6; border-radius: 50%; animation: pulse-antenna 2s infinite; }
+    .bot-antenna::after { content: ''; position: absolute; top: -6px; left: -3px; width: 8px; height: 8px; border-radius: 50%; animation: pulse-antenna-breath 2s infinite ease-in-out; }
  
     /* --- 机器人说话气泡 --- */
     #bot-speech {
@@ -153,15 +158,12 @@
     }
     #rpg-dialogue.active { opacity: 1; transform: translateX(-50%) translateY(0); pointer-events: auto; }
     
-    /* PC端：当机器人固定在底部时，对话框往上弹 */
     #bot-container.fixed-mode #rpg-dialogue {
         top: auto; bottom: 80px; 
-        left: auto; right: 0; /* 对齐右侧，防止出界 */
+        left: auto; right: 0; 
         transform: translateY(20px);
     }
-    #bot-container.fixed-mode #rpg-dialogue.active {
-        transform: translateY(0);
-    }
+    #bot-container.fixed-mode #rpg-dialogue.active { transform: translateY(0); }
 
     #rpg-text { color: #bfdbfe; font-size: 0.9rem; min-height: 40px; line-height: 1.5; }
     #rpg-cursor { display: inline-block; width: 8px; height: 14px; background: #3b82f6; vertical-align: middle; animation: blink 1s infinite; }
@@ -211,18 +213,21 @@
     @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     @keyframes float-bot { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
     @keyframes blink { 0%, 48%, 52%, 100% { height: 0%; } 50% { height: 100%; } }
-    @keyframes pulse-antenna { 0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7); } 70% { box-shadow: 0 0 0 5px rgba(59, 130, 246, 0); } 100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); } }
     @keyframes botEnter { from { opacity: 0; transform: translateX(-50%) translateY(20px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
     @keyframes blink-cursor { from, to { opacity: 1; } 50% { opacity: 0; } }
     @keyframes pulse-bg { 0% { opacity: 0.7; } 50% { opacity: 1; } 100% { opacity: 0.7; } }
     @keyframes ripple-wave { 0% { transform: scale(1); } 30% { transform: scale(1.15) translateY(-5px); } 100% { transform: scale(1); } }
     @keyframes pulse-ring-anim { 0% { transform: translate(-50%, -50%) scale(0.8); opacity: 0.6; } 100% { transform: translate(-50%, -50%) scale(1.4); opacity: 0; } }
+    @keyframes pulse-antenna-breath { 0%, 100% { background: #3b82f6; box-shadow: 0 0 5px #3b82f6; } 50% { background: #93c5fd; box-shadow: 0 0 15px #60a5fa, 0 0 8px #ffffff; } }
  
-    /* --- 手机端适配 --- */
+    /* --- [关键修复] 手机端适配 --- */
     @media (max-width: 768px) { 
       .cursor-dot, .cursor-outline { display: none; } 
       
-      /* 手机上强制固定在右下角 */
+      /* 1. 消除顶部大空隙 */
+      .layout-wrapper { margin-top: 40px !important; }
+
+      /* 2. 手机端机器人强制固定右下角 */
       #bot-container { 
         position: fixed !important;
         top: auto !important; left: auto !important;
@@ -232,21 +237,15 @@
         animation: none !important;
       }
 
-      /* [修复4] 手机端对话框强制居中显示，防止越界 */
+      /* 3. 手机端对话框强制居中显示 */
       #bot-container #rpg-dialogue {
-        position: fixed !important; /* 脱离机器人定位，使用窗口定位 */
-        top: auto !important; 
-        bottom: 100px !important; /* 在机器人上方 */
-        left: 50% !important; 
-        right: auto !important;
+        position: fixed !important;
+        top: auto !important; bottom: 100px !important;
+        left: 50% !important; right: auto !important;
         transform: translateX(-50%) !important;
-        width: 90vw !important; /* 宽度限制在屏幕内 */
-        max-width: 400px;
+        width: 90vw !important; max-width: 400px;
       }
-      /* 激活时保持居中 */
-      #bot-container #rpg-dialogue.active {
-        transform: translateX(-50%) !important;
-      }
+      #bot-container #rpg-dialogue.active { transform: translateX(-50%) !important; }
 
       .container { padding: 30px 20px; } 
       #main_content { overflow-x: auto; }
@@ -260,22 +259,22 @@
   <div id="progress-bar"></div>
   <div id="vanta-bg"></div>
  
-  <div class="layout-wrapper">
-    <div id="bot-container" title="Chat with me!">
-      <div class="pulse-ring"></div>
-      <div id="bot-speech">System Online.</div>
-      <div id="rpg-dialogue">
-        <div class="rpg-close">×</div>
-        <div><span id="rpg-text">Initializing...</span><span id="rpg-cursor"></span></div>
-        <div id="rpg-options"></div>
-      </div>
-      <div class="bot-antenna"></div>
-      <div class="bot-head">
-        <div class="bot-eye"><div class="bot-pupil"></div><div class="bot-lid"></div></div>
-        <div class="bot-eye"><div class="bot-pupil"></div><div class="bot-lid"></div></div>
-      </div>
+  <div id="bot-container" title="Chat with me!">
+    <div class="pulse-ring"></div>
+    <div id="bot-speech">System Online.</div>
+    <div id="rpg-dialogue">
+      <div class="rpg-close">×</div>
+      <div><span id="rpg-text">Initializing...</span><span id="rpg-cursor"></span></div>
+      <div id="rpg-options"></div>
     </div>
+    <div class="bot-antenna"></div>
+    <div class="bot-head">
+      <div class="bot-eye"><div class="bot-pupil"></div><div class="bot-lid"></div></div>
+      <div class="bot-eye"><div class="bot-pupil"></div><div class="bot-lid"></div></div>
+    </div>
+  </div>
 
+  <div class="layout-wrapper">
     <div class="container">
       <section id="main_content">
         {{ content }}
@@ -355,13 +354,9 @@
       const rpgClose = document.querySelector('.rpg-close');
       let typeTimer = null;
 
-      // ============================================
-      // >>> 逻辑更新：PC端滚动切换机器人位置 <<<
-      // ============================================
       let mouseX = window.innerWidth / 2;
       let mouseY = 100;
 
-      // 1. 鼠标监听仅用于光标和眼神，不再移动机器人本体
       window.addEventListener('mousemove', (e) => {
         mouseX = e.clientX;
         mouseY = e.clientY;
@@ -387,14 +382,13 @@
         });
       });
 
-      // 2. 滚动监听：控制机器人是否“固定”在右下角
       window.addEventListener('scroll', () => {
         const scrolled = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
         const pb = document.getElementById("progress-bar");
         if(pb) pb.style.width = scrolled + "%";
 
+        // PC端滚动切换位置
         if(botContainer && window.innerWidth > 768) {
-          // 当滚动超过 200px 时，切换到固定模式
           if(window.scrollY > 200) {
             botContainer.classList.add('fixed-mode');
           } else {
@@ -402,10 +396,6 @@
           }
         }
       });
-
-      // ============================================
-      // >>> 对话与交互逻辑 <<<
-      // ============================================
 
       function botSay(text, duration = 2000) {
         if(!botSpeech || !botContainer || rpgDialogue.classList.contains('active')) return; 
@@ -465,7 +455,6 @@
         if(rpgDialogue.classList.contains('active') && !botContainer.contains(e.target)) closeDialogue();
       });
 
-      // 引导语
       setTimeout(() => botSay("Click me for guide!", 4000), 1000);
 
       const badges = document.querySelectorAll('.nav-badges a');
