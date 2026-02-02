@@ -126,16 +126,7 @@
      }
      .nav-badges a:hover img { animation: float-hover 2s ease-in-out infinite; box-shadow: 0 8px 20px rgba(59, 130, 246, 0.35); transform: scale(1.1); }
      .nav-badges img.rippling { animation: ripple-wave 0.5s forwards; }
-           
-    <svg style="position: absolute; width: 0; height: 0;">
-  <filter id="remove-white" color-interpolation-filters="sRGB">
-    <feColorMatrix type="matrix" 
-      values="1 0 0 0 0
-              0 1 0 0 0
-              0 0 1 0 0
-              -1.5 -1.5 -1.5 4.5 0" />
-  </filter>
-</svg>
+       
      /* --- 动画库 --- */
      @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
      @keyframes float-bot { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
