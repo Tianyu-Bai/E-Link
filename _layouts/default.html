@@ -76,12 +76,11 @@
       perspective: 1000px;
     }
  
-    /* --- 5. 机器人核心 (独立于容器) --- */
+    /* --- 5. 机器人核心 --- */
     #bot-container { 
       /* [默认状态 - PC顶部] */
       position: absolute; 
-      top: 70px; 
-      left: 50%; 
+      top: 70px; left: 50%; 
       transform: translateX(-50%); 
       width: 120px; height: 70px; 
       z-index: 9999; cursor: pointer; 
@@ -111,33 +110,26 @@
 
     .bot-head { width: 100px; height: 50px; background: #ffffff; border: 2px solid #e0e7ff; border-bottom: none; border-radius: 50px 50px 20px 20px; margin: 0 auto; position: relative; box-shadow: 0 -5px 15px rgba(59, 130, 246, 0.15); display: flex; justify-content: center; align-items: center; gap: 10px; padding-top: 5px; animation: float-bot 3s ease-in-out infinite; }
     
-    /* 眼睛基础样式 */
+    /* 眼睛 & 灵动微笑特效 */
     .bot-eye { 
-      width: 28px; height: 28px; 
-      background: #bfdbfe; 
+      width: 28px; height: 28px; background: #bfdbfe; 
       border-radius: 50%; border: 1px solid #93c5fd; 
       position: relative; overflow: hidden; 
-      /* 使用弹性贝塞尔曲线，让变形更Q弹 */
       transition: all 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55); 
     }
     .bot-pupil { width: 14px; height: 14px; background: #1e3a8a; border-radius: 50%; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); transition: opacity 0.2s; }
     .bot-lid { position: absolute; top: 0; left: 0; width: 100%; height: 0%; background: #ffffff; z-index: 10; animation: blink 4s infinite; }
     
-    /* --- [升级版] 灵动笑眼特效 --- */
+    /* 说话时的眯眯眼 + 果冻跳动 */
     #bot-container.speaking .bot-eye { 
-      height: 10px; /* 压得更扁一点，更像笑眼 */
-      width: 32px; /* 稍微变宽一点 */
-      border-radius: 50% 50% 0 0; /* 倒U形 */
+      height: 10px; width: 32px; /* 变扁变宽 */
+      border-radius: 50% 50% 0 0; 
       background: transparent; 
-      border: 3px solid #3b82f6; 
-      border-bottom: none; 
-      box-shadow: none; 
-      margin-top: 6px;
-      /* 核心：添加快乐跳动动画 */
-      animation: happy-eye-bounce 0.4s ease-in-out infinite alternate;
+      border: 3px solid #3b82f6; border-bottom: none; 
+      box-shadow: none; margin-top: 6px;
+      animation: happy-eye-bounce 0.4s ease-in-out infinite alternate; /* Q弹跳动 */
     }
-    #bot-container.speaking .bot-pupil, 
-    #bot-container.speaking .bot-lid { opacity: 0; }
+    #bot-container.speaking .bot-pupil, #bot-container.speaking .bot-lid { opacity: 0; }
 
     /* 天线 & 呼吸灯 */
     .bot-antenna { position: absolute; top: -25px; left: 50%; transform: translateX(-50%); width: 2px; height: 25px; background: #e0e7ff; }
@@ -178,6 +170,7 @@
     }
     #rpg-dialogue.active { opacity: 1; transform: translateX(-50%) translateY(0); pointer-events: auto; }
     
+    /* PC端：底部固定模式下，对话框向上弹 */
     #bot-container.fixed-mode #rpg-dialogue {
         top: auto; bottom: 80px; 
         left: auto; right: 0; 
@@ -239,19 +232,15 @@
     @keyframes ripple-wave { 0% { transform: scale(1); } 30% { transform: scale(1.15) translateY(-5px); } 100% { transform: scale(1); } }
     @keyframes pulse-ring-anim { 0% { transform: translate(-50%, -50%) scale(0.8); opacity: 0.6; } 100% { transform: translate(-50%, -50%) scale(1.4); opacity: 0; } }
     @keyframes pulse-antenna-breath { 0%, 100% { background: #3b82f6; box-shadow: 0 0 5px #3b82f6; } 50% { background: #93c5fd; box-shadow: 0 0 15px #60a5fa, 0 0 8px #ffffff; } }
-    
     /* [新增] 眼睛快乐跳动动画 */
-    @keyframes happy-eye-bounce {
-        0% { transform: translateY(0); }
-        100% { transform: translateY(-3px) scaleX(1.1); }
-    }
+    @keyframes happy-eye-bounce { 0% { transform: translateY(0); } 100% { transform: translateY(-3px) scaleX(1.1); } }
  
-    /* --- [关键修复] 手机端适配 (极限拉宽版) --- */
+    /* --- [完美手机端适配] --- */
     @media (max-width: 768px) { 
       .cursor-dot, .cursor-outline { display: none; } 
-      
       .layout-wrapper { margin-top: 40px !important; }
 
+      /* 机器人固定在右下角 */
       #bot-container { 
         display: block !important;
         position: fixed !important;
@@ -262,21 +251,23 @@
         animation: none !important;
       }
 
-      /* 对话框极限宽度设置 */
+      /* [关键修正] 对话框使用居中定位 + 94vw 宽度 */
       #bot-container #rpg-dialogue {
-        position: fixed !important;
+        position: fixed !important; /* 相对于窗口 */
         top: auto !important; 
-        bottom: 100px !important;
-        /* 左右仅留 2.5vw 的极窄边距 */
-        left: 2.5vw !important; 
-        right: auto !important;
-        /* 强制宽度为 95% 屏幕宽度 */
-        width: 95vw !important; 
+        bottom: 100px !important; /* 在机器人上方 */
+        left: 50% !important; /* 锚定中心 */
+        width: 94vw !important; /* 94% 屏幕宽度 */
         max-width: none !important; /* 取消限制 */
-        transform: translateX(0) translateY(10px) !important; /* 取消居中偏移，直接靠左定位 */
+        right: auto !important;
+        
+        /* 初始状态：居中 + 稍微向下偏移 */
+        transform: translateX(-50%) translateY(10px) !important; 
       }
+      
+      /* 激活状态：居中 + 正常显示 */
       #bot-container #rpg-dialogue.active {
-        transform: translateX(0) translateY(0) !important;
+        transform: translateX(-50%) translateY(0) !important;
       }
 
       .container { padding: 30px 20px; } 
