@@ -20,7 +20,7 @@
       margin: 0; padding: 0; color: #e0e7ff; 
       font-family: 'Inter', -apple-system, sans-serif; 
       line-height: 1.6; overflow-x: hidden; 
-      cursor: none;
+      cursor: none; 
       scrollbar-width: thin; scrollbar-color: #3b82f6 transparent;
     }
     @media (pointer: coarse) { body { cursor: auto; } }
@@ -69,108 +69,71 @@
  
     /* --- 4. 布局包裹器 --- */
     .layout-wrapper {
-      position: relative; max-width: 860px; margin: 100px auto 60px; z-index: 10;
+      position: relative; max-width: 860px; margin: 60px auto 60px; z-index: 10;
       perspective: 1000px;
     }
  
-    /* --- 5. 机器人核心 --- */
+    /* --- 5. 机器人核心 (跟随鼠标) --- */
     #bot-container { 
-      position: absolute; top: -45px; left: 50%; 
-      transform: translateX(-50%); 
+      position: fixed; 
+      top: 0; left: 0; 
       width: 120px; height: 70px; 
       z-index: 9999; cursor: pointer; 
       opacity: 0; 
-      animation: botEnter 0.8s ease-out 0.8s forwards; 
-      transition: transform 0.3s ease; 
+      transition: opacity 0.5s ease;
     }
     
-    /* [新增] 呼吸光环：暗示我是可点击的 */
+    /* 蓝色呼吸光环：代替红色感叹号，更加科技感 */
     .pulse-ring {
       position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
       width: 100px; height: 100px;
       border-radius: 50%;
       border: 2px solid rgba(59, 130, 246, 0.6);
-      opacity: 0;
-      z-index: -1;
+      opacity: 0; z-index: -1;
       animation: pulse-ring-anim 3s infinite;
       pointer-events: none;
     }
+    /* 点击后移除光环 */
+    #bot-container.hint-removed .pulse-ring { opacity: 0; animation: none; }
 
-    /* [新增] 任务标记 (!) */
-    .bot-hint {
-      position: absolute;
-      top: -35px; /* 在天线旁边 */
-      right: 15px; 
-      width: 24px; height: 24px;
-      background: #ef4444; /* 醒目的红色提醒 */
-      color: white;
-      border-radius: 50%;
-      font-family: 'JetBrains Mono', monospace;
-      font-weight: bold;
-      font-size: 16px;
-      display: flex; justify-content: center; align-items: center;
-      box-shadow: 0 0 10px rgba(239, 68, 68, 0.6);
-      animation: bounce-hint 1.5s infinite;
-      z-index: 10001;
-      opacity: 1;
-      transition: opacity 0.3s;
-    }
-    /* 点击后隐藏提示 */
-    #bot-container.hint-removed .bot-hint,
-    #bot-container.hint-removed .pulse-ring {
-      opacity: 0; animation: none;
-    }
+    /* 删除了 .bot-hint (红色感叹号) 的样式 */
 
     .bot-head { width: 100px; height: 50px; background: #ffffff; border: 2px solid #e0e7ff; border-bottom: none; border-radius: 50px 50px 20px 20px; margin: 0 auto; position: relative; box-shadow: 0 -5px 15px rgba(59, 130, 246, 0.15); display: flex; justify-content: center; align-items: center; gap: 10px; padding-top: 5px; animation: float-bot 3s ease-in-out infinite; }
     .bot-eye { width: 28px; height: 28px; background: #bfdbfe; border-radius: 50%; border: 1px solid #93c5fd; position: relative; overflow: hidden; }
     .bot-pupil { width: 14px; height: 14px; background: #1e3a8a; border-radius: 50%; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }
     .bot-lid { position: absolute; top: 0; left: 0; width: 100%; height: 0%; background: #ffffff; z-index: 10; animation: blink 4s infinite; }
-    
     .bot-antenna { position: absolute; top: -25px; left: 50%; transform: translateX(-50%); width: 2px; height: 25px; background: #e0e7ff; }
     .bot-antenna::after { content: ''; position: absolute; top: -6px; left: -3px; width: 8px; height: 8px; background: #3b82f6; border-radius: 50%; animation: pulse-antenna 2s infinite; }
  
-    /* --- 对话气泡 (普通) --- */
+    /* --- 机器人说话气泡 --- */
     #bot-speech {
-      position: absolute;
-      top: -45px; left: 50%;
-      transform: translateX(-50%) scale(0);
-      transform-origin: bottom center;
-      background: rgba(30, 41, 59, 0.95);
-      color: #fff;
-      padding: 6px 14px;
-      border-radius: 12px;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.75rem;
-      white-space: nowrap;
-      pointer-events: none;
-      border: 1px solid rgba(59, 130, 246, 0.4);
-      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+      position: absolute; top: -45px; left: 50%;
+      transform: translateX(-50%) scale(0); transform-origin: bottom center;
+      background: rgba(30, 41, 59, 0.95); color: #fff;
+      padding: 6px 14px; border-radius: 12px;
+      font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; white-space: nowrap; pointer-events: none;
+      border: 1px solid rgba(59, 130, 246, 0.4); box-shadow: 0 4px 15px rgba(0,0,0,0.3);
       transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s;
-      z-index: 10000;
-      opacity: 0;
+      z-index: 10000; opacity: 0;
     }
     #bot-speech::after {
       content: ''; position: absolute; bottom: -5px; left: 50%;
       width: 8px; height: 8px; background: inherit;
       transform: translateX(-50%) rotate(45deg);
-      border-right: 1px solid rgba(59, 130, 246, 0.4);
-      border-bottom: 1px solid rgba(59, 130, 246, 0.4);
+      border-right: 1px solid rgba(59, 130, 246, 0.4); border-bottom: 1px solid rgba(59, 130, 246, 0.4);
     }
     #bot-container.speaking #bot-speech { transform: translateX(-50%) scale(1); opacity: 1; }
 
     /* --- RPG 互动对话框 --- */
     #rpg-dialogue {
       position: absolute;
-      top: 60px; left: 50%;
+      top: 60px; left: 50%; /* 相对机器人定位 */
       transform: translateX(-50%) translateY(20px);
-      width: 90%; max-width: 320px;
+      width: 600px;
       background: rgba(15, 23, 42, 0.95);
-      border: 1px solid #3b82f6;
-      border-radius: 12px;
-      padding: 15px;
+      border: 1px solid #3b82f6; border-radius: 12px; padding: 15px;
       box-shadow: 0 10px 40px rgba(0,0,0,0.6), 0 0 15px rgba(59, 130, 246, 0.2);
-      z-index: 20000;
-      opacity: 0; pointer-events: none;
+      z-index: 20000; opacity: 0; pointer-events: none;
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       display: flex; flex-direction: column; gap: 10px;
       font-family: 'JetBrains Mono', monospace;
@@ -229,9 +192,6 @@
     @keyframes blink-cursor { from, to { opacity: 1; } 50% { opacity: 0; } }
     @keyframes pulse-bg { 0% { opacity: 0.7; } 50% { opacity: 1; } 100% { opacity: 0.7; } }
     @keyframes ripple-wave { 0% { transform: scale(1); } 30% { transform: scale(1.15) translateY(-5px); } 100% { transform: scale(1); } }
-    /* [新增] 任务标记跳动动画 */
-    @keyframes bounce-hint { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
-    /* [新增] 呼吸光环动画 */
     @keyframes pulse-ring-anim { 0% { transform: translate(-50%, -50%) scale(0.8); opacity: 0.6; } 100% { transform: translate(-50%, -50%) scale(1.4); opacity: 0; } }
  
     @media (max-width: 768px) { 
@@ -248,29 +208,23 @@
   <div id="progress-bar"></div>
   <div id="vanta-bg"></div>
  
-  <div class="layout-wrapper">
-    <div id="bot-container" title="Click to chat!">
-      
-      <div class="pulse-ring"></div>
-      <div class="bot-hint">!</div>
-
-      <div id="bot-speech">System Online.</div>
-      
-      <div id="rpg-dialogue">
-        <div class="rpg-close">×</div>
-        <div>
-          <span id="rpg-text">Initializing...</span><span id="rpg-cursor"></span>
-        </div>
-        <div id="rpg-options"></div>
-      </div>
-
-      <div class="bot-antenna"></div>
-      <div class="bot-head">
-        <div class="bot-eye"><div class="bot-pupil"></div><div class="bot-lid"></div></div>
-        <div class="bot-eye"><div class="bot-pupil"></div><div class="bot-lid"></div></div>
-      </div>
+  <div id="bot-container" title="Chat with me!">
+    <div class="pulse-ring"></div>
+    
+    <div id="bot-speech">System Online.</div>
+    <div id="rpg-dialogue">
+      <div class="rpg-close">×</div>
+      <div><span id="rpg-text">Initializing...</span><span id="rpg-cursor"></span></div>
+      <div id="rpg-options"></div>
     </div>
- 
+    <div class="bot-antenna"></div>
+    <div class="bot-head">
+      <div class="bot-eye"><div class="bot-pupil"></div><div class="bot-lid"></div></div>
+      <div class="bot-eye"><div class="bot-pupil"></div><div class="bot-lid"></div></div>
+    </div>
+  </div>
+
+  <div class="layout-wrapper">
     <div class="container">
       <section id="main_content">
         {{ content }}
@@ -289,9 +243,6 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.net.min.js"></script>
   <script>
-    /* =========================================
-       >>> 配置你的 Connector 剧情 <<<
-       ========================================= */
     const dialogData = {
       "start": {
         text: "Hi! I'm the Connector Guardian. Need a quick guide?",
@@ -303,35 +254,22 @@
       },
       "what_is": {
         text: "The Connector is a powerful bridge between data sources. It simplifies complex workflows into one click.",
-        options: [
-          { text: "Sounds cool! Technical details?", next: "tech_details" },
-          { text: "Got it, thanks!", next: "close" }
-        ]
+        options: [ { text: "Sounds cool! Technical details?", next: "tech_details" }, { text: "Got it, thanks!", next: "close" } ]
       },
       "how_to": {
         text: "Simply click the badges below to integrate. Documentation is available in the repo.",
-        options: [
-          { text: "Show me the badges", next: "show_badges" },
-          { text: "Back to menu", next: "start" }
-        ]
+        options: [ { text: "Show me the badges", next: "show_badges" }, { text: "Back to menu", next: "start" } ]
       },
       "tech_details": {
         text: "It runs on Python & Node.js with ultra-low latency. Check the GitHub link below!",
-        options: [
-          { text: "Awesome!", next: "close" }
-        ]
+        options: [ { text: "Awesome!", next: "close" } ]
       },
       "show_badges": {
         text: "Look down! 👇 Those shiny icons are your gateway.",
-        options: [
-          { text: "Okay!", next: "close" }
-        ]
+        options: [ { text: "Okay!", next: "close" } ]
       }
     };
 
-    /* =========================================
-       >>> 系统核心逻辑 <<<
-       ========================================= */
     let vantaEffect = VANTA.NET({
       el: "#vanta-bg",
       mouseControls: true, touchControls: true, gyroControls: false,
@@ -366,6 +304,67 @@
       const rpgClose = document.querySelector('.rpg-close');
       let typeTimer = null;
 
+      // ============================================
+      // >>> 机器人跟随逻辑 <<<
+      // ============================================
+      let mouseX = window.innerWidth / 2;
+      let mouseY = 100; // 初始位置
+      let botX = mouseX;
+      let botY = mouseY;
+      let isHoveringBot = false;
+
+      window.addEventListener('mousemove', (e) => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+        
+        if(cursorDot) { cursorDot.style.left = `${mouseX}px`; cursorDot.style.top = `${mouseY}px`; }
+        if(cursorOutline) { cursorOutline.animate({ left: `${mouseX}px`, top: `${mouseY}px` }, { duration: 500, fill: "forwards" }); }
+
+        if (window.innerWidth > 768 && container) {
+          const rx = (window.innerWidth / 2 - mouseX) / 50;
+          const ry = (window.innerHeight / 2 - mouseY) / 50;
+          container.style.transform = `rotateY(${rx * -1}deg) rotateX(${ry}deg)`;
+          const rect = container.getBoundingClientRect();
+          container.style.setProperty("--mouse-x", `${mouseX - rect.left}px`);
+          container.style.setProperty("--mouse-y", `${mouseY - rect.top}px`);
+        }
+        
+        pupils.forEach(p => {
+          const rect = p.parentElement.getBoundingClientRect();
+          const cx = rect.left + rect.width / 2, cy = rect.top + rect.height / 2;
+          const angle = Math.atan2(mouseY - cy, mouseX - cx);
+          const dist = Math.min(6, Math.hypot(mouseX - cx, mouseY - cy) / 10);
+          p.style.transform = `translate(calc(-50% + ${Math.cos(angle) * dist}px), calc(-50% + ${Math.sin(angle) * dist}px))`;
+        });
+      });
+
+      function animateBot() {
+        if (!botContainer) return;
+        const isTalking = rpgDialogue && rpgDialogue.classList.contains('active');
+        
+        if (!isTalking && !isHoveringBot && window.innerWidth > 768) {
+           // 目标位置：鼠标右上方
+           const targetX = mouseX + 60; 
+           const targetY = mouseY - 40;
+           botX += (targetX - botX) * 0.08;
+           botY += (targetY - botY) * 0.08;
+           botContainer.style.left = `${botX}px`;
+           botContainer.style.top = `${botY}px`;
+           botContainer.style.opacity = 1;
+        }
+        requestAnimationFrame(animateBot);
+      }
+      animateBot();
+
+      if(botContainer) {
+        botContainer.addEventListener('mouseenter', () => isHoveringBot = true);
+        botContainer.addEventListener('mouseleave', () => isHoveringBot = false);
+      }
+
+      // ============================================
+      // >>> 对话与交互逻辑 <<<
+      // ============================================
+
       function botSay(text, duration = 2000) {
         if(!botSpeech || !botContainer || rpgDialogue.classList.contains('active')) return; 
         botSpeech.textContent = text;
@@ -376,36 +375,22 @@
         }, duration);
       }
 
-      // --- RPG 对话引擎 ---
       function showDialogueNode(nodeKey) {
-        if(nodeKey === 'close') {
-          closeDialogue();
-          botSay("Bye!", 1500);
-          return;
-        }
-
+        if(nodeKey === 'close') { closeDialogue(); botSay("Bye!", 1500); return; }
         const node = dialogData[nodeKey];
         if(!node) return;
-
-        rpgOptions.innerHTML = '';
-        rpgText.textContent = '';
+        rpgOptions.innerHTML = ''; rpgText.textContent = '';
         if(typeTimer) clearInterval(typeTimer);
-
         let i = 0;
         typeTimer = setInterval(() => {
-          rpgText.textContent += node.text.charAt(i);
-          i++;
+          rpgText.textContent += node.text.charAt(i); i++;
           if(i >= node.text.length) {
             clearInterval(typeTimer);
             node.options.forEach((opt, idx) => {
               const btn = document.createElement('div');
-              btn.className = 'rpg-btn';
-              btn.textContent = '> ' + opt.text;
+              btn.className = 'rpg-btn'; btn.textContent = '> ' + opt.text;
               btn.style.animationDelay = `${idx * 0.1}s`;
-              btn.onclick = (e) => {
-                e.stopPropagation();
-                showDialogueNode(opt.next);
-              };
+              btn.onclick = (e) => { e.stopPropagation(); showDialogueNode(opt.next); };
               rpgOptions.appendChild(btn);
             });
           }
@@ -416,75 +401,32 @@
         if(rpgDialogue.classList.contains('active')) return;
         rpgDialogue.classList.add('active');
         botContainer.classList.add('speaking');
-        
-        // [新增] 第一次点击后，移除引导提示 (!) 和光环
-        botContainer.classList.add('hint-removed');
-        
+        botContainer.classList.add('hint-removed'); 
         showDialogueNode('start');
       }
 
       function closeDialogue() {
         rpgDialogue.classList.remove('active');
         botContainer.classList.remove('speaking');
-        setTimeout(() => {
-            rpgText.textContent = '';
-            rpgOptions.innerHTML = '';
-        }, 300);
+        setTimeout(() => { rpgText.textContent = ''; rpgOptions.innerHTML = ''; }, 300);
       }
 
       if(botContainer) {
         botContainer.addEventListener('click', (e) => {
           e.stopPropagation();
-          if(rpgDialogue.classList.contains('active')) {
-            closeDialogue();
-          } else {
-            openDialogue();
-          }
+          if(rpgDialogue.classList.contains('active')) closeDialogue();
+          else openDialogue();
         });
       }
-
-      if(rpgClose) {
-        rpgClose.addEventListener('click', (e) => {
-          e.stopPropagation();
-          closeDialogue();
-        });
-      }
-
+      if(rpgClose) rpgClose.addEventListener('click', (e) => { e.stopPropagation(); closeDialogue(); });
       document.addEventListener('click', (e) => {
-        if(rpgDialogue.classList.contains('active') && !botContainer.contains(e.target)) {
-          closeDialogue();
-        }
+        if(rpgDialogue.classList.contains('active') && !botContainer.contains(e.target)) closeDialogue();
       });
 
-      // [新增] 页面加载后的引导语
-      setTimeout(() => botSay("Hi! Click me for a quick guide.", 4000), 1000);
+      // 引导语：直接用气泡说话，而不是红色感叹号
+      setTimeout(() => botSay("Click me for guide!", 4000), 1000);
 
-      window.addEventListener('mousemove', (e) => {
-        const { clientX: px, clientY: py } = e;
-        if(cursorDot) { cursorDot.style.left = `${px}px`; cursorDot.style.top = `${py}px`; }
-        if(cursorOutline) { cursorOutline.animate({ left: `${px}px`, top: `${py}px` }, { duration: 500, fill: "forwards" }); }
- 
-        if (window.innerWidth > 768 && container) {
-          const rx = (window.innerWidth / 2 - px) / 50;
-          const ry = (window.innerHeight / 2 - py) / 50;
-          container.style.transform = `rotateY(${rx * -1}deg) rotateX(${ry}deg)`;
-          
-          const rect = container.getBoundingClientRect();
-          const x = px - rect.left;
-          const y = py - rect.top;
-          container.style.setProperty("--mouse-x", `${x}px`);
-          container.style.setProperty("--mouse-y", `${y}px`);
-        }
-
-        pupils.forEach(p => {
-          const rect = p.parentElement.getBoundingClientRect();
-          const cx = rect.left + rect.width / 2, cy = rect.top + rect.height / 2;
-          const angle = Math.atan2(py - cy, px - cx);
-          const dist = Math.min(6, Math.hypot(px - cx, py - cy) / 10);
-          p.style.transform = `translate(calc(-50% + ${Math.cos(angle) * dist}px), calc(-50% + ${Math.sin(angle) * dist}px))`;
-        });
-      });
- 
+      // Badges
       const badges = document.querySelectorAll('.nav-badges a');
       badges.forEach(b => {
         b.addEventListener('mouseenter', () => {
