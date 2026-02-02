@@ -38,6 +38,14 @@
 > [!NOTE]
 > **Key Innovation:** The system integrates two high-density PCBs, an anisotropic elastomeric contact interface, and a lightweight pedestal housing into a fully integrated, headstage-ready solution.
 
+<div align="center">
+  <br>
+  <img src="Images/001.PNG" alt="PEDAL-256 Exploded View" width="750">
+  <p style="margin-top: 5px; font-size: 0.95em; color: #cbd5e1;">
+    <b>Mating Dynamics (left) and Structural Breakdown (right) of the E-Link(256) </b>
+  </p>
+</div>
+
 ---
 
 ### 📊 Quick Specifications
@@ -132,14 +140,6 @@
       </tr>
     </tbody>
   </table>
-</div>
-
-<div align="center">
-  <br>
-  <img src="Images/001.PNG" alt="PEDAL-256 Exploded View" width="750">
-  <p style="margin-top: 5px; font-size: 0.95em; color: #cbd5e1;">
-    <b>Mating Dynamics (left) and Structural Breakdown (right) of the E-Link(256) </b>
-  </p>
 </div>
 
 ---
