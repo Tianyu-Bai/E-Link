@@ -70,6 +70,7 @@
     /* --- 4. 布局包裹器 --- */
     .layout-wrapper {
       position: relative; max-width: 860px; 
+      /* PC端默认顶部边距 */
       margin: 140px auto 60px; 
       z-index: 10;
       perspective: 1000px;
@@ -77,6 +78,7 @@
  
     /* --- 5. 机器人核心 --- */
     #bot-container { 
+      /* [默认状态 - PC顶部] */
       position: absolute; 
       top: 70px; left: 50%; 
       transform: translateX(-50%); 
@@ -87,6 +89,7 @@
       transition: all 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55); 
     }
 
+    /* [状态 - PC端滚动后固定在角落] */
     #bot-container.fixed-mode {
       position: fixed !important;
       top: auto !important;
@@ -107,48 +110,34 @@
 
     .bot-head { width: 100px; height: 50px; background: #ffffff; border: 2px solid #e0e7ff; border-bottom: none; border-radius: 50px 50px 20px 20px; margin: 0 auto; position: relative; box-shadow: 0 -5px 15px rgba(59, 130, 246, 0.15); display: flex; justify-content: center; align-items: center; gap: 10px; padding-top: 5px; animation: float-bot 3s ease-in-out infinite; }
     
-    /* --- 眼睛基础样式 --- */
+    /* 眼睛基础 */
     .bot-eye { 
-      width: 28px; height: 28px; 
-      background: #bfdbfe; 
+      width: 28px; height: 28px; background: #bfdbfe; 
       border-radius: 50%; border: 1px solid #93c5fd; 
       position: relative; overflow: hidden; 
-      /* 平滑过渡 */
-      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); 
+      transform-origin: center; /* 确保缩放从中心开始 */
+      transition: all 0.2s; /* 快速响应 */
     }
-    .bot-pupil { width: 14px; height: 14px; background: #1e3a8a; border-radius: 50%; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); transition: opacity 0.2s; }
+    .bot-pupil { width: 14px; height: 14px; background: #1e3a8a; border-radius: 50%; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); transition: all 0.2s; }
     .bot-lid { position: absolute; top: 0; left: 0; width: 100%; height: 0%; background: #ffffff; z-index: 10; animation: blink 4s infinite; }
     
-    /* --- [关键优化] 说话时的开心月牙眼 (Happy Arch) --- */
+    /* --- [核心特效] 说话时的眨眼放电 (Cyber Blink) --- */
     #bot-container.speaking .bot-eye { 
-      background: transparent; 
-      border: none; /* 去掉原来的边框 */
-      box-shadow: none; 
-      
-      /* 用 border-top 画出完美的弧线 */
-      width: 24px; height: 12px;
-      border-top: 4px solid #3b82f6; 
-      border-radius: 24px 24px 0 0; /* 完美的半圆拱门 */
-      
-      margin-top: 8px; /* 位置微调 */
-      animation: happy-eye-wiggle 0.3s ease-in-out infinite alternate; /* 眼睛也会开心得发抖 */
+      /* 眼睛快速压扁复原，模拟说话频闪 */
+      animation: cyber-blink 0.25s infinite alternate; 
+      background: #60a5fa; /* 眼睛背景变亮蓝 */
+      border-color: #3b82f6;
     }
-    #bot-container.speaking .bot-pupil, 
-    #bot-container.speaking .bot-lid { opacity: 0; /* 隐藏瞳孔 */ }
+    #bot-container.speaking .bot-pupil {
+      background: #ffffff; /* 瞳孔变白，模拟高能放电 */
+      box-shadow: 0 0 8px #ffffff; /* 增加发光晕影 */
+      transform: translate(-50%, -50%) scale(1.2); /* 瞳孔变大 */
+    }
+    #bot-container.speaking .bot-lid { opacity: 0; /* 说话时禁用自然眨眼 */ }
 
-    /* 天线基础 */
-    .bot-antenna { 
-      position: absolute; top: -25px; left: 50%; 
-      transform: translateX(-50%); width: 2px; height: 25px; background: #e0e7ff; 
-      transform-origin: bottom center; /* 设置摇摆支点在底部 */
-      transition: transform 0.2s;
-    }
+    /* 天线 & 呼吸灯 */
+    .bot-antenna { position: absolute; top: -25px; left: 50%; transform: translateX(-50%); width: 2px; height: 25px; background: #e0e7ff; }
     .bot-antenna::after { content: ''; position: absolute; top: -6px; left: -3px; width: 8px; height: 8px; border-radius: 50%; animation: pulse-antenna-breath 2s infinite ease-in-out; }
-    
-    /* --- [关键优化] 说话时的天线摇摆 (Antenna Wiggle) --- */
-    #bot-container.speaking .bot-antenna {
-      animation: antenna-wiggle 0.15s ease-in-out infinite alternate; /* 快速摇摆 */
-    }
  
     /* --- 机器人说话气泡 --- */
     #bot-speech {
@@ -247,13 +236,12 @@
     @keyframes ripple-wave { 0% { transform: scale(1); } 30% { transform: scale(1.15) translateY(-5px); } 100% { transform: scale(1); } }
     @keyframes pulse-ring-anim { 0% { transform: translate(-50%, -50%) scale(0.8); opacity: 0.6; } 100% { transform: translate(-50%, -50%) scale(1.4); opacity: 0; } }
     @keyframes pulse-antenna-breath { 0%, 100% { background: #3b82f6; box-shadow: 0 0 5px #3b82f6; } 50% { background: #93c5fd; box-shadow: 0 0 15px #60a5fa, 0 0 8px #ffffff; } }
-    @keyframes happy-eye-wiggle { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-2px); } }
-    /* 天线摇摆动画 */
-    @keyframes antenna-wiggle { 
-      0% { transform: translateX(-50%) rotate(0deg); } 
-      25% { transform: translateX(-50%) rotate(15deg); } 
-      75% { transform: translateX(-50%) rotate(-15deg); } 
-      100% { transform: translateX(-50%) rotate(0deg); } 
+    
+    /* [新增] 赛博频闪特效：模拟快速眨眼说话 */
+    @keyframes cyber-blink {
+      0% { transform: scaleY(1); }
+      50% { transform: scaleY(0.2); } /* 压扁 */
+      100% { transform: scaleY(1); }
     }
  
     /* --- [手机端适配 - 左右钉死版] --- */
