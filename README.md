@@ -23,7 +23,14 @@
   </div>
 
   <br />
-  <img src="Videos/Demo%20new%20new.gif" 
+  <img src="Demo_trans _bg.gif" 
+       alt="ELINK-256 Assembly Demo GIF" 
+       width="750" 
+       class="gif-blend" 
+       style="border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); display: block;">
+
+  <br />
+  <img src="Videos/Demo_trans _bg_CR.gif" 
        alt="ELINK-256 Assembly Demo GIF" 
        width="750" 
        class="gif-blend" 
