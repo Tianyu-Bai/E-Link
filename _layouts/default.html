@@ -69,34 +69,44 @@
  
     /* --- 4. 布局包裹器 --- */
     .layout-wrapper {
-      position: relative; max-width: 860px; margin: 60px auto 60px; z-index: 10;
+      position: relative; max-width: 860px; margin: 100px auto 60px; z-index: 10;
       perspective: 1000px;
     }
  
-    /* --- 5. 机器人核心 (跟随鼠标) --- */
+    /* --- 5. 机器人核心 (CSS 状态管理) --- */
     #bot-container { 
-      position: fixed; 
-      top: 0; left: 0; 
+      /* [默认状态 - PC顶部] */
+      position: absolute; 
+      top: -45px; left: 50%; 
+      transform: translateX(-50%); 
       width: 120px; height: 70px; 
       z-index: 9999; cursor: pointer; 
       opacity: 0; 
-      transition: opacity 0.5s ease;
+      animation: botEnter 0.8s ease-out 0.8s forwards;
+      /* 平滑过渡位置变化 */
+      transition: all 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55); 
     }
-    
-    /* 蓝色呼吸光环：代替红色感叹号，更加科技感 */
+
+    /* [状态 - 固定在角落] (JS 会添加这个类) */
+    #bot-container.fixed-mode {
+      position: fixed !important;
+      top: auto !important;
+      left: auto !important;
+      bottom: 30px !important;
+      right: 30px !important;
+      transform: scale(0.9) !important; /* 稍微缩小一点不挡视线 */
+      animation: none !important;
+      opacity: 1 !important;
+    }
+
+    /* 呼吸光环 */
     .pulse-ring {
       position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
       width: 100px; height: 100px;
-      border-radius: 50%;
-      border: 2px solid rgba(59, 130, 246, 0.6);
-      opacity: 0; z-index: -1;
-      animation: pulse-ring-anim 3s infinite;
-      pointer-events: none;
+      border-radius: 50%; border: 2px solid rgba(59, 130, 246, 0.6);
+      opacity: 0; z-index: -1; animation: pulse-ring-anim 3s infinite; pointer-events: none;
     }
-    /* 点击后移除光环 */
     #bot-container.hint-removed .pulse-ring { opacity: 0; animation: none; }
-
-    /* 删除了 .bot-hint (红色感叹号) 的样式 */
 
     .bot-head { width: 100px; height: 50px; background: #ffffff; border: 2px solid #e0e7ff; border-bottom: none; border-radius: 50px 50px 20px 20px; margin: 0 auto; position: relative; box-shadow: 0 -5px 15px rgba(59, 130, 246, 0.15); display: flex; justify-content: center; align-items: center; gap: 10px; padding-top: 5px; animation: float-bot 3s ease-in-out infinite; }
     .bot-eye { width: 28px; height: 28px; background: #bfdbfe; border-radius: 50%; border: 1px solid #93c5fd; position: relative; overflow: hidden; }
@@ -122,14 +132,16 @@
       transform: translateX(-50%) rotate(45deg);
       border-right: 1px solid rgba(59, 130, 246, 0.4); border-bottom: 1px solid rgba(59, 130, 246, 0.4);
     }
+    /* 当机器人固定到底部时，气泡要在头顶上方，逻辑不变，但因为机器人位置变了，视觉没问题 */
     #bot-container.speaking #bot-speech { transform: translateX(-50%) scale(1); opacity: 1; }
 
     /* --- RPG 互动对话框 --- */
     #rpg-dialogue {
       position: absolute;
-      top: 60px; left: 50%; /* 相对机器人定位 */
+      /* 默认状态：在机器人下方 */
+      top: 65px; left: 50%;
       transform: translateX(-50%) translateY(20px);
-      width: 600px;
+      width: 600px; max-width: 90vw;
       background: rgba(15, 23, 42, 0.95);
       border: 1px solid #3b82f6; border-radius: 12px; padding: 15px;
       box-shadow: 0 10px 40px rgba(0,0,0,0.6), 0 0 15px rgba(59, 130, 246, 0.2);
@@ -139,6 +151,17 @@
       font-family: 'JetBrains Mono', monospace;
     }
     #rpg-dialogue.active { opacity: 1; transform: translateX(-50%) translateY(0); pointer-events: auto; }
+    
+    /* [关键] 当机器人固定在底部时，对话框要往上弹，且对齐左侧防止出屏幕 */
+    #bot-container.fixed-mode #rpg-dialogue {
+        top: auto; bottom: 80px; /* 在上方 */
+        left: auto; right: 0; /* 对齐右侧 */
+        transform: translateY(20px);
+    }
+    #bot-container.fixed-mode #rpg-dialogue.active {
+        transform: translateY(0);
+    }
+
     #rpg-text { color: #bfdbfe; font-size: 0.9rem; min-height: 40px; line-height: 1.5; }
     #rpg-cursor { display: inline-block; width: 8px; height: 14px; background: #3b82f6; vertical-align: middle; animation: blink 1s infinite; }
     #rpg-options { display: flex; flex-direction: column; gap: 8px; margin-top: 5px; }
@@ -194,8 +217,31 @@
     @keyframes ripple-wave { 0% { transform: scale(1); } 30% { transform: scale(1.15) translateY(-5px); } 100% { transform: scale(1); } }
     @keyframes pulse-ring-anim { 0% { transform: translate(-50%, -50%) scale(0.8); opacity: 0.6; } 100% { transform: translate(-50%, -50%) scale(1.4); opacity: 0; } }
  
+    /* --- 手机端适配 --- */
     @media (max-width: 768px) { 
-      .cursor-dot, .cursor-outline, #bot-container { display: none; } 
+      .cursor-dot, .cursor-outline { display: none; } 
+      
+      /* 手机上永远强制固定在右下角 */
+      #bot-container { 
+        position: fixed !important;
+        top: auto !important; left: auto !important;
+        right: 20px !important; bottom: 30px !important; 
+        transform: scale(0.85) translateX(0) !important;
+        opacity: 1 !important; 
+        animation: none !important;
+      }
+
+      /* 手机端对话框 */
+      #bot-container #rpg-dialogue {
+        top: auto !important; bottom: 80px;
+        left: 50% !important; right: auto !important;
+        transform: translateX(-50%) translateY(10px);
+        width: 90vw !important;
+      }
+      #bot-container #rpg-dialogue.active {
+        transform: translateX(-50%) translateY(0);
+      }
+
       .container { padding: 30px 20px; } 
       #main_content { overflow-x: auto; }
     }
@@ -210,7 +256,6 @@
  
   <div id="bot-container" title="Chat with me!">
     <div class="pulse-ring"></div>
-    
     <div id="bot-speech">System Online.</div>
     <div id="rpg-dialogue">
       <div class="rpg-close">×</div>
@@ -305,14 +350,12 @@
       let typeTimer = null;
 
       // ============================================
-      // >>> 机器人跟随逻辑 <<<
+      // >>> 逻辑更新：PC端滚动切换机器人位置 <<<
       // ============================================
       let mouseX = window.innerWidth / 2;
-      let mouseY = 100; // 初始位置
-      let botX = mouseX;
-      let botY = mouseY;
-      let isHoveringBot = false;
+      let mouseY = 100;
 
+      // 1. 鼠标监听仅用于光标和眼神，不再移动机器人本体
       window.addEventListener('mousemove', (e) => {
         mouseX = e.clientX;
         mouseY = e.clientY;
@@ -338,28 +381,22 @@
         });
       });
 
-      function animateBot() {
-        if (!botContainer) return;
-        const isTalking = rpgDialogue && rpgDialogue.classList.contains('active');
-        
-        if (!isTalking && !isHoveringBot && window.innerWidth > 768) {
-           // 目标位置：鼠标右上方
-           const targetX = mouseX + 60; 
-           const targetY = mouseY - 40;
-           botX += (targetX - botX) * 0.08;
-           botY += (targetY - botY) * 0.08;
-           botContainer.style.left = `${botX}px`;
-           botContainer.style.top = `${botY}px`;
-           botContainer.style.opacity = 1;
-        }
-        requestAnimationFrame(animateBot);
-      }
-      animateBot();
+      // 2. 滚动监听：控制机器人是否“固定”在右下角
+      window.addEventListener('scroll', () => {
+        // 进度条
+        const scrolled = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+        const pb = document.getElementById("progress-bar");
+        if(pb) pb.style.width = scrolled + "%";
 
-      if(botContainer) {
-        botContainer.addEventListener('mouseenter', () => isHoveringBot = true);
-        botContainer.addEventListener('mouseleave', () => isHoveringBot = false);
-      }
+        // 机器人位置切换 (仅在 PC 端生效)
+        if(botContainer && window.innerWidth > 768) {
+          if(window.scrollY > 200) {
+            botContainer.classList.add('fixed-mode');
+          } else {
+            botContainer.classList.remove('fixed-mode');
+          }
+        }
+      });
 
       // ============================================
       // >>> 对话与交互逻辑 <<<
@@ -423,7 +460,7 @@
         if(rpgDialogue.classList.contains('active') && !botContainer.contains(e.target)) closeDialogue();
       });
 
-      // 引导语：直接用气泡说话，而不是红色感叹号
+      // 引导语
       setTimeout(() => botSay("Click me for guide!", 4000), 1000);
 
       // Badges
@@ -448,12 +485,6 @@
           });
           setTimeout(() => window.location.href = url, 500);
         });
-      });
- 
-      window.addEventListener('scroll', () => {
-        const scrolled = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
-        const pb = document.getElementById("progress-bar");
-        if(pb) pb.style.width = scrolled + "%";
       });
     });
   </script>
