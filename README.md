@@ -32,18 +32,17 @@
 
 ## 📖 Overview
 
-**E-Link** (Elastomer Interconnection-based connector) is an open-source pedestal connector system designed for high-density chronic neural recording. It provides a mechanically robust and electrically reliable interface between thin-film implanted neural probes and external headstages, with a form factor optimized for freely moving animal studies.
-
-> [!NOTE]
-> **Key Innovation:** The system integrates two high-density PCBs, an anisotropic elastomeric contact interface, and a lightweight pedestal housing into a fully integrated, headstage-ready solution.
+**E-Link** (Elastomer Interconnection-based connector)：An open-source elastomer connector for high-density neural recording. It provides a robust, compact interface connecting thin-film probes to headstages for freely moving animals.
 
 <div align="center">
-  <br>
   <img src="Images/001.PNG" alt="PEDAL-256 Exploded View" width="750">
   <p style="margin-top: 5px; font-size: 0.95em; color: #cbd5e1;">
     <b>Mating Dynamics (left) and Structural Breakdown (right) of the E-Link(256) </b>
   </p>
 </div>
+
+> [!NOTE]
+> **Key Innovation:** The system integrates two high-density PCBs, an anisotropic elastomeric contact interface, and a lightweight pedestal housing into a fully integrated, headstage-ready solution.
 
 ---
 
