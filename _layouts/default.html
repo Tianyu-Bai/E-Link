@@ -114,14 +114,14 @@
       border: 2px solid rgba(168, 85, 247, 0.5); 
       opacity: 0; z-index: -1; pointer-events: none;
       animation: pulse-ring-anim 6s infinite cubic-bezier(0.4, 0, 0.6, 1);
-      transition: opacity 0.5s; /* 添加过渡效果，消失更自然 */
+      transition: opacity 0.5s; 
     }
     #bot-container.speaking .pulse-ring {
       animation-duration: 1.5s;
       border-color: rgba(59, 130, 246, 0.8); 
     }
     
-    /* 🔥 新增：当机器人被标记为“互动完成”后，隐藏光圈 */
+    /* 互动完成后隐藏光圈 */
     #bot-container.interaction-done .pulse-ring {
       opacity: 0 !important;
       animation: none !important;
@@ -271,12 +271,25 @@
       margin: auto; 
       max-height: 90vh; overflow-y: auto; 
       transform: scale(0.9); transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      position: relative; /* 关键：为右上角按钮定位 */
     }
     .welcome-modal.show .modal-content { transform: scale(1); }
     
+    /* 弹窗内语言切换按钮 */
+    .modal-lang-btn {
+      position: absolute; top: 15px; right: 20px;
+      font-size: 0.8rem; color: #94a3b8; cursor: pointer;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 4px 8px; border-radius: 12px; transition: all 0.2s;
+    }
+    .modal-lang-btn:hover { background: rgba(255, 255, 255, 0.1); color: #fff; }
+
     .modal-title { font-size: 1.5rem; margin-bottom: 15px; color: #fff; font-weight: 600; }
     .modal-body { font-size: 1rem; color: #cbd5e1; margin-bottom: 25px; line-height: 1.6; }
     
+    /* 默认隐藏弹窗内的中文 */
+    .m-zh { display: none; }
+
     .modal-btns { display: flex; flex-direction: column; gap: 10px; }
     .btn-primary, .btn-secondary {
       padding: 12px 20px; border-radius: 10px; cursor: pointer; font-weight: 600; transition: all 0.2s;
@@ -318,16 +331,37 @@
  <body>
   <div id="welcome-modal" class="welcome-modal">
     <div class="modal-content">
-      <div class="modal-title">👋 Welcome! / 欢迎</div>
-      <div class="modal-body">
-        Would you like to try <b>Daylight Mode</b>? <br>
-        You can switch Language & Theme anytime at the top-right corner. <br><br>
-        是否切换到<b>日光模式</b>？<br>
-        您可以随时在右上角切换语言和主题。
+      <div id="modal-lang-toggle" class="modal-lang-btn" title="Switch to Chinese">🇨🇳 中文</div>
+
+      <div class="modal-title">
+        <span class="m-en">👋 Welcome!</span>
+        <span class="m-zh">👋 欢迎访问！</span>
       </div>
+      
+      <div class="modal-body">
+        <span class="m-en">
+          This website is best viewed in <b>Dark Mode</b>.<br>
+          <span style="font-size: 0.85rem; color: #94a3b8;">
+            (You can adjust settings anytime at the top-right corner)
+          </span>
+        </span>
+        <span class="m-zh">
+          本网站专为<b>深色模式</b>设计，推荐保持默认设置。<br>
+          <span style="font-size: 0.85rem; color: #94a3b8;">
+            (您随时可以在右上角切换语言和主题)
+          </span>
+        </span>
+      </div>
+
       <div class="modal-btns">
-        <button id="modal-switch-btn" class="btn-primary">☀️ Yes, switch to Light Mode</button>
-        <button id="modal-close-btn" class="btn-secondary">I acknowledged / 知道了</button>
+        <button id="modal-keep-dark-btn" class="btn-primary">
+          <span class="m-en">🌑 Keep Dark Mode</span>
+          <span class="m-zh">🌑 保持深色 (推荐)</span>
+        </button>
+        <button id="modal-switch-light-btn" class="btn-secondary">
+          <span class="m-en">☀️ Switch to Light Mode</span>
+          <span class="m-zh">☀️ 切换到浅色</span>
+        </button>
       </div>
     </div>
   </div>
@@ -480,7 +514,7 @@
 
     const dialogData_ZH = {
       "start": {
-        text: "你好！我是易连的守护者。由我来保护你的脑机探针。",
+        text: "你好！我是连接器守护者。我会保护你的神经接口。",
         options: [ { text: "🚀 开始探索！", next: "root_menu" } ]
       },
       "root_menu": {
@@ -523,24 +557,24 @@
         options: [ { text: "很适合小鼠/大鼠。", next: "specs_menu" } ]
       },
       "thermal": {
-        text: "我运转冷静。稳态温度仅为 30.5°C，远低于 37°C 的生物阈值。无需主动散热。",
+        text: "我很冷静。稳态温度仅为 30.5°C，远低于 37°C 的生物阈值。无需主动散热。",
         options: [ { text: "安全确认。", next: "specs_menu" } ]
       },
       "noise": {
-        text: "晶莹剔透。我的本底噪声为 2.68 ± 0.46 µV RMS，接近了 Intan 芯片的理论极限。信号无损耗。",
+        text: "晶莹剔透。我的本底噪声为 2.68 ± 0.46 µV RMS，达到了 Intan 芯片的理论极限。信号无损耗。",
         options: [ { text: "参数很强。", next: "specs_menu" } ]
       },
       "reliability_menu": {
-        text: "我经久耐用。你可能担心什么？",
+        text: "我经久耐用。你担心什么？",
         options: [
           { text: "寿命 (插拔次数)", next: "cycles" },
           { text: "如果对不准怎么办？", next: "misalignment" },
-          { text: "接触电阻多大？", next: "impedance" },
+          { text: "接触电阻？", next: "impedance" },
           { text: "返回主菜单", next: "root_menu" }
         ]
       },
       "cycles": {
-        text: "已验证 100 次以上的插拔循环，连接良率 >97%。弹性导电体几乎没有磨损。",
+        text: "已验证 100 次以上的插拔循环，连接良率 >97%。弹性体几乎没有磨损。",
         options: [ { text: "靠谱。", next: "reliability_menu" } ]
       },
       "misalignment": {
@@ -590,7 +624,7 @@
       color: 0x3b82f6, backgroundColor: 0x0a0a0f, points: 18.00, maxDistance: 28.00, spacing: 16.00, showDots: true
     });
  
-    const textsEN = ["Welcome to this webpage！", "Thanks for visiting us!"，"Stay tuned!"];
+    const textsEN = ["Welcome to this webpage！", "Thanks for visiting us!", "Stay tuned!"];
     const textsZH = ["欢迎访问本网页！", "感谢您的关注！", "有空常来看！"];
     let texts = textsEN; // 默认文本
 
@@ -622,16 +656,28 @@
 
       // --- 🔥 弹窗逻辑 ---
       const welcomeModal = document.getElementById('welcome-modal');
-      const modalSwitchBtn = document.getElementById('modal-switch-btn');
-      const modalCloseBtn = document.getElementById('modal-close-btn');
+      const modalKeepDarkBtn = document.getElementById('modal-keep-dark-btn');
+      const modalSwitchLightBtn = document.getElementById('modal-switch-light-btn');
+      const modalLangToggle = document.getElementById('modal-lang-toggle');
+      let modalIsZh = false; // 记录弹窗内的语言状态
 
       // 0.5秒后显示弹窗
       setTimeout(() => {
         welcomeModal.classList.add('show');
       }, 500);
 
+      // 关闭弹窗函数
       function closeModal() {
         welcomeModal.classList.remove('show');
+        
+        // 🔥 关键逻辑：如果弹窗内选了中文，关闭时同步到主页
+        if (modalIsZh) {
+          // 只有当主页还没切到中文时，才触发切换
+          if (currentLang !== 'zh') {
+             langToggle.click(); // 触发主页语言切换
+          }
+        }
+
         // 弹窗关闭后，触发机器人引导动画
         setTimeout(() => {
             botContainer.classList.add('attention-jump'); // 开始跳动
@@ -644,17 +690,40 @@
         }, 500);
       }
 
-      modalSwitchBtn.addEventListener('click', () => {
-        themeToggle.click(); 
-        closeModal();
+      // 绑定按钮事件
+      modalKeepDarkBtn.addEventListener('click', closeModal);
+      
+      modalSwitchLightBtn.addEventListener('click', () => {
+        themeToggle.click(); // 触发主题切换
+        closeModal();        // 也会触发上面的语言同步逻辑
       });
-      modalCloseBtn.addEventListener('click', closeModal);
+
+      // 弹窗内部语言切换
+      modalLangToggle.addEventListener('click', () => {
+        const enTexts = document.querySelectorAll('.m-en');
+        const zhTexts = document.querySelectorAll('.m-zh');
+        
+        modalIsZh = !modalIsZh; // 切换状态
+
+        if (modalIsZh) {
+          // 切到中文
+          enTexts.forEach(el => el.style.display = 'none');
+          zhTexts.forEach(el => el.style.display = 'inline'); 
+          modalLangToggle.textContent = "🇺🇸 English"; 
+        } else {
+          // 切回英文
+          zhTexts.forEach(el => el.style.display = 'none');
+          enTexts.forEach(el => el.style.display = 'inline');
+          modalLangToggle.textContent = "🇨🇳 中文"; 
+        }
+      });
 
       // --- 切换逻辑 ---
       const themeToggle = document.getElementById('theme-toggle');
       const langToggle = document.getElementById('lang-toggle');
       let isLight = false;
        
+      // 主题切换
       themeToggle.addEventListener('click', () => {
         isLight = !isLight;
         document.body.classList.toggle('light-mode');
@@ -672,16 +741,19 @@
         }
       });
 
+      // 语言切换
       langToggle.addEventListener('click', () => {
+        // 获取所有双语内容区块
         const enContent = document.querySelectorAll('.lang-en');
         const zhContent = document.querySelectorAll('.lang-zh');
 
         if (currentLang === 'en') {
             currentLang = 'zh';
-            dialogData = dialogData_ZH; 
-            texts = textsZH;            
+            dialogData = dialogData_ZH; // 切换机器人数据
+            texts = textsZH;            // 切换打字机文本
             langToggle.textContent = "中 / 英";
             
+            // 切换正文内容
             enContent.forEach(el => el.style.display = 'none');
             zhContent.forEach(el => el.style.display = 'block');
 
@@ -691,22 +763,25 @@
             texts = textsEN;
             langToggle.textContent = "EN / CN";
 
+            // 切换正文内容
             enContent.forEach(el => el.style.display = 'block');
             zhContent.forEach(el => el.style.display = 'none');
         }
         
+        // 重置打字机
         textIdx = 0; charIdx = 0; isDeleting = false;
         
+        // 如果对话框开着，强制关闭以防数据错乱
         if(rpgDialogue.classList.contains('active')) closeDialogue();
         
-        // --- 🤖 机器人提示语逻辑 ---
+        // --- 🤖 机器人提示语逻辑修改 ---
         const feedbackText = currentLang === 'zh' ? "系统语言已切换" : "Language Switched";
         botSpeech.textContent = feedbackText;
         botContainer.classList.add('speaking');
 
         if(botContainer.speechTimer) clearTimeout(botContainer.speechTimer);
 
-        // 1.5秒后显示引导语
+        // 1.5秒后显示引导语并保持
         botContainer.speechTimer = setTimeout(() => {
             const guideText = currentLang === 'en' ? "Click me for guide!" : "点击我答疑解惑";
             botSay(guideText, 60000); 
