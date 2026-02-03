@@ -17,6 +17,11 @@
   <style>
     /* --- 0. 全局设置 --- */
     .github-only { display: none !important; }
+    
+    /* 🔥【关键修改】默认隐藏中文，显示英文，并添加淡入动画 */
+    .lang-zh { display: none; animation: fadeIn 0.5s ease; }
+    .lang-en { display: block; animation: fadeIn 0.5s ease; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
    
     body { 
       margin: 0; padding: 0; color: #e0e7ff; 
@@ -98,7 +103,7 @@
     #bot-container.hint-removed .pulse-ring { opacity: 0; animation: none; }
 
     .bot-head { width: 100px; height: 50px; background: #ffffff; border: 2px solid #e0e7ff; border-bottom: none; border-radius: 50px 50px 20px 20px; margin: 0 auto; position: relative; box-shadow: 0 -5px 15px rgba(59, 130, 246, 0.15); display: flex; justify-content: center; align-items: center; gap: 10px; padding-top: 5px; animation: float-bot 3s ease-in-out infinite; }
-    
+     
     .bot-eye { 
       width: 28px; height: 28px; background: #bfdbfe; 
       border-radius: 50%; border: 1px solid #93c5fd; 
@@ -107,7 +112,7 @@
     }
     .bot-pupil { width: 14px; height: 14px; background: #1e3a8a; border-radius: 50%; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); transition: opacity 0.2s; }
     .bot-lid { position: absolute; top: 0; left: 0; width: 100%; height: 0%; background: #ffffff; z-index: 10; animation: blink 4s infinite; }
-    
+     
     #bot-container.speaking .bot-eye { 
       background: transparent; border: none; box-shadow: none; 
       width: 22px; height: 12px; border-top: 3px solid #3b82f6; 
@@ -161,7 +166,7 @@
       font-family: 'JetBrains Mono', monospace;
     }
     #rpg-dialogue.active { opacity: 1; transform: translateX(-50%) translateY(0); pointer-events: auto; }
-    
+     
     #bot-container.fixed-mode #rpg-dialogue {
         top: auto; bottom: 80px; left: auto; right: 0; 
         transform: translateY(20px);
@@ -197,12 +202,12 @@
       z-index: -1; pointer-events: none; opacity: 0; transition: opacity 0.5s;
     }
     .container:hover::before { opacity: 1; }
-    
+     
     #main_content table { width: 100% !important; border-collapse: collapse; margin: 20px 0; background: rgba(10, 10, 15, 0.3); border-radius: 8px; overflow: hidden; }
     #main_content th, #main_content td { padding: 12px; border: 1px solid rgba(255, 255, 255, 0.1); }
     #main_content tr:first-child, #main_content thead tr { background: rgba(30, 41, 59, 0.8) !important; }
     #main_content th { color: #60a5fa; font-weight: 600; }
-    
+     
     .typewriter-container { font-family: 'JetBrains Mono', monospace; font-size: 1.1rem; color: #93c5fd; min-height: 1.6em; margin-bottom: 2rem; }
     .typewriter-cursor { animation: blink-cursor 0.8s infinite; border-left: 3px solid #3b82f6; margin-left: 2px; }
  
@@ -211,7 +216,7 @@
     .nav-badges img { height: 28px !important; width: auto; border-radius: 50px; box-shadow: 0 2px 6px rgba(59, 130, 246, 0.15); border: 1.5px solid white; transition: all 0.3s; mix-blend-mode: normal !important; }
     .nav-badges a:hover img { animation: float-hover 2s ease-in-out infinite; box-shadow: 0 8px 20px rgba(59, 130, 246, 0.35); transform: scale(1.1); }
     .nav-badges img.rippling { animation: ripple-wave 0.5s forwards; }
-      
+       
     /* --- 8. 功能按钮组 (右上角) --- */
     .controls-container {
       position: fixed; top: 20px; right: 20px;
@@ -230,7 +235,7 @@
       user-select: none;
     }
     .ctrl-btn:hover { background: rgba(255, 255, 255, 0.2); transform: scale(1.1); }
-    
+     
     /* 语言按钮专属样式 */
     #lang-toggle {
       font-family: 'JetBrains Mono', monospace;
@@ -255,7 +260,7 @@
     body.light-mode .rpg-close:hover { color: #ef4444; }
     body.light-mode .ctrl-btn { background: rgba(0, 0, 0, 0.05); border-color: rgba(0, 0, 0, 0.1); color: #334155; }
     body.light-mode .ctrl-btn:hover { background: rgba(0, 0, 0, 0.1); }
-    
+     
     /* 浅色模式下图片标题适配 */
     .img-caption { color: #3b82f6; } /* 默认蓝色，黑白通吃 */
 
@@ -546,7 +551,7 @@
         options: [ { text: "谢谢守护者！", next: "close" } ]
       }
     };
-    
+     
     // 默认使用英文
     let currentLang = 'en';
     let dialogData = dialogData_EN;
@@ -582,7 +587,7 @@
       const pupils = document.querySelectorAll('.bot-pupil');
       const botContainer = document.getElementById('bot-container');
       const botSpeech = document.getElementById('bot-speech');
-      
+       
       const rpgDialogue = document.getElementById('rpg-dialogue');
       const rpgText = document.getElementById('rpg-text');
       const rpgOptions = document.getElementById('rpg-options');
@@ -593,7 +598,7 @@
       const themeToggle = document.getElementById('theme-toggle');
       const langToggle = document.getElementById('lang-toggle');
       let isLight = false;
-      
+       
       // 主题切换
       themeToggle.addEventListener('click', () => {
         isLight = !isLight;
@@ -703,7 +708,7 @@
             const byeText = currentLang === 'en' ? "Nice chatting with you. Have a good day!" : "很高兴与你交谈。祝你今天愉快！";
             botSay(byeText, 3600); 
             return; 
-        }   
+        }    
         
         const node = dialogData[nodeKey];
         if(!node) return;
@@ -743,7 +748,7 @@
         botContainer.addEventListener('click', (e) => {
           e.stopPropagation();
           if(botContainer.speechTimer) clearTimeout(botContainer.speechTimer); 
-          botSpeech.textContent = "";                 
+          botSpeech.textContent = "";                  
           botContainer.classList.remove('speaking'); 
           if(rpgDialogue.classList.contains('active')) closeDialogue();
           else openDialogue();
