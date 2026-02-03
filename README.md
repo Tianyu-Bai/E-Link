@@ -1,4 +1,4 @@
-<div class="lang-en">
+<div class="lang-en" markdown="1">
 
 <div class="github-only">
   <p align="center">
@@ -32,24 +32,19 @@
      <a href="https://github.com/tianyu-bai/E-Link/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-MIT-A31F34?style=flat-square&logo=opensourceinitiative&logoColor=white" alt="License"></a>
   </div>
 
-  <img src="Videos/Demo new new.gif"
-       alt="ELINK-256 Assembly Demo GIF"
-       width="750"
-       style="border-radius: 8px;
-              box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
-              display: block;">
+  <br />
+  <img src="Videos/Demo%20new%20new.gif" 
+       alt="ELINK-256 Assembly Demo GIF" 
+       width="750" 
+       class="gif-blend" 
+       style="border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); display: block;">
 </div>
+
+---
 
 ## 📖 Overview
 
-**E-Link** (Elastomer Interconnection-based connector)：An open-source elastomer connector for high-density neural recording. It provides a robust, compact interface connecting thin-film probes to headstages for freely moving animals.
-
-<div align="center">
-  <img src="Images/001.PNG" alt="PEDAL-256 Exploded View" width="750">
-  <p style="margin-top: 5px; font-size: 0.95em; color: #3b82f6;">
-    <b>Mating Dynamics (left) and Structural Breakdown (right) of the E-Link(256) </b>
-  </p>
-</div>
+**E-Link** (Elastomer Interconnection-based connector) is an open-source, solderless, and scalable pedestal connector system designed for high-density chronic neural recording. It provides a mechanically robust and electrically reliable interface between thin-film implanted neural probes and external headstages, with a form factor optimized for freely moving animal studies.
 
 > [!NOTE]
 > **Key Innovation:** The system integrates two high-density PCBs, an anisotropic elastomeric contact interface, and a lightweight pedestal housing into a fully integrated, headstage-ready solution.
@@ -59,36 +54,36 @@
 ### 📊 Quick Specifications
 
 <div align="center">
-  <table style="margin-left: auto; margin-right: auto; width: 80%; text-align: center; border-collapse: collapse; border: 1px solid #e1e4e8;">
-    <thead>
-      <tr style="background-color: #f6f8fa; border-bottom: 2px solid #e1e4e8;">
-        <th style="padding: 10px; border: 1px solid #e1e4e8;">Specification</th>
-        <th style="padding: 10px; border: 1px solid #e1e4e8;">E-Link(256)_V1.0</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td style="padding: 8px; border: 1px solid #e1e4e8;"><b>Channel Count</b></td>
-        <td style="padding: 8px; border: 1px solid #e1e4e8;">128 or 256 Channels (Single/Dual SPI Port support)</td>
-      </tr>
-      <tr>
-        <td style="padding: 8px; border: 1px solid #e1e4e8;"><b>Total Mass</b></td>
-        <td style="padding: 8px; border: 1px solid #e1e4e8;">6.6 g (with housing)<br>2.8 g (without housing)</td>
-      </tr>
-      <tr>
-        <td style="padding: 8px; border: 1px solid #e1e4e8;"><b>Interconnect Type</b></td>
-        <td style="padding: 8px; border: 1px solid #e1e4e8;">Solderless Anisotropic Elastomer</td>
-      </tr>
-      <tr>
-        <td style="padding: 8px; border: 1px solid #e1e4e8;"><b>Compatible Acquisition System</b></td>
-        <td style="padding: 8px; border: 1px solid #e1e4e8;">Intan Recording Controller (512ch/1024ch)<br>Open-Ephys DAQ box<br>NeuroNexus Smartbox<br>OmniPlex DAQ box</td>
-      </tr>
-      <tr>
-        <td style="padding: 8px; border: 1px solid #e1e4e8;"><b>Housing Material</b></td>
-        <td style="padding: 8px; border: 1px solid #e1e4e8;">3D-Printed PEEK / Surgical Grade Resin</td>
-      </tr>
-    </tbody>
-  </table>
+ <table style="margin-left: auto; margin-right: auto; width: 80%; text-align: center; border-collapse: collapse; border: 1px solid #e1e4e8;">
+   <thead>
+     <tr style="background-color: #f6f8fa; border-bottom: 2px solid #e1e4e8;">
+       <th style="padding: 10px; border: 1px solid #e1e4e8;">Specification</th>
+       <th style="padding: 10px; border: 1px solid #e1e4e8;">E-Link(256)_V1.0</th>
+     </tr>
+   </thead>
+   <tbody>
+     <tr>
+       <td style="padding: 8px; border: 1px solid #e1e4e8;"><b>Channel Count</b></td>
+       <td style="padding: 8px; border: 1px solid #e1e4e8;">128 or 256 Channels (Single/Dual SPI Port support)</td>
+     </tr>
+     <tr>
+       <td style="padding: 8px; border: 1px solid #e1e4e8;"><b>Total Mass</b></td>
+       <td style="padding: 8px; border: 1px solid #e1e4e8;">6.6 g (with housing)<br>2.8 g (without housing)</td>
+     </tr>
+     <tr>
+       <td style="padding: 8px; border: 1px solid #e1e4e8;"><b>Interconnect Type</b></td>
+       <td style="padding: 8px; border: 1px solid #e1e4e8;">Solderless Anisotropic Elastomer</td>
+     </tr>
+     <tr>
+       <td style="padding: 8px; border: 1px solid #e1e4e8;"><b>Compatible Acquisition System</b></td>
+       <td style="padding: 8px; border: 1px solid #e1e4e8;">Intan Recording Controller (512ch/1024ch)<br>Open-Ephys DAQ box<br>NeuroNexus Smartbox<br>OmniPlex DAQ box</td>
+     </tr>
+     <tr>
+       <td style="padding: 8px; border: 1px solid #e1e4e8;"><b>Housing Material</b></td>
+       <td style="padding: 8px; border: 1px solid #e1e4e8;">3D-Printed PEEK / Surgical Grade Resin</td>
+     </tr>
+   </tbody>
+ </table>
 </div>
 
 ---
@@ -96,21 +91,21 @@
 ## ✨ Key Features
 
 * **⚡ 256-Channel High-Density Interface**
-  Compact pedestal footprint supporting high-density acquisition without increasing surgical overhead.
+ Compact pedestal footprint supporting high-density acquisition without increasing surgical overhead.
 * **🔌 Solderless Elastomeric Interconnect**
-  Uses anisotropic conductive elastomer for repeatable, alignment-tolerant electrical contact.
+ Uses anisotropic conductive elastomer for repeatable, alignment-tolerant electrical contact.
 * **🐭 Optimized for In-Vivo Research**
-  Minimal Implant Footprint Core components weigh only 2.8g (with housing removed), reducing head-heavy behavior and improving animal welfare during long-term recording sessions.
+ Minimal Implant Footprint Core components weigh only 2.8g (with housing removed), reducing head-heavy behavior and improving animal welfare during long-term recording sessions.
 * **🛠️ Modular & Scalable**
-  Separable housing, PCBs, and protective cap for rapid iteration and troubleshooting.
+ Separable housing, PCBs, and protective cap for rapid iteration and troubleshooting.
 * **🧪 Surgical-Grade Design**
-  Textured sidewalls for superior adhesion with dental cement or UV-curable resin.
+ Textured sidewalls for superior adhesion with dental cement or UV-curable resin.
 <div align="center">
-  <img src="Videos/Animation%20repeat.gif" 
-       alt="ELINK-256 Animation GIF" 
-       class="gif-blend" 
-       width="500" 
-       style="border-radius: 6px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); display: block;">
+ <img src="Videos/Animation%20repeat.gif" 
+      alt="ELINK-256 Animation GIF" 
+      class="gif-blend" 
+      width="500" 
+      style="border-radius: 6px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); display: block;">
 </div>
 
 ---
@@ -118,36 +113,44 @@
 ## 🧩 System Components
 
 <div align="center">
-  <table border="1" style="border-collapse: collapse; width: 90%; text-align: center;">
-    <thead>
-      <tr style="background-color: #f2f2f2;">
-        <th>Component</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><b>Pedestal Housing</b></td>
-        <td>3D-printed/machined pedestal providing structural support and cranial fixation</td>
-      </tr>
-      <tr>
-        <td><b>Customized 256Ch Headstage</b></td>
-        <td>Form-factor optimized recording interface for high-density 128/256-channel signal acquisition</td>
-      </tr>
-      <tr>
-        <td><b>Foam Washer</b></td>
-        <td>Provides compliant compression to ensure uniform electrical contact across the elastomeric interface</td>
-      </tr>
-      <tr>
-        <td><b>Adapter PCB</b></td>
-        <td>High-density 4-layer PCB for routing signals from thin-film probes to headstage ball array pattern</td>
-      </tr>
-      <tr>
-        <td><b>Surgical Cap</b></td>
-        <td>Protective enclosure preserving electrical and mechanical integrity throughout chronic experiments</td>
-      </tr>
-    </tbody>
-  </table>
+ <table border="1" style="border-collapse: collapse; width: 90%; text-align: center;">
+   <thead>
+     <tr style="background-color: #f2f2f2;">
+       <th>Component</th>
+       <th>Description</th>
+     </tr>
+   </thead>
+   <tbody>
+     <tr>
+       <td><b>Pedestal Housing</b></td>
+       <td>3D-printed/machined pedestal providing structural support and cranial fixation</td>
+     </tr>
+     <tr>
+       <td><b>Customized 256Ch Headstage</b></td>
+       <td>Form-factor optimized recording interface for high-density 128/256-channel signal acquisition</td>
+     </tr>
+     <tr>
+       <td><b>Foam Washer</b></td>
+       <td>Provides compliant compression to ensure uniform electrical contact across the elastomeric interface</td>
+     </tr>
+     <tr>
+       <td><b>Adapter PCB</b></td>
+       <td>High-density 4-layer PCB for routing signals from thin-film probes to headstage ball array pattern</td>
+     </tr>
+     <tr>
+       <td><b>Surgical Cap</b></td>
+       <td>Protective enclosure preserving electrical and mechanical integrity throughout chronic experiments</td>
+     </tr>
+   </tbody>
+ </table>
+</div>
+
+<div align="center">
+ <br>
+ <img src="Images/001.PNG" alt="PEDAL-256 Exploded View" width="750">
+ <p style="margin-top: 5px; font-size: 0.95em; color: #cbd5e1;">
+   <b>Mating Dynamics (left) and Structural Breakdown (right) of the E-Link(256) </b>
+ </p>
 </div>
 
 ---
@@ -155,61 +158,61 @@
 ### 🛠 Bill of Materials (BOM) of the headstage
 
 <div align="center">
-  <table style="margin-left: auto; margin-right: auto; width: 90%; text-align: center; border-collapse: collapse; border: 1px solid #e1e4e8;">
-    <thead>
-      <tr style="background-color: #f6f8fa; border-bottom: 2px solid #e1e4e8;">
-        <th style="padding: 10px; border: 1px solid #e1e4e8; text-align: center;">Component</th>
-        <th style="padding: 10px; border: 1px solid #e1e4e8; text-align: center;">Description</th>
-        <th style="padding: 10px; border: 1px solid #e1e4e8; text-align: center;">Qty</th>
-        <th style="padding: 10px; border: 1px solid #e1e4e8; text-align: center;">Package</th>
-        <th style="padding: 10px; border: 1px solid #e1e4e8; text-align: center;">Notes</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;"><b>Amplifier IC</b></td>
-        <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">Intan RHD2164</td>
-        <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">4</td>
-        <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">BGA</td>
-        <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;"><b>Critical:</b> Ensure correct orientation</td>
-      </tr>
-      <tr>
-        <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;"><b>SPI Connector</b></td>
-        <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">Omnetics A7621</td>
-        <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">2</td>
-        <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">-</td>
-        <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">12-wire cable harness (32 AWG)</td>
-      </tr>
-      <tr>
-        <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;"><b>Resistors</b></td>
-        <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">Standard SMD</td>
-        <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">7</td>
-        <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">0402</td>
-        <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">LVDS Configuration</td>
-      </tr>
-      <tr>
-        <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;"><b>Capacitors</b></td>
-        <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">Standard SMD</td>
-        <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">8</td>
-        <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">0603</td>
-        <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">LVDS Configuration</td>
-      </tr>
-      <tr>
-        <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;"><b>Power LED</b></td>
-        <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">Green LED</td>
-        <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">1</td>
-        <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">0402</td>
-        <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">Power Indicator</td>
-      </tr>
-      <tr>
-        <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;"><b>Solder Balls</b></td>
-        <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">0.4 mm Lead-free</td>
-        <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">~300</td>
-        <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">-</td>
-        <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">For BGA rework/assembly</td>
-      </tr>
-    </tbody>
-  </table>
+ <table style="margin-left: auto; margin-right: auto; width: 90%; text-align: center; border-collapse: collapse; border: 1px solid #e1e4e8;">
+   <thead>
+     <tr style="background-color: #f6f8fa; border-bottom: 2px solid #e1e4e8;">
+       <th style="padding: 10px; border: 1px solid #e1e4e8; text-align: center;">Component</th>
+       <th style="padding: 10px; border: 1px solid #e1e4e8; text-align: center;">Description</th>
+       <th style="padding: 10px; border: 1px solid #e1e4e8; text-align: center;">Qty</th>
+       <th style="padding: 10px; border: 1px solid #e1e4e8; text-align: center;">Package</th>
+       <th style="padding: 10px; border: 1px solid #e1e4e8; text-align: center;">Notes</th>
+     </tr>
+   </thead>
+   <tbody>
+     <tr>
+       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;"><b>Amplifier IC</b></td>
+       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">Intan RHD2164</td>
+       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">4</td>
+       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">BGA</td>
+       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;"><b>Critical:</b> Ensure correct orientation</td>
+     </tr>
+     <tr>
+       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;"><b>SPI Connector</b></td>
+       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">Omnetics A7621</td>
+       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">2</td>
+       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">-</td>
+       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">12-wire cable harness (32 AWG)</td>
+     </tr>
+     <tr>
+       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;"><b>Resistors</b></td>
+       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">Standard SMD</td>
+       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">7</td>
+       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">0402</td>
+       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">LVDS Configuration</td>
+     </tr>
+     <tr>
+       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;"><b>Capacitors</b></td>
+       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">Standard SMD</td>
+       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">8</td>
+       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">0603</td>
+       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">LVDS Configuration</td>
+     </tr>
+     <tr>
+       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;"><b>Power LED</b></td>
+       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">Green LED</td>
+       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">1</td>
+       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">0402</td>
+       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">Power Indicator</td>
+     </tr>
+     <tr>
+       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;"><b>Solder Balls</b></td>
+       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">0.4 mm Lead-free</td>
+       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">~300</td>
+       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">-</td>
+       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">For BGA rework/assembly</td>
+     </tr>
+   </tbody>
+ </table>
 </div>
 
 ---
@@ -255,11 +258,11 @@ If you utilize these designs, code, or assets in your research, please cite this
 This project is fully open-source. Upon acceptance of the associated paper, the complete dataset comprising **PCB fabrication files (Gerber/NC Drill)**, **BOM**, and **Mechanical CAD** will be accessible via the link below.
 
 <div align="center">
-  <p><b>👇 Bookmark the repository for future downloads:</b></p>
+ <p><b>👇 Bookmark the repository for future downloads:</b></p>
 
 <div align="center">
-  <a href="https://github.com/Tianyu-Bai/ELINK"><img src="https://img.shields.io/badge/GitHub-View_Source_Repository-181717?style=for-the-badge&logo=github&logoColor=white" alt="View on GitHub"></a>
-  <img src="https://img.shields.io/badge/Status-Locked_until_Publication-A31F34?style=for-the-badge&logo=private" alt="Status Locked">
+ <a href="https://github.com/Tianyu-Bai/ELINK"><img src="https://img.shields.io/badge/GitHub-View_Source_Repository-181717?style=for-the-badge&logo=github&logoColor=white" alt="View on GitHub"></a>
+ <img src="https://img.shields.io/badge/Status-Locked_until_Publication-A31F34?style=for-the-badge&logo=private" alt="Status Locked">
 </div>
 </div>
 
@@ -277,15 +280,12 @@ Special thanks to the members of the **MINE Lab** and the **Thayer School of Eng
 
 Copyright © 2026 Tianyu Bai <a href="https://tianyu-bai.github.io/"><img src="https://img.shields.io/badge/Website-Tianyu%20Bai-0077B5?style=flat-square&logo=github&logoColor=white" alt="Website"></a>
 
-This project is open-source hardware and available under the **Licenses**. Click the badge below for full license details.
-
-* **Hardware Source Files** (KiCad/Gerbers/STL files): Licensed under the **MIT License**.
-* **Documentation, Schematics (PDF), and Images**: Licensed under **CC BY 4.0 International**.
+This project is open-source and available under the **MIT License**. Click the badge below for full license details.
 
 <div align="center">
-  <a href="https://github.com/tianyu-bai/E-Link/blob/main/LICENSE">
-    <img src="https://img.shields.io/badge/License-MIT-A31F34?style=flat-square&logo=opensourceinitiative&logoColor=white" alt="License">
-  </a>
+ <a href="https://github.com/tianyu-bai/E-Link/blob/main/LICENSE">
+   <img src="https://img.shields.io/badge/License-MIT-A31F34?style=flat-square&logo=opensourceinitiative&logoColor=white" alt="License">
+ </a>
 </div>
 
 </div>
@@ -294,13 +294,13 @@ This project is open-source hardware and available under the **Licenses**. Click
   <br>
   <hr>
   <p align="center" style="font-size: 1.5em; font-weight: bold; margin: 20px 0;">
-    🇨🇳 Chinese Version / 中文版
+    👇 🇨🇳 Chinese Version / 中文版 👇
   </p>
   <hr>
   <br>
 </div>
 
-<div class="lang-zh">
+<div class="lang-zh" markdown="1">
 
 <div class="github-only">
   <p align="center">
@@ -334,24 +334,19 @@ This project is open-source hardware and available under the **Licenses**. Click
      <a href="https://github.com/tianyu-bai/E-Link/blob/main/LICENSE"><img src="https://img.shields.io/badge/开源协议-MIT-A31F34?style=flat-square&logo=opensourceinitiative&logoColor=white" alt="License"></a>
   </div>
 
-  <img src="Videos/Demo new new.gif"
-       alt="ELINK-256 组装演示 GIF"
-       width="750"
-       style="border-radius: 8px;
-              box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
-              display: block;">
+  <br />
+  <img src="Videos/Demo%20new%20new.gif" 
+       alt="ELINK-256 组装演示 GIF" 
+       width="750" 
+       class="gif-blend" 
+       style="border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); display: block;">
 </div>
+
+---
 
 ## 📖 概览
 
 **E-Link** (基于弹性体互连的连接器)：一种用于高密度神经记录的开源弹性体连接器。它提供了一个稳健、紧凑的接口，用于将薄膜探针连接到自由活动动物的头部放大器（Headstage）。
-
-<div align="center">
-  <img src="Images/001.PNG" alt="PEDAL-256 分解图" width="750">
-  <p style="margin-top: 5px; font-size: 0.95em; color: #3b82f6;">
-    <b>E-Link(256) 的插拔动态（左）和结构分解（右）</b>
-  </p>
-</div>
 
 > [!NOTE]
 > **核心创新：** 该系统将两个高密度 PCB、一个各向异性弹性体接触界面和一个轻量级基座外壳集成到一个完全一体化的、即插即用的头部采集方案中。
@@ -450,6 +445,14 @@ This project is open-source hardware and available under the **Licenses**. Click
       </tr>
     </tbody>
   </table>
+</div>
+
+<div align="center">
+  <br>
+  <img src="Images/001.PNG" alt="PEDAL-256 分解图" width="750">
+  <p style="margin-top: 5px; font-size: 0.95em; color: #cbd5e1;">
+    <b>E-Link(256) 的插拔动态（左）和结构分解（右）</b>
+  </p>
 </div>
 
 ---
