@@ -153,11 +153,20 @@
     body.light-mode .typewriter-container { color: #2563eb; }
 
     /* 3. 表格修正：填充色调整 */
-    body.light-mode #main_content table { background: transparent; }
+    body.light-mode #main_content table { background: #f8fafc; /* 极浅的蓝灰色 (Slate 50) */ }
     /* 表头：使用比容器稍深的灰色 (#e2e8f0)，否则会看不清表头范围 */
-    body.light-mode #main_content th { color: #1e40af; background: #e2e8f0 !important; border-color: #cbd5e1; }
+    body.light-mode #main_content th { color: #f3f4f6; background: #f3f4f6 !important; border-color: #e5e7eb; }
     /* 表格内容：深色文字，边框加深一点 */
     body.light-mode #main_content td { border-color: #cbd5e1; color: #0f172a; }
+
+
+
+/* 表格内容：边框颜色减淡，文字使用柔和的深灰 */
+body.light-mode #main_content td { 
+    border-color: #e5e7eb;       /* 与表头一致的中性灰 */
+    color: #4b5563;              /* 稍微降低文字对比度，更护眼 */
+}
+   
 
     body.light-mode .rpg-close { color: #94a3b8; }
     body.light-mode .rpg-close:hover { color: #ef4444; }
