@@ -24,7 +24,7 @@
     <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=30&pause=1000&color=60a5fa&center=true&vCenter=true&width=1100&lines=An+Open-Source,+Elastomer+Interconnection-based;Connector+for+Flexible+Neural+Interfaces" />
 </div>
 
-  <div  align="center" style="margin-top: 15px;">
+  <div align="center" style="margin-top: 15px;">
     <a href="https://sites.dartmouth.edu/fang-group/"><img src="https://img.shields.io/badge/Dartmouth-MINE--Lab-00693E?style=flat-square" alt="MINE Lab"></a>
     <img src="https://img.shields.io/badge/Verified-256ch-FFA500?style=flat-square" alt="Verified" />
     <a href="https://tianyu-bai.github.io/"><img src="https://img.shields.io/badge/Website-Tianyu%20Bai-0077B5?style=flat-square&logo=github&logoColor=white" alt="Website"></a>
@@ -316,7 +316,7 @@ This project is open-source hardware and available under the **Licenses**. Click
     <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=30&pause=1000&color=60a5fa&center=true&vCenter=true&width=1100&lines=An+Open-Source,+Elastomer+Interconnection-based;Connector+for+Flexible+Neural+Interfaces" />
 </div>
 
-  <div  align="center" style="margin-top: 15px;">
+  <div align="center" style="margin-top: 15px;">
     <a href="https://sites.dartmouth.edu/fang-group/"><img src="https://img.shields.io/badge/Dartmouth-MINE--Lab-00693E?style=flat-square" alt="MINE Lab"></a>
     <img src="https://img.shields.io/badge/已验证-256通道-FFA500?style=flat-square" alt="Verified" />
     <a href="https://tianyu-bai.github.io/"><img src="https://img.shields.io/badge/个人主页-Tianyu%20Bai-0077B5?style=flat-square&logo=github&logoColor=white" alt="Website"></a>
@@ -377,7 +377,7 @@ This project is open-source hardware and available under the **Licenses**. Click
       </tr>
       <tr>
         <td style="padding: 8px; border: 1px solid #e1e4e8;"><b>外壳材料</b></td>
-        <td style="padding: 8px; border: 1px solid #e1e4e8;">3D 打印材料 / 手术级树脂</td>
+        <td style="padding: 8px; border: 1px solid #e1e4e8;">3D 打印 PEEK / 手术级树脂</td>
       </tr>
     </tbody>
   </table>
@@ -444,7 +444,7 @@ This project is open-source hardware and available under the **Licenses**. Click
 
 ---
 
-### 🛠 放大器物料清单 (BOM)
+### 🛠 头部放大器物料清单 (BOM)
 
 <div align="center">
   <table style="margin-left: auto; margin-right: auto; width: 90%; text-align: center; border-collapse: collapse; border: 1px solid #e1e4e8;">
@@ -508,11 +508,11 @@ This project is open-source hardware and available under the **Licenses**. Click
 
 ## 👥 开发者与实验室
 
-本项目由达特茅斯学院的 **MINE Lab** 主导开发。<a href="https://sites.dartmouth.edu/fang-group/"><img src="https://img.shields.io/badge/访问网站_%E2%86%97-MINE_Lab-00693E?style=flat-square" alt="MINE Lab"></a>
+本项目由达特茅斯学院的 **MINE Lab** 开发。<a href="https://sites.dartmouth.edu/fang-group/"><img src="https://img.shields.io/badge/访问网站_%E2%86%97-MINE_Lab-00693E?style=flat-square" alt="MINE Lab"></a>
 
-* **白天宇** (设计，开发) <a href="https://tianyu-bai.github.io/"><img src="https://img.shields.io/badge/个人主页-Tianyu%20Bai-0077B5?style=flat-square&logo=github&logoColor=white" alt="Website"></a>
-* **李根博士**
-* **方辉教授** <a href="https://engineering.dartmouth.edu/community/faculty/hui-fang"><img src="https://img.shields.io/badge/首席研究员_(PI)-444444?style=flat-square&logoColor=white" />
+* **Tianyu Bai** (首席设计师) <a href="https://tianyu-bai.github.io/"><img src="https://img.shields.io/badge/个人主页-Tianyu%20Bai-0077B5?style=flat-square&logo=github&logoColor=white" alt="Website"></a>
+* **Gen Li, Ph.D.**
+* **Hui Fang, Ph.D.** <a href="https://engineering.dartmouth.edu/community/faculty/hui-fang"><img src="https://img.shields.io/badge/首席研究员_(PI)-444444?style=flat-square&logoColor=white" />
 
 ---
 
@@ -520,16 +520,16 @@ This project is open-source hardware and available under the **Licenses**. Click
 
 这项工作目前正在 **IEEE Journal on Flexible Electronics (JFLEX)** 审稿中。
 
-本仓库中的硬件设计和视觉资产直接对应于投稿中描述的系统。为了维护同行评审过程的完整性：
+本仓库中的硬件设计和视觉资产直接对应于投稿手稿中描述的系统。为了维护同行评审过程的完整性：
 
 * **完整引用**：正式录用后，最终论文的永久链接将立即在此处更新。
 * **预印本/全文**：*即将推出。*
   
-* 我们欢迎神经工程科研社区的反馈与合作！
+* 我们欢迎神经工程社区的反馈与合作！
 
-* **咨询**：如需获取技术设计文件或有任何疑问，请邮件联系：
-    * **白天宇** ([<font color="#60a5fa">Tianyu.Bai.TH@Dartmouth.edu</font>](mailto:Tianyu.Bai.TH@Dartmouth.edu))
-    * **方辉教授** ([<font color="#60a5fa">Hui.Fang@Dartmouth.edu</font>](mailto:Hui.Fang@Dartmouth.edu))
+* **咨询**：如需获取技术设计文件或有任何疑问，请联系：
+    * **Tianyu Bai** ([<font color="#60a5fa">Tianyu.Bai.TH@Dartmouth.edu</font>](mailto:Tianyu.Bai.TH@Dartmouth.edu))
+    * **Prof. Hui Fang** ([<font color="#60a5fa">Hui.Fang@Dartmouth.edu</font>](mailto:Hui.Fang@Dartmouth.edu))
 
 ---
 
