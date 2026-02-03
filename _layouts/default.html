@@ -586,29 +586,12 @@
       el: "#vanta-bg",
       mouseControls: true, touchControls: true, gyroControls: false,
       minHeight: 200.00, minWidth: 200.00, scale: 1.00, scaleMobile: 1.00,
-      color: 0x3b82f6, backgroundColor: 0x0a0a0f, points: 18.00, maxDistance: 28.00, spacing: 16.00, showDots: true
+      color: 0x3b82f6, backgroundColor: 0x0a0a0f, points: 16.00, maxDistance: 22.00, spacing: 16.00, showDots: true
+     speed: 1.50           // 调至 1.5 左右：这是产生“呼吸感”的黄金频率
     });
-         /* --- 关键呼吸感调节 --- */
-       points: 12.00,        // 降低点数：点越少，明暗对比越强烈
-       maxDistance: 24.00,   // 增大距离：线条连接和断开时的“明灭”感更强
-       spacing: 16.00,       // 增大间距：让画面有更多留白，增加深度感
-       showDots: false,      // 隐藏圆点：只看线条的呼吸
-  
-  /* --- 速度控制 --- */
-  speed: 1.50           // 调至 1.5 左右：这是产生“呼吸感”的黄金频率
-});
-      // 监听主题切换，动态调整背景色以维持呼吸感
-function updateVantaTheme(isLight) {
-  if (vantaEffect) {
-    vantaEffect.setOptions({
-      backgroundColor: isLight ? 0xffffff : 0x0a0a0f,
-      color: isLight ? 0x3b82f6 : 0x3b82f6
-    });
-  }
-}
  
     const textsEN = ["Welcome to this webpage！", "Thanks for visiting us!", "Stay tuned!"];
-    const textsZH = ["欢迎访问本网页！", "感谢您的关注！", "有空常来看！"];
+    const textsZH = ["欢迎访问本网页！", "感谢您的关注！", "欢迎常来访问！"];
     let texts = textsEN; // 默认文本
 
     let textIdx = 0, charIdx = 0, isDeleting = false;
@@ -657,7 +640,7 @@ function updateVantaTheme(isLight) {
         if(idleInterval) clearInterval(idleInterval);
         
         const enTips = ["Click me for guide!", "I'm here to help!"];
-        const zhTips = ["我是易连守护者", "有问题随时敲我脑门！"];
+        const zhTips = ["我是E-Link的管家", "有问题随时‘敲’我哈！"];
         
         // 循环执行函数
         const runCycle = () => {
