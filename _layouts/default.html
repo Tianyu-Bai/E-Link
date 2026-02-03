@@ -480,7 +480,7 @@
 
     const dialogData_ZH = {
       "start": {
-        text: "你好！我是连接器守护者。我会保护你的神经接口。",
+        text: "你好！我是易连的守护者。由我来保护你的脑机探针。",
         options: [ { text: "🚀 开始探索！", next: "root_menu" } ]
       },
       "root_menu": {
@@ -523,24 +523,24 @@
         options: [ { text: "很适合小鼠/大鼠。", next: "specs_menu" } ]
       },
       "thermal": {
-        text: "我很冷静。稳态温度仅为 30.5°C，远低于 37°C 的生物阈值。无需主动散热。",
+        text: "我运转冷静。稳态温度仅为 30.5°C，远低于 37°C 的生物阈值。无需主动散热。",
         options: [ { text: "安全确认。", next: "specs_menu" } ]
       },
       "noise": {
-        text: "晶莹剔透。我的本底噪声为 2.68 ± 0.46 µV RMS，达到了 Intan 芯片的理论极限。信号无损耗。",
+        text: "晶莹剔透。我的本底噪声为 2.68 ± 0.46 µV RMS，接近了 Intan 芯片的理论极限。信号无损耗。",
         options: [ { text: "参数很强。", next: "specs_menu" } ]
       },
       "reliability_menu": {
-        text: "我经久耐用。你担心什么？",
+        text: "我经久耐用。你可能担心什么？",
         options: [
           { text: "寿命 (插拔次数)", next: "cycles" },
           { text: "如果对不准怎么办？", next: "misalignment" },
-          { text: "接触电阻？", next: "impedance" },
+          { text: "接触电阻多大？", next: "impedance" },
           { text: "返回主菜单", next: "root_menu" }
         ]
       },
       "cycles": {
-        text: "已验证 100 次以上的插拔循环，连接良率 >97%。弹性体几乎没有磨损。",
+        text: "已验证 100 次以上的插拔循环，连接良率 >97%。弹性导电体几乎没有磨损。",
         options: [ { text: "靠谱。", next: "reliability_menu" } ]
       },
       "misalignment": {
@@ -590,8 +590,8 @@
       color: 0x3b82f6, backgroundColor: 0x0a0a0f, points: 18.00, maxDistance: 28.00, spacing: 16.00, showDots: true
     });
  
-    const textsEN = ["Welcome to this webpage", "Thanks for visiting us!"];
-    const textsZH = ["欢迎访问本网页", "感谢您的关注！"];
+    const textsEN = ["Welcome to this webpage！", "Thanks for visiting us!"，"Stay tuned!"];
+    const textsZH = ["欢迎访问本网页！", "感谢您的关注！", "有空常来看！"];
     let texts = textsEN; // 默认文本
 
     let textIdx = 0, charIdx = 0, isDeleting = false;
