@@ -260,6 +260,33 @@
  
     /* --- [手机端适配 - 左右钉死版] --- */
     @media (max-width: 768px) { 
+      /* ▼▼▼ 新增：让机器人气泡在手机上自动换行 & 完美定位 ▼▼▼ */
+      #bot-speech {
+        white-space: normal !important;  /* 核心：允许文字换行 */
+        max-width: 200px !important;     /* 限制最大宽度，变成窄条 */
+        width: max-content !important;   /* 宽度根据文字自适应 */
+        height: auto !important;         /* 高度自适应 */
+        line-height: 1.5;                /* 增加行高，阅读更舒适 */
+        
+        /* 位置调整：紧贴机器人右侧，防止超出屏幕 */
+        left: auto !important;
+        right: 0 !important;
+        top: -55px !important;           /* 稍微往上提一点点，给多行文字留空间 */
+        
+        /* 气泡小尾巴指向右下角（指向机器人头顶） */
+        border-radius: 12px 12px 0 12px !important; 
+        
+        /* ★重要：重置 PC 端的位移，但保留缩放动画的基础 */
+        transform: translateX(0) scale(0) !important; 
+        transform-origin: bottom right !important; /* 动画从右下角冒出来 */
+      }
+
+      /* 手机端说话时的状态：确保它能弹出来 */
+      #bot-container.speaking #bot-speech {
+        transform: translateX(0) scale(1) !important;
+      }
+      /* ▲▲▲ 新增结束 ▲▲▲ */
+
       .cursor-dot, .cursor-outline { display: none; } 
       .layout-wrapper { margin-top: 40px !important; }
 
@@ -272,18 +299,16 @@
         opacity: 1 !important; 
         animation: none !important;
       }
-
-      /* 左右留 5px (极限宽度)，保证不切边 */
+      
+      /* 修复对话框在手机上的位置 */
       #bot-container #rpg-dialogue {
         position: fixed !important;
         top: auto !important; 
         bottom: 100px !important;
-        
-        left: 5px !important; 
-        right: 5px !important;
+        left: 10px !important; 
+        right: 10px !important;
         width: auto !important;
         max-width: none !important;
-        
         transform: translateY(10px) !important;
       }
       
@@ -540,7 +565,8 @@
       }
 
       function showDialogueNode(nodeKey) {
-        if(nodeKey === 'close') { closeDialogue(); botSay("Nice chatting with you. Have a good day!", 3500); return; }   // 修改了文字内容，并将时间延长到了 3500 毫秒 (3.5秒)
+        if(nodeKey === 'close') { closeDialogue(); botSay("Nice chatting with you. Have a good day!", 4600); return; }   // 修改了文字内容，并将时间延长到了 4600 毫秒 (4.6秒)
+       
         const node = dialogData[nodeKey];
         if(!node) return;
         rpgOptions.innerHTML = ''; rpgText.textContent = '';
