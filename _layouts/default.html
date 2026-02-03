@@ -27,6 +27,7 @@
       line-height: 1.6; overflow-x: hidden; 
       cursor: none; 
       scrollbar-width: thin; scrollbar-color: #3b82f6 transparent;
+      transition: color 0.5s ease; /* 文字颜色过渡 */
     }
     @media (pointer: coarse) { body { cursor: auto; } }
  
@@ -63,19 +64,17 @@
     #vanta-bg { 
       position: fixed; z-index: -5; top: 0; left: 0; width: 100%; height: 100%; 
       background: #0a0a0f; 
-      animation: pulse-bg 8s infinite ease-in-out; 
-      filter: contrast(1.2) brightness(1.1); 
     }
     #vanta-bg::after {
       content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
       background: radial-gradient(circle at center, transparent 0%, rgba(10, 10, 15, 0.4) 100%);
       pointer-events: none;
+      transition: background 0.5s ease;
     }
  
     /* --- 4. 布局包裹器 --- */
     .layout-wrapper {
       position: relative; max-width: 860px; 
-      /* [修改点] 减少顶部留白，整体上移 (原140px -> 100px) */
       margin: 100px auto 60px; 
       z-index: 10;
       perspective: 1000px;
@@ -83,9 +82,7 @@
  
     /* --- 5. 机器人核心 --- */
     #bot-container { 
-      /* [默认状态 - PC顶部] */
       position: absolute; 
-      /* [修改点] 配合内容上移，机器人也上移 (原110px -> 70px) */
       top: 70px; 
       left: 50%; 
       transform: translateX(-50%); 
@@ -106,19 +103,18 @@
       opacity: 1 !important;
     }
 
-    /* [修改点] 紫色光圈 */
+    /* 紫色光圈 */
     .pulse-ring {
       position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
       width: 100px; height: 100px;
       border-radius: 50%; 
-      border: 2px solid rgba(168, 85, 247, 0.6); /* 改为紫色 */
+      border: 2px solid rgba(168, 85, 247, 0.6); 
       opacity: 0; z-index: -1; animation: pulse-ring-anim 3s infinite; pointer-events: none;
     }
     #bot-container.hint-removed .pulse-ring { opacity: 0; animation: none; }
 
     .bot-head { width: 100px; height: 50px; background: #ffffff; border: 2px solid #e0e7ff; border-bottom: none; border-radius: 50px 50px 20px 20px; margin: 0 auto; position: relative; box-shadow: 0 -5px 15px rgba(59, 130, 246, 0.15); display: flex; justify-content: center; align-items: center; gap: 10px; padding-top: 5px; animation: float-bot 3s ease-in-out infinite; }
     
-    /* 眼睛基础样式 */
     .bot-eye { 
       width: 28px; height: 28px; background: #bfdbfe; 
       border-radius: 50%; border: 1px solid #93c5fd; 
@@ -128,20 +124,18 @@
     .bot-pupil { width: 14px; height: 14px; background: #1e3a8a; border-radius: 50%; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); transition: opacity 0.2s; }
     .bot-lid { position: absolute; top: 0; left: 0; width: 100%; height: 0%; background: #ffffff; z-index: 10; animation: blink 4s infinite; }
     
-    /* 说话时的眯眯眼 (Smile) */
     #bot-container.speaking .bot-eye { 
       background: transparent; 
       border: none;
       box-shadow: none; 
       width: 22px; height: 12px;
       border-top: 3px solid #3b82f6; 
-      border-radius: 22px 22px 0 0; /* 倒U形 */
+      border-radius: 22px 22px 0 0; 
       margin-top: 8px;
     }
     #bot-container.speaking .bot-pupil, 
     #bot-container.speaking .bot-lid { opacity: 0; }
 
-    /* 嘴巴：平时隐藏，说话出现 */
     .bot-mouth {
       position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%);
       width: 6px; height: 6px; background: #3b82f6; border-radius: 4px;
@@ -150,10 +144,9 @@
     
     #bot-container.speaking .bot-mouth {
       opacity: 1; width: 14px; background: transparent; border: 2px solid #3b82f6;
-      animation: mouth-talk 0.25s infinite alternate; /* 嘴巴一张一合 */
+      animation: mouth-talk 0.25s infinite alternate; 
     }
 
-    /* 天线 & 呼吸灯 */
     .bot-antenna { position: absolute; top: -25px; left: 50%; transform: translateX(-50%); width: 2px; height: 25px; background: #e0e7ff; }
     .bot-antenna::after { content: ''; position: absolute; top: -6px; left: -3px; width: 8px; height: 8px; border-radius: 50%; animation: pulse-antenna-breath 2s infinite ease-in-out; }
  
@@ -192,7 +185,6 @@
     }
     #rpg-dialogue.active { opacity: 1; transform: translateX(-50%) translateY(0); pointer-events: auto; }
     
-    /* PC端：底部固定模式 */
     #bot-container.fixed-mode #rpg-dialogue {
         top: auto; bottom: 80px; 
         left: auto; right: 0; 
@@ -244,6 +236,60 @@
     .nav-badges a:hover img { animation: float-hover 2s ease-in-out infinite; box-shadow: 0 8px 20px rgba(59, 130, 246, 0.35); transform: scale(1.1); }
     .nav-badges img.rippling { animation: ripple-wave 0.5s forwards; }
       
+    /* --- 8. 主题切换按钮 --- */
+    #theme-toggle {
+      position: fixed; top: 20px; right: 20px;
+      width: 40px; height: 40px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      display: flex; justify-content: center; align-items: center;
+      cursor: pointer; z-index: 10000;
+      backdrop-filter: blur(10px);
+      transition: all 0.3s ease;
+      font-size: 1.2rem;
+    }
+    #theme-toggle:hover { background: rgba(255, 255, 255, 0.2); transform: scale(1.1); }
+
+    /* --- 9. 浅色模式样式 overrides --- */
+    body.light-mode {
+      color: #1e293b; /* 深灰文字 */
+    }
+    body.light-mode #vanta-bg::after {
+      background: radial-gradient(circle at center, transparent 0%, rgba(255, 255, 255, 0.6) 100%);
+    }
+    body.light-mode .container {
+      background: rgba(255, 255, 255, 0.65); /* 浅色半透明背景 */
+      border-color: rgba(0, 0, 0, 0.1);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.05);
+    }
+    body.light-mode #rpg-dialogue {
+      background: rgba(255, 255, 255, 0.95);
+      border-color: #cbd5e1;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+    }
+    body.light-mode #rpg-text { color: #334155; }
+    body.light-mode .rpg-btn {
+      background: rgba(37, 99, 235, 0.1);
+      color: #2563eb;
+      border-color: rgba(37, 99, 235, 0.2);
+    }
+    body.light-mode .rpg-btn:hover {
+      background: rgba(37, 99, 235, 0.2);
+      color: #1d4ed8;
+    }
+    body.light-mode #bot-speech {
+      background: rgba(255, 255, 255, 0.95);
+      color: #1e293b;
+      border-color: #cbd5e1;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    }
+    body.light-mode .typewriter-container { color: #2563eb; }
+    body.light-mode #main_content th { color: #2563eb; }
+    body.light-mode #main_content td { border-color: rgba(0,0,0,0.1); }
+    body.light-mode .rpg-close { color: #94a3b8; }
+    body.light-mode .rpg-close:hover { color: #ef4444; }
+
     /* --- 动画库 --- */
     @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     @keyframes float-bot { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
@@ -285,9 +331,10 @@
       #bot-container.speaking #bot-speech {
         transform: translateX(0) scale(1) !important;
       }
-      /* ▲新增结束 ▲ */
 
       .cursor-dot, .cursor-outline { display: none; } 
+      
+      /* ★★★ 关键点：保持原有手机端布局位置不变 ★★★ */
       .layout-wrapper { margin-top: 40px !important; }
 
       #bot-container { 
@@ -318,11 +365,20 @@
 
       .container { padding: 30px 20px; } 
       #main_content { overflow-x: auto; }
+      
+      /* 手机端按钮微调：稍微变小，防止挡住太多内容 */
+      #theme-toggle {
+        top: 15px; right: 15px;
+        width: 35px; height: 35px;
+        font-size: 1rem;
+      }
     }
   </style>
  </head>
  
  <body>
+  <div id="theme-toggle" title="Switch Theme">☀️</div>
+
   <div class="cursor-dot"></div>
   <div class="cursor-outline"></div>
   <div id="progress-bar"></div>
@@ -343,7 +399,7 @@
       <div class="bot-mouth"></div>
     </div>
   </div>
-
+ 
   <div class="layout-wrapper">
     <div class="container">
       <section id="main_content">
@@ -390,7 +446,7 @@
         options: [
           { text: "Why is 'Zero Force' better?", next: "zero_force" },
           { text: "Can it scale up?", next: "scalability" },
-          { text: "Back to Menu", next: "root_menu" } // 返回主菜单，而不是开场白
+          { text: "Back to Menu", next: "root_menu" } 
         ]
       },
       "zero_force": {
@@ -477,7 +533,8 @@
         options: [ { text: "Thanks, Guardian!", next: "close" } ]
       }
     };
-   
+    
+    // 初始化 Vanta (默认暗色)
     let vantaEffect = VANTA.NET({
       el: "#vanta-bg",
       mouseControls: true, touchControls: true, gyroControls: false,
@@ -512,16 +569,45 @@
       const rpgClose = document.querySelector('.rpg-close');
       let typeTimer = null;
 
+      // --- 主题切换逻辑 (新增) ---
+      const themeToggle = document.getElementById('theme-toggle');
+      let isLight = false;
+      
+      themeToggle.addEventListener('click', () => {
+        isLight = !isLight;
+        document.body.classList.toggle('light-mode');
+        
+        if (isLight) {
+          themeToggle.textContent = "🌙"; // 变成月亮图标
+          // 更新 Vanta 为浅色风格 (白底，深蓝线)
+          if (vantaEffect) {
+            vantaEffect.setOptions({
+              backgroundColor: 0xffffff,
+              color: 0x2563eb // 深蓝色，对比度更高
+            });
+          }
+        } else {
+          themeToggle.textContent = "☀️"; // 变成太阳图标
+          // 恢复 Vanta 为深色风格
+          if (vantaEffect) {
+            vantaEffect.setOptions({
+              backgroundColor: 0x0a0a0f,
+              color: 0x3b82f6
+            });
+          }
+        }
+      });
+
       let mouseX = window.innerWidth / 2;
       let mouseY = 100;
-
+ 
       window.addEventListener('mousemove', (e) => {
         mouseX = e.clientX;
         mouseY = e.clientY;
         
         if(cursorDot) { cursorDot.style.left = `${mouseX}px`; cursorDot.style.top = `${mouseY}px`; }
         if(cursorOutline) { cursorOutline.animate({ left: `${mouseX}px`, top: `${mouseY}px` }, { duration: 500, fill: "forwards" }); }
-
+ 
         if (window.innerWidth > 768 && container) {
           const rx = (window.innerWidth / 2 - mouseX) / 50;
           const ry = (window.innerHeight / 2 - mouseY) / 50;
@@ -539,12 +625,12 @@
           p.style.transform = `translate(calc(-50% + ${Math.cos(angle) * dist}px), calc(-50% + ${Math.sin(angle) * dist}px))`;
         });
       });
-
+ 
       window.addEventListener('scroll', () => {
         const scrolled = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
         const pb = document.getElementById("progress-bar");
         if(pb) pb.style.width = scrolled + "%";
-
+ 
         if(botContainer && window.innerWidth > 768) {
           if(window.scrollY > 200) {
             botContainer.classList.add('fixed-mode');
@@ -553,7 +639,7 @@
           }
         }
       });
-
+ 
       function botSay(text, duration = 2000) {
         if(!botSpeech || !botContainer || rpgDialogue.classList.contains('active')) return; 
         botSpeech.textContent = text;
@@ -563,10 +649,10 @@
           botContainer.classList.remove('speaking');
         }, duration);
       }
-
+ 
       function showDialogueNode(nodeKey) {
-        if(nodeKey === 'close') { closeDialogue(); botSay("Nice chatting with you. Have a good day!", 3600); return; }   // 修改了文字内容，并将时间延长到了 3600 毫秒 (3.6秒)
-       
+        if(nodeKey === 'close') { closeDialogue(); botSay("Nice chatting with you. Have a good day!", 3600); return; }   
+        
         const node = dialogData[nodeKey];
         if(!node) return;
         rpgOptions.innerHTML = ''; rpgText.textContent = '';
@@ -586,7 +672,7 @@
           }
         }, 30);
       }
-
+ 
       function openDialogue() {
         if(rpgDialogue.classList.contains('active')) return;
         rpgDialogue.classList.add('active');
@@ -594,32 +680,28 @@
         botContainer.classList.add('hint-removed'); 
         showDialogueNode('start');
       }
-
+ 
       function closeDialogue() {
         rpgDialogue.classList.remove('active');
         botContainer.classList.remove('speaking');
         setTimeout(() => { rpgText.textContent = ''; rpgOptions.innerHTML = ''; }, 300);
       }
-
+ 
       if(botContainer) {
         botContainer.addEventListener('click', (e) => {
           e.stopPropagation();
-
-          // ▼▼▼ 新增：只要点击机器人，立刻清除头顶的 "Click me" 提示 ▼▼▼
-          if(botContainer.speechTimer) clearTimeout(botContainer.speechTimer); // 停止倒计时
-          botSpeech.textContent = "";                // 清空文字
-          botContainer.classList.remove('speaking'); // 立即隐藏气泡
-          // ▲▲▲ 新增结束 ▲▲▲
-
-          // 原有的开关对话框逻辑
+ 
+          if(botContainer.speechTimer) clearTimeout(botContainer.speechTimer); 
+          botSpeech.textContent = "";                 
+          botContainer.classList.remove('speaking'); 
+ 
           if(rpgDialogue.classList.contains('active')) closeDialogue();
           else openDialogue();
         });
       }
-
-      // [修改点] 停留时间改为 10秒
+ 
       setTimeout(() => botSay("Click me for guide!", 10000), 1000);
-
+ 
       const badges = document.querySelectorAll('.nav-badges a');
       badges.forEach(b => {
         b.addEventListener('mouseenter', () => {
