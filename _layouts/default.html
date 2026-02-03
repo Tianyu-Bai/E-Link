@@ -18,7 +18,7 @@
     /* --- 0. 全局设置 --- */
     .github-only { display: none !important; }
     
-    /* 🔥【关键修改】默认隐藏中文，显示英文，并添加淡入动画 */
+    /* 🔥 默认隐藏中文，显示英文，并添加淡入动画 */
     .lang-zh { display: none; animation: fadeIn 0.5s ease; }
     .lang-en { display: block; animation: fadeIn 0.5s ease; }
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
@@ -94,13 +94,32 @@
       transform: scale(0.9) !important; opacity: 1 !important;
     }
 
+    /* 🔥 修改部分：涟漪光圈 */
     .pulse-ring {
       position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
       width: 100px; height: 100px; border-radius: 50%; 
-      border: 2px solid rgba(168, 85, 247, 0.6); 
-      opacity: 0; z-index: -1; animation: pulse-ring-anim 3s infinite; pointer-events: none;
+      border: 2px solid rgba(168, 85, 247, 0.5); /* 稍微调低透明度 */
+      opacity: 0; z-index: -1; 
+      pointer-events: none;
+      
+      /* 修改 1: 默认改为 6秒，非常缓慢的涟漪 */
+      animation: pulse-ring-anim 6s infinite cubic-bezier(0.4, 0, 0.6, 1);
     }
-    #bot-container.hint-removed .pulse-ring { opacity: 0; animation: none; }
+
+    /* 🔥 修改 2: 当机器人处于 speaking (点击/交互) 状态时，动画加速到 1.5秒 */
+    #bot-container.speaking .pulse-ring {
+      animation-duration: 1.5s;
+      border-color: rgba(59, 130, 246, 0.8); /* 点击变蓝，反馈更明显 */
+    }
+
+    /* 🔥 修改 3: 优化动画关键帧，扩散范围更大 (scale 2.5) */
+    @keyframes pulse-ring-anim { 
+      0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; } 
+      30% { opacity: 0.6; }
+      100% { transform: translate(-50%, -50%) scale(2.5); opacity: 0; } 
+    }
+
+    /* 注意：我删除了 .hint-removed 隐藏光圈的代码，这样点击后光圈依然存在 */
 
     .bot-head { width: 100px; height: 50px; background: #ffffff; border: 2px solid #e0e7ff; border-bottom: none; border-radius: 50px 50px 20px 20px; margin: 0 auto; position: relative; box-shadow: 0 -5px 15px rgba(59, 130, 246, 0.15); display: flex; justify-content: center; align-items: center; gap: 10px; padding-top: 5px; animation: float-bot 3s ease-in-out infinite; }
      
@@ -270,7 +289,7 @@
     @keyframes blink { 0%, 48%, 52%, 100% { height: 0%; } 50% { height: 100%; } }
     @keyframes botEnter { from { opacity: 0; transform: translateX(-50%) translateY(20px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
     @keyframes blink-cursor { from, to { opacity: 1; } 50% { opacity: 0; } }
-    @keyframes pulse-ring-anim { 0% { transform: translate(-50%, -50%) scale(0.8); opacity: 0.6; } 100% { transform: translate(-50%, -50%) scale(1.4); opacity: 0; } }
+    @keyframes pulse-ring-anim { 0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; } 30% { opacity: 0.6; } 100% { transform: translate(-50%, -50%) scale(2.5); opacity: 0; } }
     @keyframes pulse-antenna-breath { 0%, 100% { background: #3b82f6; box-shadow: 0 0 5px #3b82f6; } 50% { background: #93c5fd; box-shadow: 0 0 15px #60a5fa, 0 0 8px #ffffff; } }
     @keyframes mouth-talk { 0% { height: 2px; } 100% { height: 8px; border-radius: 50%; } }
  
@@ -628,7 +647,6 @@
             dialogData = dialogData_ZH; // 切换机器人数据
             texts = textsZH;            // 切换打字机文本
             langToggle.textContent = "中 / 英";
-            botSpeech.textContent = "系统语言已切换：中文"; // 给个反馈
             
             // 切换正文内容
             enContent.forEach(el => el.style.display = 'none');
@@ -639,7 +657,6 @@
             dialogData = dialogData_EN;
             texts = textsEN;
             langToggle.textContent = "EN / CN";
-            botSpeech.textContent = "System Language: English";
 
             // 切换正文内容
             enContent.forEach(el => el.style.display = 'block');
@@ -652,9 +669,20 @@
         // 如果对话框开着，强制关闭以防数据错乱
         if(rpgDialogue.classList.contains('active')) closeDialogue();
         
-        // 让机器人提示一下
+        // --- 🤖 机器人提示语逻辑修改 ---
+        // 1. 立即显示反馈
+        const feedbackText = currentLang === 'zh' ? "系统语言已切换" : "Language Switched";
+        botSpeech.textContent = feedbackText;
         botContainer.classList.add('speaking');
-        setTimeout(() => botContainer.classList.remove('speaking'), 1500);
+
+        // 2. 清除之前的定时器，防止提前关闭
+        if(botContainer.speechTimer) clearTimeout(botContainer.speechTimer);
+
+        // 3. 设置一个新的定时器：1.5秒后，自动切换成“向导提示词”并停留很久 (60秒)
+        botContainer.speechTimer = setTimeout(() => {
+            const guideText = currentLang === 'en' ? "Click me for guide!" : "点击我答疑解惑";
+            botSay(guideText, 60000); // 60秒超长待机
+        }, 1500); 
       });
 
       let mouseX = window.innerWidth / 2;
@@ -755,7 +783,11 @@
         });
       }
  
-      setTimeout(() => botSay("Click me for guide!", 10000), 1000);
+      // 🔥 修改：初始加载时显示提示语，并持续 60 秒
+      setTimeout(() => {
+          const guideText = currentLang === 'en' ? "Click me for guide!" : "点击我答疑解惑";
+          botSay(guideText, 60000); 
+      }, 1000);
  
       const badges = document.querySelectorAll('.nav-badges a');
       badges.forEach(b => {
