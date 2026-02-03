@@ -290,6 +290,16 @@ This project is open-source hardware and available under the **Licenses**. Click
 
 </div>
 
+<div class="github-only">
+  <br>
+  <hr>
+  <p align="center" style="font-size: 1.5em; font-weight: bold; margin: 20px 0;">
+    🇨🇳 Chinese Version / 中文版
+  </p>
+  <hr>
+  <br>
+</div>
+
 <div class="lang-zh">
 
 <div class="github-only">
