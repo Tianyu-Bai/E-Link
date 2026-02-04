@@ -1004,7 +1004,7 @@ body.light-mode #main_content td {
           this.len = Math.random() * 100 + 50;
           
           // 随机速度 (慢一点，像流星)
-          this.speed = Math.random() * 1 + 2;
+          this.speed = Math.random() * 1 + 1;
           
           // 随机大小 (非常细)
           this.size = Math.random() * 1 + 0.5;
@@ -1071,7 +1071,7 @@ body.light-mode #main_content td {
       
       // 创建一批流星
       const meteors = [];
-      const meteorCount = 12; // 数量适中，既不杂乱又有氛围
+      const meteorCount = 6; // 数量适中，既不杂乱又有氛围
       for(let i=0; i<meteorCount; i++) {
          const m = new Meteor();
          // 错开初始状态，避免同时出现
