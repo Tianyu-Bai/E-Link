@@ -355,7 +355,7 @@ This project is open-source and available under the **MIT License**. Click the b
 <span id="cn-overview"></span>
 ## 📖 概览
 
-**E-Link易连**，是一款基于弹性体互连技术（Elastomer Interconnection）的开源微型基座连接系统。它为柔性神经探针提供了稳固且可扩展的接口，专为自由活动动物的长期慢性实验而优化设计
+**E-Link易链**，是一款基于弹性体互连技术（Elastomer Interconnection）的开源微型基座连接系统。它为柔性神经探针提供了稳固且可扩展的接口，专为自由活动动物的长期慢性实验而优化设计
 
 <div align="center">
   <br>
@@ -458,7 +458,7 @@ This project is open-source and available under the **MIT License**. Click the b
         <td>提供柔性压缩，确保弹性导电基体上方的电气接触均匀</td>
       </tr>
       <tr>
-        <td><b>转接板 PCB (Adapter PCB)</b></td>
+        <td><b>转接PCB (Adapter PCB)</b></td>
         <td>高密度 4 层 PCB，用于将信号从薄膜探针路由到放大器的球栅阵列图案转换</td>
       </tr>
       <tr>
@@ -590,7 +590,7 @@ This project is open-source and available under the **MIT License**. Click the b
 
 开发者衷心感谢 **NIH (R01MH139342)** 和 **达特茅斯博士生创新奖学金 (Dartmouth PhD Innovation Fellowship)** 的支持。
 
-特别感谢 **MINE Lab** 和 **Thayer 工程学院** 的成员在 E-Link (256) 系统开发过程中提供的技术支持和反馈。
+特别感谢 **达特茅斯Thayer工学院** 的成员在 E-Link易链系统开发过程中提供的技术支持和反馈。
 
 ---
 
