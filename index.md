@@ -330,7 +330,7 @@ This project is open-source and available under the **MIT License**. Click the b
 </div>
   
 <div align="center">
-  <h1 style="border-bottom: none; margin-bottom: 5px; color: #60a5fa; font-size: 2em;">🚀 E-Link(易连256)</h1>
+  <h1 style="border-bottom: none; margin-bottom: 5px; color: #60a5fa; font-size: 2em;">🚀 E-Link(易链256)</h1>
   
 <div align="center">
   <img src="https://readme-typing-svg.demolab.com?font=Noto+Sans+SC&size=30&pause=100&color=60a5fa&center=true&vCenter=true&width=1100&lines=%E4%B8%80%E7%A7%8D%E5%9F%BA%E4%BA%8E%E5%BC%B9%E6%80%A7%E4%B8%AD%E9%97%B4%E5%B1%82%E5%AF%BC%E7%94%B5%E4%BD%93%E7%9A%84;%E9%AB%98%E5%AF%86%E5%BA%A6%E7%A5%9E%E7%BB%8F%E5%85%83%E7%94%B5%E4%BF%A1%E5%8F%B7%E8%AE%B0%E5%BD%95%E8%BF%9E%E6%8E%A5%E5%99%A8" alt="Typing SVG" />
