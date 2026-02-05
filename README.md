@@ -165,7 +165,17 @@ title: E-Link Home
 
 <span id="en-bom"></span>
 ### 🛠 Bill of Materials (BOM) of the headstage
+<span id="en-bom"></span>
 
+<div align="center">
+  <img src="Images/256HD.png" 
+       alt="256Ch Headstage PCBA Assembly" 
+       width="500" 
+       style="border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 20px;">
+  <p style="margin-top: 5px; font-size: 0.9em; color: #64748b;">
+    <b>Assembled 256-Channel Headstage (Top View)</b>
+  </p>
+</div>
 <div align="center">
  <table style="margin-left: auto; margin-right: auto; width: 90%; text-align: center; border-collapse: collapse; border: 1px solid #e1e4e8;">
    <thead>
@@ -370,6 +380,7 @@ This project is open-source and available under the **MIT License**. Click the b
 > [!NOTE]
 > **核心创新：** 该系统将两个高密度 PCB、一个各向异性弹性体接触界面和一个轻量级基座外壳集成到一个完全一体化的、即插即用的头部采集方案中。</p>
  **技术革新：** 采用弹性中间层导电基体技术，实现“零力插拔”，告别因按压操作导致的多脚连接器存在的针脚损坏问题。
+
 ---
 
 <span id="cn-specs"></span>
@@ -474,6 +485,16 @@ This project is open-source and available under the **MIT License**. Click the b
 <span id="cn-bom"></span>
 ### 🛠 放大器物料清单 (BOM)
 
+<div align="center">
+  <img src="Images/256HD.png" 
+       alt="256通道放大器组装实物图" 
+       width="500" 
+       style="border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 20px;">
+  <p style="margin-top: 5px; font-size: 0.9em; color: #64748b;">
+    <b>已组装的 256 通道前置放大器 (顶视图)</b>
+  </p>
+</div>
+    
 <div align="center">
   <table style="margin-left: auto; margin-right: auto; width: 90%; text-align: center; border-collapse: collapse; border: 1px solid #e1e4e8;">
     <thead>
