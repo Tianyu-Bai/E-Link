@@ -12,6 +12,7 @@
   <link rel="manifest" href="{{ '/Images/icon/site.webmanifest' | relative_url }}">
  
   <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=JetBrains+Mono&display=swap" rel="stylesheet">
    
   <style>
@@ -28,6 +29,7 @@
       cursor: none; 
       scrollbar-width: thin; scrollbar-color: #3b82f6 transparent;
       transition: color 0.5s ease;
+      background-color: #0a0a0f; /* ⚡️ 性能优化：默认背景色，防白屏 */
     }
     @media (pointer: coarse) { body { cursor: auto; } }
  
@@ -51,76 +53,18 @@
     #progress-bar { position: fixed; top: 0; left: 0; height: 3px; background: linear-gradient(90deg, #3b82f6, #60a5fa); width: 0%; z-index: 99999; transition: width 0.1s; }
  
     /* --- 2. 背景 --- */
-    #vanta-bg { position: fixed; z-index: -5; top: 0; left: 0; width: 100%; height: 100%; background: #0a0a0f; }
+    #vanta-bg { 
+      position: fixed; z-index: -5; top: 0; left: 0; width: 100%; height: 100%; 
+      background: radial-gradient(circle at center, #1e293b 0%, #0a0a0f 100%); /* ⚡️ 优化：CSS占位渐变 */
+    }
     #vanta-bg::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at center, transparent 0%, rgba(10, 10, 15, 0.4) 100%); pointer-events: none; transition: background 0.5s ease; }
  
-    /* 🔥 新增：流星特效 Canvas 层 */
+    /* 🔥 流星特效 Canvas 层 */
     #meteor-canvas {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        z-index: -4; /* 位于 Vanta(-5) 之上，内容之下 */
-        pointer-events: none; /* 确保不影响点击 */
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        z-index: -4; pointer-events: none; 
     }
-
-    /* --- 💡 流水灯按钮特效 --- */
-.btn-primary {
-  position: relative;
-  overflow: hidden;
-  background: #1e293b; /* 按钮主体色 */
-  z-index: 1;
-  border: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* 旋转的光线层 */
-.btn-primary::before {
-  content: "";
-  position: absolute;
-  z-index: -2;
-  left: -50%;
-  top: -50%;
-  width: 200%;
-  height: 200%;
-  background-color: #1e293b;
-  background-repeat: no-repeat;
-  background-size: 50% 50%, 50% 50%;
-  background-position: 0 0, 100% 0, 100% 100%, 0 100%;
-  /* 这里定义流水灯颜色：亮蓝色到透明的渐变 */
-  background-image: conic-gradient(transparent, #3b82f6, #60a5fa, transparent 30%);
-  animation: rotate-light 4s linear infinite;
-}
-
-/* 按钮内部遮罩（确保只显示边缘） */
-.btn-primary::after {
-  content: "";
-  position: absolute;
-  z-index: -1;
-  left: 2px;
-  top: 2px;
-  width: calc(100% - 4px);
-  height: calc(100% - 4px);
-  background: #1e293b;
-  border-radius: 9px; /* 比外层圆角稍微小一点点 */
-}
-
-@keyframes rotate-light {
-  100% { transform: rotate(1turn); }
-}
-
-/* 悬停增强：加快旋转速度并增加发光 */
-.btn-primary:hover::before {
-  animation-duration: 1.5s;
-  background-image: conic-gradient(transparent, #60a5fa, #ffffff, transparent 40%);
-}
-.btn-primary:hover {
-  box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
-}
-   
+    
     /* --- 3. 布局 --- */
     .layout-wrapper { position: relative; max-width: 860px; margin: 100px auto 60px; z-index: 10; perspective: 1000px; }
  
@@ -179,16 +123,64 @@
     .container:hover::before { opacity: 1; }
     #main_content table { width: 100% !important; border-collapse: collapse; margin: 20px 0; background: rgba(10, 10, 15, 0.3); border-radius: 8px; overflow: hidden; }
     #main_content th, #main_content td { padding: 12px; border: 1px solid rgba(255, 255, 255, 0.1); }
-    #main_content tr { background: rgba(30, 41, 59, 0.8) !important; }    /* ✅ 修改后的代码：只针对 thead (表头) 变色 */
+    #main_content tr { background: rgba(30, 41, 59, 0.8) !important; }
     #main_content th { color: #60a5fa; font-weight: 600; }
     .typewriter-container { font-family: 'JetBrains Mono', monospace; font-size: 1.1rem; color: #93c5fd; min-height: 1.6em; margin-bottom: 2rem; }
     .typewriter-cursor { animation: blink-cursor 0.8s infinite; border-left: 3px solid #3b82f6; margin-left: 2px; }
-    .nav-badges { margin: 2rem 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
-    .nav-badges a { opacity: 0; animation: fadeUp 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; position: relative; z-index: 2; }
-    .nav-badges img { height: 28px !important; width: auto; border-radius: 50px; box-shadow: 0 2px 6px rgba(59, 130, 246, 0.15); border: 1.5px solid white; transition: all 0.3s; mix-blend-mode: normal !important; }
-    .nav-badges a:hover img { animation: float-hover 2s ease-in-out infinite; box-shadow: 0 8px 20px rgba(59, 130, 246, 0.35); transform: scale(1.1); }
-    .nav-badges img.rippling { animation: ripple-wave 0.5s forwards; }
-        
+    
+    /* 🔥🔥🔥 [核心] Badge 顺时针流水灯特效 🔥🔥🔥 */
+    .nav-badges { margin: 2rem 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
+    
+    .nav-badges a { 
+      position: relative;
+      display: inline-flex; justify-content: center; align-items: center;
+      width: 44px; height: 44px; /* 固定容器大小 */
+      border-radius: 50%;
+      text-decoration: none; overflow: hidden; /* 必须：隐藏溢出的光效 */
+      opacity: 0; animation: fadeUp 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+      background: rgba(30, 41, 59, 0.8); /* 容器底色 */
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      z-index: 2;
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    /* 1. 旋转的锥形渐变 (光源) */
+    .nav-badges a::before {
+      content: '';
+      position: absolute;
+      top: -50%; left: -50%; width: 200%; height: 200%;
+      /* 蓝色流光 */
+      background: conic-gradient(transparent 50%, #3b82f6 80%, #60a5fa 100%);
+      animation: rotate-border 3s linear infinite; /* 顺时针旋转 */
+      z-index: 0;
+    }
+
+    /* 2. 内部遮罩 (挖空中心，形成边框感) */
+    .nav-badges a::after {
+      content: '';
+      position: absolute;
+      inset: 2px; /* 边框厚度 */
+      border-radius: 50%;
+      background: #0f172a; /* 内部深色背景 */
+      z-index: 0;
+    }
+
+    /* 3. 图标本身 (位于最上层) */
+    .nav-badges img { 
+      position: relative; z-index: 1;
+      height: 24px !important; width: auto;
+      border: none !important; box-shadow: none !important; /* 清除原有边框 */
+      pointer-events: none; /* 让点击穿透给 A 标签 */
+      transition: transform 0.3s ease;
+    }
+
+    /* 悬停特效 */
+    .nav-badges a:hover { transform: translateY(-5px); box-shadow: 0 8px 20px rgba(59, 130, 246, 0.5); }
+    .nav-badges a:hover::before { animation-duration: 1s; background: conic-gradient(transparent 20%, #60a5fa, #ffffff); } /* 加速变亮 */
+    .nav-badges a:hover img { transform: scale(1.1); }
+
+    @keyframes rotate-border { 100% { transform: rotate(1turn); } }
+    
     /* --- 按钮 & 模式 --- */
     .controls-container { position: fixed; top: 20px; right: 20px; display: flex; gap: 15px; z-index: 10000; }
     .ctrl-btn { width: 40px; height: 40px; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; backdrop-filter: blur(10px); transition: all 0.3s ease; font-size: 1.2rem; user-select: none; }
@@ -226,8 +218,7 @@
     body.light-mode #main_content tr { background: transparent !important; /* 强制去掉深色背景 */}
     /* 增加一个浅色模式下的斑马纹或鼠标悬停效果（可选） */
     body.light-mode #main_content tr:hover { background: rgba(0, 0, 0, 0.03) !important;}
-    }
-
+    
     body.light-mode .rpg-close { color: #94a3b8; }
     body.light-mode .rpg-close:hover { color: #ef4444; }
 
@@ -238,6 +229,10 @@
     /* 图片说明文字 */
     body.light-mode .img-caption { color: #2563eb; }
 
+    /* 浅色模式下的 Badge 适配 */
+    body.light-mode .nav-badges a { background: rgba(255,255,255,0.8); box-shadow: 0 4px 10px rgba(148, 163, 184, 0.3); }
+    body.light-mode .nav-badges a::after { background: #ffffff; } /* 内部改为白色 */
+
     @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     @keyframes float-bot { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
     @keyframes blink { 0%, 48%, 52%, 100% { height: 0%; } 50% { height: 100%; } }
@@ -245,7 +240,7 @@
     @keyframes blink-cursor { from, to { opacity: 1; } 50% { opacity: 0; } }
     @keyframes pulse-antenna-breath { 0%, 100% { background: #3b82f6; box-shadow: 0 0 5px #3b82f6; } 50% { background: #93c5fd; box-shadow: 0 0 15px #60a5fa, 0 0 8px #ffffff; } }
     @keyframes mouth-talk { 0% { height: 2px; } 100% { height: 8px; border-radius: 50%; } }
-    
+     
     /* 移动端弹窗绝对居中 */
     .welcome-modal {
       position: fixed; inset: 0; 
@@ -262,13 +257,13 @@
         cursor: pointer !important; 
     }
     .welcome-modal.show { opacity: 1; pointer-events: auto; }
-    
+     
     /* 鼠标悬停在弹窗时，隐藏自定义 JS 光标 */
     .welcome-modal:hover ~ .cursor-dot, 
     .welcome-modal:hover ~ .cursor-outline {
         opacity: 0 !important;
     }
-    
+     
     .modal-content {
       background: rgba(30, 41, 59, 0.85); 
       border: 1px solid rgba(255, 255, 255, 0.1);
@@ -284,7 +279,7 @@
       padding-bottom: 140px; 
     }
     .welcome-modal.show .modal-content { transform: scale(1); }
-    
+     
     .modal-title { font-size: 1.5rem; margin-bottom: 15px; color: #fff; font-weight: 600; }
     .modal-body { font-size: 1rem; color: #cbd5e1; margin-bottom: 25px; line-height: 1.6; }
     .m-zh { display: none; }
@@ -316,7 +311,7 @@
       display: flex; align-items: center; gap: 8px; justify-content: center;
       font-size: 0.85rem; color: #cbd5e1; font-family: 'JetBrains Mono', monospace;
     }
-    
+     
     /* 开关本体 */
     .switch { position: relative; display: inline-block; width: 40px; height: 20px; }
     .switch input { opacity: 0; width: 0; height: 0; }
@@ -360,7 +355,7 @@
       #bot-container #rpg-dialogue.active { transform: translateY(0) !important; }
       .container { padding: 30px 20px; } 
       #main_content { overflow-x: auto; }
-      
+       
       /* 移动端调整 */
       .modal-content { padding-bottom: 140px; } 
     }
@@ -370,12 +365,12 @@
  <body>
   <div id="welcome-modal" class="welcome-modal">
     <div class="modal-content">
-      
+       
       <div class="modal-title">
         <span class="m-en">✨ Hi, Welcome to E-Link!</span>
         <span class="m-zh">✨ 嗨！欢迎访问E-Link！</span>
       </div>
-      
+       
       <div class="modal-body">
         <span class="m-en">
          We recommend <b>Dark Mode</b> for a more immersive experience<br>
@@ -674,12 +669,25 @@
     let currentLang = 'en';
     let dialogData = dialogData_EN;
 
-    // 初始化 Vanta
-    let vantaEffect = VANTA.NET({
-      el: "#vanta-bg",
-      mouseControls: true, touchControls: true, gyroControls: false,
-      minHeight: 200.00, minWidth: 200.00, scale: 1.00, scaleMobile: 1.00,
-      color: 0x3b82f6, backgroundColor: 0x0a0a0f, points: 18.00, maxDistance: 28.00, spacing: 16.00, showDots: true
+    // ⚡️ 性能优化：延迟 Vanta 初始化直到页面完全加载
+    let vantaEffect;
+    window.addEventListener('load', () => {
+      if (window.VANTA) {
+         vantaEffect = VANTA.NET({
+          el: "#vanta-bg",
+          mouseControls: true, touchControls: true, gyroControls: false,
+          minHeight: 200.00, minWidth: 200.00, scale: 1.00, scaleMobile: 1.00,
+          color: 0x3b82f6, backgroundColor: 0x0a0a0f, points: 18.00, maxDistance: 28.00, spacing: 16.00, showDots: true
+        });
+      }
+      
+      // ⚡️ 性能优化：为正文图片自动添加 lazy loading
+      const mainImages = document.querySelectorAll('#main_content img');
+      mainImages.forEach(img => {
+        if (!img.hasAttribute('loading')) {
+            img.setAttribute('loading', 'lazy');
+        }
+      });
     });
 
     const textsEN = ["Welcome to this webpage！", "Thanks for visiting us!", "Stay tuned!"];
@@ -989,7 +997,7 @@
               idleInterval = null;
           }
           if(botContainer.speechTimer) clearTimeout(botContainer.speechTimer); 
-          botSpeech.textContent = "";                   
+          botSpeech.textContent = "";                    
           botContainer.classList.remove('speaking'); 
           if(rpgDialogue.classList.contains('active')) closeDialogue();
           else openDialogue();
@@ -1002,6 +1010,7 @@
           botSay(guideText, 60000); 
       }, 1000);
  
+      // 🔥🔥🔥 更新后的 Badge 交互逻辑（不再需要复杂的 JS，只需保留跳转） 🔥🔥🔥
       const badges = document.querySelectorAll('.nav-badges a');
       badges.forEach(b => {
         b.addEventListener('mouseenter', () => {
@@ -1014,15 +1023,12 @@
           document.body.classList.remove('badge-hovering', 'hovering');
           if(vantaEffect) vantaEffect.setOptions({ color: 0x3b82f6 });
         });
+        // 简化点击事件，无需手动操作 CSS 动画
         b.addEventListener('click', function(e) {
           e.preventDefault();
           const url = this.href;
-          badges.forEach((sib, idx) => {
-              const img = sib.querySelector('img');
-              img.style.animationDelay = `${Math.abs(idx - [...badges].indexOf(this)) * 0.06}s`;
-              img.classList.add('rippling');
-          });
-          setTimeout(() => window.location.href = url, 500);
+          // 点击时加速旋转或特效（已在 CSS hover 中定义，这里可以加个类做额外反馈，可选）
+          setTimeout(() => window.location.href = url, 300);
         });
       });
 
@@ -1030,7 +1036,7 @@
       const canvas = document.getElementById('meteor-canvas');
       const ctx = canvas.getContext('2d');
       let width, height;
-      
+       
       // 调整画布尺寸
       function resizeCanvas() {
         width = window.innerWidth;
@@ -1108,7 +1114,7 @@
           const gradient = ctx.createLinearGradient(this.x, this.y, tailX, tailY);
           // 颜色匹配你的主题色 #3b82f6 (RGB: 59, 130, 246)
           gradient.addColorStop(0, `rgba(96, 165, 250, ${this.opacity})`); // 亮蓝头部
-          gradient.addColorStop(1, `rgba(59, 130, 246, 0)`);   // 透明尾部
+          gradient.addColorStop(1, `rgba(59, 130, 246, 0)`);    // 透明尾部
           
           ctx.beginPath();
           ctx.moveTo(this.x, this.y);
