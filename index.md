@@ -176,7 +176,6 @@ title: E-Link Home
     <b>Assembled 256-Channel Headstage (Top View)</b>
   </p>
 </div>
-    
 <div align="center">
  <table style="margin-left: auto; margin-right: auto; width: 90%; text-align: center; border-collapse: collapse; border: 1px solid #e1e4e8;">
    <thead>
