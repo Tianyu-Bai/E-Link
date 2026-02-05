@@ -176,9 +176,6 @@ title: E-Link Home
     <b>Assembled 256-Channel Headstage (Top View)</b>
   </p>
 </div>
-<div align="center">
-  <table style="margin-left: auto; margin-right: auto; width: 90%; text-align: center; border-collapse: collapse; border: 1px solid #e1e4e8;">
-  ... (后面的表格代码保持不变)
     
 <div align="center">
  <table style="margin-left: auto; margin-right: auto; width: 90%; text-align: center; border-collapse: collapse; border: 1px solid #e1e4e8;">
@@ -488,6 +485,16 @@ This project is open-source and available under the **MIT License**. Click the b
 <span id="cn-bom"></span>
 ### 🛠 放大器物料清单 (BOM)
 
+<div align="center">
+  <img src="Images/256HD.png.jpg" 
+       alt="256通道放大器组装实物图" 
+       width="500" 
+       style="border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 20px;">
+  <p style="margin-top: 5px; font-size: 0.9em; color: #64748b;">
+    <b>已组装的 256 通道前置放大器 (顶视图)</b>
+  </p>
+</div>
+    
 <div align="center">
   <table style="margin-left: auto; margin-right: auto; width: 90%; text-align: center; border-collapse: collapse; border: 1px solid #e1e4e8;">
     <thead>
