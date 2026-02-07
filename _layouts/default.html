@@ -14,8 +14,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=JetBrains+Mono&display=swap" rel="stylesheet">
-
-<script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.3.0/model-viewer.min.js"></script>
  
 <style>
   /* --- 0. 全局设置 --- */
@@ -23,7 +21,7 @@
   .lang-zh { display: none; animation: fadeIn 0.5s ease; }
   .lang-en { display: block; animation: fadeIn 0.5s ease; }
   @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-    
+   
   body { 
     margin: 0; padding: 0; color: #e0e7ff; 
     font-family: 'Inter', -apple-system, sans-serif; 
@@ -35,12 +33,13 @@
   }
   @media (pointer: coarse) { body { cursor: auto; } }
  
-  /* ⚡️ CSS 性能优化 */
-  img, video, iframe, model-viewer { 
+  /* ⚡️ CSS 性能优化：防止图片加载时布局抖动 */
+  img, video, iframe { 
       max-width: 100% !important; 
       height: auto !important; 
       box-sizing: border-box; 
-      content-visibility: auto; 
+      content-visibility: auto; /* 浏览器渲染优化 */
+      /* 默认让图片先稍微透明，加载好后 JS 控制显示，体验更丝滑 */
       transition: opacity 0.5s ease;
   }
  
@@ -69,7 +68,7 @@
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
       z-index: -4; pointer-events: none; 
   }
-    
+   
   /* --- 3. 布局 --- */
   .layout-wrapper { position: relative; max-width: 860px; margin: 100px auto 60px; z-index: 10; perspective: 1000px; }
  
@@ -82,19 +81,46 @@
     transition: all 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55); 
   }
   #bot-container.fixed-mode { position: fixed !important; top: auto !important; left: auto !important; bottom: 30px !important; right: 30px !important; transform: scale(0.9) !important; opacity: 1 !important; }
-   
-  /* --- 🔥 机器人引导模式 --- */
+  
+  /* --- 🔥 机器人引导模式 (指引播放) --- */
+  /* 1. 箭头样式：默认隐藏 */
   .guide-arrow {
-    position: absolute; left: -50px; top: 50%; transform: translateY(-50%);
-    font-size: 40px; color: #ef4444; opacity: 0; pointer-events: none;
-    text-shadow: 0 0 10px rgba(239, 68, 68, 0.8); transition: opacity 0.3s; z-index: 100; font-weight: bold;
+    position: absolute;
+    left: -50px; /* 在机器人左边 */
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 40px;
+    color: #ef4444; /* 醒目的红色 */
+    opacity: 0;
+    pointer-events: none;
+    text-shadow: 0 0 10px rgba(239, 68, 68, 0.8);
+    transition: opacity 0.3s;
+    z-index: 100;
+    font-weight: bold;
   }
+
+  /* 2. 当机器人进入 guide-mode 时，移动它的位置到视频旁边 */
   #bot-container.guide-mode {
-    position: fixed !important; top: 50% !important; right: 10% !important; left: auto !important; bottom: auto !important;
-    transform: translate(0, -50%) scale(1.2) !important; z-index: 100006 !important;
+    position: fixed !important;
+    top: 50% !important;
+    right: 15% !important; /* 停在屏幕右侧 */
+    left: auto !important;
+    bottom: auto !important;
+    transform: translate(0, -50%) scale(1.2) !important;
+    z-index: 100006 !important; /* 比视频弹窗还要高 */
   }
-  #bot-container.guide-mode .guide-arrow { opacity: 1; animation: point-left 0.8s ease-in-out infinite alternate; }
-  @keyframes point-left { from { transform: translateY(-50%) translateX(0); } to { transform: translateY(-50%) translateX(-15px); } }
+
+  /* 3. 引导模式下显示箭头，并让箭头跳动 */
+  #bot-container.guide-mode .guide-arrow {
+    opacity: 1;
+    animation: point-left 0.8s ease-in-out infinite alternate;
+  }
+
+  /* 4. 箭头动画：向左指 */
+  @keyframes point-left {
+    from { transform: translateY(-50%) translateX(0); }
+    to { transform: translateY(-50%) translateX(-15px); }
+  }
 
   /* 跳动动画 */
   #bot-container.attention-jump { animation: attention-bounce 0.6s ease infinite alternate; }
@@ -141,7 +167,7 @@
   .container:hover::before { opacity: 1; }
   #main_content table { width: 100% !important; border-collapse: collapse; margin: 20px 0; background: rgba(10, 10, 15, 0.3); border-radius: 8px; overflow: hidden; }
   #main_content th, #main_content td { padding: 12px; border: 1px solid rgba(255, 255, 255, 0.1); }
-  #main_content tr { background: rgba(30, 41, 59, 0.8) !important; }     
+  #main_content tr { background: rgba(30, 41, 59, 0.8) !important; }    
   #main_content th { color: #60a5fa; font-weight: 600; }
   .typewriter-container { font-family: 'JetBrains Mono', monospace; font-size: 1.1rem; color: #93c5fd; min-height: 1.6em; margin-bottom: 2rem; }
   .typewriter-cursor { animation: blink-cursor 0.8s infinite; border-left: 3px solid #3b82f6; margin-left: 2px; }
@@ -185,7 +211,7 @@
   @keyframes blink-cursor { from, to { opacity: 1; } 50% { opacity: 0; } }
   @keyframes pulse-antenna-breath { 0%, 100% { background: #3b82f6; box-shadow: 0 0 5px #3b82f6; } 50% { background: #93c5fd; box-shadow: 0 0 15px #60a5fa, 0 0 8px #ffffff; } }
   @keyframes mouth-talk { 0% { height: 2px; } 100% { height: 8px; border-radius: 50%; } }
-    
+   
   .welcome-modal {
     position: fixed; inset: 0; 
     background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(5px);
@@ -198,9 +224,9 @@
   .welcome-modal * { cursor: default !important; }
   .welcome-modal .btn-primary, .welcome-modal .btn-secondary, .welcome-modal .slider { cursor: pointer !important; }
   .welcome-modal.show { opacity: 1; pointer-events: auto; }
-    
+   
   .welcome-modal:hover ~ .cursor-dot, .welcome-modal:hover ~ .cursor-outline { opacity: 0 !important; }
-    
+   
   .modal-content {
     background: rgba(30, 41, 59, 0.85); 
     border: 1px solid rgba(255, 255, 255, 0.1);
@@ -215,7 +241,7 @@
     padding-bottom: 140px; 
   }
   .welcome-modal.show .modal-content { transform: scale(1); }
-    
+   
   .modal-title { font-size: 1.5rem; margin-bottom: 15px; color: #fff; font-weight: 600; }
   .modal-body { font-size: 1rem; color: #cbd5e1; margin-bottom: 25px; line-height: 1.6; }
   .m-zh { display: none; }
@@ -243,13 +269,13 @@
   input:checked + .slider { background-color: #3b82f6; }
   input:focus + .slider { box-shadow: 0 0 1px #3b82f6; }
   input:checked + .slider:before { transform: translateX(20px); }
-  
+ 
   .modal-watermark {
     position: absolute; bottom: 20px; left: 0; width: 100%; 
     text-align: center; font-size: 0.65rem; color: #94a3b8; font-family: 'JetBrains Mono', monospace; pointer-events: none; opacity: 0.6; 
   }
 
-  /* --- 🎬 3D 模型弹窗样式 --- */
+  /* --- 🎬 视频弹窗样式 --- */
   .video-modal {
     position: fixed; inset: 0;
     background: rgba(0, 0, 0, 0.9); /* 深色背景 */
@@ -283,9 +309,8 @@
   }
   .video-close:hover { color: #ef4444; }
 
-  /* 模型视图高度 */
-  model-viewer {
-    width: 100%; height: 500px; background-color: #0f172a;
+  video#guardian-video {
+    width: 100%; display: block; outline: none;
   }
  
   @media (max-width: 768px) { 
@@ -343,31 +368,18 @@
 </head>
  
 <body>
-
-{% if page.glb_path %}
 <div id="video-modal" class="video-modal">
   <div class="video-content">
     <div class="video-header">
-      <span>📽️ 3D INTERACTIVE VIEW</span>
+      <span>📽️ DEMO REVIEW PROTOCOL</span>
       <span class="video-close" onclick="closeVideoModal()">×</span>
     </div>
-    
-    <model-viewer
-      src="{{ page.glb_path | relative_url }}"
-      alt="3D Model"
-      auto-rotate
-      camera-controls
-      shadow-intensity="1"
-      style="width: 100%; height: 500px; background-color: #0f172a;"
-    >
-        <div slot="progress-bar" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #3b82f6; font-family: sans-serif; background: rgba(0,0,0,0.8); padding: 10px 20px; border-radius: 8px;">
-            Loading 3D Model... 📦
-        </div>
-    </model-viewer>
-    
+    <video id="guardian-video" controls playsinline>
+      <source src="https://github.com/user-attachments/assets/3d1f7740-a5a1-44a2-a549-0b52da2e9e2e" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
   </div>
 </div>
-{% endif %}
 
 <div id="welcome-modal" class="welcome-modal">
   <div class="modal-content">
@@ -377,16 +389,16 @@
     </div>
     <div class="modal-body">
       <span class="m-en">
-        We recommend <b>Dark Mode</b> for a more immersive experience<br>
-        <span style="font-size: 0.85rem; color: #94a3b8;">
-          (Feel free to tailor your view at the top-right corner)
-        </span>
+       We recommend <b>Dark Mode</b> for a more immersive experience<br>
+       <span style="font-size: 0.85rem; color: #94a3b8;">
+         (Feel free to tailor your view at the top-right corner)
+       </span>
       </span>
       <span class="m-zh">
-        为呈现最佳<b>视觉体验</b>，建议保留<b>深色设置</b> <br>
-        <span style="font-size: 0.85rem; color: #94a3b8;">
-          (您可随时通过右上角切换语言或主题)
-        </span>
+       为呈现最佳<b>视觉体验</b>，建议保留<b>深色设置</b> <br>
+       <span style="font-size: 0.85rem; color: #94a3b8;">
+         (您可随时通过右上角切换语言或主题)
+       </span>
       </span>
     </div>
     <div class="modal-btns">
@@ -426,6 +438,7 @@
 <div class="cursor-outline"></div>
 <div id="progress-bar"></div>
 <div id="vanta-bg"></div>
+ 
 <canvas id="meteor-canvas"></canvas>
  
 <div id="bot-container" title="Chat with me!">
@@ -465,20 +478,18 @@
 <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.net.min.js"></script>
 <script>
   // --- 🌍 双语数据源 ---
-  // 🔥 修复：动态显示 3D 按钮
   const dialogData_EN = {
     "start": {
       text: "Hi! I'm the Connector Guardian. I protect your neural interfaces.",
       options: [ 
-         {% if page.glb_path %}
-         { text: "🧊 View 3D Model", next: "play_video" }, 
-         {% endif %}
+         { text: "🎬 Watch Demo Video", next: "play_video" }, // 🔥 新增
          { text: "🚀 Let's start!", next: "root_menu" } 
       ]
     },
+    // 🔥 新增：视频处理节点
     "play_video": {
-       text: "Loading 3D schematic... You can rotate and zoom!",
-       options: [ { text: "Close Viewer", next: "start" } ]
+       text: "Initiating Cinema Mode... Loading visual data.",
+       options: [ { text: "Close Video", next: "start" } ]
     },
     "root_menu": {
       text: "Select a category to inspect:",
@@ -579,15 +590,14 @@
     "start": {
       text: "你好！我是易链的守护者。由我来保护你的脑机探针。",
       options: [ 
-        {% if page.glb_path %}
-        { text: "🧊 查看 3D 模型", next: "play_video" }, 
-        {% endif %}
+        { text: "🎬 观看演示视频", next: "play_video" }, // 🔥 新增
         { text: "🚀 开始探索！", next: "root_menu" } 
       ]
     },
+    // 🔥 新增：视频处理节点
     "play_video": {
-       text: "正在加载 3D 结构... 你可以拖拽旋转！",
-       options: [ { text: "关闭视图", next: "start" } ]
+       text: "正在启动影院模式... 调取视觉数据。",
+       options: [ { text: "关闭视频", next: "start" } ]
     },
     "root_menu": {
       text: "系统已就绪。请选择想要查看的类别：",
@@ -683,23 +693,23 @@
       options: [ { text: "谢谢易链守护者！", next: "关闭对话窗" } ]
     }
   };
-      
+     
   // 默认使用英文
   let currentLang = 'en';
   let dialogData = dialogData_EN;
 
   let vantaEffect;
-   
+  
   // 🔥 第一阶段：DOM 加载完成，立刻处理首屏
   document.addEventListener("DOMContentLoaded", function() {
       // 1. 立即启动 Vanta 背景
-      //if (window.VANTA) {
-        //vantaEffect = VANTA.NET({
-       //   el: "#vanta-bg",
-        //  mouseControls: true, touchControls: true, gyroControls: false,
-       //   minHeight: 200.00, minWidth: 200.00, scale: 1.00, scaleMobile: 1.00,
-       //   color: 0x3b82f6, backgroundColor: 0x0a0a0f, points: 18.00, maxDistance: 28.00, spacing: 16.00, showDots: true
-    //    });
+      if (window.VANTA) {
+        vantaEffect = VANTA.NET({
+          el: "#vanta-bg",
+          mouseControls: true, touchControls: true, gyroControls: false,
+          minHeight: 200.00, minWidth: 200.00, scale: 1.00, scaleMobile: 1.00,
+          color: 0x3b82f6, backgroundColor: 0x0a0a0f, points: 18.00, maxDistance: 28.00, spacing: 16.00, showDots: true
+        });
       }
 
       // 2. 启动流星特效
@@ -842,7 +852,7 @@
     const pupils = document.querySelectorAll('.bot-pupil');
     const botContainer = document.getElementById('bot-container');
     const botSpeech = document.getElementById('bot-speech');
-        
+       
     const rpgDialogue = document.getElementById('rpg-dialogue');
     const rpgText = document.getElementById('rpg-text');
     const rpgOptions = document.getElementById('rpg-options');
@@ -916,7 +926,7 @@
     const themeToggle = document.getElementById('theme-toggle');
     const langToggle = document.getElementById('lang-toggle');
     let isLight = false;
-        
+       
     themeToggle.addEventListener('click', () => {
       isLight = !isLight;
       document.body.classList.toggle('light-mode');
@@ -999,57 +1009,43 @@
       }, duration);
     }
 
-    // --- 🎬 3D 模型控制逻辑 (已修复防崩溃) ---
+    // --- 🎬 视频控制逻辑 ---
     const videoModal = document.getElementById('video-modal');
-    
+    const guardianVideo = document.getElementById('guardian-video');
+
     window.openVideoModal = function() {
-      if (!videoModal) {
-         console.warn("No 3D model found on this page.");
-         botSay("System Alert: No 3D Data detected on this node.", 3000);
-         return;
-      }
       videoModal.classList.add('show');
       // 🔥 机器人进入引导模式
       botContainer.classList.add('guide-mode');
-      const clickText = currentLang === 'en' ? "Drag to Rotate! 👉" : "拖拽模型查看细节！👉";
+      const clickText = currentLang === 'en' ? "Click the Play button here! 👉" : "请点击中间的播放按钮！👉";
       botSay(clickText, 4000); 
       closeDialogue(); 
     }
 
     window.closeVideoModal = function() {
-      if (!videoModal) return;
       videoModal.classList.remove('show');
+      guardianVideo.pause(); 
       // 🔥 机器人归位
       botContainer.classList.remove('guide-mode');
       const backText = currentLang === 'en' ? "Did you see that mechanism?" : "看到那个机械结构了吗？";
       setTimeout(() => botSay(backText, 3000), 500);
     }
-     
-    // 只有当 modal 存在时才添加点击监听
-    if (videoModal) {
-      videoModal.addEventListener('click', (e) => {
-        // 点击背景关闭，但点击模型本身不关闭
-        if(e.target === videoModal) closeVideoModal();
-      });
-    }
+    
+    videoModal.addEventListener('click', (e) => {
+      if(e.target === videoModal) closeVideoModal();
+    });
 
     function showDialogueNode(nodeKey, isFastMode = false) {
       // 🔥 拦截播放指令
       if (nodeKey === 'play_video') {
-         if (!videoModal) {
-            const noModelText = currentLang === 'en' ? "🚫 No 3D Model available here." : "🚫 当前页面没有 3D 模型数据。";
-            botSay(noModelText, 3000);
-            return; 
-         }
-         
-         const loadingText = currentLang === 'en' ? "Loading 3D Module..." : "正在加载 3D 模块...";
+         const loadingText = currentLang === 'en' ? "Accessing Video Feed..." : "正在接入视频信号...";
          botSay(loadingText, 2000);
          setTimeout(() => {
              openVideoModal();
          }, 1000);
          return; 
       }
- 
+
       if(nodeKey === 'close') { 
            closeDialogue(); 
            botContainer.classList.add('interaction-done');
@@ -1125,7 +1121,7 @@
             idleInterval = null;
         }
         if(botContainer.speechTimer) clearTimeout(botContainer.speechTimer); 
-        botSpeech.textContent = "";                     
+        botSpeech.textContent = "";                    
         botContainer.classList.remove('speaking'); 
         if(rpgDialogue.classList.contains('active')) closeDialogue();
         else openDialogue();
