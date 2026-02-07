@@ -38,28 +38,28 @@ title: E-Link Home
   </div>
 
   <br />
-  <img src="Videos/Demo%20new%20new.gif" 
-       alt="ELINK-256 Assembly Demo GIF" 
-       width="750" 
-       class="gif-blend" 
-       style="border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); display: block;">
-</div>
-
-## Demo Video
-
-https://github.com/user-attachments/assets/3d1f7740-a5a1-44a2-a549-0b52da2e9e2e
-
-
-<span id="en-overview"></span>
-## 📖 Overview
-
-**E-Link** (Elastomer Interconnection-based connector) is an open-source, miniature pedestal connector system based on elastomer interconnection. It provides a robust, scalable interface for flexible neural probes, specifically engineered for chronic applications in freely moving animals.
-<div align="center">
+  <div align="center">
  <br>
  <img src="Images/001.PNG" alt="E-Link(256) Exploded View" width="750">
  <p style="margin-top: 5px; font-size: 0.95em; color: #3b82f6;">
    <b>Mating Dynamics (left) and Structural Breakdown (right) of the E-Link(256) </b>
  </p>
+</div>
+</div>
+
+<span id="en-overview"></span>
+
+## 📖 Overview
+
+**E-Link** (Elastomer Interconnection-based connector) is an open-source, miniature pedestal connector system based on elastomer interconnection. It provides a robust, scalable interface for flexible neural probes, specifically engineered for chronic applications in freely moving animals.
+
+<div align="center">
+ <br>
+ <img src="Videos/Demo%20new%20new.gif" 
+       alt="ELINK-256 Assembly Demo GIF" 
+       width="750" 
+       class="gif-blend" 
+       style="border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); display: block;">
 </div>
 
 ---
@@ -371,11 +371,13 @@ This project is open-source and available under the **MIT License**. Click the b
   </div>
 
   <br />
-  <img src="Videos/Demo%20new%20new.gif" 
-       alt="ELINK-256 组装演示 GIF" 
-       width="750" 
-       class="gif-blend" 
-       style="border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); display: block;">
+  <div align="center">
+  <br>
+  <img src="Images/001_CN.png" alt="E-Link_256 分解图" width="750">
+  <p style="margin-top: 5px; font-size: 0.95em; color: ##3b82f6;">
+    <b>E-Link易链(256) 的插拔动态（左）和结构分解（右）</b>
+  </p>
+</div>
 </div>
 
 <span id="cn-overview"></span>
@@ -384,11 +386,11 @@ This project is open-source and available under the **MIT License**. Click the b
 **E-Link易链**，是一款基于弹性体互连技术（Elastomer Interconnection）的开源微型基座连接系统。它为柔性神经探针提供了稳固且可扩展的接口，专为自由活动动物的长期慢性实验而优化设计
 
 <div align="center">
-  <br>
-  <img src="Images/001_CN.png" alt="E-Link_256 分解图" width="750">
-  <p style="margin-top: 5px; font-size: 0.95em; color: ##3b82f6;">
-    <b>E-Link易链(256) 的插拔动态（左）和结构分解（右）</b>
-  </p>
+<img src="Videos/Demo%20new%20new.gif" 
+       alt="ELINK-256 组装演示 GIF" 
+       width="750" 
+       class="gif-blend" 
+       style="border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); display: block;">
 </div>
 
 ---
