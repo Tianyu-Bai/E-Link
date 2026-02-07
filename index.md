@@ -50,8 +50,7 @@ title: E-Link Home
 <span id="rhd-3d"></span>
 
 ## 🔬 RHD Connector – Interactive 3D View
-
-<p align="center">
+<div align="center">
   <model-viewer
     src="{{ '/Videos/RHD_example.glb' | relative_url }}"
     alt="RHD Connector 3D Model"
@@ -67,13 +66,44 @@ title: E-Link Home
       background: rgba(15,23,42,0.6);
       border-radius: 16px;
       border: 1px solid rgba(59,130,246,0.3);
+      display: block;
     ">
   </model-viewer>
-</p>
 
-<p align="center">
-  <sub>Drag to rotate · Scroll to zoom</sub>
-</p>
+  <div style="
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    margin-top: 15px;
+    font-family: sans-serif;
+    font-size: 0.9em;
+    color: #cbd5e1;
+  ">
+    <span style="
+      background: rgba(59,130,246,0.1);
+      padding: 6px 14px;
+      border-radius: 20px;
+      border: 1px solid rgba(59,130,246,0.25);
+      display: inline-flex;
+      align-items: center;
+    ">
+      🖱️ &nbsp;<b>Drag</b> to Rotate
+    </span>
+
+    <span style="
+      background: rgba(59,130,246,0.1);
+      padding: 6px 14px;
+      border-radius: 20px;
+      border: 1px solid rgba(59,130,246,0.25);
+      display: inline-flex;
+      align-items: center;
+    ">
+      🔍 &nbsp;<b>Scroll</b> to Zoom
+    </span>
+  </div>
+
+</div>
 
 <span id="en-overview"></span>
 
