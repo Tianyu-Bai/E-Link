@@ -380,7 +380,7 @@ This project is open-source and available under the **MIT License**. Click the b
 
 <div align="center">
   <br>
-  <img src="Images/001.PNG" alt="PEDAL-256 分解图" width="750">
+  <img src="Images/001_CN.PNG" alt="PEDAL-256 分解图" width="750">
   <p style="margin-top: 5px; font-size: 0.95em; color: ##3b82f6;">
     <b>E-Link易链(256) 的插拔动态（左）和结构分解（右）</b>
   </p>
