@@ -14,6 +14,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=JetBrains+Mono&display=swap" rel="stylesheet">
+
+<script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.3.0/model-viewer.min.js"></script>
  
 <style>
   /* --- 0. 全局设置 --- */
@@ -33,13 +35,12 @@
   }
   @media (pointer: coarse) { body { cursor: auto; } }
  
-  /* ⚡️ CSS 性能优化：防止图片加载时布局抖动 */
-  img, video, iframe { 
+  /* ⚡️ CSS 性能优化 */
+  img, video, iframe, model-viewer { 
       max-width: 100% !important; 
       height: auto !important; 
       box-sizing: border-box; 
-      content-visibility: auto; /* 浏览器渲染优化 */
-      /* 默认让图片先稍微透明，加载好后 JS 控制显示，体验更丝滑 */
+      content-visibility: auto; 
       transition: opacity 0.5s ease;
   }
  
@@ -82,45 +83,18 @@
   }
   #bot-container.fixed-mode { position: fixed !important; top: auto !important; left: auto !important; bottom: 30px !important; right: 30px !important; transform: scale(0.9) !important; opacity: 1 !important; }
   
-  /* --- 🔥 机器人引导模式 (指引播放) --- */
-  /* 1. 箭头样式：默认隐藏 */
+  /* --- 🔥 机器人引导模式 --- */
   .guide-arrow {
-    position: absolute;
-    left: -50px; /* 在机器人左边 */
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 40px;
-    color: #ef4444; /* 醒目的红色 */
-    opacity: 0;
-    pointer-events: none;
-    text-shadow: 0 0 10px rgba(239, 68, 68, 0.8);
-    transition: opacity 0.3s;
-    z-index: 100;
-    font-weight: bold;
+    position: absolute; left: -50px; top: 50%; transform: translateY(-50%);
+    font-size: 40px; color: #ef4444; opacity: 0; pointer-events: none;
+    text-shadow: 0 0 10px rgba(239, 68, 68, 0.8); transition: opacity 0.3s; z-index: 100; font-weight: bold;
   }
-
-  /* 2. 当机器人进入 guide-mode 时，移动它的位置到视频旁边 */
   #bot-container.guide-mode {
-    position: fixed !important;
-    top: 50% !important;
-    right: 15% !important; /* 停在屏幕右侧 */
-    left: auto !important;
-    bottom: auto !important;
-    transform: translate(0, -50%) scale(1.2) !important;
-    z-index: 100006 !important; /* 比视频弹窗还要高 */
+    position: fixed !important; top: 50% !important; right: 10% !important; left: auto !important; bottom: auto !important;
+    transform: translate(0, -50%) scale(1.2) !important; z-index: 100006 !important;
   }
-
-  /* 3. 引导模式下显示箭头，并让箭头跳动 */
-  #bot-container.guide-mode .guide-arrow {
-    opacity: 1;
-    animation: point-left 0.8s ease-in-out infinite alternate;
-  }
-
-  /* 4. 箭头动画：向左指 */
-  @keyframes point-left {
-    from { transform: translateY(-50%) translateX(0); }
-    to { transform: translateY(-50%) translateX(-15px); }
-  }
+  #bot-container.guide-mode .guide-arrow { opacity: 1; animation: point-left 0.8s ease-in-out infinite alternate; }
+  @keyframes point-left { from { transform: translateY(-50%) translateX(0); } to { transform: translateY(-50%) translateX(-15px); } }
 
   /* 跳动动画 */
   #bot-container.attention-jump { animation: attention-bounce 0.6s ease infinite alternate; }
@@ -275,7 +249,7 @@
     text-align: center; font-size: 0.65rem; color: #94a3b8; font-family: 'JetBrains Mono', monospace; pointer-events: none; opacity: 0.6; 
   }
 
-  /* --- 🎬 视频弹窗样式 --- */
+  /* --- 🎬 3D 模型弹窗样式 --- */
   .video-modal {
     position: fixed; inset: 0;
     background: rgba(0, 0, 0, 0.9); /* 深色背景 */
@@ -309,8 +283,9 @@
   }
   .video-close:hover { color: #ef4444; }
 
-  video#guardian-video {
-    width: 100%; display: block; outline: none;
+  /* 模型视图高度 */
+  model-viewer {
+    width: 100%; height: 500px; background-color: #0f172a;
   }
  
   @media (max-width: 768px) { 
@@ -371,13 +346,16 @@
 <div id="video-modal" class="video-modal">
   <div class="video-content">
     <div class="video-header">
-      <span>📽️ DEMO REVIEW PROTOCOL</span>
+      <span>📽️ 3D INTERACTIVE VIEW</span>
       <span class="video-close" onclick="closeVideoModal()">×</span>
     </div>
-    <video id="guardian-video" controls playsinline>
-      <source src="https://github.com/user-attachments/assets/3d1f7740-a5a1-44a2-a549-0b52da2e9e2e" type="video/mp4">
-      Your browser does not support the video tag.
-    </video>
+    <model-viewer
+      src="{{ '/Videos/RHD_example.glb' | relative_url }}"
+      alt="A 3D model of the RHD example"
+      auto-rotate
+      camera-controls
+      shadow-intensity="1"
+    ></model-viewer>
   </div>
 </div>
 
@@ -482,14 +460,13 @@
     "start": {
       text: "Hi! I'm the Connector Guardian. I protect your neural interfaces.",
       options: [ 
-         { text: "🎬 Watch Demo Video", next: "play_video" }, // 🔥 新增
+         { text: "🧊 View 3D Model", next: "play_video" }, // 🔥 改为 3D
          { text: "🚀 Let's start!", next: "root_menu" } 
       ]
     },
-    // 🔥 新增：视频处理节点
     "play_video": {
-       text: "Initiating Cinema Mode... Loading visual data.",
-       options: [ { text: "Close Video", next: "start" } ]
+       text: "Loading 3D schematic... You can rotate and zoom!",
+       options: [ { text: "Close Viewer", next: "start" } ]
     },
     "root_menu": {
       text: "Select a category to inspect:",
@@ -590,14 +567,13 @@
     "start": {
       text: "你好！我是易链的守护者。由我来保护你的脑机探针。",
       options: [ 
-        { text: "🎬 观看演示视频", next: "play_video" }, // 🔥 新增
+        { text: "🧊 查看 3D 模型", next: "play_video" }, // 🔥 改为 3D
         { text: "🚀 开始探索！", next: "root_menu" } 
       ]
     },
-    // 🔥 新增：视频处理节点
     "play_video": {
-       text: "正在启动影院模式... 调取视觉数据。",
-       options: [ { text: "关闭视频", next: "start" } ]
+       text: "正在加载 3D 结构... 你可以拖拽旋转！",
+       options: [ { text: "关闭视图", next: "start" } ]
     },
     "root_menu": {
       text: "系统已就绪。请选择想要查看的类别：",
@@ -1009,22 +985,21 @@
       }, duration);
     }
 
-    // --- 🎬 视频控制逻辑 ---
+    // --- 🎬 3D 模型控制逻辑 ---
     const videoModal = document.getElementById('video-modal');
-    const guardianVideo = document.getElementById('guardian-video');
-
+    // 注意：model-viewer 元素不需要像 video 那样调用 play()
+    
     window.openVideoModal = function() {
       videoModal.classList.add('show');
       // 🔥 机器人进入引导模式
       botContainer.classList.add('guide-mode');
-      const clickText = currentLang === 'en' ? "Click the Play button here! 👉" : "请点击中间的播放按钮！👉";
+      const clickText = currentLang === 'en' ? "Drag to Rotate! 👉" : "拖拽模型查看细节！👉";
       botSay(clickText, 4000); 
       closeDialogue(); 
     }
 
     window.closeVideoModal = function() {
       videoModal.classList.remove('show');
-      guardianVideo.pause(); 
       // 🔥 机器人归位
       botContainer.classList.remove('guide-mode');
       const backText = currentLang === 'en' ? "Did you see that mechanism?" : "看到那个机械结构了吗？";
@@ -1032,13 +1007,14 @@
     }
     
     videoModal.addEventListener('click', (e) => {
+      // 点击背景关闭，但点击模型本身不关闭
       if(e.target === videoModal) closeVideoModal();
     });
 
     function showDialogueNode(nodeKey, isFastMode = false) {
       // 🔥 拦截播放指令
       if (nodeKey === 'play_video') {
-         const loadingText = currentLang === 'en' ? "Accessing Video Feed..." : "正在接入视频信号...";
+         const loadingText = currentLang === 'en' ? "Loading 3D Module..." : "正在加载 3D 模块...";
          botSay(loadingText, 2000);
          setTimeout(() => {
              openVideoModal();
