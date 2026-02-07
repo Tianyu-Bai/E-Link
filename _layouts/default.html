@@ -843,39 +843,53 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 });
 
-// 如希望图片占位符也出现得更快，其实也可以一起移到 DOMContentLoaded
 document.addEventListener("DOMContentLoaded", function() {
     const images = document.querySelectorAll('#main_content img');
 
+    // 1. 设置更激进的观察器：提前 800px (约一屏半) 开始下载
     const observer = new IntersectionObserver((entries, obs) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 const img = entry.target;
-                
-                // 优先处理 data-src
-                if (img.dataset.src) {
-                    img.src = img.dataset.src;
-                }
-
-                // 处理加载完成后的样式
-                if (img.src.toLowerCase().endsWith('.gif')) {
-                    if (img.complete) {
-                        img.classList.add('loaded');
-                    } else {
-                        img.onload = () => img.classList.add('loaded');
-                    }
-                } else {
-                    img.classList.add('loaded');
-                }
-                
+                preloadImage(img); // 封装的加载函数
                 obs.unobserve(img);
             }
         });
-    }, { rootMargin: "0px 0px 400px 0px" }); // 保持 400px 预加载
+    }, { rootMargin: "0px 0px 800px 0px" }); // ⚡️ 改为 800px，提前偷跑下载
 
-    images.forEach(img => {
-        img.setAttribute('loading', 'lazy');
-        observer.observe(img);
+    // 2. 封装加载逻辑：统一处理 GIF 和普通图片
+    const preloadImage = (img) => {
+        // 如果有 data-src，替换为真实路径
+        if (img.dataset.src) {
+            img.src = img.dataset.src;
+        }
+        
+        // GIF 专属逻辑：监听加载完成，移除灰块
+        if (img.src.toLowerCase().endsWith('.gif')) {
+            if (img.complete) {
+                img.classList.add('loaded');
+            } else {
+                // ⚡️ 关键优化：给 GIF 最高下载优先级
+                img.fetchPriority = "high"; 
+                img.onload = () => img.classList.add('loaded');
+            }
+        } else {
+            img.classList.add('loaded');
+        }
+    };
+
+    // 3. 循环处理所有图片
+    images.forEach((img, index) => {
+        // 🔥 核心策略：前 3 张图片（首屏内容）直接加载，不要等待！
+        if (index < 3) {
+            img.setAttribute('loading', 'eager'); // 立即加载
+            img.fetchPriority = "high"; // 提高优先级
+            preloadImage(img); // 手动触发加载逻辑
+        } else {
+            // 第 4 张以后的图片：开启懒加载 + 观察器
+            img.setAttribute('loading', 'lazy');
+            observer.observe(img);
+        }
     });
 });
  
