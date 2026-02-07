@@ -46,9 +46,10 @@ title: E-Link Home
  </p>
 </div>
 </div>
-/* ================================================================================== */
-<style>/*开始做出演示动作*/
-  1. 复杂时间轴控制 (总周期 48秒) - 保持不变
+
+
+<style>/*开始开始开始做出演示动作*/
+  /* ========================================= 1. 复杂时间轴控制 (总周期 48秒) - 保持不变 ========================================= */
    
   /* Drag 容器显隐 */
   @keyframes timeline-drag-container {
@@ -74,8 +75,9 @@ title: E-Link Home
     62.5%, 68.75% { opacity: 1; z-index: 10; } /* 30-33s: 显示 */
     68.85%, 100%  { opacity: 0; z-index: -1; } /* 33-48s: 隐藏 */
   }
-
-     2. 动作动画 (修改了 Zoom 的部分)
+  
+  /* ========================================= 2. 动作动画 (修改了 Zoom 的部分)   ========================================= */
+  
   /* 拖拽动作 (保持不变) */
   @keyframes move-drag-hand {
     0% { transform: translateX(-40px) rotate(-15deg); opacity: 0; }
@@ -105,8 +107,9 @@ title: E-Link Home
     /* 结束位置：大幅度向右上角移动 */
     100% { transform: translate(90px, -65px); opacity: 0; } 
   }
-     3. 容器与图标样式
- 
+    
+ /* =========================================  3. 容器与图标样式  ========================================= */
+  
   .gesture-overlay {
     position: absolute;
     top: 50%;
@@ -212,8 +215,7 @@ title: E-Link Home
     </div>
 
   </model-viewer>
-</div>
-/* ================================================================================== */
+</div> /* 结束 */
 
 <span id="en-overview"></span>
 
@@ -548,10 +550,10 @@ This project is open-source and available under the **MIT License**. Click the b
 </div>
 </div>
 
-/* ================================================================================== */
 <style>/*开始做出演示动作*/
-  1. 复杂时间轴控制 (总周期 48秒) - 保持不变
-   
+ 
+ /* =========================================   1. 复杂时间轴控制 (总周期 48秒) - 保持不变  ========================================= */
+  
   /* Drag 容器显隐 */
   @keyframes timeline-drag-container {
     /* --- 第一阶段：重复2次 --- */
@@ -576,8 +578,9 @@ This project is open-source and available under the **MIT License**. Click the b
     62.5%, 68.75% { opacity: 1; z-index: 10; } /* 30-33s: 显示 */
     68.85%, 100%  { opacity: 0; z-index: -1; } /* 33-48s: 隐藏 */
   }
-
-     2. 动作动画 (修改了 Zoom 的部分)
+  
+ /* =========================================   2. 动作动画 (修改了 Zoom 的部分)  ========================================= */
+  
   /* 拖拽动作 (保持不变) */
   @keyframes move-drag-hand {
     0% { transform: translateX(-40px) rotate(-15deg); opacity: 0; }
@@ -607,8 +610,9 @@ This project is open-source and available under the **MIT License**. Click the b
     /* 结束位置：大幅度向右上角移动 */
     100% { transform: translate(90px, -65px); opacity: 0; } 
   }
-     3. 容器与图标样式
- 
+  
+ /* =========================================  3. 容器与图标样式  ========================================= */
+  
   .gesture-overlay {
     position: absolute;
     top: 50%;
@@ -715,8 +719,6 @@ This project is open-source and available under the **MIT License**. Click the b
 
   </model-viewer>
 </div>
-/* ================================================================================== */
-
 
 
 
