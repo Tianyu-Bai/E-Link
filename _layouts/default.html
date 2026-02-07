@@ -352,14 +352,19 @@
     </div>
 
    <model-viewer 
-  src="{{ page.glb_path }}" 
-  alt="3D Model"
-  auto-rotate
-  camera-controls
-  shadow-intensity="1"
-  style="width: 100%; height: 500px; background-color: #0f172a;"
-></model-viewer>
+      src="{{ page.glb_path }}" 
+      alt="3D Model"
+      auto-rotate
+      camera-controls
+      shadow-intensity="1"
+      style="width: 100%; height: 500px; background-color: #0f172a;"
+    ></model-viewer>
+    
+  </div>
+</div>
+{% endif %}
 
+    
 <div id="welcome-modal" class="welcome-modal">
   <div class="modal-content">
     <div class="modal-title">
