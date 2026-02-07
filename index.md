@@ -45,6 +45,11 @@ title: E-Link Home
        style="border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); display: block;">
 </div>
 
+## Demo Video
+
+https://github.com/user-attachments/assets/3d1f7740-a5a1-44a2-a549-0b52da2e9e2e
+
+
 <span id="en-overview"></span>
 ## 📖 Overview
 
