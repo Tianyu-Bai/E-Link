@@ -389,8 +389,7 @@ This project is open-source and available under the **MIT License**. Click the b
 ---
 
 > [!NOTE]
-> **核心创新：** 该系统将两个高密度 PCB、一个各向异性弹性体接触界面和一个轻量级基座外壳集成到一个完全一体化的、即插即用的头部采集方案中。</p>
- **技术革新：** 采用弹性中间层导电基体技术，实现“零力插拔”，告别因按压操作导致的多脚连接器存在的针脚损坏问题。
+> **核心创新：** 我们打造了一种完全一体化的**“即拧即用”数据采集方案。该系统利用弹性导电介质连接高密度 PCB，并封装于轻量级基座中。其最大的突破在于实现了“零力插拔”**。用户不再需要用力按压，从而完美规避了多脚连接器常见的断针和弯针风险。
 
 ---
 
@@ -581,7 +580,7 @@ This project is open-source and available under the **MIT License**. Click the b
 本项目由达特茅斯学院的 **MINE Lab** 开发。<a href="https://sites.dartmouth.edu/fang-group/"><img src="https://img.shields.io/badge/访问网站_%E2%86%97-MINE_Lab-00693E?style=flat-square" alt="MINE Lab"></a>
 
 * **白天宇** (主导研发及设计) <a href="https://tianyu-bai.github.io/"><img src="https://img.shields.io/badge/个人主页-Tianyu%20Bai-0077B5?style=flat-square&logo=github&logoColor=white" alt="Website"></a>
-* **李根博士**
+* **李根**
 * **方辉教授** <a href="https://engineering.dartmouth.edu/community/faculty/hui-fang"><img src="https://img.shields.io/badge/首席研究员_(PI)-444444?style=flat-square&logoColor=white" />
 
 ---
