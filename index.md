@@ -191,8 +191,8 @@ title: E-Link Home
 
     <div class="gesture-overlay mode-zoom">
       <div class="icon-box">
-        <div class="hand-icon hand-left" style="transform-origin: center;">☝️</div>
-        <div class="hand-icon hand-right" style="transform-origin: center;">👇</div>
+        <div class="hand-icon hand-left" style="transform-origin: center;">👇</div>
+        <div class="hand-icon hand-right" style="transform-origin: center;">☝️</div>
       </div>
       <div class="gesture-text">Pinch to Zoom</div>
     </div>
