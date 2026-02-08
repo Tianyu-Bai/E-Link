@@ -723,7 +723,7 @@ This project is open-source and available under the **MIT License**. Click the b
 <span id="cn-overview"></span>
 ## 📖 概览
 
-**E-Link易链**，是一款基于弹性体互连技术（Elastomer Interconnection）的开源微型基座连接系统。它为柔性神经探针提供了稳固且可扩展的接口，专为自由活动动物的长期慢性实验而优化设计
+**E-Link易链**，是一款基于弹性体互连技术（Elastomer Interconnection）的开源微型基座连接系统。它为柔性神经探针提供了稳固且可扩展的接口，专为自由活动动物的长期实验而优化设计
 
 <div align="center">
 <img src="Videos/Demo%20new%20new.gif" 
@@ -783,7 +783,7 @@ This project is open-source and available under the **MIT License**. Click the b
 
 * **⚡ 256 通道高密度接口**
   紧凑的基座占地面积，支持高密度采集，且不增加手术负担。
-* **🔌 免焊弹性体互连**
+* **🔌 弹性导电体互连**
   使用各向异性导电弹性体，实现可重复、允许对准误差的一站式电气接触。
 * **🐭 专为体内研究优化**
   最小化植入所需面积。核心组件重量仅为 2.8g（移除上盖后可保证小鼠完全的自由活动），为动物最大限度减轻负担，在长期记录过程中保证动物福利。
@@ -827,7 +827,7 @@ This project is open-source and available under the **MIT License**. Click the b
       </tr>
       <tr>
         <td><b>转接PCB</b></td>
-        <td>高密度 4 层 PCB，用于将信号从薄膜探针路由到放大器的球栅阵列图案转换</td>
+        <td>高密度 4 层 PCB，用于将信号从薄膜探针放大器的球栅阵列图案转换</td>
       </tr>
       <tr>
         <td><b>手术保护盖</b></td>
@@ -934,16 +934,16 @@ This project is open-source and available under the **MIT License**. Click the b
 
 ## 📄 出版物
 
-本工作目前正在 **IEEE Journal on Flexible Electronics (JFLEX)** 审稿中。
+相关工作目前正在 **IEEE Journal on Flexible Electronics (JFLEX)** 审稿中。
 
 本仓库中的硬件设计和视觉资产直接对应于投稿中描述的系统。
 
 * **完整引用**：正式录用后，最终论文的永久链接将立即在此处更新。
 * **预印本/全文**：*即将推出。*
   
-* 我们欢迎神经工程科研社区的反馈与合作！
+* 欢迎神经工程科研社区的反馈与合作！
 
-* **咨询**：如需获取技术设计文件或有任何相关疑问，请邮件联系：
+* **咨询**：如需获取技术支持或对文件有任何相关疑问，或正在寻找高密度神经接口的定制化方案，请邮件联系：
     * **白天宇** ([<font color="#60a5fa">Tianyu.Bai.TH@Dartmouth.edu</font>](mailto:Tianyu.Bai.TH@Dartmouth.edu))
     * **方辉教授** ([<font color="#60a5fa">Hui.Fang@Dartmouth.edu</font>](mailto:Hui.Fang@Dartmouth.edu))
 
@@ -951,7 +951,7 @@ This project is open-source and available under the **MIT License**. Click the b
 
 ## 📑 引用与 DOI
 
-如果您在研究中使用了这些设计、代码或资产，请使用 Zenodo 提供的永久 DOI 引用本仓库：
+如果您在研究中使用了这些设计、代码或资产，需使用 Zenodo 提供的永久 DOI 引用本仓库：
 
 **当前参考：**
 > T. Bai, et al., "E-Link GitHub Repository," v1.0, MINE Lab, Dartmouth College, 2026. [![DOI](https://zenodo.org/badge/1119765398.svg)](https://doi.org/10.5281/zenodo.18440104)
@@ -961,7 +961,7 @@ This project is open-source and available under the **MIT License**. Click the b
 <span id="cn-downloads"></span>
 ## 🔗 仓库与下载
 
-本项目完全开源。相关论文录用后，包含 **PCB 制造文件 (Gerber/NC Drill)** 和 **3D打印文件** 的完整数据集将通过以下链接提供访问。
+本项目完全开源。相关论文录用后，包含 **PCB 制造文件 (Gerber)** 和 **3D打印文件** 的完整数据集将通过以下链接提供访问。
 
 <div align="center">
   <p><b>👇 欢迎收藏本仓库以便未来下载：</b></p>
@@ -976,7 +976,7 @@ This project is open-source and available under the **MIT License**. Click the b
 
 ## 🤝 致谢
 
-开发者衷心感谢 **美国国立卫生研究院 NIH R01MH139342** 和 **达特茅斯博士生创新奖学金 (Dartmouth PhD Innovation Fellowship)** 的支持。
+开发者感谢 **美国国立卫生研究院 NIH R01MH139342** 和 **达特茅斯博士生创新奖学金 (Dartmouth PhD Innovation Fellowship)** 的支持。
 
 特别感谢 **达特茅斯Thayer工学院** 的相关成员在易链系统开发过程中提供的技术支持和反馈。
 
