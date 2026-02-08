@@ -1043,7 +1043,7 @@ body.video-active .cursor-outline {
       }
     });
  
-    function botSay(text, duration = 2000) {
+    function botSay(text, duration = 1000) {
       if(!botSpeech || !botContainer || rpgDialogue.classList.contains('active')) return; 
       botSpeech.textContent = text;
       botContainer.classList.add('speaking');
@@ -1078,7 +1078,7 @@ body.video-active .cursor-outline {
       // 🔥 拦截播放指令
       if (nodeKey === 'play_video') {
          const loadingText = currentLang === 'en' ? "Accessing Video Feed..." : "正在接入视频信号...";
-         botSay(loadingText, 2000);
+         botSay(loadingText, 1000);
          setTimeout(() => {
              openVideoModal();
          }, 1000);
