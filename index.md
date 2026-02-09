@@ -183,8 +183,10 @@ title: E-Link Home
   
   <model-viewer
     src="{{ '/Videos/3D_1.85MB.glb' | relative_url }}"
-    alt="RHD Connector 3D Model"
-    loading="lazy"
+    alt="E Link 3D Model"
+    loading="eager"
+    fetchpriority="high"  
+    poster="{{ '/Images/poster.webp' | relative_url }}" camera-controls
     camera-controls
     auto-rotate
     interaction-prompt="none" 
