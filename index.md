@@ -177,7 +177,7 @@ title: E-Link Home
   }
 </style>
 
-## 🔬 E-Link – Interactive 3D View
+## 🔬 256Ch Customized Headstage – Interactive 3D View
 
 <div align="center" style="position: relative; max-width: 760px; margin: 0 auto;">
   
@@ -680,7 +680,7 @@ This project is open-source and available under the **MIT License**. Click the b
   }
 </style>
 
-## 🔬 E-Link 易链 – 交互式立体展示
+## 🔬 定制256通道放大器 – 交互式立体展示
 
 <div align="center" style="position: relative; max-width: 760px; margin: 0 auto;">
   
