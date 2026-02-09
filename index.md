@@ -198,8 +198,12 @@ title: E-Link Home
       background: rgba(15,23,42,0.6);
       border-radius: 16px;
       border: 1px solid rgba(59,130,246,0.3);
-      outline: none;
-    ">
+      outline: none;">
+
+    <div slot="poster" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; background: #0a0a0f; color: #3b82f6; font-family: 'JetBrains Mono', monospace;">
+    <div class="model-loader"></div>
+      <p style="margin-top: 20px; font-size: 0.9rem; letter-spacing: 2px; animation: blink 1.5s infinite;">INITIALIZING 3D SIGNAL...</p>
+    </div>
     
     <div class="gesture-overlay mode-drag">
       <div class="icon-box">
@@ -688,8 +692,10 @@ This project is open-source and available under the **MIT License**. Click the b
   
   <model-viewer
     src="{{ '/Videos/3D_1.85MB.glb' | relative_url }}"
-    alt="RHD Connector 3D Model"
-    loading="lazy"
+       alt="E Link 3D Model"
+    loading="eager"
+    fetchpriority="high"  
+    poster="{{ '/Images/poster.webp' | relative_url }}" camera-controls
     camera-controls
     auto-rotate
     interaction-prompt="none" 
@@ -701,8 +707,12 @@ This project is open-source and available under the **MIT License**. Click the b
       background: rgba(15,23,42,0.6);
       border-radius: 16px;
       border: 1px solid rgba(59,130,246,0.3);
-      outline: none;
-    ">
+      outline: none;">
+
+ <div slot="poster" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; background: #0a0a0f; color: #3b82f6; font-family: 'JetBrains Mono', monospace;">
+ <div class="model-loader"></div>
+      <p style="margin-top: 20px; font-size: 0.9rem; letter-spacing: 2px; animation: blink 1.5s infinite;">INITIALIZING 3D SIGNAL...</p>
+    </div>
     
     <div class="gesture-overlay mode-drag">
       <div class="icon-box">
