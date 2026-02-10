@@ -187,17 +187,28 @@ title: E-Link Home
     loading="eager"
     fetchpriority="high"  
     poster="{{ '/Images/poster.webp' | relative_url }}" 
-    camera-controls
-    auto-rotate
-    interaction-prompt="none" 
-    environment-image="neutral"    exposure="1.2"                 shadow-intensity="1"           shadow-softness="0.8"          tone-mapping="commerce"        style="
-      width: 100%;
-      height: 460px;
-      background: #0f172a;         /* 保持深色背景，不要改透明度 */
-      border-radius: 16px;
-      border: 1px solid rgba(59,130,246,0.3);
-      outline: none;">
+     
+  alpha-mode="blend"
 
+  camera-controls
+  auto-rotate
+  interaction-prompt="none"
+
+  environment-image="neutral"
+  exposure="1.2"
+
+  shadow-intensity="1"
+  shadow-softness="0.8"
+
+  tone-mapping="commerce"
+
+  style="
+    width: 100%;
+    height: 460px;
+    background: #0f172a;
+    border-radius: 16px;
+    border: 1px solid rgba(59,130,246,0.3);
+  ">
 
     <div slot="poster" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; background: #0a0a0f; color: #3b82f6; font-family: 'JetBrains Mono', monospace;">
     <div class="model-loader"></div>
@@ -697,20 +708,28 @@ This project is open-source and available under the **MIT License**. Click the b
     loading="eager"
     fetchpriority="high"  
     poster="{{ '/Images/poster.webp' | relative_url }}" camera-controls
-    camera-controls
-    auto-rotate
-    interaction-prompt="none" 
-    shadow-intensity="1"
-    exposure="1.1"
-    environment-image="neutral"  
-    shadow-intensity="1"
-    style="
-      width: 100%;
-      height: 460px;
-      background: rgba(15,23,42,1);
-      border-radius: 16px;
-      border: 1px solid rgba(59,130,246,0.3);
-      outline: none;">
+    
+  alpha-mode="blend"
+
+  camera-controls
+  auto-rotate
+  interaction-prompt="none"
+
+  environment-image="neutral"
+  exposure="1.2"
+
+  shadow-intensity="1"
+  shadow-softness="0.8"
+
+  tone-mapping="commerce"
+
+  style="
+    width: 100%;
+    height: 460px;
+    background: #0f172a;
+    border-radius: 16px;
+    border: 1px solid rgba(59,130,246,0.3);
+  ">
 
  <div slot="poster" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; background: #0a0a0f; color: #3b82f6; font-family: 'JetBrains Mono', monospace;">
  <div class="model-loader"></div>
