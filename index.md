@@ -197,7 +197,7 @@ title: E-Link Home
     style="
       width: 100%;
       height: 460px;
-      background: rgba(15,23,42,0.95);
+      background: rgba(15,23,42,1);
       border-radius: 16px;
       border: 1px solid rgba(59,130,246,0.3);
       outline: none;">
@@ -710,7 +710,7 @@ This project is open-source and available under the **MIT License**. Click the b
     style="
       width: 100%;
       height: 460px;
-      background: rgba(15,23,42,0.95);
+      background: rgba(15,23,42,1);
       border-radius: 16px;
       border: 1px solid rgba(59,130,246,0.3);
       outline: none;">
