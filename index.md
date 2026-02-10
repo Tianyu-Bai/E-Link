@@ -693,7 +693,7 @@ This project is open-source and available under the **MIT License**. Click the b
   
   <model-viewer
     src="{{ '/Videos/Test 2.2MB.glb' | relative_url }}"
-       alt="E Link 3D Model"
+    alt="E Link 3D Model"
     loading="eager"
     fetchpriority="high"  
     poster="{{ '/Images/poster.webp' | relative_url }}" camera-controls
