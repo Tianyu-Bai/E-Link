@@ -692,7 +692,7 @@ This project is open-source and available under the **MIT License**. Click the b
 <div align="center" style="position: relative; max-width: 760px; margin: 0 auto;">
   
   <model-viewer
-    src="{{ '/Videos/Test 2.2MB.glb' | relative_url }}"
+    src="{{ '/Videos/Everything 2.4MB.glb' | relative_url }}"
     alt="E Link 3D Model"
     loading="eager"
     fetchpriority="high"  
