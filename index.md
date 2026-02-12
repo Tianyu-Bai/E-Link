@@ -265,9 +265,8 @@ title: E-Link Home
 </style>
 
 ## 🔬 E-Link – 3D Interactive View
-  
-  <model-viewer
-   <div class="model-block" align="center" style="position: relative; max-width: 760px; margin: 0 auto;">
+ 
+<div class="model-block" align="center" style="position: relative; max-width: 760px; margin: 0 auto;">
   <model-viewer
     src="{{ '/Videos/Whole_2.34MB.glb' | relative_url }}"
     alt="E Link 3D Model"
