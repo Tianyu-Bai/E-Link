@@ -180,8 +180,9 @@ title: E-Link Home
 
 .gesture-hud {
   position: absolute;
-  bottom: 14px;
-  right: 16px;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
   gap: 12px;
   font-size: 13px;
@@ -190,7 +191,9 @@ title: E-Link Home
   background: rgba(15, 23, 42, 0.45);
   border: 1px solid rgba(59,130,246,0.25);
   padding: 6px 10px;
-  border-radius: 10px;
+  border-radius: 20px;
+  white-space: nowrap;
+  -webkit-backdrop-filter: blur(6px); /* 部分旧版 iPhone 可能不支持标准 backdrop-filter */
   pointer-events: none;
   backdrop-filter: blur(6px);
   transition: opacity 0.4s ease;
@@ -215,6 +218,49 @@ title: E-Link Home
 .gesture-active .gesture-overlay {
   animation-play-state: running;
 }
+
+/* ===================== 复位按钮样式 ===================== */
+.reset-btn {
+  /* 1. 绝对定位在左下角 */
+  position: absolute;
+  bottom: 16px;
+  left: 16px;
+  z-index: 10; /* 保证能被点到 */
+
+  /* 2. 科技感外观 (与 HUD 风格一致) */
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  color: rgba(255, 255, 255, 0.8);
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-family: system-ui, sans-serif;
+  font-size: 12px;
+  cursor: pointer;
+  
+  /* 3. 磨砂玻璃效果 */
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  transition: all 0.3s ease;
+  
+  /* 4. 图标与文字对齐 */
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* 悬停高亮效果 */
+.reset-btn:hover {
+  background: rgba(59, 130, 246, 0.4);
+  color: #fff;
+  border-color: rgba(59, 130, 246, 0.8);
+  transform: scale(1.05); /* 微微放大 */
+  box-shadow: 0 0 10px rgba(59, 130, 246, 0.3);
+}
+
+/* 点击时的按压感 */
+.reset-btn:active {
+  transform: scale(0.95);
+}
   
 </style>
 
@@ -231,6 +277,7 @@ title: E-Link Home
     bounds="tight"
     field-of-view="30deg"
     auto-rotate
+    auto-rotate-delay="0"        rotation-per-second="35deg"
     interaction-prompt="none" 
     environment-image="neutral"    
     exposure="0.85"                 
@@ -272,6 +319,10 @@ title: E-Link Home
       <div class="gesture-text">Pinch / <kbd>Ctrl</kbd> + 🖱️Wheel to Zoom</div>
     </div>
 
+<button class="reset-btn" onclick="this.parentElement.cameraOrbit = '45deg 55deg auto'; this.parentElement.fieldOfView = '30deg';">
+    ⟲ Reset View
+  </button>
+  
   </model-viewer>
 </div> 
 
@@ -288,6 +339,7 @@ title: E-Link Home
     camera-controls
     bounds="tight"
     auto-rotate
+    auto-rotate-delay="0"        rotation-per-second="35deg"
     interaction-prompt="none" 
     environment-image="neutral"    
     exposure="0.85"                 
@@ -327,7 +379,11 @@ title: E-Link Home
       </div>
       <div class="gesture-text">Pinch / <kbd>Ctrl</kbd> + 🖱️Wheel to Zoom</div>
     </div>
-
+    
+<button class="reset-btn" onclick="this.parentElement.cameraOrbit = '45deg 55deg auto'; this.parentElement.fieldOfView = '30deg';">
+    ⟲ Reset View
+  </button>
+  
   </model-viewer>
 </div> 
 
@@ -454,7 +510,6 @@ title: E-Link Home
 
 <span id="en-bom"></span>
 ### 🛠 Bill of Materials (BOM) of the headstage
-<span id="en-bom"></span>
 
 <div align="center">
   <img src="Images/256HD.png" 
@@ -493,7 +548,7 @@ title: E-Link Home
        <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">Intan RHD2164</td>
        <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">4</td>
        <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">BGA</td>
-       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;"><b>Critical:</b> Ensure correct orientation</td>
+       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;"><b>💡 Tip:</b> Ensure correct orientation</td>
      </tr>
      <tr>
        <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;"><b>SPI Connector</b></td>
@@ -557,7 +612,7 @@ The hardware designs and visual assets in this repository correspond directly to
   
 * We welcome feedback and collaboration from the neuroengineering community!
 
-* **Inquiries**: For access to the technical design files or questions, please contact:
+* **Inquiries**: Thinking about using E-Link in your lab? We know setting up a new system can be tricky. If you have questions about the PCB design or 3D printing, drop us an email or open an issue. We'd love to help you get started!
     * **Tianyu Bai** ([<font color="#60a5fa">Tianyu.Bai.TH@Dartmouth.edu</font>](mailto:Tianyu.Bai.TH@Dartmouth.edu))
     * **Prof. Hui Fang** ([<font color="#60a5fa">Hui.Fang@Dartmouth.edu</font>](mailto:Hui.Fang@Dartmouth.edu))
 
@@ -677,6 +732,7 @@ This project is open-source and available under the **MIT License**. Click the b
     camera-controls
     bounds="tight"
     auto-rotate
+    auto-rotate-delay="0"        rotation-per-second="35deg"
     environment-image="neutral"    
     exposure="0.85"                 
     shadow-intensity="0.6"           
@@ -713,6 +769,10 @@ This project is open-source and available under the **MIT License**. Click the b
       <div class="gesture-text">双指对角线拉动 / Ctrl+鼠标滚轮以放大/缩小</div>
     </div>
 
+<button class="reset-btn" onclick="this.parentElement.cameraOrbit = '45deg 55deg auto'; this.parentElement.fieldOfView = '30deg';">
+    ⟲ Reset View
+  </button>
+  
   </model-viewer>
 </div>
 
@@ -729,8 +789,8 @@ This project is open-source and available under the **MIT License**. Click the b
     bounds="tight"
     field-of-view="30deg"
     auto-rotate
+    auto-rotate-delay="0"        rotation-per-second="35deg"
     interaction-prompt="none" 
-    
     environment-image="neutral"    
     exposure="0.85"                 
     shadow-intensity="0.6"           
@@ -770,7 +830,11 @@ This project is open-source and available under the **MIT License**. Click the b
       </div>
       <div class="gesture-text">双指对角线拉动 / Ctrl+鼠标滚轮以放大/缩小</div>
     </div>
-
+    
+<button class="reset-btn" onclick="this.parentElement.cameraOrbit = '45deg 55deg auto'; this.parentElement.fieldOfView = '30deg';">
+    ⟲ Reset View
+  </button>
+  
   </model-viewer>
 </div> 
 
@@ -997,7 +1061,7 @@ This project is open-source and available under the **MIT License**. Click the b
   
 * 欢迎神经工程科研社区的反馈与合作！
 
-* **咨询**：如需获取技术支持或对文件有任何相关疑问，或正在寻找高密度神经接口的定制化方案，请邮件联系：
+* **咨询**：想在你的实验室使用 E-Link 吗？ 我们知道搭建新系统可能会遇到困难。如果你对 PCB 设计或 3D 打印有疑问，欢迎通过以下邮箱地址发邮件。我们非常乐意帮助！
     * **白天宇** ([<font color="#60a5fa">Tianyu.Bai.TH@Dartmouth.edu</font>](mailto:Tianyu.Bai.TH@Dartmouth.edu))
     * **方辉教授** ([<font color="#60a5fa">Hui.Fang@Dartmouth.edu</font>](mailto:Hui.Fang@Dartmouth.edu))
 
