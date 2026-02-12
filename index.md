@@ -277,16 +277,15 @@ title: E-Link Home
     field-of-view="30deg"
     auto-rotate
     auto-rotate-delay="0"
-    rotation-per-second="10deg"
     interaction-prompt="none"
     environment-image="neutral"
-    exposure="1.0"
+    exposure="0.75"
     shadow-intensity="1"
     tone-mapping="commerce"
     style="
       width: 100%;
       height: 460px;
-      background: #0f172a;
+      background: transparent;
       border-radius: 16px;
       border: 1px solid rgba(59,130,246,0.3);
       outline: none;">
@@ -337,16 +336,15 @@ title: E-Link Home
     field-of-view="30deg"
     auto-rotate
     auto-rotate-delay="0"
-    rotation-per-second="10deg"
     interaction-prompt="none"
     environment-image="neutral"
-    exposure="1.0"
+    exposure="0.75"
     shadow-intensity="1"
     tone-mapping="commerce"
     style="
       width: 100%;
       height: 460px;
-      background: #0f172a;
+      background: transparent;
       border-radius: 16px;
       border: 1px solid rgba(59,130,246,0.3);
       outline: none;">
@@ -731,16 +729,15 @@ This project is open-source and available under the **MIT License**. Click the b
     field-of-view="30deg"
     auto-rotate
     auto-rotate-delay="0"
-    rotation-per-second="10deg"
     interaction-prompt="none"
     environment-image="neutral"
-    exposure="1.0"
+    exposure="0.75"
     shadow-intensity="1"
     tone-mapping="commerce"
     style="
       width: 100%;
       height: 460px;
-      background: #0f172a;
+      background: transparent;
       border-radius: 16px;
       border: 1px solid rgba(59,130,246,0.3);
       outline: none;">
@@ -786,17 +783,16 @@ This project is open-source and available under the **MIT License**. Click the b
     bounds="tight"
     field-of-view="30deg"
     auto-rotate
-    auto-rotate-delay="0"
-    rotation-per-second="10deg"
+    auto-rotate-delay="0.5"
     interaction-prompt="none"
     environment-image="neutral"
-    exposure="1.0"
+    exposure="0.75"
     shadow-intensity="1"
     tone-mapping="commerce"
     style="
       width: 100%;
       height: 460px;
-      background: #0f172a;
+      background: transparent;
       border-radius: 16px;
       border: 1px solid rgba(59,130,246,0.3);
       outline: none;">
