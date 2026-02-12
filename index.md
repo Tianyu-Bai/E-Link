@@ -265,7 +265,6 @@ title: E-Link Home
 </style>
 
 ## 🔬 E-Link – 3D Interactive View
-<div class="model-block" align="center" style="position: relative; max-width: 760px; margin: 0 auto;">
   
   <model-viewer
    <div class="model-block" align="center" style="position: relative; max-width: 760px; margin: 0 auto;">
