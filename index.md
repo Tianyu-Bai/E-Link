@@ -277,7 +277,7 @@ title: E-Link Home
     bounds="tight"
     field-of-view="30deg"
     auto-rotate
-    auto-rotate-delay="0"        rotation-per-second="35deg"
+    auto-rotate-delay="0"        rotation-per-second="10deg"
     interaction-prompt="none" 
     environment-image="neutral"    
     exposure="0.85"                 
@@ -339,7 +339,7 @@ title: E-Link Home
     camera-controls
     bounds="tight"
     auto-rotate
-    auto-rotate-delay="0"        rotation-per-second="35deg"
+    auto-rotate-delay="0"        rotation-per-second="10deg"
     interaction-prompt="none" 
     environment-image="neutral"    
     exposure="0.85"                 
@@ -732,7 +732,7 @@ This project is open-source and available under the **MIT License**. Click the b
     camera-controls
     bounds="tight"
     auto-rotate
-    auto-rotate-delay="0"        rotation-per-second="35deg"
+    auto-rotate-delay="0"        rotation-per-second="10deg"
     environment-image="neutral"    
     exposure="0.85"                 
     shadow-intensity="0.6"           
@@ -789,7 +789,7 @@ This project is open-source and available under the **MIT License**. Click the b
     bounds="tight"
     field-of-view="30deg"
     auto-rotate
-    auto-rotate-delay="0"        rotation-per-second="35deg"
+    auto-rotate-delay="0"        rotation-per-second="10deg"
     interaction-prompt="none" 
     environment-image="neutral"    
     exposure="0.85"                 
