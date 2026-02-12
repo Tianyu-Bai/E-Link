@@ -1111,8 +1111,10 @@ This project is open-source and available under the **MIT License**. Click the b
 </div>
 
 <script>
-  // ===================== 性能救星：智能显存管理 =====================
-  // 原理：谁在屏幕上，谁才允许渲染；滑走后立即暂停，释放 GPU
+  // ===================== 性能优化最终版：带缓冲区的智能懒加载 =====================
+  // 1. [懒加载] 只有模型接近屏幕 (进入200px缓冲区) 时，才开始下载 3D 资源 (data-src -> src)。
+  // 2. [防卡顿] 提前加载，避免用户滑到模型时正好卡住。
+  // 3. [显存管理] 滑走后立即暂停，释放 GPU。
 
   document.addEventListener("DOMContentLoaded", () => {
     const viewers = document.querySelectorAll('model-viewer');
@@ -1122,19 +1124,41 @@ This project is open-source and available under the **MIT License**. Click the b
         const viewer = entry.target;
         
         if (entry.isIntersecting) {
-          // 1. 进入屏幕：开始旋转，恢复渲染
-          viewer.play(); 
-          viewer.setAttribute('auto-rotate', '');
+          // [进场逻辑]
+
+          // 1. 核心修改：检测 src 是否为空？如果是，把 data-src 赋值给它
+          // 这样浏览器直到这一刻才会发起网络请求下载模型，内存占用瞬间降低。
+          if (!viewer.getAttribute('src') && viewer.getAttribute('data-src')) {
+            viewer.setAttribute('src', viewer.getAttribute('data-src'));
+          }
+
+          // 2. 唤醒渲染
+          viewer.dismissPoster(); // 隐藏海报
+          
+          // 3. 尝试播放 (加个 try-catch 防止模型还没下载完就报错)
+          try {
+            viewer.play();
+            viewer.setAttribute('auto-rotate', '');
+          } catch(e) {
+            // 模型可能还在下载中，auto-rotate 属性会让它下载完后自动开始转
+          }
+          
         } else {
-          // 2. 离开屏幕：彻底暂停，释放显存 (关键!)
+          // [退场逻辑]
+          // 离开缓冲区：暂停渲染，释放 GPU (关键!)
           viewer.pause();
           viewer.removeAttribute('auto-rotate');
         }
       });
     }, {
       root: null,
-      rootMargin: '0px',
-      threshold: 0.2 // 只要出现 20% 就加载，保证用户看到时已经在转了
+      // 【关键修改】：上下增加 200px 的缓冲区
+      // 意味着：模型还没进入屏幕，距离屏幕还有 200px 时就开始悄悄加载。
+      // 这样当你滑到模型面前时，最卡的那一下已经过去了，体验会非常丝滑。
+      rootMargin: '200px 0px', 
+      
+      // 阈值设低一点，只要碰到缓冲区边缘就开始工作，不用等到露出 20%
+      threshold: 0.01 
     });
 
     viewers.forEach(viewer => {
@@ -1142,17 +1166,17 @@ This project is open-source and available under the **MIT License**. Click the b
       viewer.pause();
       observer.observe(viewer);
     });
-  });
 
-  // ===================== 交互提示逻辑 =====================
-  // 用户一旦开始操作，隐藏手势提示
-  document.querySelectorAll('model-viewer').forEach(viewer => {
-    const hideAllHints = () => {
-      viewer.querySelectorAll('.gesture-overlay, .gesture-hud')
-        .forEach(el => el.classList.add('gesture-hidden'));
-    };
-    viewer.addEventListener('mousedown', hideAllHints, { once: true });
-    viewer.addEventListener('wheel', hideAllHints, { once: true });
-    viewer.addEventListener('touchstart', hideAllHints, { once: true });
+    // ===================== 交互提示逻辑 (保留你原有的配置) =====================
+    // 用户一旦开始操作，隐藏手势提示
+    document.querySelectorAll('model-viewer').forEach(viewer => {
+      const hideAllHints = () => {
+        viewer.querySelectorAll('.gesture-overlay, .gesture-hud')
+          .forEach(el => el.classList.add('gesture-hidden'));
+      };
+      viewer.addEventListener('mousedown', hideAllHints, { once: true });
+      viewer.addEventListener('wheel', hideAllHints, { once: true });
+      viewer.addEventListener('touchstart', hideAllHints, { once: true });
+    });
   });
 </script>
