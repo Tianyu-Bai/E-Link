@@ -268,40 +268,41 @@ title: E-Link Home
 <div class="model-block" align="center" style="position: relative; max-width: 760px; margin: 0 auto;">
   
   <model-viewer
+   <div class="model-block" align="center" style="position: relative; max-width: 760px; margin: 0 auto;">
+  <model-viewer
     src="{{ '/Videos/Whole_2.34MB.glb' | relative_url }}"
-    alt="E Link 3D Model" 
-    loading="eager"
-    fetchpriority="high"  
-    poster="{{ '/Images/poster.webp' | relative_url }}" 
+    alt="E Link 3D Model"
+    loading="lazy"
+    poster="{{ '/Images/poster.webp' | relative_url }}"
     camera-controls
     bounds="tight"
     field-of-view="30deg"
     auto-rotate
-    auto-rotate-delay="0"        rotation-per-second="10deg"
-    interaction-prompt="none" 
-    environment-image="neutral"    
-    exposure="0.85"                 
-    shadow-intensity="0.6"           
-    shadow-softness="0.9"          
-    tone-mapping="standard"        
+    auto-rotate-delay="0"
+    rotation-per-second="35deg"
+    interaction-prompt="none"
+    environment-image="neutral"
+    exposure="1.0"
+    shadow-intensity="1"
+    tone-mapping="commerce"
     style="
-  
       width: 100%;
       height: 460px;
-      background: #0f172a;         /* 保持深色背景，不要改透明度 */
+      background: #0f172a;
       border-radius: 16px;
       border: 1px solid rgba(59,130,246,0.3);
       outline: none;">
 
     <div slot="poster" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; background: #0a0a0f; color: #3b82f6; font-family: 'JetBrains Mono', monospace;">
-    <div class="model-loader"></div>
+      <div class="model-loader"></div>
       <p style="margin-top: 20px; font-size: 0.9rem; letter-spacing: 2px; animation: blink 1.5s infinite;">INITIALIZING 3D SIGNAL...</p>
     </div>
     
     <div class="model-watermark-text">Copyright © 2026 Tianyu Bai</div>
+    
     <div class="gesture-hud">
       <span>↺ Drag</span>
-     <span>⌃ + 🖱 Zoom</span>
+      <span>⌃ + 🖱 Zoom</span>
     </div>
 
     <div class="gesture-overlay mode-drag">
@@ -318,13 +319,11 @@ title: E-Link Home
       </div>
       <div class="gesture-text">Pinch / <kbd>Ctrl</kbd> + 🖱️Wheel to Zoom</div>
     </div>
-
-<button class="reset-btn" onclick="this.parentElement.cameraOrbit = '45deg 55deg auto'; this.parentElement.fieldOfView = '30deg';">
-    ⟲ Reset View
-  </button>
-  
+    <button class="reset-btn" onclick="this.parentElement.cameraOrbit = '45deg 55deg auto'; this.parentElement.fieldOfView = '30deg';">
+      ⟲ Reset View
+    </button>
   </model-viewer>
-</div> 
+</div>
 
 ## 🔬 256Ch Customized Headstage – 3D Interactive View
 
@@ -333,38 +332,39 @@ title: E-Link Home
   <model-viewer
     src="{{ '/Videos/3D_1.85MB.glb' | relative_url }}"
     alt="E Link 3D Model" 
-    loading="eager"
-    fetchpriority="high"  
-    poster="{{ '/Images/poster.webp' | relative_url }}" 
+     loading="lazy"
+    poster="{{ '/Images/poster.webp' | relative_url }}"
     camera-controls
     bounds="tight"
+    field-of-view="30deg"
     auto-rotate
-    auto-rotate-delay="0"        rotation-per-second="10deg"
-    interaction-prompt="none" 
-    environment-image="neutral"    
-    exposure="0.85"                 
-    shadow-intensity="0.6"           
-    shadow-softness="0.9"          
-    tone-mapping="standard"        
+    auto-rotate-delay="0"
+    rotation-per-second="35deg"
+    interaction-prompt="none"
+    environment-image="neutral"
+    exposure="1.0"
+    shadow-intensity="1"
+    tone-mapping="commerce"
     style="
-    
       width: 100%;
       height: 460px;
-      background: #0f172a;         /* 保持深色背景，不要改透明度 */
+      background: #0f172a;
       border-radius: 16px;
       border: 1px solid rgba(59,130,246,0.3);
       outline: none;">
 
     <div slot="poster" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; background: #0a0a0f; color: #3b82f6; font-family: 'JetBrains Mono', monospace;">
-    <div class="model-loader"></div>
+      <div class="model-loader"></div>
       <p style="margin-top: 20px; font-size: 0.9rem; letter-spacing: 2px; animation: blink 1.5s infinite;">INITIALIZING 3D SIGNAL...</p>
     </div>
     
     <div class="model-watermark-text">Copyright © 2026 Tianyu Bai</div>
+    
     <div class="gesture-hud">
       <span>↺ Drag</span>
-     <span>⌃ + 🖱 Zoom</span>
+      <span>⌃ + 🖱 Zoom</span>
     </div>
+
     <div class="gesture-overlay mode-drag">
       <div class="icon-box">
         <div class="hand-icon">👆</div>
@@ -726,23 +726,23 @@ This project is open-source and available under the **MIT License**. Click the b
   <model-viewer
     src="{{ '/Videos/3D_1.85MB.glb' | relative_url }}"
     alt="E Link 3D Model"
-    loading="eager"
-    fetchpriority="high"  
-    poster="{{ '/Images/poster.webp' | relative_url }}" 
+    loading="lazy"
+    poster="{{ '/Images/poster.webp' | relative_url }}"
     camera-controls
     bounds="tight"
+    field-of-view="30deg"
     auto-rotate
-    auto-rotate-delay="0"        rotation-per-second="10deg"
-    environment-image="neutral"    
-    exposure="0.85"                 
-    shadow-intensity="0.6"           
-    shadow-softness="0.9"          
-    tone-mapping="standard"        
+    auto-rotate-delay="0"
+    rotation-per-second="35deg"
+    interaction-prompt="none"
+    environment-image="neutral"
+    exposure="1.0"
+    shadow-intensity="1"
+    tone-mapping="commerce"
     style="
-    
       width: 100%;
       height: 460px;
-      background: #0f172a;         /* 保持深色背景，不要改透明度 */
+      background: #0f172a;
       border-radius: 16px;
       border: 1px solid rgba(59,130,246,0.3);
       outline: none;">
@@ -782,25 +782,23 @@ This project is open-source and available under the **MIT License**. Click the b
   <model-viewer
     src="{{ '/Videos/Whole_2.34MB.glb' | relative_url }}"
     alt="E Link 3D Model" 
-    loading="eager"
-    fetchpriority="high"  
-    poster="{{ '/Images/poster.webp' | relative_url }}" 
+    loading="lazy"
+    poster="{{ '/Images/poster.webp' | relative_url }}"
     camera-controls
     bounds="tight"
     field-of-view="30deg"
     auto-rotate
-    auto-rotate-delay="0"        rotation-per-second="10deg"
-    interaction-prompt="none" 
-    environment-image="neutral"    
-    exposure="0.85"                 
-    shadow-intensity="0.6"           
-    shadow-softness="0.9"          
-    tone-mapping="standard"        
+    auto-rotate-delay="0"
+    rotation-per-second="35deg"
+    interaction-prompt="none"
+    environment-image="neutral"
+    exposure="1.0"
+    shadow-intensity="1"
+    tone-mapping="commerce"
     style="
-
       width: 100%;
       height: 460px;
-      background: #0f172a;         /* 保持深色背景，不要改透明度 */
+      background: #0f172a;
       border-radius: 16px;
       border: 1px solid rgba(59,130,246,0.3);
       outline: none;">
