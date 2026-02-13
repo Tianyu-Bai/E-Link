@@ -234,6 +234,49 @@ title: E-Link Home
 }
 </style>
 
+## 🔬 Interactive 3D Model: E-Link Headstage Integration
+ 
+<div class="model-block" align="center" style="position: relative; max-width: 760px; margin: 0 auto;">
+  <model-viewer
+    class="custom-model-viewer"
+    data-src="{{ '/Videos/On skull_2.8MB.glb' | relative_url }}"
+    alt="E Link on Skull 3D Model"
+    loading="lazy"
+    poster="{{ '/Images/poster.webp' | relative_url }}"
+    camera-controls bounds="tight" field-of-view="30deg" auto-rotate auto-rotate-delay="2000"
+    interaction-prompt="none" environment-image="neutral" exposure="0.75" shadow-intensity="0" tone-mapping="commerce">
+
+    <div slot="poster" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; background: #0a0a0f; color: #3b82f6; font-family: 'JetBrains Mono', monospace;">
+      <div class="model-loader"></div>
+      <p style="margin-top: 20px; font-size: 0.9rem; letter-spacing: 2px; animation: blink 1.5s infinite;">INITIALIZING 3D SIGNAL...</p>
+    </div>
+    
+    <div class="model-watermark-text">Copyright © 2026 Tianyu Bai</div>
+    
+    <div class="gesture-hud">
+      <span>↺ Drag</span>
+      <span>⌃ + 🖱 Zoom</span>
+    </div>
+
+    <div class="gesture-overlay mode-drag">
+      <div class="icon-box"><div class="hand-icon">👆</div></div>
+      <div class="gesture-text">Drag to Rotate</div>
+    </div>
+
+    <div class="gesture-overlay mode-zoom">
+      <div class="icon-box">
+        <div class="hand-icon hand-left">👉</div>
+        <div class="hand-icon hand-right">👈</div>
+      </div>
+      <div class="gesture-text">Pinch / <kbd>Ctrl</kbd> + 🖱️Wheel to Zoom</div>
+    </div>
+    
+    <button class="reset-btn" onclick="this.parentElement.cameraOrbit = '45deg 55deg auto'; this.parentElement.fieldOfView = '30deg';">
+      ⟲ Reset View
+    </button>
+  </model-viewer>
+</div>
+
 ## 🔬 E-Link – 3D Interactive View
  
 <div class="model-block" align="center" style="position: relative; max-width: 760px; margin: 0 auto;">
