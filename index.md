@@ -1121,14 +1121,14 @@ This project is open-source and available under the **MIT License**. Click the b
         // 2. 标记：用户已经交互过，引导动画（overlay）从此封禁
         viewer.dataset.overlayDisabled = "true";
 
-        // 3. 清除旧计时器，重置 6 秒倒计时
+        // 3. 清除旧计时器，重置 10 秒倒计时
         if (hudTimer) clearTimeout(hudTimer);
 
         hudTimer = setTimeout(() => {
           // 4. 重点：只找回顶部的 HUD 文字条，不找回引导动画
           const hud = viewer.querySelector('.gesture-hud');
           if (hud) hud.classList.remove('gesture-hidden');
-        }, 6000); // 6 秒后显示HUD
+        }, 10000); // 10 秒后显示HUD
       };
       
       // 监听所有交互动作
