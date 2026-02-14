@@ -1127,11 +1127,11 @@ This project is open-source and available under the **MIT License**. Click the b
         // 2. 清除之前的计时器，防止叠加
         if (reminderTimer) clearTimeout(reminderTimer);
 
-        // 3. 🟢 设置 18 秒后重新显示的逻辑
+        // 3. 🟢 设置 6 秒后重新显示的逻辑
         reminderTimer = setTimeout(() => {
           // 只有当模型还在屏幕内时才重新显示
           showHints();
-        }, 18000); 
+        }, 6000); 
       };
       
       // 监听所有交互动作：点击、滚动、触摸
