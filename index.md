@@ -47,7 +47,6 @@ title: E-Link Home
 </div>
 </div>
 
-
 <style>
   /* ========================================= 1. 复杂时间轴控制 (总周期 48秒) ========================================= */
    
@@ -125,7 +124,6 @@ title: E-Link Home
     margin-bottom: 5px;
   }
   
-  /* 🔴 性能优化关键 1：移除极耗性能的 drop-shadow，改用轻量级 text-shadow */
   .hand-icon {
     font-size: 50px;
     position: absolute;
@@ -148,21 +146,16 @@ title: E-Link Home
   .mode-zoom .hand-left { animation: move-zoom-left-diagonal 1.5s infinite ease-in-out; }
   .mode-zoom .hand-right { animation: move-zoom-right-diagonal 1.5s infinite ease-in-out; }
 
- .gesture-text {
-    color: rgba(255, 255, 255, 0.9);
-    font-family: system-ui, -apple-system, sans-serif; /* 换成更现代的系统字体 */
-    font-weight: 500; /* 去掉粗体，变得更优雅 */
-    font-size: 14px;
-    letter-spacing: 0.5px;
-    text-shadow: 0 1px 3px rgba(0,0,0,0.8);
-    background: rgba(30, 41, 59, 0.5); /* 柔和的深灰蓝 */
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    border: 1px solid rgba(255,255,255,0.1); /* 加一圈极细的高光边框 */
-    padding: 6px 14px;
-    border-radius: 20px; /* 更圆润 */
+  .gesture-text {
+    color: white;
+    font-family: sans-serif;
+    font-weight: bold;
+    font-size: 16px;
+    text-shadow: 0 2px 4px black;
+    background: rgba(0,0,0,0.4);
+    padding: 4px 12px;
+    border-radius: 12px;
     white-space: nowrap;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
   }
 
   /* ===================== 弱交互 HUD ===================== */
@@ -191,19 +184,9 @@ title: E-Link Home
 
 .gesture-hud span { white-space: nowrap; }
 
-/* 悬停高亮效果 (修复缩放动画冲突) */
-.reset-btn:hover {
-  background: rgba(59, 130, 246, 0.4);
-  color: #fff;
-  border-color: rgba(59, 130, 246, 0.8);
-  transform: scale(1.05) translateZ(0); /* 保持硬件分层不失效 */
-  box-shadow: 0 0 10px rgba(59, 130, 246, 0.3);
-}
-  
-/* 🔴 性能优化关键 2：彻底阻断隐藏元素的动画渲染，防止后台空转 */
 .gesture-hidden { 
   opacity: 0 !important; 
-   visibility: hidden !important; /* 🟢 彻底移出视觉渲染树，拔掉耗电根源 */
+  visibility: hidden !important; 
   pointer-events: none !important;
   animation: none !important; 
 }
@@ -245,7 +228,6 @@ title: E-Link Home
   transform: scale(0.95);
 }
 
-
 model-viewer::part(interaction-prompt),
   
 /* ===================== 模型全局基础样式 ===================== */
@@ -256,38 +238,16 @@ model-viewer::part(interaction-prompt),
   height: 460px;
   background: transparent;
   border-radius: 16px;
-  
-  /* 🌟 增强版：晶莹剔透的边框 + 内外双重辉光 */
-  border: 1px solid rgba(96, 165, 250, 0.4); 
-  box-shadow: 
-    0 0 20px -5px rgba(59, 130, 246, 0.3), /* 外侧悬浮光晕 */
-    inset 0 0 15px rgba(59, 130, 246, 0.1); /* 内侧玻璃质感发光 */
-    
+  border: 1px solid rgba(59,130,246,0.3); /* 🟢 恢复最原本的、安静的淡蓝色静态细边框 */
   outline: none;
   overflow: hidden; 
   transform: translateZ(0); 
   backface-visibility: hidden; 
-  transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); /* 动画更丝滑 */
 }
-
-/* 🌟 鼠标悬停时，光晕呼吸放大，极具互动感 */
-.custom-model-viewer:hover {
-  border: 1px solid rgba(96, 165, 250, 0.8);
-  box-shadow: 
-    0 0 35px 0px rgba(59, 130, 246, 0.4), 
-    inset 0 0 25px rgba(59, 130, 246, 0.2);
-}
+/* 🔴 已经去除了所有的 :hover 动态阴影和放大边框特效 */
   
-/* 🟢 新增：专治电脑端边框闪烁的三板斧 */
-  overflow: hidden; 
-  transform: translateZ(0); 
-  backface-visibility: hidden; 
-}
-  
-/* 🟢 新增：给包裹模型的盒子加上防溢出限制 */
 .model-block {
   max-width: 100vw !important;
-
 }
 
 /* 隐藏自带的默认提示和进度条，防止与你的自定义 UI 冲突 */
@@ -297,7 +257,17 @@ model-viewer::part(default-progress-bar) {
   height: 0 !important;
   opacity: 0 !important;
 }
-  
+
+.model-watermark-text {
+  position: absolute;
+  bottom: 12px;
+  right: 16px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.25);
+  pointer-events: none;
+  z-index: 5;
+}
 </style>
 
 ## 🔬 Interactive 3D Model: E-Link Headstage Integration
