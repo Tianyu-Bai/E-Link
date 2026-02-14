@@ -282,22 +282,6 @@ model-viewer::part(default-progress-bar) {
   height: 0 !important;
   opacity: 0 !important;
 }
-
-/* 🟢 让没有被激活的 3D 模型图层直接“休眠” */
-model-viewer {
-  opacity: 0.3;
-  filter: grayscale(80%) blur(2px);
-  pointer-events: none;
-  transition: all 0.5s ease;
-  will-change: transform, opacity;
-}
-
-/* 🟢 只有被 JS 激活的那个模型，才给它全尺寸的 GPU 资源 */
-model-viewer.is-active {
-  opacity: 1;
-  filter: none;
-  pointer-events: auto;
-}
   
 </style>
 
@@ -1173,59 +1157,45 @@ This project is open-source and available under the **MIT License**. Click the b
     const models = Array.from(document.querySelectorAll('model-viewer'));
     if (!models.length) return;
 
-    // 1. 设置单一阈值（杜绝逻辑打架）
+    // 1. 设置合理的触发阈值
     const isMobile = window.matchMedia('(max-width: 768px)').matches;
-    const VISIBLE_THRESHOLD = isMobile ? 0.3 : 0.2;
+    const VISIBLE_THRESHOLD = isMobile ? 0.25 : 0.2;
 
-    // 2. 全局播放锁（防止手机发烫）
-    let activeModel = null;
-
-    // 3. 统一交互提示隐藏逻辑，并修复 auto-rotate 丢失 Bug
+    // 2. 统一交互提示初始化
     models.forEach(viewer => {
       const hideAllHints = () => {
         viewer.querySelectorAll('.gesture-overlay, .gesture-hud')
           .forEach(el => el.classList.add('gesture-hidden'));
       };
       
-      // 用户一旦操作，就永久隐藏提示
       ['mousedown', 'wheel', 'touchstart'].forEach(evt => {
         viewer.addEventListener(evt, hideAllHints, { once: true });
       });
 
-      // ⚠️ 重点修复：让模型保持 auto-rotate 属性，只通过 pause() 冻结它，千万别删属性
       viewer.setAttribute('auto-rotate', '');
       viewer.pause(); 
     });
 
-   // 4. 极简极速版 Observer
+    // 3. 动态快照柔性内存管理 Observer
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         const viewer = entry.target;
         const isVisible = entry.intersectionRatio >= VISIBLE_THRESHOLD;
 
-        // 【阶段 A：超前懒加载】只要进缓冲圈，就静默下载
+        // 【阶段 A：超前加载】
         if (entry.isIntersecting) {
           if (!viewer.getAttribute('src') && viewer.getAttribute('data-src')) {
             viewer.setAttribute('src', viewer.getAttribute('data-src'));
-            viewer.dismissPoster();
           }
         }
 
-        // 【阶段 B：精确播放】露出超过阈值，才开始转动和播动画
+        // 【阶段 B：播放与休眠控制】
         if (isVisible) {
-          // 停掉正在播的旧模型，释放 GPU
-          if (activeModel && activeModel !== viewer) {
-            activeModel.pause();
-            activeModel.classList.remove('is-active'); // 🔴 加上这个：剥夺旧模型资源，让它变灰休眠
-            activeModel.querySelectorAll('.gesture-overlay').forEach(el => el.classList.remove('gesture-active'));
-          }
-          
-          // 激活新模型
-          activeModel = viewer;
           try {
+            // 🟢 唤醒：撕掉 2D 贴纸，无缝启动 3D 引擎
+            viewer.dismissPoster();
             viewer.play();
-            viewer.classList.add('is-active'); // 🔴 加上这个：唤醒当前模型，全速高清渲染
-            // 激活 UI 动画
+            
             viewer.querySelectorAll('.gesture-overlay').forEach(el => {
               if(!el.classList.contains('gesture-hidden')) {
                 el.classList.add('gesture-active');
@@ -1234,19 +1204,24 @@ This project is open-source and available under the **MIT License**. Click the b
           } catch(e) {}
           
         } else {
-          // 【阶段 C：滑出视口】直接暂停，回收性能
-          if (activeModel === viewer) {
-            activeModel = null;
+          // 🔴 核心魔术：滑出视口前，如果模型已经加载完毕，拍一张当前视角的快照！
+          if (viewer.modelIsVisible) {
+             // toDataURL() 会生成当前 3D 画面的极速 2D 截图 (使用 jpeg 降低内存)
+             const snapshot = viewer.toDataURL('image/jpeg', 0.8);
+             viewer.setAttribute('poster', snapshot); 
           }
+
+          // 🟢 盖上刚刚拍的快照，然后安心休眠释放 GPU！
           viewer.pause();
-          viewer.classList.remove('is-active'); // 🔴 加上这个：滑出视口时强制变灰休眠
+          viewer.showPoster(); 
+          
           viewer.querySelectorAll('.gesture-overlay').forEach(el => el.classList.remove('gesture-active'));
         }
       });
     }, {
       root: null,
-      rootMargin: '100px 0px', 
-      threshold: [0, VISIBLE_THRESHOLD] // 极简触发点，不再漏判
+      rootMargin: '200px 0px', 
+      threshold: [0, VISIBLE_THRESHOLD] 
     });
 
     // 启动监听
