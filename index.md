@@ -1157,55 +1157,20 @@ This project is open-source and available under the **MIT License**. Click the b
     const models = Array.from(document.querySelectorAll('model-viewer'));
     if (!models.length) return;
 
+    // 什么花里胡哨的显存管理都不做了，把一切交给浏览器的原生性能！
     models.forEach(viewer => {
-      // 交互后隐藏提示
+      // 唯一需要保留的逻辑：当用户开始拖拽时，隐藏屏幕上的文字提示
       const hideAllHints = () => {
         viewer.querySelectorAll('.gesture-overlay, .gesture-hud')
           .forEach(el => el.classList.add('gesture-hidden'));
       };
+      
       ['mousedown', 'wheel', 'touchstart'].forEach(evt => {
         viewer.addEventListener(evt, hideAllHints, { once: true });
       });
-
-      // 确保它有自动旋转的属性
+      
+      // 确保模型拥有原生自转能力
       viewer.setAttribute('auto-rotate', '');
     });
-
-    // 🌟 “全屏共舞”版 Observer
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        const viewer = entry.target;
-
-        // 只要模型进入屏幕（哪怕只露出一丁点），就让它转！
-        if (entry.isIntersecting) {
-          
-          // 如果还没下载，把地址给它
-          if (!viewer.getAttribute('src') && viewer.getAttribute('data-src')) {
-            viewer.setAttribute('src', viewer.getAttribute('data-src'));
-          }
-          
-          try {
-            viewer.play(); // 只要在屏幕里，就一直转
-            viewer.querySelectorAll('.gesture-overlay').forEach(el => {
-              if(!el.classList.contains('gesture-hidden')) {
-                el.classList.add('gesture-active');
-              }
-            });
-          } catch(e) {}
-          
-        } else {
-          // 只有当模型【彻底】滚出屏幕视线之外，才让它暂停休息（但不清空数据）
-          viewer.pause();
-          viewer.querySelectorAll('.gesture-overlay').forEach(el => el.classList.remove('gesture-active'));
-        }
-      });
-    }, {
-      root: null,
-      rootMargin: '100px 0px', // 上下多给 100px 的缓冲，模型还没完全进来就开始转，显得更自然
-      threshold: 0 // 触发线降到 0：只要有一丝在屏幕里，就是激活状态
-    });
-
-    // 启动监听
-    models.forEach(model => observer.observe(model));
   });
 </script>
