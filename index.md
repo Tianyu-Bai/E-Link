@@ -1117,8 +1117,12 @@ This project is open-source and available under the **MIT License**. Click the b
 
     models.forEach(viewer => {
       viewer.setAttribute('auto-rotate', '');
-// 👇 加入下面这一行，强制模型在运动时保持 100% 渲染精度
+// 👇 强制模型在运动时保持 100% 渲染精度
       viewer.minimumRenderScale = 1; 
+// 👇 解锁极限放大倍率（允许相机极其靠近模型中心）
+      viewer.setAttribute('min-camera-orbit', 'auto auto 1mm');
+// 👇 进一步缩小最小视野角度，相当于增加了“长焦放大镜”效果
+      viewer.setAttribute('min-field-of-view', '10deg'); 
       viewer.pause(); 
 
       let hudTimer = null;
