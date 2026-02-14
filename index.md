@@ -266,7 +266,7 @@ model-viewer::part(default-progress-bar) {
     alt="E Link on Skull 3D Model"
     loading="lazy"
     poster="{{ '/Images/poster.webp' | relative_url }}"
-    camera-controls bounds="tight" field-of-view="30deg" auto-rotate auto-rotate-delay="2000"
+    camera-controls bounds="tight" field-of-view="30deg" auto-rotate auto-rotate-delay="500" rotation-per-second="20deg"
     interaction-prompt="none" environment-image="neutral" exposure="0.75" shadow-intensity="0" tone-mapping="commerce">
 
     <div slot="poster" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; background: #0a0a0f; color: #3b82f6; font-family: 'JetBrains Mono', monospace;">
@@ -309,7 +309,7 @@ model-viewer::part(default-progress-bar) {
     alt="E Link 3D Model"
     loading="lazy"
     poster="{{ '/Images/poster.webp' | relative_url }}"
-    camera-controls bounds="tight" field-of-view="30deg" auto-rotate auto-rotate-delay="2000"
+    camera-controls bounds="tight" field-of-view="30deg" auto-rotate auto-rotate-delay="500" rotation-per-second="20deg"
     interaction-prompt="none" environment-image="neutral" exposure="0.75" shadow-intensity="0" tone-mapping="commerce">
 
     <div slot="poster" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; background: #0a0a0f; color: #3b82f6; font-family: 'JetBrains Mono', monospace;">
@@ -352,7 +352,7 @@ model-viewer::part(default-progress-bar) {
     alt="E Link 3D Model" 
     loading="lazy"
     poster="{{ '/Images/poster.webp' | relative_url }}"
-    camera-controls bounds="tight" field-of-view="30deg" auto-rotate auto-rotate-delay="2000"
+    camera-controls bounds="tight" field-of-view="30deg" auto-rotate auto-rotate-delay="500" rotation-per-second="20deg"
     interaction-prompt="none" environment-image="neutral" exposure="0.75" shadow-intensity="0" tone-mapping="commerce">
 
     <div slot="poster" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; background: #0a0a0f; color: #3b82f6; font-family: 'JetBrains Mono', monospace;">
@@ -726,7 +726,7 @@ This project is open-source and available under the **MIT License**. Click the b
     alt="E Link on Skull 3D Model"
     loading="lazy"
     poster="{{ '/Images/poster.webp' | relative_url }}"
-    camera-controls bounds="tight" field-of-view="30deg" auto-rotate auto-rotate-delay="2000"
+    camera-controls bounds="tight" field-of-view="30deg" auto-rotate auto-rotate-delay="500" rotation-per-second="20deg"
     interaction-prompt="none" environment-image="neutral" exposure="0.75" shadow-intensity="0" tone-mapping="commerce">
 
     <div slot="poster" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; background: #0a0a0f; color: #3b82f6; font-family: 'JetBrains Mono', monospace;">
@@ -769,7 +769,7 @@ This project is open-source and available under the **MIT License**. Click the b
     alt="E Link 3D Model" 
     loading="lazy"
     poster="{{ '/Images/poster.webp' | relative_url }}"
-    camera-controls bounds="tight" field-of-view="30deg" auto-rotate auto-rotate-delay="2000"
+    camera-controls bounds="tight" field-of-view="30deg" auto-rotate auto-rotate-delay="500" rotation-per-second="20deg"
     interaction-prompt="none" environment-image="neutral" exposure="0.75" shadow-intensity="0" tone-mapping="commerce">
 
     <div slot="poster" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; background: #0a0a0f; color: #3b82f6; font-family: 'JetBrains Mono', monospace;">
@@ -812,7 +812,7 @@ This project is open-source and available under the **MIT License**. Click the b
     alt="E Link 3D Model"
     loading="lazy"
     poster="{{ '/Images/poster.webp' | relative_url }}"
-    camera-controls bounds="tight" field-of-view="30deg" auto-rotate auto-rotate-delay="2000"
+    camera-controls bounds="tight" field-of-view="30deg" auto-rotate auto-rotate-delay="500" rotation-per-second="20deg"
     interaction-prompt="none" environment-image="neutral" exposure="0.75" shadow-intensity="0" tone-mapping="commerce">
 
     <div slot="poster" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; background: #0a0a0f; color: #3b82f6; font-family: 'JetBrains Mono', monospace;">
