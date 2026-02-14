@@ -283,6 +283,21 @@ model-viewer::part(default-progress-bar) {
   opacity: 0 !important;
 }
 
+/* 🟢 让没有被激活的 3D 模型图层直接“休眠” */
+model-viewer {
+  opacity: 0.3;
+  filter: grayscale(80%) blur(2px);
+  pointer-events: none;
+  transition: all 0.5s ease;
+  will-change: transform, opacity;
+}
+
+/* 🟢 只有被 JS 激活的那个模型，才给它全尺寸的 GPU 资源 */
+model-viewer.is-active {
+  opacity: 1;
+  filter: none;
+  pointer-events: auto;
+}
   
 </style>
 
@@ -307,7 +322,7 @@ model-viewer::part(default-progress-bar) {
     
     <div class="gesture-hud">
       <span>↺ Drag</span>
-      <span>⌃ + 🖱 Zoom</span>
+      <span> <kbd>Ctrl</kbd> + 🖱 Zoom</span>
     </div>
 
     <div class="gesture-overlay mode-drag">
@@ -746,7 +761,7 @@ This project is open-source and available under the **MIT License**. Click the b
 </div>
 </div>
 
-## 🔬 **E-Link 脑机接口：3D 交互式集成视图**
+## 🔬 **E-Link ：3D 交互式集成视图**
  
 <div class="model-block" align="center" style="position: relative; max-width: 760px; margin: 0 auto; min-height: 460px;">
   <model-viewer
@@ -760,19 +775,19 @@ This project is open-source and available under the **MIT License**. Click the b
 
     <div slot="poster" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; background: #0a0a0f; color: #3b82f6; font-family: 'JetBrains Mono', monospace;">
       <div class="model-loader"></div>
-      <p style="margin-top: 20px; font-size: 0.9rem; letter-spacing: 2px; animation: blink 1.5s infinite;">INITIALIZING 3D SIGNAL...</p>
+      <p style="margin-top: 20px; font-size: 0.9rem; letter-spacing: 2px; animation: blink 1.5s infinite;">正在初始化 3D 信号...</p>
     </div>
     
     <div class="model-watermark-text">Copyright © 2026 Tianyu Bai</div>
     
     <div class="gesture-hud">
-      <span>↺ Drag</span>
-      <span>⌃ + 🖱 Zoom</span>
+      <span>↺ 拖拽旋转</span>
+      <span>Ctrl + 滚轮缩放</span>
     </div>
 
     <div class="gesture-overlay mode-drag">
       <div class="icon-box"><div class="hand-icon">👆</div></div>
-      <div class="gesture-text">Drag to Rotate</div>
+      <div class="gesture-text">单指拖拽 / 鼠标拉动以旋转</div>
     </div>
 
     <div class="gesture-overlay mode-zoom">
@@ -780,16 +795,16 @@ This project is open-source and available under the **MIT License**. Click the b
         <div class="hand-icon hand-left">👉</div>
         <div class="hand-icon hand-right">👈</div>
       </div>
-      <div class="gesture-text">Pinch / <kbd>Ctrl</kbd> + 🖱️Wheel to Zoom</div>
+      <div class="gesture-text">双指捏合 / <kbd>Ctrl</kbd> + 滚轮缩放</div>
     </div>
     
     <button class="reset-btn" onclick="this.parentElement.cameraOrbit = '45deg 55deg auto'; this.parentElement.fieldOfView = '30deg';">
-      ⟲ Reset View
+      ⟲ 重置视角
     </button>
   </model-viewer>
 </div>
 
-## 🔬 E-Link – 三维交互模型
+## 🔬 E-Link 三维交互模型
 
 <div class="model-block" align="center" style="position: relative; max-width: 760px; margin: 0 auto; min-height: 460px;">
   <model-viewer
@@ -802,8 +817,8 @@ This project is open-source and available under the **MIT License**. Click the b
     interaction-prompt="none" environment-image="neutral" exposure="0.75" shadow-intensity="0" tone-mapping="commerce">
 
     <div slot="poster" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; background: #0a0a0f; color: #3b82f6; font-family: 'JetBrains Mono', monospace;">
-    <div class="model-loader"></div>
-      <p style="margin-top: 20px; font-size: 0.9rem; letter-spacing: 2px; animation: blink 1.5s infinite;">INITIALIZING 3D SIGNAL...</p>
+      <div class="model-loader"></div>
+      <p style="margin-top: 20px; font-size: 0.9rem; letter-spacing: 2px; animation: blink 1.5s infinite;">正在初始化 3D 信号...</p>
     </div>
     
     <div class="model-watermark-text">Copyright © 2026 Tianyu Bai</div>
@@ -815,7 +830,7 @@ This project is open-source and available under the **MIT License**. Click the b
 
     <div class="gesture-overlay mode-drag">
       <div class="icon-box"><div class="hand-icon">👆</div></div>
-      <div class="gesture-text">单指拖拽/鼠标拉动以实现旋转</div>
+      <div class="gesture-text">单指拖拽 / 鼠标拉动以旋转</div>
     </div>
 
     <div class="gesture-overlay mode-zoom">
@@ -823,16 +838,16 @@ This project is open-source and available under the **MIT License**. Click the b
         <div class="hand-icon hand-left">👉</div>
         <div class="hand-icon hand-right">👈</div>
       </div>
-      <div class="gesture-text">双指对角线拉动 / Ctrl+鼠标滚轮以放大/缩小</div>
+      <div class="gesture-text">双指捏合 / <kbd>Ctrl</kbd> + 滚轮缩放</div>
     </div>
     
     <button class="reset-btn" onclick="this.parentElement.cameraOrbit = '45deg 55deg auto'; this.parentElement.fieldOfView = '30deg';">
-      ⟲ Reset View
+      ⟲ 重置视角
     </button>
   </model-viewer>
 </div> 
 
-## 🔬 定制256通道放大器 – 三维交互模型
+## 🔬 256通道定制放大器 – 三维交互模型
 
 <div class="model-block" align="center" style="position: relative; max-width: 760px; margin: 0 auto; min-height: 460px;">
   <model-viewer
@@ -846,14 +861,19 @@ This project is open-source and available under the **MIT License**. Click the b
 
     <div slot="poster" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; background: #0a0a0f; color: #3b82f6; font-family: 'JetBrains Mono', monospace;">
       <div class="model-loader"></div>
-      <p style="margin-top: 20px; font-size: 0.9rem; letter-spacing: 2px; animation: blink 1.5s infinite;">INITIALIZING 3D SIGNAL...</p>
+      <p style="margin-top: 20px; font-size: 0.9rem; letter-spacing: 2px; animation: blink 1.5s infinite;">正在初始化 3D 信号...</p>
     </div>
     
     <div class="model-watermark-text">Copyright © 2026 Tianyu Bai </div>
-
+    
+    <div class="gesture-hud">
+      <span>↺ 拖拽旋转</span>
+      <span>Ctrl + 滚轮缩放</span>
+   </div>
+   
     <div class="gesture-overlay mode-drag">
       <div class="icon-box"><div class="hand-icon">👆</div></div>
-      <div class="gesture-text">单指拖拽/鼠标拉动以实现旋转</div>
+      <div class="gesture-text">单指拖拽 / 鼠标拉动以旋转</div>
     </div>
 
     <div class="gesture-overlay mode-zoom">
@@ -861,14 +881,15 @@ This project is open-source and available under the **MIT License**. Click the b
         <div class="hand-icon hand-left">👉</div>
         <div class="hand-icon hand-right">👈</div>
       </div>
-      <div class="gesture-text">双指对角线拉动 / Ctrl+鼠标滚轮以放大/缩小</div>
+      <div class="gesture-text">双指捏合 / <kbd>Ctrl</kbd> + 滚轮缩放</div>
     </div>
 
     <button class="reset-btn" onclick="this.parentElement.cameraOrbit = '45deg 55deg auto'; this.parentElement.fieldOfView = '30deg';">
-      ⟲ Reset View
+      ⟲ 重置视角
     </button>
   </model-viewer>
 </div>
+
 <span id="cn-overview"></span>
 ## 📖 概览
 
@@ -1176,7 +1197,7 @@ This project is open-source and available under the **MIT License**. Click the b
       viewer.pause(); 
     });
 
-    // 4. 极简极速版 Observer
+   // 4. 极简极速版 Observer
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         const viewer = entry.target;
@@ -1195,6 +1216,7 @@ This project is open-source and available under the **MIT License**. Click the b
           // 停掉正在播的旧模型，释放 GPU
           if (activeModel && activeModel !== viewer) {
             activeModel.pause();
+            activeModel.classList.remove('is-active'); // 🔴 加上这个：剥夺旧模型资源，让它变灰休眠
             activeModel.querySelectorAll('.gesture-overlay').forEach(el => el.classList.remove('gesture-active'));
           }
           
@@ -1202,6 +1224,7 @@ This project is open-source and available under the **MIT License**. Click the b
           activeModel = viewer;
           try {
             viewer.play();
+            viewer.classList.add('is-active'); // 🔴 加上这个：唤醒当前模型，全速高清渲染
             // 激活 UI 动画
             viewer.querySelectorAll('.gesture-overlay').forEach(el => {
               if(!el.classList.contains('gesture-hidden')) {
@@ -1216,6 +1239,7 @@ This project is open-source and available under the **MIT License**. Click the b
             activeModel = null;
           }
           viewer.pause();
+          viewer.classList.remove('is-active'); // 🔴 加上这个：滑出视口时强制变灰休眠
           viewer.querySelectorAll('.gesture-overlay').forEach(el => el.classList.remove('gesture-active'));
         }
       });
