@@ -1117,6 +1117,8 @@ This project is open-source and available under the **MIT License**. Click the b
 
     models.forEach(viewer => {
       viewer.setAttribute('auto-rotate', '');
+// 👇 加入下面这一行，强制模型在运动时保持 100% 渲染精度
+      viewer.minimumRenderScale = 1; 
       viewer.pause(); 
 
       let hudTimer = null;
