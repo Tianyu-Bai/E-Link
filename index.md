@@ -1107,55 +1107,61 @@ This project is open-source and available under the **MIT License**. Click the b
     const models = Array.from(document.querySelectorAll('model-viewer'));
     if (!models.length) return;
 
-    // 1. 初始化：挂载模型和交互事件
     models.forEach(viewer => {
       viewer.setAttribute('auto-rotate', '');
-      viewer.pause(); // 默认一上来先暂停，等滑到了再转
+      viewer.pause(); 
 
-      // 用户一旦动手拖拽，就打个标记并隐藏提示
-      const hideAllHints = () => {
-        viewer.dataset.interacted = "true"; // 🟢 打上“已交互”标记
+      // 定义计时器变量
+      let reminderTimer = null;
+
+      const showHints = () => {
+        viewer.querySelectorAll('.gesture-overlay, .gesture-hud')
+          .forEach(el => el.classList.remove('gesture-hidden'));
+      };
+
+      const hideHints = () => {
+        // 1. 立即隐藏
         viewer.querySelectorAll('.gesture-overlay, .gesture-hud')
           .forEach(el => el.classList.add('gesture-hidden'));
+        
+        // 2. 清除之前的计时器，防止叠加
+        if (reminderTimer) clearTimeout(reminderTimer);
+
+        // 3. 🟢 设置 18 秒后重新显示的逻辑
+        reminderTimer = setTimeout(() => {
+          // 只有当模型还在屏幕内时才重新显示
+          showHints();
+        }, 18000); 
       };
       
+      // 监听所有交互动作：点击、滚动、触摸
       ['mousedown', 'wheel', 'touchstart'].forEach(evt => {
-        viewer.addEventListener(evt, hideAllHints, { once: true });
+        viewer.addEventListener(evt, hideHints); // 注意：这里去掉了 {once: true}
       });
     });
 
-    // 2. 纯净版滑动监听器（只管播放/暂停，绝对不删数据！）
+    // 滑动监听器
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         const viewer = entry.target;
 
         if (entry.isIntersecting) {
-          // 🟢 滑入屏幕：开始转动
           try { viewer.play(); } catch(e) {}
-          
-          // 如果用户还没点过这个模型，就播放提示动画
-          if (viewer.dataset.interacted !== "true") {
-            viewer.querySelectorAll('.gesture-overlay').forEach(el => {
-              el.classList.add('gesture-active');
-            });
-          }
+          // 只要进入视野，就激活提示（如果当前没被 gesture-hidden 锁住的话）
+          viewer.querySelectorAll('.gesture-overlay').forEach(el => {
+            el.classList.add('gesture-active');
+          });
         } else {
-          // 🔴 滑出屏幕：暂停转动（省电省算力）
           viewer.pause();
-          
-          // 暂停提示动画
           viewer.querySelectorAll('.gesture-overlay').forEach(el => {
             el.classList.remove('gesture-active');
           });
         }
       });
     }, {
-      root: null,
-      rootMargin: '0px', 
-      threshold: 0.25 // 露出 25% 的时候触发
+      threshold: 0.25 
     });
 
-    // 启动监听
     models.forEach(model => observer.observe(model));
   });
 </script>
