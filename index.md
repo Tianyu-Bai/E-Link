@@ -210,10 +210,10 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
     
     <div class="model-watermark-text">Copyright © 2026 Tianyu Bai</div>
 
-<div class="gesture-hud">
-  <span>↺ Drag to Rotate</span>
-  <span class="pc-only">Ctrl + 🖱 Zoom</span>
-  <span class="mobile-only">Pinch Zoom</span>
+  <div class="gesture-hud">
+  <span>↺ Rotate: Drag</span>
+  <span class="pc-only">Zoom:Ctrl + 🖱 </span>
+  <span class="mobile-only">Zoom:Pinch </span>
 </div>
 
 <div class="gesture-overlay mode-zoom">
@@ -257,10 +257,10 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
     
     <div class="model-watermark-text">Copyright © 2026 Tianyu Bai</div>
     
- <div class="gesture-hud">
-  <span>↺ Drag to Rotate</span>
-  <span class="pc-only">Ctrl + 🖱 Zoom</span>
-  <span class="mobile-only">Pinch Zoom</span>
+  <div class="gesture-hud">
+  <span>↺ Rotate: Drag</span>
+  <span class="pc-only">Zoom:Ctrl + 🖱 </span>
+  <span class="mobile-only">Zoom:Pinch </span>
 </div>
 
 <div class="gesture-overlay mode-zoom">
@@ -304,9 +304,9 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
     <div class="model-watermark-text">Copyright © 2026 Tianyu Bai</div>
     
   <div class="gesture-hud">
-  <span>↺ Drag to Rotate</span>
-  <span class="pc-only">Ctrl + 🖱 Zoom</span>
-  <span class="mobile-only">Pinch Zoom</span>
+  <span>↺ Rotate: Drag</span>
+  <span class="pc-only">Zoom:Ctrl + 🖱 </span>
+  <span class="mobile-only">Zoom:Pinch </span>
 </div>
 
 <div class="gesture-overlay mode-zoom">
@@ -680,14 +680,14 @@ This project is open-source and available under the **MIT License**. Click the b
     <div class="model-watermark-text">Copyright © 2026 Tianyu Bai</div>
     
     <div class="gesture-hud">
-      <span>↺ 拖拽旋转</span>
-  <span class="pc-only">Ctrl + 滚轮缩放</span>
-  <span class="mobile-only">双指捏合缩放</span>
+      <span>↺ 旋转：拖拽</span>
+  <span class="pc-only">缩放：Ctrl + 滚轮</span>
+  <span class="mobile-only">缩放：双指捏合</span>
 </div>
 
     <div class="gesture-overlay mode-drag">
       <div class="icon-box"><div class="hand-icon">👆</div></div>
-      <div class="gesture-text">单指拖拽 / 鼠标拉动以旋转</div>
+      <div class="gesture-text">拖拽以旋转</div>
     </div>
 
     <div class="gesture-overlay mode-zoom">
@@ -727,14 +727,14 @@ This project is open-source and available under the **MIT License**. Click the b
     <div class="model-watermark-text">Copyright © 2026 Tianyu Bai</div>
     
     <div class="gesture-hud">
-         <span>↺ 拖拽旋转</span>
-  <span class="pc-only">Ctrl + 滚轮缩放</span>
-  <span class="mobile-only">双指捏合缩放</span>
+        <span>↺ 旋转：拖拽</span>
+  <span class="pc-only">缩放：Ctrl + 滚轮</span>
+  <span class="mobile-only">缩放：双指捏合</span>
 </div>
 
     <div class="gesture-overlay mode-drag">
       <div class="icon-box"><div class="hand-icon">👆</div></div>
-      <div class="gesture-text">单指拖拽 / 鼠标拉动以旋转</div>
+      <div class="gesture-text">拖拽以旋转</div>
     </div>
 
     <div class="gesture-overlay mode-zoom">
@@ -774,14 +774,14 @@ This project is open-source and available under the **MIT License**. Click the b
     <div class="model-watermark-text">Copyright © 2026 Tianyu Bai </div>
     
     <div class="gesture-hud">
-      <span>↺ 拖拽旋转</span>
-  <span class="pc-only">Ctrl + 滚轮缩放</span>
-  <span class="mobile-only">双指捏合缩放</span>
+      <span>↺ 旋转：拖拽</span>
+  <span class="pc-only">缩放：Ctrl + 滚轮</span>
+  <span class="mobile-only">缩放：双指捏合</span>
 </div>
 
     <div class="gesture-overlay mode-drag">
       <div class="icon-box"><div class="hand-icon">👆</div></div>
-      <div class="gesture-text">单指拖拽 / 鼠标拉动以旋转</div>
+      <div class="gesture-text">拖拽以旋转</div>
     </div>
 
     <div class="gesture-overlay mode-zoom">
