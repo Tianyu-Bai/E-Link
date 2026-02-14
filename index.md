@@ -193,6 +193,14 @@ title: E-Link Home
 .gesture-hidden * {
   animation: none !important;
 }
+  
+  /* “动画锁”：不在屏幕里就暂停，进了屏幕再播放 */
+.gesture-overlay, .gesture-overlay * { 
+  animation-play-state: paused !important; 
+}
+.gesture-overlay.gesture-active, .gesture-overlay.gesture-active * { 
+  animation-play-state: running !important; 
+}
 
 /* ===================== 复位按钮样式 ===================== */
 .reset-btn {
@@ -1142,10 +1150,14 @@ This project is open-source and available under the **MIT License**. Click the b
     const models = Array.from(document.querySelectorAll('model-viewer'));
     if (!models.length) return;
 
-    // 什么花里胡哨的显存管理都不做了，把一切交给浏览器的原生性能！
+    // 1. 初始化：挂载模型和交互事件
     models.forEach(viewer => {
-      // 唯一需要保留的逻辑：当用户开始拖拽时，隐藏屏幕上的文字提示
+      viewer.setAttribute('auto-rotate', '');
+      viewer.pause(); // 默认一上来先暂停，等滑到了再转
+
+      // 用户一旦动手拖拽，就打个标记并隐藏提示
       const hideAllHints = () => {
+        viewer.dataset.interacted = "true"; // 🟢 打上“已交互”标记
         viewer.querySelectorAll('.gesture-overlay, .gesture-hud')
           .forEach(el => el.classList.add('gesture-hidden'));
       };
@@ -1153,9 +1165,40 @@ This project is open-source and available under the **MIT License**. Click the b
       ['mousedown', 'wheel', 'touchstart'].forEach(evt => {
         viewer.addEventListener(evt, hideAllHints, { once: true });
       });
-      
-      // 确保模型拥有原生自转能力
-      viewer.setAttribute('auto-rotate', '');
     });
+
+    // 2. 纯净版滑动监听器（只管播放/暂停，绝对不删数据！）
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        const viewer = entry.target;
+
+        if (entry.isIntersecting) {
+          // 🟢 滑入屏幕：开始转动
+          try { viewer.play(); } catch(e) {}
+          
+          // 如果用户还没点过这个模型，就播放提示动画
+          if (viewer.dataset.interacted !== "true") {
+            viewer.querySelectorAll('.gesture-overlay').forEach(el => {
+              el.classList.add('gesture-active');
+            });
+          }
+        } else {
+          // 🔴 滑出屏幕：暂停转动（省电省算力）
+          viewer.pause();
+          
+          // 暂停提示动画
+          viewer.querySelectorAll('.gesture-overlay').forEach(el => {
+            el.classList.remove('gesture-active');
+          });
+        }
+      });
+    }, {
+      root: null,
+      rootMargin: '0px', 
+      threshold: 0.25 // 露出 25% 的时候触发
+    });
+
+    // 启动监听
+    models.forEach(model => observer.observe(model));
   });
 </script>
