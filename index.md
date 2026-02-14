@@ -360,7 +360,7 @@ model-viewer::part(default-progress-bar) {
 <div class="model-block" align="center" style="position: relative; max-width: 760px; margin: 0 auto; min-height: 460px;">
   <model-viewer
     class="custom-model-viewer"
-    {{ '/Videos/3D_1.85MB.glb' | relative_url }}"
+    src="{{ '/Videos/3D_1.85MB.glb' | relative_url }}"
     alt="E Link 3D Model" 
     loading="lazy"
     poster="{{ '/Images/poster.webp' | relative_url }}"
