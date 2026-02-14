@@ -212,6 +212,13 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
   width: 1px;
   background: rgba(255, 255, 255, 0.2); /* 淡淡的分隔线 */
 }
+  
+  .model-watermark-text {
+  /* 在原有的样式里补上字重和辅助字体 */
+  font-family: 'JetBrains Mono', system-ui, -apple-system, sans-serif;
+  font-weight: 400;
+}
+  
 </style>
 
 ## 🔬 Interactive 3D Model: E-Link Headstage Integration
@@ -700,7 +707,7 @@ This project is open-source and available under the **MIT License**. Click the b
       <p style="margin-top: 20px; font-size: 0.9rem; letter-spacing: 2px; animation: blink 1.5s infinite;">正在初始化 3D 信号...</p>
     </div>
     
-    <div class="model-watermark-text">Copyright © 2026 Tianyu Bai</div>
+    <div class="model-watermark-text">版权所有 © 2026 Tianyu Bai</div>
     
     <div class="gesture-hud">
       <span>↺ 旋转：拖拽</span>
@@ -747,7 +754,7 @@ This project is open-source and available under the **MIT License**. Click the b
       <p style="margin-top: 20px; font-size: 0.9rem; letter-spacing: 2px; animation: blink 1.5s infinite;">正在初始化 3D 信号...</p>
     </div>
     
-    <div class="model-watermark-text">Copyright © 2026 Tianyu Bai</div>
+    <div class="model-watermark-text">版权所有 © 2026 Tianyu Bai</div>
     
     <div class="gesture-hud">
         <span>↺ 旋转：拖拽</span>
@@ -794,7 +801,7 @@ This project is open-source and available under the **MIT License**. Click the b
       <p style="margin-top: 20px; font-size: 0.9rem; letter-spacing: 2px; animation: blink 1.5s infinite;">正在初始化 3D 信号...</p>
     </div>
     
-    <div class="model-watermark-text">Copyright © 2026 Tianyu Bai </div>
+    <div class="model-watermark-text">版权所有 © 2026 Tianyu Bai </div>
     
     <div class="gesture-hud">
       <span>↺ 旋转：拖拽</span>
