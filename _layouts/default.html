@@ -711,59 +711,63 @@ body.video-active .cursor-outline {
 
 <script>
     (function() {
-      // 1. 初始化：1 (当前用户) + 随机访客 (1-5)，总数在 2-6 之间
-      let currentDisplay = Math.floor(Math.random() * 5) + 2; 
+      // 1. 初始化：起始人数 1-4（包含当前用户本身）
+      // Math.random() * 4 生成 0-3.99，floor 后 +1 得到 {1, 2, 3, 4}
+      let currentDisplay = Math.floor(Math.random() * 4) + 1; 
 
       function initCounter() {
         const counterEl = document.getElementById('live-counter');
         const plusEl = document.getElementById('plus-one');
         if(!counterEl || !plusEl) return;
         
+        // 初始显示
         counterEl.textContent = currentDisplay;
 
-        // 2. 模拟真实访客行为逻辑
+        // 2. 模拟真实访客行为逻辑 (12秒检测一次，降低频率避免虚假感)
         setInterval(() => {
           const rand = Math.random();
           
-          // 25% 的概率触发新访客进入
-          if (rand > 0.75) { 
-            // 随机决定增加 1 还是 2
-            const delta = Math.random() > 0.7 ? 2 : 1; 
+          // --- 进入逻辑：仅在总数小于 5 时允许增加 ---
+          if (rand > 0.8 && currentDisplay < 5) { 
+            const maxCanAdd = 5 - currentDisplay; // 动态计算距离上限还有多少坑位
+            const delta = Math.min(maxCanAdd, (Math.random() > 0.85 ? 2 : 1)); 
+            
             plusEl.textContent = '+' + delta;
 
-            // 特效增强：如果是 +2，临时加强亮度，模拟瞬间大量涌入
+            // 视觉反馈：+2 更加醒目加粗
             if (delta === 2) {
-                plusEl.style.fontWeight = '900'; // 极粗
+                plusEl.style.fontWeight = '900';
                 plusEl.style.filter = 'brightness(1.5) drop-shadow(0 0 5px #00f2ff)';
             } else {
-                plusEl.style.fontWeight = 'bold'; // 标准加粗
+                plusEl.style.fontWeight = 'bold';
                 plusEl.style.filter = 'none';
             }
 
+            // 触发动画
             plusEl.classList.remove('animate-plus');
-            void plusEl.offsetWidth; // 触发浏览器重绘，确保动画能再次播放
+            void plusEl.offsetWidth; // 强制重绘
             plusEl.classList.add('animate-plus');
             
             currentDisplay += delta;
             counterEl.textContent = currentDisplay;
             
-            // --- 核心改动：随机留存时长 (4s - 12s) ---
-            const stayDuration = Math.floor(Math.random() * 8000) + 4000;
+            // --- 留存逻辑：随机 10s - 30s 离开 ---
+            const stayDuration = Math.floor(Math.random() * 20000) + 10000;
             
             setTimeout(() => {
-              // 离开时确保人数不会归零，最低保留你这位当前用户
+              // 离开逻辑：确保不跌破 1 (你自己)
               if (currentDisplay > 1) {
                 currentDisplay -= delta;
                 counterEl.textContent = currentDisplay;
               }
             }, stayDuration);
 
-          } else if (rand < 0.12 && currentDisplay > 2) {
-            // 12% 的概率发生一次静默减员 (模拟有人悄悄看完离开)
+          } else if (rand < 0.15 && currentDisplay > 1) {
+            // 15% 几率发生静默减员（无动画）
             currentDisplay--;
             counterEl.textContent = currentDisplay;
           }
-        }, 5500); // 监测频率调至 5.5s，略微错开呼吸灯周期，显得更自然
+        }, 12000); 
       }
 
       window.addEventListener('load', initCounter);
