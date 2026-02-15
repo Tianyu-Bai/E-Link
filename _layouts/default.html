@@ -668,7 +668,7 @@ body.video-active .cursor-outline {
   <div style="margin: 25px auto 15px auto; width: 340px; max-width: 100%; min-height: 240px; display: flex; flex-direction: column; justify-content: center; align-items: center; border: 1px solid rgba(59, 130, 246, 0.4); border-radius: 12px; padding: 15px; background: rgba(19, 25, 42, 0.7); box-shadow: 0 0 20px rgba(59, 130, 246, 0.1); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); overflow: hidden;">
     
     <div style="font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: #60a5fa; margin-bottom: 12px; letter-spacing: 0.5px;">
-      <span style="display: inline-block; width: 8px; height: 8px; background-color: #ef4444; border-radius: 50%; margin-right: 5px; animation: pulse-red 1.5s infinite;"></span>
+      <span style="display: inline-block; width: 8px; height: 8px; background-color: #00f2ff; border-radius: 50%; margin-right: 8px; animation: pulse-cyan 2s infinite; box-shadow: 0 0 10px #00f2ff;"></span>
       <span class="lang-en">Worldwide Pageview Real-time Data</span>
       <span class="lang-zh">全球访问实时数据</span>
     </div>
@@ -678,10 +678,10 @@ body.video-active .cursor-outline {
   </div>
 
   <style>
-    @keyframes pulse-red {
-      0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
-      70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(239, 68, 68, 0); }
-      100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+    @keyframes pulse-cyan {
+      0% { opacity: 0.4; transform: scale(0.9); }
+      50% { opacity: 1; transform: scale(1.1); box-shadow: 0 0 12px #00f2ff; }
+      100% { opacity: 0.4; transform: scale(0.9); }
     }
   </style>
 </footer>
