@@ -383,7 +383,7 @@ body.video-active .cursor-outline {
   body.light-mode #bot-speech { background: #ffffff; color: #334155; border-color: #cbd5e1; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
   body.light-mode .typewriter-container { color: #2563eb; }
   body.light-mode #main_content table { background: #f8fafc;   box-shadow: none; }
-  body.light-mode #main_content th { color: #1e293b; background: #e2e8f0 !important; border-color: cbd5e1; }
+  body.light-mode #main_content th { color: #1e293b; background: #e2e8f0 !important; border-color: #cbd5e1; }
   body.light-mode #main_content td { border-color: #e2e8f0; color: #334155; } 
   body.light-mode #main_content tr { background: transparent !important; }
   body.light-mode #main_content tr:hover { background: rgba(0, 0, 0, 0.03) !important;}
@@ -556,7 +556,7 @@ body.video-active .cursor-outline {
 </style>
 
  <script type="module"
-  src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js">
+  src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js" defer>
 </script>
  
 </head>
@@ -1289,11 +1289,15 @@ body.video-active .cursor-outline {
  
     let mouseX = window.innerWidth / 2;
     let mouseY = 100;
- 
+    
 window.addEventListener('mousemove', (e) => {
-      mouseX = e.clientX;
-      mouseY = e.clientY;
-      
+    // 加上这行：如果是手机或平板端，直接不执行光标计算，节省性能
+    if (window.innerWidth <= 768) return; 
+
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+    // ... 后续计算代码保持不变
+
       // 用 GPU 加速的 translate3d)
       if(cursorDot) { 
         cursorDot.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0) translate(-50%, -50%)`; 
