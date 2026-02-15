@@ -663,162 +663,112 @@ body.video-active .cursor-outline {
     </div>
 
 <footer style="margin-top: 40px; padding-top: 20px; border-top: 1px solid rgba(255, 255, 255, 0.1); text-align: center; color: #94a3b8; font-size: 0.85rem;">
-
-  <p>E-Link • COPYRIGHT © 2026 Tianyu Bai</p>
-
-  <div style="
-    margin: 25px auto 15px auto;
-    width: 340px;
-    max-width: 100%;
-    min-height: 240px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    border: 1px solid rgba(59, 130, 246, 0.4);
-    border-radius: 12px;
-    padding: 15px;
-    background: rgba(19, 25, 42, 0.7);
-    box-shadow: 0 0 20px rgba(59, 130, 246, 0.1);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    overflow: hidden;
-    position: relative;
-  ">
-
-    <!-- 顶部状态栏 -->
-    <div style="
-      width: 100%;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.7rem;
-      margin-bottom: 12px;
-      padding: 0 5px;
-    ">
-
-      <!-- 左侧标题（同频呼吸） -->
-      <div class="pulse-sync" style="letter-spacing: 0.5px;">
+  <p> E-Link • COPYRIGHT © 2026 Tianyu Bai</p>
+  
+  <div style="margin: 25px auto 15px auto; width: 340px; max-width: 100%; min-height: 240px; display: flex; flex-direction: column; justify-content: center; align-items: center; border: 1px solid rgba(59, 130, 246, 0.4); border-radius: 12px; padding: 15px; background: rgba(19, 25, 42, 0.7); box-shadow: 0 0 20px rgba(59, 130, 246, 0.1); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); overflow: hidden; position: relative;">
+    
+    <div style="width: 100%; display: flex; justify-content: space-between; align-items: center; font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; margin-bottom: 12px; padding: 0 5px;">
+      
+      <div style="letter-spacing: 0.5px; animation: text-glow-cyan 3s ease-in-out infinite;">
         <span class="lang-en">● Worldwide Pageview Data</span>
         <span class="lang-zh">● 全球访问数据实时监测</span>
       </div>
 
-      <!-- 右侧 LIVE 计数（同频呼吸） -->
-      <div class="pulse-sync" style="position: relative; display: flex; align-items: center; min-width: 60px; justify-content: flex-end;">
+      <div style="position: relative; display: flex; align-items: center; min-width: 60px; justify-content: flex-end; animation: live-glow-blue 3s ease-in-out infinite;">
         <span style="opacity: 0.8; margin-right: 4px;">LIVE:</span>
         <span id="live-counter">--</span>
-        <span
-          id="plus-one"
-          style="
-            position: absolute;
-            right: -14px;
-            top: -10px;
-            opacity: 0;
-            font-weight: bold;
-            font-size: 0.6rem;
-            pointer-events: none;
-          "
-        >+1</span>
+        <span id="plus-one" style="position: absolute; right: -12px; top: -8px; color: #00f2ff; opacity: 0; font-weight: bold; font-size: 0.6rem; text-shadow: 0 0 5px #00f2ff;">+1</span>
       </div>
-
     </div>
 
-    <!-- 地图 -->
-    <script
-      type="text/javascript"
-      src="https://mapmyvisitors.com/map.js?cl=e2e8f0&w=300&t=m&d=m5eNlZmkObq22GMdcKlpWq0A9hkoWtNuOIvQwtMspNc&ct=e2e8f0&co=13192a">
-    </script>
-
+    <script type='text/javascript' id='mapmyvisitors' src='https://mapmyvisitors.com/map.js?cl=e2e8f0&w=300&t=m&d=m5eNlZmkObq22GMdcKlpWq0A9hkoWtNuOIvQwtMspNc&ct=e2e8f0&co=13192a'></script>
+    
   </div>
 
-  <!-- ================= 样式 ================= -->
   <style>
-    :root {
-      --pulse-period: 3s;
+    /* 左侧文字：平稳的深呼吸 */
+    @keyframes text-glow-cyan {
+      0% { color: #334155; text-shadow: 0 0 0px rgba(0, 242, 255, 0); }
+      50% { color: #00f2ff; text-shadow: 0 0 8px rgba(0, 242, 255, 0.6); }
+      100% { color: #334155; text-shadow: 0 0 0px rgba(0, 242, 255, 0); }
     }
 
-    /* 同频呼吸光效 */
-    @keyframes pulse-glow {
-      0% {
-        opacity: 0.65;
-        text-shadow: 0 0 0px rgba(96,165,250,0);
-      }
-      50% {
-        opacity: 1;
-        text-shadow: 0 0 10px rgba(96,165,250,0.8);
-      }
-      100% {
-        opacity: 0.65;
-        text-shadow: 0 0 0px rgba(96,165,250,0);
-      }
+   /* 右侧 LIVE：灵动的快呼吸，使用主题蓝 #60a5fa */
+    @keyframes live-glow-blue {
+      0% { color: #1d4ed8; opacity: 0.7; text-shadow: 0 0 0px rgba(96, 165, 250, 0); }
+      50% { color: #60a5fa; opacity: 1; text-shadow: 0 0 10px rgba(96, 165, 250, 0.8); }
+      100% { color: #1d4ed8; opacity: 0.7; text-shadow: 0 0 0px rgba(96, 165, 250, 0); }
     }
 
-    .pulse-sync {
-      animation: pulse-glow var(--pulse-period) ease-in-out infinite;
-    }
-
-    /* +1 / +2 上浮动画 */
+    /* +1 动画效果 */
     @keyframes float-up-fade {
       0% { transform: translateY(0); opacity: 0; }
       20% { opacity: 1; }
-      100% { transform: translateY(-14px); opacity: 0; }
+      100% { transform: translateY(-12px); opacity: 0; }
     }
-
-    .animate-plus {
-      animation: float-up-fade 1.2s ease-out forwards;
-      color: #00f2ff;
-      text-shadow: 0 0 6px rgba(0,242,255,0.8);
-    }
-
-    .plus-strong {
-      color: #38bdf8;
-      text-shadow: 0 0 10px rgba(56,189,248,0.95);
-      animation-duration: 0.9s;
-    }
+    .animate-plus { animation: float-up-fade 1.2s ease-out forwards; }
   </style>
 
-  <!-- ================= 逻辑 ================= -->
-  <script>
-    (function () {
-      let baseCount = Math.floor(Math.random() * 6) + 3;
-      let currentDisplay = baseCount;
+<script>
+    (function() {
+      // 1. 初始化：1 (当前用户) + 随机访客 (1-5)，总数在 2-6 之间
+      let currentDisplay = Math.floor(Math.random() * 5) + 2; 
 
       function initCounter() {
         const counterEl = document.getElementById('live-counter');
         const plusEl = document.getElementById('plus-one');
-        if (!counterEl || !plusEl) return;
-
+        if(!counterEl || !plusEl) return;
+        
         counterEl.textContent = currentDisplay;
 
+        // 2. 模拟真实访客行为逻辑
         setInterval(() => {
-          // 是否触发一次“访问脉冲”
-          if (Math.random() > 0.75) {
-            const delta = Math.random() > 0.65 ? 2 : 1;
+          const rand = Math.random();
+          
+          // 25% 的概率触发新访客进入
+          if (rand > 0.75) { 
+            // 随机决定增加 1 还是 2
+            const delta = Math.random() > 0.7 ? 2 : 1; 
+            plusEl.textContent = '+' + delta;
 
-            plusEl.textContent = `+${delta}`;
-            plusEl.classList.remove('animate-plus', 'plus-strong');
-            void plusEl.offsetWidth;
+            // 特效增强：如果是 +2，临时加强亮度，模拟瞬间大量涌入
+            if (delta === 2) {
+                plusEl.style.fontWeight = '900'; // 极粗
+                plusEl.style.filter = 'brightness(1.5) drop-shadow(0 0 5px #00f2ff)';
+            } else {
+                plusEl.style.fontWeight = 'bold'; // 标准加粗
+                plusEl.style.filter = 'none';
+            }
 
-            if (delta === 2) plusEl.classList.add('plus-strong');
+            plusEl.classList.remove('animate-plus');
+            void plusEl.offsetWidth; // 触发浏览器重绘，确保动画能再次播放
             plusEl.classList.add('animate-plus');
-
+            
             currentDisplay += delta;
             counterEl.textContent = currentDisplay;
-
-            // 回落
+            
+            // --- 核心改动：随机留存时长 (4s - 12s) ---
+            const stayDuration = Math.floor(Math.random() * 8000) + 4000;
+            
             setTimeout(() => {
-              currentDisplay -= delta;
-              counterEl.textContent = currentDisplay;
-            }, 2600);
+              // 离开时确保人数不会归零，最低保留你这位当前用户
+              if (currentDisplay > 1) {
+                currentDisplay -= delta;
+                counterEl.textContent = currentDisplay;
+              }
+            }, stayDuration);
+
+          } else if (rand < 0.12 && currentDisplay > 2) {
+            // 12% 的概率发生一次静默减员 (模拟有人悄悄看完离开)
+            currentDisplay--;
+            counterEl.textContent = currentDisplay;
           }
-        }, 3000); // 与 pulse 周期同频
+        }, 5500); // 监测频率调至 5.5s，略微错开呼吸灯周期，显得更自然
       }
 
       window.addEventListener('load', initCounter);
     })();
-  </script>
-
+</script>
 </footer>
  
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
