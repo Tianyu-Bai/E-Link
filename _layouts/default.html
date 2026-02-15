@@ -664,9 +664,13 @@ body.video-active .cursor-outline {
 <footer style="margin-top: 40px; padding-top: 20px; border-top: 1px solid rgba(255, 255, 255, 0.1); text-align: center; color: #94a3b8; font-size: 0.85rem;">
       <p> E-Link • COPYRIGHT © 2026 Tianyu Bai</p>
       
-      <div style="margin: 25px auto 15px auto; width: 100%; max-width: 650px; border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 12px; padding: 15px; background: rgba(10, 15, 30, 0.6); box-shadow: 0 0 15px rgba(59, 130, 246, 0.15); backdrop-filter: blur(5px); display: flex; justify-content: center; align-items: center;">
+      <div 
+        style="margin: 25px auto 15px auto; width: 100%; max-width: 650px; border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 12px; padding: 15px; background: rgba(10, 15, 30, 0.6); box-shadow: 0 0 15px rgba(59, 130, 246, 0.15); backdrop-filter: blur(5px); overflow: hidden; display: flex; justify-content: center; align-items: center; cursor: zoom-in;"
+        onmouseover="this.querySelector('.map-zoom').style.transform='scale(1.6)'" 
+        onmouseout="this.querySelector('.map-zoom').style.transform='scale(1)'"
+      >
         
-        <div style="width: 100%; pointer-events: none;">
+        <div class="map-zoom" style="width: 100%; pointer-events: none; transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1); transform-origin: center center;">
           <script type="text/javascript" id="mapmyvisitors" src="//mapmyvisitors.com/map.js?d=m5eNlZmkObq22GMdcKlpWq0A9hkoWtNuOIvQwtMspNc&w=600&cl=1e293b&co=0a0a0f&cmo=ef4444&cmn=60a5fa&ct=64748b"></script>
         </div>
         
