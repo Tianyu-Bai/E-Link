@@ -669,15 +669,15 @@ body.video-active .cursor-outline {
     
     <div style="width: 100%; display: flex; justify-content: space-between; align-items: center; font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; margin-bottom: 12px; padding: 0 5px;">
       
-      <div style="letter-spacing: 0.5px; animation: text-glow-cyan 3s ease-in-out infinite;">
+      <div style="letter-spacing: 0.5px; animation: glow-3s ease-in-out infinite;">
         <span class="lang-en">● Worldwide Pageview Data</span>
         <span class="lang-zh">● 全球访问数据实时监测</span>
       </div>
 
-      <div style="position: relative; display: flex; align-items: center; min-width: 60px; justify-content: flex-end; animation: live-glow-blue 2s ease-in-out infinite;">
+      <div style="position: relative; display: flex; align-items: center; min-width: 60px; justify-content: flex-end; animation: glow-3s ease-in-out infinite;">
         <span style="opacity: 0.8; margin-right: 4px;">LIVE:</span>
         <span id="live-counter">--</span>
-        <span id="plus-one" style="position: absolute; right: -12px; top: -8px; color: #00f2ff; opacity: 0; font-weight: bold; font-size: 0.6rem; text-shadow: 0 0 5px #00f2ff;">+1</span>
+        <span id="plus-num" style="position: absolute; right: -12px; top: -8px; color: #00f2ff; opacity: 0; font-weight: bold; font-size: 0.6rem; text-shadow: 0 0 5px #00f2ff;">+1</span>
       </div>
     </div>
 
@@ -686,21 +686,17 @@ body.video-active .cursor-outline {
   </div>
 
   <style>
-    /* 左侧文字：平稳的深呼吸 */
-    @keyframes text-glow-cyan {
-      0% { color: #334155; text-shadow: 0 0 0px rgba(0, 242, 255, 0); }
-      50% { color: #00f2ff; text-shadow: 0 0 8px rgba(0, 242, 255, 0.6); }
-      100% { color: #334155; text-shadow: 0 0 0px rgba(0, 242, 255, 0); }
+    /* 统一的 3s 呼吸动画：左侧蓝绿，右侧主题蓝由各自容器控制，但节奏同步 */
+    @keyframes glow-3s {
+      0% { color: #334155; text-shadow: 0 0 0px rgba(96, 165, 250, 0); opacity: 0.7; }
+      50% { color: inherit; text-shadow: 0 0 10px currentColor; opacity: 1; }
+      100% { color: #334155; text-shadow: 0 0 0px rgba(96, 165, 250, 0); opacity: 0.7; }
     }
+    
+    /* 覆盖具体的呼吸色 */
+    [style*="text-glow-cyan"], .lang-en, .lang-zh { color: #00f2ff; }
+    [style*="live-glow-blue"] { color: #60a5fa; }
 
-   /* 右侧 LIVE：灵动的快呼吸，使用主题蓝 #60a5fa */
-    @keyframes live-glow-blue {
-      0% { color: #1d4ed8; opacity: 0.7; text-shadow: 0 0 0px rgba(96, 165, 250, 0); }
-      50% { color: #60a5fa; opacity: 1; text-shadow: 0 0 10px rgba(96, 165, 250, 0.8); }
-      100% { color: #1d4ed8; opacity: 0.7; text-shadow: 0 0 0px rgba(96, 165, 250, 0); }
-    }
-
-    /* +1 动画效果 */
     @keyframes float-up-fade {
       0% { transform: translateY(0); opacity: 0; }
       20% { opacity: 1; }
@@ -712,45 +708,42 @@ body.video-active .cursor-outline {
   <script>
     (function() {
       // 初始化随机基准值 (3-8)
-      let baseCount = Math.floor(Math.random() * 6) + 3;
-      let currentDisplay = baseCount;
+      let currentDisplay = Math.floor(Math.random() * 6) + 3;
 
       function initCounter() {
         const counterEl = document.getElementById('live-counter');
-        const plusEl = document.getElementById('plus-one');
+        const plusEl = document.getElementById('plus-num');
         if(!counterEl) return;
         
         counterEl.textContent = currentDisplay;
 
-        // 模拟实时波动逻辑
         setInterval(() => {
           const rand = Math.random();
           
-          if (rand > 0.8) { 
-            // 触发 +1 动画
+          if (rand > 0.75) { 
+            // 随机决定是 +1 还是 +2
+            const increment = Math.random() > 0.8 ? 2 : 1;
+            plusEl.textContent = "+" + increment;
+            
             plusEl.classList.remove('animate-plus');
             void plusEl.offsetWidth; 
             plusEl.classList.add('animate-plus');
             
-            currentDisplay++;
+            currentDisplay += increment;
             counterEl.textContent = currentDisplay;
             
             // 模拟离开
             setTimeout(() => {
-              currentDisplay--;
+              currentDisplay -= increment;
               counterEl.textContent = currentDisplay;
-            }, 2500);
+            }, 2000);
 
           } else if (rand < 0.15 && currentDisplay > 3) {
             currentDisplay--;
             counterEl.textContent = currentDisplay;
-          } else if (rand < 0.25) {
-            currentDisplay++;
-            counterEl.textContent = currentDisplay;
           }
-        }, 6000); 
+        }, 5000); 
       }
-
       window.addEventListener('load', initCounter);
     })();
   </script>
