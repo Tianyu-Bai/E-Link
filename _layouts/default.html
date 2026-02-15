@@ -710,8 +710,8 @@ body.video-active .cursor-outline {
 
   <script>
     (function() {
-      // 1. 初始化：起始人数 1-4 (包含当前用户本身)
-      let currentDisplay = Math.floor(Math.random() * 4) + 1; 
+      // 1. 初始化：起始人数 1-2 (包含当前用户本身)
+      let currentDisplay = Math.floor(Math.random() * 2) + 1; 
 
       function initCounter() {
         const counterEl = document.getElementById('live-counter');
@@ -720,19 +720,20 @@ body.video-active .cursor-outline {
         
         counterEl.textContent = currentDisplay;
 
-        // 2. 模拟真实访客行为 (12秒检测一次，低频更真实)
+        // 2. 模拟真实访客行为 (12秒检测一次)
         setInterval(() => {
           const rand = Math.random();
           
-          // 仅在总数小于 5 时允许增加
-          if (rand > 0.8 && currentDisplay < 5) { 
-            const maxCanAdd = 5 - currentDisplay;
+          // --- 进入逻辑：仅在总数小于 3 时允许增加 ---
+          if (rand > 0.8 && currentDisplay < 3) { 
+            const maxCanAdd = 3 - currentDisplay; // 动态计算距离上限 3 的剩余空位
             const delta = Math.min(maxCanAdd, (Math.random() > 0.85 ? 2 : 1)); 
             
             plusEl.textContent = '+' + delta;
 
+            // 特效：+2 更加醒目
             if (delta === 2) {
-                plusEl.style.fontWeight = '900'; // 极粗
+                plusEl.style.fontWeight = '900';
                 plusEl.style.filter = 'brightness(1.5) drop-shadow(0 0 5px #00f2ff)';
             } else {
                 plusEl.style.fontWeight = 'bold';
@@ -757,6 +758,7 @@ body.video-active .cursor-outline {
             }, stayDuration);
 
           } else if (rand < 0.15 && currentDisplay > 1) {
+            // 自然减员
             currentDisplay--;
             counterEl.textContent = currentDisplay;
           }
