@@ -281,8 +281,7 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
     class="custom-model-viewer"
     src="{{ '/Videos/On skull_3.16MB.glb' | relative_url }}"
     alt="E Link on Skull 3D Model"
-    loading="lazy"
-    power-preference="low-power" reveal="manual"
+    loading="eager" power-preference="low-power" reveal="auto"
     poster="{{ '/Images/poster.webp' | relative_url }}"
     camera-controls interpolation-decay="200" bounds="tight" field-of-view="30deg" auto-rotate  rotation-per-second="15deg"
     interaction-prompt="none" environment-image="neutral" exposure="0.75" shadow-intensity="0" tone-mapping="commerce">
@@ -778,7 +777,7 @@ This project is open-source and available under the **MIT License**. Click the b
     class="custom-model-viewer"
     src="{{ '/Videos/On skull_3.16MB.glb' | relative_url }}"
     alt="E Link on Skull 3D Model"
-    loading="lazy"     power-preference="low-power" reveal="manual"
+    loading="eager" power-preference="low-power" reveal="auto"
     poster="{{ '/Images/poster.webp' | relative_url }}"
     camera-controls interpolation-decay="200" bounds="tight" field-of-view="30deg" auto-rotate  rotation-per-second="15deg"
     interaction-prompt="none" environment-image="neutral" exposure="0.75" shadow-intensity="0" tone-mapping="commerce">
