@@ -159,6 +159,9 @@ title: E-Link Home
   border: 1px solid rgba(59,130,246,0.25); padding: 6px 10px;
   border-radius: 20px; white-space: nowrap; backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px); pointer-events: none; transition: opacity 0.4s ease; z-index: 5;
+  display: flex; /* 🟢 确保是横向排列 */
+  align-items: center;
+  gap: 25px; /* 🟢 设置元素之间的间距为 25px */
 }
 
 .gesture-hidden { opacity: 0 !important; visibility: hidden !important; pointer-events: none !important; animation: none !important; }
@@ -209,12 +212,6 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
   font-size: 10px; color: rgba(255, 255, 255, 0.25); pointer-events: none; z-index: 5;
 }
   
-/* 让指示语水平排列，并给后续的 span 增加间距 */
-.gesture-hud {
-  display: flex; /* 🟢 确保是横向排列 */
-  align-items: center;
-  gap: 25px; /* 🟢 设置元素之间的间距为 25px */
-}
 
 /* 加一根淡淡的分隔线 */
 .gesture-hud span + span {
