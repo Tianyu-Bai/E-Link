@@ -189,6 +189,7 @@ kbd {
   width: 100%; max-width: 100vw; box-sizing: border-box; height: 460px;
   background: transparent; border-radius: 16px; border: 1px solid rgba(59,130,246,0.3);
   outline: none; overflow: hidden; transform: translateZ(0); backface-visibility: hidden; 
+  content-visibility: auto; /* 🌟 救命神器：离开屏幕立刻释放底层渲染内存 */
 }
 .custom-model-viewer:focus, .custom-model-viewer:active, .custom-model-viewer:focus-visible {
   outline: none !important; box-shadow: none !important; border: 1px solid rgba(59,130,246,0.3) !important;
@@ -1272,27 +1273,32 @@ This project is open-source and available under the **MIT License**. Click the b
       });
     });
 
-// 滑动监听器
+// 滑动监听器 (极限防闪退版)
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         const viewer = entry.target;
 
-        // 🌟 新增 1：清除之前的定时器。防止用户快速上下滑动时，动画指令打架
         if (viewer.showGestureTimer) clearTimeout(viewer.showGestureTimer);
 
         if (entry.isIntersecting) {
-          // 隐藏封面的逻辑保持不变
+          
+          // 🌟 杀手锏：排他性播放！
+          // 一旦这个模型进入视口，立刻强行让另外几个模型闭嘴暂停，榨干每一滴显存！
+          models.forEach(m => {
+            if (m !== viewer) m.pause();
+          });
+
           if (viewer.getAttribute('reveal') === 'manual') {
+              // 🌟 延迟从 300ms 加大到 400ms，让用户滑稳了再解压模型，避开滚动时的掉帧峰值
               setTimeout(() => {
                   viewer.dismissPoster(); 
                   try { viewer.play(); } catch(e) {}
-              }, 300);
+              }, 400);
           } else {
               try { viewer.play(); } catch(e) {}
           }
           
-          // 🌟 新增 2：把激活手指动画的代码，包在 800ms 的延迟里
-          // 效果：先等封面优雅消失，模型露出来，过大半秒，手指再缓缓浮现！
+          // 手指动画延迟出场
           viewer.showGestureTimer = setTimeout(() => {
               if (viewer.dataset.overlayDisabled !== "true") {
                 viewer.querySelectorAll('.gesture-overlay').forEach(el => {
@@ -1309,9 +1315,10 @@ This project is open-source and available under the **MIT License**. Click the b
         }
       });
     }, {
-      threshold: 0.25 
+      threshold: 0.45  // 🌟 核心修改：提高阈值，彻底杜绝两个模型同时被唤醒！
     });
 
     models.forEach(model => observer.observe(model));
   });
+  
 </script>
