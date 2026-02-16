@@ -218,7 +218,60 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
   font-family: 'JetBrains Mono', system-ui, -apple-system, sans-serif;
   font-weight: 400;
 }
-  
+  @keyframes text-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+  /* ===================== 高级 3D 封面特效 (HUD) ===================== */
+/* 1. 双环反向旋转加载器 */
+.cyber-loader {
+  position: relative;
+  width: 50px; height: 50px;
+}
+.cyber-loader::before, .cyber-loader::after {
+  content: ''; position: absolute; border-radius: 50%;
+}
+.cyber-loader::before {
+  top: 0; left: 0; right: 0; bottom: 0;
+  border: 2.5px solid transparent;
+  border-top-color: #60a5fa; border-bottom-color: #60a5fa;
+  animation: spin 1.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
+  box-shadow: 0 0 10px rgba(96, 165, 250, 0.5);
+}
+.cyber-loader::after {
+  top: 8px; left: 8px; right: 8px; bottom: 8px;
+  border: 2px solid transparent;
+  border-left-color: #3b82f6; border-right-color: #3b82f6;
+  animation: spin-reverse 1s linear infinite;
+}
+@keyframes spin-reverse { to { transform: rotate(-360deg); } }
+
+/* 2. 四角定位框 */
+.hud-corner {
+  position: absolute; width: 25px; height: 25px;
+  border: 2px solid rgba(96, 165, 250, 0.6);
+  box-shadow: 0 0 8px rgba(59, 130, 246, 0.4);
+}
+.hud-tl { top: 20px; left: 20px; border-right: none; border-bottom: none; }
+.hud-tr { top: 20px; right: 20px; border-left: none; border-bottom: none; }
+.hud-bl { bottom: 20px; left: 20px; border-right: none; border-top: none; }
+.hud-br { bottom: 20px; right: 20px; border-left: none; border-top: none; }
+
+/* 3. 扫描线特效 */
+.scanline {
+  position: absolute; top: 0; left: 0; width: 100%; height: 3px;
+  background: linear-gradient(90deg, transparent, rgba(96, 165, 250, 0.8), transparent);
+  box-shadow: 0 0 15px rgba(59, 130, 246, 0.8);
+  animation: scan-sweep 3s linear infinite;
+  opacity: 0.6;
+}
+@keyframes scan-sweep {
+  0% { top: 0; opacity: 0; }
+  10% { opacity: 0.6; }
+  90% { opacity: 0.6; }
+  100% { top: 100%; opacity: 0; }
+}
 </style>
 
 ## 🔬 Interactive 3D Model: E-Link Headstage Integration
@@ -229,13 +282,23 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
     src="{{ '/Videos/On skull_3.16MB.glb' | relative_url }}"
     alt="E Link on Skull 3D Model"
     loading="lazy"
+    power-preference="low-power" reveal="manual"
     poster="{{ '/Images/poster.webp' | relative_url }}"
-    camera-controls interpolation-decay="200" bounds="tight" field-of-view="30deg" auto-rotate auto-rotate-delay="500" rotation-per-second="15deg"
+    camera-controls interpolation-decay="200" bounds="tight" field-of-view="30deg" auto-rotate  rotation-per-second="15deg"
     interaction-prompt="none" environment-image="neutral" exposure="0.75" shadow-intensity="0" tone-mapping="commerce">
 
-    <div slot="poster" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; background: #0a0a0f; color: #3b82f6; font-family: 'JetBrains Mono', monospace;">
-      <div class="model-loader"></div>
-      <p style="margin-top: 20px; font-size: 0.9rem; letter-spacing: 2px; animation: blink 1.5s infinite;">INITIALIZING 3D SIGNAL...</p>
+    <div slot="poster" style="position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; width: 100%; background: radial-gradient(circle at center, #111827 0%, #020617 100%); font-family: 'JetBrains Mono', monospace; overflow: hidden; border-radius: 16px;">
+      <div style="position: absolute; inset: 0; background-image: linear-gradient(rgba(59, 130, 246, 0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(59, 130, 246, 0.08) 1px, transparent 1px); background-size: 25px 25px; z-index: 0;"></div>
+      <div class="scanline" style="z-index: 1;"></div>
+      <div class="hud-corner hud-tl" style="z-index: 1;"></div>
+      <div class="hud-corner hud-tr" style="z-index: 1;"></div>
+      <div class="hud-corner hud-bl" style="z-index: 1;"></div>
+      <div class="hud-corner hud-br" style="z-index: 1;"></div>
+      <div style="z-index: 2; display: flex; flex-direction: column; align-items: center;">
+        <div class="cyber-loader"></div>
+        <p style="margin-top: 25px; margin-bottom: 5px; font-size: 0.95rem; font-weight: 600; letter-spacing: 3px; color: #93c5fd; text-shadow: 0 0 10px rgba(96, 165, 250, 0.8); animation: text-blink 1.5s ease-in-out infinite;">INITIALIZING 3D SIGNAL...</p>
+        <p style="margin: 0; font-size: 0.65rem; color: rgba(148, 163, 184, 0.8); letter-spacing: 1px;">[ SCROLL TO REVEAL MODEL ]</p>
+      </div>
     </div>
     
     <div class="model-watermark-text">Copyright © 2026 Tianyu Bai</div>
@@ -275,14 +338,23 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
     class="custom-model-viewer"
     src="{{ '/Videos/Whole_2.34MB.glb' | relative_url }}"
     alt="E Link 3D Model"
-    loading="lazy"
+    loading="lazy"     power-preference="low-power" reveal="manual"
     poster="{{ '/Images/poster.webp' | relative_url }}"
-    camera-controls interpolation-decay="200" bounds="tight" field-of-view="30deg" auto-rotate auto-rotate-delay="500" rotation-per-second="15deg"
+    camera-controls interpolation-decay="200" bounds="tight" field-of-view="30deg" auto-rotate  rotation-per-second="15deg"
     interaction-prompt="none" environment-image="neutral" exposure="0.75" shadow-intensity="0" tone-mapping="commerce">
 
-    <div slot="poster" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; background: #0a0a0f; color: #3b82f6; font-family: 'JetBrains Mono', monospace;">
-      <div class="model-loader"></div>
-      <p style="margin-top: 20px; font-size: 0.9rem; letter-spacing: 2px; animation: blink 1.5s infinite;">INITIALIZING 3D SIGNAL...</p>
+    <div slot="poster" style="position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; width: 100%; background: radial-gradient(circle at center, #111827 0%, #020617 100%); font-family: 'JetBrains Mono', monospace; overflow: hidden; border-radius: 16px;">
+      <div style="position: absolute; inset: 0; background-image: linear-gradient(rgba(59, 130, 246, 0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(59, 130, 246, 0.08) 1px, transparent 1px); background-size: 25px 25px; z-index: 0;"></div>
+      <div class="scanline" style="z-index: 1;"></div>
+      <div class="hud-corner hud-tl" style="z-index: 1;"></div>
+      <div class="hud-corner hud-tr" style="z-index: 1;"></div>
+      <div class="hud-corner hud-bl" style="z-index: 1;"></div>
+      <div class="hud-corner hud-br" style="z-index: 1;"></div>
+      <div style="z-index: 2; display: flex; flex-direction: column; align-items: center;">
+        <div class="cyber-loader"></div>
+        <p style="margin-top: 25px; margin-bottom: 5px; font-size: 0.95rem; font-weight: 600; letter-spacing: 3px; color: #93c5fd; text-shadow: 0 0 10px rgba(96, 165, 250, 0.8); animation: text-blink 1.5s ease-in-out infinite;">INITIALIZING 3D SIGNAL...</p>
+        <p style="margin: 0; font-size: 0.65rem; color: rgba(148, 163, 184, 0.8); letter-spacing: 1px;">[ SCROLL TO REVEAL MODEL ]</p>
+      </div>
     </div>
     
     <div class="model-watermark-text">Copyright © 2026 Tianyu Bai</div>
@@ -320,15 +392,24 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
   <model-viewer
     class="custom-model-viewer"
     src="{{ '/Videos/3D_1.85MB.glb' | relative_url }}"
-    alt="E Link 3D Model" 
-    loading="lazy"
+    alt="E-Link 256-Channel Custom Headstage 3D Model" 
+    loading="lazy"     power-preference="low-power" reveal="manual"
     poster="{{ '/Images/poster.webp' | relative_url }}"
-    camera-controls interpolation-decay="200" bounds="tight" field-of-view="30deg" auto-rotate auto-rotate-delay="500" rotation-per-second="15deg"
+    camera-controls interpolation-decay="200" bounds="tight" field-of-view="30deg" auto-rotate  rotation-per-second="15deg"
     interaction-prompt="none" environment-image="neutral" exposure="0.75" shadow-intensity="0" tone-mapping="commerce">
 
-    <div slot="poster" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; background: #0a0a0f; color: #3b82f6; font-family: 'JetBrains Mono', monospace;">
-      <div class="model-loader"></div>
-      <p style="margin-top: 20px; font-size: 0.9rem; letter-spacing: 2px; animation: blink 1.5s infinite;">INITIALIZING 3D SIGNAL...</p>
+    <div slot="poster" style="position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; width: 100%; background: radial-gradient(circle at center, #111827 0%, #020617 100%); font-family: 'JetBrains Mono', monospace; overflow: hidden; border-radius: 16px;">
+      <div style="position: absolute; inset: 0; background-image: linear-gradient(rgba(59, 130, 246, 0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(59, 130, 246, 0.08) 1px, transparent 1px); background-size: 25px 25px; z-index: 0;"></div>
+      <div class="scanline" style="z-index: 1;"></div>
+      <div class="hud-corner hud-tl" style="z-index: 1;"></div>
+      <div class="hud-corner hud-tr" style="z-index: 1;"></div>
+      <div class="hud-corner hud-bl" style="z-index: 1;"></div>
+      <div class="hud-corner hud-br" style="z-index: 1;"></div>
+      <div style="z-index: 2; display: flex; flex-direction: column; align-items: center;">
+        <div class="cyber-loader"></div>
+        <p style="margin-top: 25px; margin-bottom: 5px; font-size: 0.95rem; font-weight: 600; letter-spacing: 3px; color: #93c5fd; text-shadow: 0 0 10px rgba(96, 165, 250, 0.8); animation: text-blink 1.5s ease-in-out infinite;">INITIALIZING 3D SIGNAL...</p>
+        <p style="margin: 0; font-size: 0.65rem; color: rgba(148, 163, 184, 0.8); letter-spacing: 1px;">[ SCROLL TO REVEAL MODEL ]</p>
+      </div>
     </div>
     
     <div class="model-watermark-text">Copyright © 2026 Tianyu Bai</div>
@@ -383,8 +464,8 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
 <span id="en-specs"></span>
 ### 📊 Quick Specifications
 
-<div align="center">
- <table style="margin-left: auto; margin-right: auto; width: 80%; text-align: center; border-collapse: collapse; border: 1px solid #e1e4e8;">
+<div style="width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 10px;">
+  <table style="margin-left: auto; margin-right: auto; width: 90%; min-width: 600px; text-align: center; border-collapse: collapse; border: 1px solid #e1e4e8;">
    <thead>
      <tr style="background-color: #f6f8fa; border-bottom: 2px solid #e1e4e8;">
        <th style="padding: 10px; border: 1px solid #e1e4e8;">Specification</th>
@@ -502,8 +583,8 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
   </p>
 </div>
 
-<div align="center">
- <table style="margin-left: auto; margin-right: auto; width: 90%; text-align: center; border-collapse: collapse; border: 1px solid #e1e4e8;">
+<div style="width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 10px;">
+  <table style="margin-left: auto; margin-right: auto; width: 90%; min-width: 600px; text-align: center; border-collapse: collapse; border: 1px solid #e1e4e8;">
    <thead>
      <tr style="background-color: #f6f8fa; border-bottom: 2px solid #e1e4e8;">
        <th style="padding: 10px; border: 1px solid #e1e4e8; text-align: center;">Component</th>
@@ -697,14 +778,23 @@ This project is open-source and available under the **MIT License**. Click the b
     class="custom-model-viewer"
     src="{{ '/Videos/On skull_3.16MB.glb' | relative_url }}"
     alt="E Link on Skull 3D Model"
-    loading="lazy"
+    loading="lazy"     power-preference="low-power" reveal="manual"
     poster="{{ '/Images/poster.webp' | relative_url }}"
-    camera-controls interpolation-decay="200" bounds="tight" field-of-view="30deg" auto-rotate auto-rotate-delay="500" rotation-per-second="15deg"
+    camera-controls interpolation-decay="200" bounds="tight" field-of-view="30deg" auto-rotate  rotation-per-second="15deg"
     interaction-prompt="none" environment-image="neutral" exposure="0.75" shadow-intensity="0" tone-mapping="commerce">
 
-    <div slot="poster" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; background: #0a0a0f; color: #3b82f6; font-family: 'JetBrains Mono', monospace;">
-      <div class="model-loader"></div>
-      <p style="margin-top: 20px; font-size: 0.9rem; letter-spacing: 2px; animation: blink 1.5s infinite;">正在初始化 3D 信号...</p>
+    <div slot="poster" style="position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; width: 100%; background: radial-gradient(circle at center, #111827 0%, #020617 100%); font-family: 'JetBrains Mono', monospace; overflow: hidden; border-radius: 16px;">
+      <div style="position: absolute; inset: 0; background-image: linear-gradient(rgba(59, 130, 246, 0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(59, 130, 246, 0.08) 1px, transparent 1px); background-size: 25px 25px; z-index: 0;"></div>
+      <div class="scanline" style="z-index: 1;"></div>
+      <div class="hud-corner hud-tl" style="z-index: 1;"></div>
+      <div class="hud-corner hud-tr" style="z-index: 1;"></div>
+      <div class="hud-corner hud-bl" style="z-index: 1;"></div>
+      <div class="hud-corner hud-br" style="z-index: 1;"></div>
+      <div style="z-index: 2; display: flex; flex-direction: column; align-items: center;">
+        <div class="cyber-loader"></div>
+        <p style="margin-top: 25px; margin-bottom: 5px; font-size: 0.95rem; font-weight: 600; letter-spacing: 3px; color: #93c5fd; text-shadow: 0 0 10px rgba(96, 165, 250, 0.8); animation: text-blink 1.5s ease-in-out infinite;">正在初始化 3D 信号...</p>
+        <p style="margin: 0; font-size: 0.65rem; color: rgba(148, 163, 184, 0.8); letter-spacing: 1px;">[ 滑动页面自动接入引擎 ]</p>
+      </div>
     </div>
     
     <div class="model-watermark-text">版权所有 © 2026 Tianyu Bai</div>
@@ -744,14 +834,23 @@ This project is open-source and available under the **MIT License**. Click the b
     class="custom-model-viewer"
     src="{{ '/Videos/Whole_2.34MB.glb' | relative_url }}"
     alt="E Link 3D Model" 
-    loading="lazy"
+    loading="lazy"     power-preference="low-power" reveal="manual"
     poster="{{ '/Images/poster.webp' | relative_url }}"
-    camera-controls interpolation-decay="200" bounds="tight" field-of-view="30deg" auto-rotate auto-rotate-delay="500" rotation-per-second="15deg"
+    camera-controls interpolation-decay="200" bounds="tight" field-of-view="30deg" auto-rotate  rotation-per-second="15deg"
     interaction-prompt="none" environment-image="neutral" exposure="0.75" shadow-intensity="0" tone-mapping="commerce">
 
-    <div slot="poster" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; background: #0a0a0f; color: #3b82f6; font-family: 'JetBrains Mono', monospace;">
-      <div class="model-loader"></div>
-      <p style="margin-top: 20px; font-size: 0.9rem; letter-spacing: 2px; animation: blink 1.5s infinite;">正在初始化 3D 信号...</p>
+    <div slot="poster" style="position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; width: 100%; background: radial-gradient(circle at center, #111827 0%, #020617 100%); font-family: 'JetBrains Mono', monospace; overflow: hidden; border-radius: 16px;">
+      <div style="position: absolute; inset: 0; background-image: linear-gradient(rgba(59, 130, 246, 0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(59, 130, 246, 0.08) 1px, transparent 1px); background-size: 25px 25px; z-index: 0;"></div>
+      <div class="scanline" style="z-index: 1;"></div>
+      <div class="hud-corner hud-tl" style="z-index: 1;"></div>
+      <div class="hud-corner hud-tr" style="z-index: 1;"></div>
+      <div class="hud-corner hud-bl" style="z-index: 1;"></div>
+      <div class="hud-corner hud-br" style="z-index: 1;"></div>
+      <div style="z-index: 2; display: flex; flex-direction: column; align-items: center;">
+        <div class="cyber-loader"></div>
+        <p style="margin-top: 25px; margin-bottom: 5px; font-size: 0.95rem; font-weight: 600; letter-spacing: 3px; color: #93c5fd; text-shadow: 0 0 10px rgba(96, 165, 250, 0.8); animation: text-blink 1.5s ease-in-out infinite;">正在初始化 3D 信号...</p>
+        <p style="margin: 0; font-size: 0.65rem; color: rgba(148, 163, 184, 0.8); letter-spacing: 1px;">[ 滑动页面自动接入引擎 ]</p>
+      </div>
     </div>
     
     <div class="model-watermark-text">版权所有 © 2026 Tianyu Bai</div>
@@ -790,15 +889,24 @@ This project is open-source and available under the **MIT License**. Click the b
   <model-viewer
     class="custom-model-viewer"
     src="{{ '/Videos/3D_1.85MB.glb' | relative_url }}"
-    alt="E Link 3D Model"
-    loading="lazy"
+    alt="E-Link 256-Channel Custom Headstage 3D Model"
+    loading="lazy"     power-preference="low-power" reveal="manual"
     poster="{{ '/Images/poster.webp' | relative_url }}"
-    camera-controls interpolation-decay="200" bounds="tight" field-of-view="30deg" auto-rotate auto-rotate-delay="500" rotation-per-second="15deg"
+    camera-controls interpolation-decay="200" bounds="tight" field-of-view="30deg" auto-rotate  rotation-per-second="15deg"
     interaction-prompt="none" environment-image="neutral" exposure="0.75" shadow-intensity="0" tone-mapping="commerce">
 
-    <div slot="poster" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; background: #0a0a0f; color: #3b82f6; font-family: 'JetBrains Mono', monospace;">
-      <div class="model-loader"></div>
-      <p style="margin-top: 20px; font-size: 0.9rem; letter-spacing: 2px; animation: blink 1.5s infinite;">正在初始化 3D 信号...</p>
+    <div slot="poster" style="position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; width: 100%; background: radial-gradient(circle at center, #111827 0%, #020617 100%); font-family: 'JetBrains Mono', monospace; overflow: hidden; border-radius: 16px;">
+      <div style="position: absolute; inset: 0; background-image: linear-gradient(rgba(59, 130, 246, 0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(59, 130, 246, 0.08) 1px, transparent 1px); background-size: 25px 25px; z-index: 0;"></div>
+      <div class="scanline" style="z-index: 1;"></div>
+      <div class="hud-corner hud-tl" style="z-index: 1;"></div>
+      <div class="hud-corner hud-tr" style="z-index: 1;"></div>
+      <div class="hud-corner hud-bl" style="z-index: 1;"></div>
+      <div class="hud-corner hud-br" style="z-index: 1;"></div>
+      <div style="z-index: 2; display: flex; flex-direction: column; align-items: center;">
+        <div class="cyber-loader"></div>
+        <p style="margin-top: 25px; margin-bottom: 5px; font-size: 0.95rem; font-weight: 600; letter-spacing: 3px; color: #93c5fd; text-shadow: 0 0 10px rgba(96, 165, 250, 0.8); animation: text-blink 1.5s ease-in-out infinite;">正在初始化 3D 信号...</p>
+        <p style="margin: 0; font-size: 0.65rem; color: rgba(148, 163, 184, 0.8); letter-spacing: 1px;">[ 滑动页面自动接入引擎 ]</p>
+      </div>
     </div>
     
     <div class="model-watermark-text">版权所有 © 2026 Tianyu Bai </div>
@@ -854,8 +962,8 @@ This project is open-source and available under the **MIT License**. Click the b
 <span id="cn-specs"></span>
 ### 📊 规格参数
 
-<div align="center">
-  <table style="margin-left: auto; margin-right: auto; width: 80%; text-align: center; border-collapse: collapse; border: 1px solid #e1e4e8;">
+<div style="width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 10px;">
+  <table style="margin-left: auto; margin-right: auto; width: 90%; min-width: 600px; text-align: center; border-collapse: collapse; border: 1px solid #e1e4e8;">
     <thead>
       <tr style="background-color: #f6f8fa; border-bottom: 2px solid #e1e4e8;">
         <th style="padding: 10px; border: 1px solid #e1e4e8;">规格项目</th>
@@ -973,8 +1081,8 @@ This project is open-source and available under the **MIT License**. Click the b
   </p>
 </div>
      
-<div align="center">
-  <table style="margin-left: auto; margin-right: auto; width: 90%; text-align: center; border-collapse: collapse; border: 1px solid #e1e4e8;">
+<div style="width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 10px;">
+  <table style="margin-left: auto; margin-right: auto; width: 90%; min-width: 600px; text-align: center; border-collapse: collapse; border: 1px solid #e1e4e8;">
     <thead>
       <tr style="background-color: #f6f8fa; border-bottom: 2px solid #e1e4e8;">
         <th style="padding: 10px; border: 1px solid #e1e4e8; text-align: center;">组件</th>
@@ -1123,8 +1231,8 @@ This project is open-source and available under the **MIT License**. Click the b
       viewer.setAttribute('min-camera-orbit', 'auto auto 1mm');
 // 👇 进一步缩小最小视野角度，相当于增加了“长焦放大镜”效果
       viewer.setAttribute('min-field-of-view', '10deg'); 
-// 👇 统一设置为松手后等待 2秒 (3000毫秒) 再自转
-      viewer.autoRotateDelay = 2000; 
+// 👇 统一设置为松手后等待 0.5秒 (500毫秒) 再自转
+      viewer.autoRotateDelay = 500; 
       viewer.pause(); 
 
       let hudTimer = null;
@@ -1153,15 +1261,18 @@ This project is open-source and available under the **MIT License**. Click the b
       });
     });
 
-    // 滑动监听器
+   // 滑动监听器
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         const viewer = entry.target;
 
         if (entry.isIntersecting) {
+          // 👇 【新增这一行】：当模型进入屏幕时，代码自动隐藏封面并唤醒3D引擎
+          viewer.dismissPoster(); 
+          
           try { viewer.play(); } catch(e) {}
           
-          // 🟢 只有当用户还没动过模型（即 overlay 没被封禁）时，才激活手指动画
+          // 🟢 只有当用户还没动过模型时，才激活手指动画
           if (viewer.dataset.overlayDisabled !== "true") {
             viewer.querySelectorAll('.gesture-overlay').forEach(el => {
               el.classList.add('gesture-active');
