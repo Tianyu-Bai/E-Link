@@ -1030,18 +1030,18 @@ body.video-active .cursor-outline {
       if (window.VANTA) { 
         vantaEffect = VANTA.NET({
           el: "#vanta-bg",
+        // 恢复 1.0，拒绝强行拉伸导致的变亮和发糊！
+          scale: 1.00, 
+          scaleMobile: 1.00, 
           
-          // 💡 手机端依靠这个来防崩溃，绝对不能删
-          scaleMobile: window.innerWidth < 768 ? 3.0 : 1.0, 
-          scale: 1.0,
+          // 恢复你最初设计的完美密度比例
+          points: 18.00,        
+          maxDistance: 28.00,   
+          spacing: 16.00,       
           
-          // 🚀 恢复你最初的超高密度参数！
-          points: 18.00,        // 恢复到满血 18
-          maxDistance: 28.00,   // 恢复到长手 28
-          spacing: 16.00,       // 恢复紧凑间距
-          
-          // 彻底关闭各种鼠标、触摸、陀螺仪计算（防止跟随鼠标时的微卡顿）
-          touchControls: false, 
+          // 恢复原始的鼠标和触摸互动
+          mouseControls: true, 
+          touchControls: true, 
           gyroControls: false,
           
           minHeight: 200.00, 
