@@ -190,8 +190,9 @@ kbd {
   background: transparent; border-radius: 16px; border: 1px solid rgba(59,130,246,0.3);
   outline: none; overflow: hidden; transform: translateZ(0); backface-visibility: hidden; 
   /* 🌟 替换掉刚才那行，改用下面这个：只在 3D 模型渲染时开启硬件加速 */
-  contain: paint; 
+  contain: paint;  content-visibility: auto;
 }
+
 .custom-model-viewer:focus, .custom-model-viewer:active, .custom-model-viewer:focus-visible {
   outline: none !important; box-shadow: none !important; border: 1px solid rgba(59,130,246,0.3) !important;
 }
@@ -1237,82 +1238,73 @@ This project is open-source and available under the **MIT License**. Click the b
 
 <script>
   document.addEventListener("DOMContentLoaded", () => {
-    // 1. 确保获取到所有模型
     const models = Array.from(document.querySelectorAll('model-viewer'));
     if (!models.length) return;
 
-    models.forEach(viewer => {
-      viewer.setAttribute('auto-rotate', '');
-      viewer.minimumRenderScale = 1; 
-      viewer.setAttribute('min-camera-orbit', 'auto auto 1mm');
-      viewer.setAttribute('min-field-of-view', '10deg'); 
-      viewer.autoRotateDelay = 500; 
-      
-      // 初始状态：除了第一个，其他都暂停
-      if (viewer.getAttribute('reveal') === 'manual') {
-        viewer.pause(); 
-      }
+    // 性能补丁：针对低功耗设备
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
+    models.forEach((viewer) => {
+      // 基础设置优化
+      viewer.setAttribute('auto-rotate', '');
+      viewer.minimumRenderScale = isMobile ? 0.5 : 1; // 移动端降低渲染比例以提速
+      viewer.autoRotateDelay = 1000;
+      
+      // 手势引导逻辑
       let hudTimer = null;
       const hideHints = () => {
         viewer.querySelectorAll('.gesture-overlay, .gesture-hud').forEach(el => el.classList.add('gesture-hidden'));
         viewer.dataset.overlayDisabled = "true";
         if (hudTimer) clearTimeout(hudTimer);
-        hudTimer = setTimeout(() => {
-          const hud = viewer.querySelector('.gesture-hud');
-          if (hud) hud.classList.remove('gesture-hidden');
-        }, 10000);
       };
       
       ['mousedown', 'wheel', 'touchstart'].forEach(evt => {
-        viewer.addEventListener(evt, hideHints);
+        viewer.addEventListener(evt, hideHints, { passive: true });
       });
     });
 
-    // 2. 核心滑动监听器 (防死循环版)
+    // 高性能观察者
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         const viewer = entry.target;
 
-        if (viewer.showGestureTimer) clearTimeout(viewer.showGestureTimer);
-
         if (entry.isIntersecting) {
-          // A. 显存排他性：让别人暂停
+          // 1. 显存排他：暂停视野外所有模型的动画渲染
           models.forEach(m => {
             if (m !== viewer) m.pause();
           });
 
-          // B. 唤醒逻辑：增加一个 [data-loaded] 锁，防止重复执行 setAttribute
-          if (viewer.getAttribute('reveal') === 'manual' && viewer.dataset.loaded !== "true") {
-              viewer.dismissPoster();
-              viewer.dataset.loaded = "true"; // 🌟 锁定，只执行一次
-              setTimeout(() => {
-                try { viewer.play(); } catch(e) {}
-              }, 100);
-          } else {
-              try { viewer.play(); } catch(e) {}
-          }
-          
-          // C. 手指动画延迟出场
-          viewer.showGestureTimer = setTimeout(() => {
-              if (viewer.dataset.overlayDisabled !== "true") {
-                viewer.querySelectorAll('.gesture-overlay').forEach(el => {
-                  el.classList.add('gesture-active');
+          // 2. 延迟加载逻辑：等待滚动平稳，避免阻塞主线程
+          setTimeout(() => {
+            // 只有在进入视野时才真正激活 3D 渲染 (dismissPoster 会将模型送入显存)
+            if (viewer.getAttribute('reveal') === 'manual' && viewer.dataset.loaded !== "true") {
+                // requestAnimationFrame 确保在浏览器渲染空闲时解压 GLB
+                requestAnimationFrame(() => {
+                  viewer.dismissPoster();
+                  viewer.dataset.loaded = "true";
+                  setTimeout(() => { try { viewer.play(); } catch(e) {} }, 300);
                 });
-              }
-          }, 800);
+            } else {
+                viewer.play();
+            }
+          }, 150); // 150ms 缓冲期，过滤快速滑过的情况
+
+          // 3. 手势动画启动
+          if (viewer.dataset.overlayDisabled !== "true") {
+            setTimeout(() => {
+              viewer.querySelectorAll('.gesture-overlay').forEach(el => el.classList.add('gesture-active'));
+            }, 1000);
+          }
 
         } else {
-          // 离开视口：停止自转
+          // 离开视口：立即暂停自转和交互提示
           viewer.pause();
-          viewer.querySelectorAll('.gesture-overlay').forEach(el => {
-            el.classList.remove('gesture-active');
-          });
+          viewer.querySelectorAll('.gesture-overlay').forEach(el => el.classList.remove('gesture-active'));
         }
       });
     }, {
-      threshold: 0.15, // 稍微提高一点点，防止误触
-      rootMargin: "50px 0px 50px 0px"
+      threshold: 0.1, // 进场 10% 就开始准备
+      rootMargin: "100px 0px 100px 0px" // 提前 100px 预加载，消除等待感
     });
 
     models.forEach(model => observer.observe(model));
