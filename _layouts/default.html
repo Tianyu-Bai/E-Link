@@ -1026,18 +1026,33 @@ body.video-active .cursor-outline {
       }
       requestAnimationFrame(raf);
 
-      // 1. 立即启动 Vanta 背景 (加入宽度判断)
-      if (window.VANTA && window.innerWidth > 768) {
+      // 1. 立即启动 Vanta 背景 (全平台开启，移动端极限性能优化版)
+      if (window.VANTA) { 
         vantaEffect = VANTA.NET({
           el: "#vanta-bg",
-          points: 12.00,
-          maxDistance: 20.00,
-          mouseControls: false, touchControls: false, gyroControls: false,
-          minHeight: 200.00, minWidth: 200.00, scale: 1.00, scaleMobile: 1.00,
-          color: 0x3b82f6, backgroundColor: 0x0a0a0f, spacing: 16.00, showDots: true
+          
+          // 🚨 救命神参：scaleMobile 设置为 3.0 或 4.0
+          // 这意味着手机端渲染的实际像素只有原来的 1/9 到 1/16，极大释放显存！
+          scaleMobile: window.innerWidth < 768 ? 3.0 : 1.0, 
+          scale: 1.0,
+          
+          // 手机端进一步削减点数和连线范围，保留基础氛围即可
+          points: window.innerWidth < 768 ? 5.00 : 12.00, 
+          maxDistance: window.innerWidth < 768 ? 10.00 : 20.00,
+          spacing: window.innerWidth < 768 ? 20.00 : 16.00,
+          
+          // 彻底关闭各种鼠标、触摸、陀螺仪计算
+          mouseControls: false, 
+          touchControls: false, 
+          gyroControls: false,
+          
+          minHeight: 200.00, 
+          minWidth: 200.00, 
+          color: 0x3b82f6, 
+          backgroundColor: 0x0a0a0f, 
+          showDots: true
         });
       }
-
       // 2. 启动流星特效
       initMeteors();
 
