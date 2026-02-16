@@ -152,16 +152,26 @@ title: E-Link Home
 
 /* ===================== 4. HUD 与交互反馈 ===================== */
 .gesture-hud {
-  position: absolute; top: 12px; left: 50%;
-  transform: translateX(-50%); display: flex; gap: 12px;
-  font-size: 13px; font-family: system-ui, sans-serif;
-  color: rgba(255, 255, 255, 0.65); background: rgba(15, 23, 42, 0.45);
-  border: 1px solid rgba(59,130,246,0.25); padding: 6px 10px;
-  border-radius: 20px; white-space: nowrap; backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px); pointer-events: none; transition: opacity 0.4s ease; z-index: 5;
-  display: flex; /* 🟢 确保是横向排列 */
+  position: absolute; 
+  top: 12px; 
+  left: 50%;
+  transform: translateX(-50%); 
+  display: flex; 
   align-items: center;
-  gap: 25px; /* 🟢 设置元素之间的间距为 25px */
+  gap: 25px; /* 统一使用 25px */
+  font-size: 13px; 
+  font-family: system-ui, sans-serif;
+  color: rgba(255, 255, 255, 0.65); 
+  background: rgba(15, 23, 42, 0.45);
+  border: 1px solid rgba(59,130,246,0.25); 
+  padding: 6px 10px;
+  border-radius: 20px; 
+  white-space: nowrap; 
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px); 
+  pointer-events: none; 
+  transition: opacity 0.4s ease; 
+  z-index: 5;
 }
 
 .gesture-hidden { opacity: 0 !important; visibility: hidden !important; pointer-events: none !important; animation: none !important; }
@@ -194,6 +204,7 @@ kbd {
   outline: none; overflow: hidden; transform: translateZ(0); backface-visibility: hidden; 
   /* 🌟 替换掉刚才那行，改用下面这个：只在 3D 模型渲染时开启硬件加速 */
   contain: paint;  content-visibility: auto;
+  touch-action: pan-y;
 }
 
 .custom-model-viewer:focus, .custom-model-viewer:active, .custom-model-viewer:focus-visible {
@@ -793,7 +804,7 @@ This project is open-source and available under the **MIT License**. Click the b
     class="custom-model-viewer"
     src="{{ '/Videos/On skull_3.16MB.glb' | relative_url }}"
     alt="E Link on Skull 3D Model"
-    loading="eager" power-preference="low-power" reveal="auto"
+    loading="lazy" power-preference="low-power" reveal="manual"
     poster="{{ '/Images/poster.webp' | relative_url }}"
     camera-controls interpolation-decay="200" bounds="tight" field-of-view="30deg" auto-rotate  rotation-per-second="15deg"
     interaction-prompt="none" environment-image="neutral" exposure="0.75" shadow-intensity="0" tone-mapping="commerce">
@@ -1238,21 +1249,27 @@ This project is open-source and available under the **MIT License**. Click the b
     const models = Array.from(document.querySelectorAll('model-viewer'));
     if (!models.length) return;
 
-    // 性能补丁：针对低功耗设备
+    // 性能补丁：检测是否为移动端
     const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
     models.forEach((viewer) => {
       // 基础设置优化
       viewer.setAttribute('auto-rotate', '');
-      viewer.minimumRenderScale = isMobile ? 0.5 : 1; // 移动端降低渲染比例以提速
+      viewer.minimumRenderScale = isMobile ? 0.5 : 1; 
       viewer.autoRotateDelay = 1000;
       
-      // 手势引导逻辑
-      let hudTimer = null;
+      // 🌟 物理引擎降维打击：移动端强制将阻尼从 200 降到 30
+      if (isMobile) {
+        viewer.setAttribute('interpolation-decay', '30'); 
+      }
+      
+      // 事件锁：防止每次触摸都在查询 DOM 导致主线程卡死
+      let hintsHidden = false; 
       const hideHints = () => {
+        if (hintsHidden) return; 
+        hintsHidden = true;
         viewer.querySelectorAll('.gesture-overlay, .gesture-hud').forEach(el => el.classList.add('gesture-hidden'));
         viewer.dataset.overlayDisabled = "true";
-        if (hudTimer) clearTimeout(hudTimer);
       };
       
       ['mousedown', 'wheel', 'touchstart'].forEach(evt => {
@@ -1266,42 +1283,45 @@ This project is open-source and available under the **MIT License**. Click the b
         const viewer = entry.target;
 
         if (entry.isIntersecting) {
-          // 1. 显存排他：暂停视野外所有模型的动画渲染
+          // 显存排他：暂停视野外所有模型的动画渲染
           models.forEach(m => {
             if (m !== viewer) m.pause();
           });
 
-          // 2. 延迟加载逻辑：等待滚动平稳，避免阻塞主线程
-          setTimeout(() => {
-            // 只有在进入视野时才真正激活 3D 渲染 (dismissPoster 会将模型送入显存)
+          // 🌟 安全锁 1：稍微延长一点点缓冲期，彻底过滤掉“快速划过”的操作
+          viewer.loadTimer = setTimeout(() => {
             if (viewer.getAttribute('reveal') === 'manual' && viewer.dataset.loaded !== "true") {
-                // requestAnimationFrame 确保在浏览器渲染空闲时解压 GLB
                 requestAnimationFrame(() => {
                   viewer.dismissPoster();
                   viewer.dataset.loaded = "true";
-                  setTimeout(() => { try { viewer.play(); } catch(e) {} }, 300);
+                  // 🌟 安全锁 2：模型解压也需要时间，给 300ms 缓冲后再 play
+                  viewer.playTimer = setTimeout(() => { try { viewer.play(); } catch(e) {} }, 300);
                 });
             } else {
                 viewer.play();
             }
-          }, 150); // 150ms 缓冲期，过滤快速滑过的情况
+          }, 250); // 从 150 提升到 250，给快速滚动留出判定空间
 
-          // 3. 手势动画启动
+          // 手势动画启动
           if (viewer.dataset.overlayDisabled !== "true") {
-            setTimeout(() => {
+            viewer.hudTimer = setTimeout(() => {
               viewer.querySelectorAll('.gesture-overlay').forEach(el => el.classList.add('gesture-active'));
             }, 1000);
           }
 
         } else {
-          // 离开视口：立即暂停自转和交互提示
+          // 🌟 核心防闪退修复：一旦离开视口，必须立刻销毁所有未执行的加载和动画定时器！
+          clearTimeout(viewer.loadTimer);
+          clearTimeout(viewer.playTimer);
+          clearTimeout(viewer.hudTimer);
+          
           viewer.pause();
           viewer.querySelectorAll('.gesture-overlay').forEach(el => el.classList.remove('gesture-active'));
         }
       });
     }, {
-      threshold: 0.1, // 进场 10% 就开始准备
-      rootMargin: "100px 0px 100px 0px" // 提前 100px 预加载，消除等待感
+      threshold: 0.1, 
+      rootMargin: "100px 0px 100px 0px" 
     });
 
     models.forEach(model => observer.observe(model));
