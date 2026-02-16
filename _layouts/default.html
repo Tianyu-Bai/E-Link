@@ -349,7 +349,7 @@ body.video-active .cursor-outline {
  #rpg-text { color: #bfdbfe; font-size: 0.9rem; min-height: 40px; line-height: 1.5; }
  #rpg-cursor { display: inline-block; width: 8px; height: 14px; background: #3b82f6; vertical-align: middle; animation: blink 1s infinite; }
  #rpg-options { display: flex; flex-direction: column; gap: 8px; margin-top: 5px; }
- .rpg-btn { background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.3); color: #93c5fd; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 0.8rem; text-align: left; transition: all 0.2s; opacity: 0; transform: translateX(-10px); animation: slideIn 0.3s forwards; }
+ .rpg-btn { background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.3); color: #93c5fd; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 0.8rem; text-align: left; transition: all 0.2s; opacity: 0; transform: translateX(-10px); animation: slideIn 0.3s forwards; white-space: normal; word-break: break-word; line-height: 1.4;}
  .rpg-btn:hover { background: rgba(59, 130, 246, 0.25); border-color: #60a5fa; color: #fff; transform: translateX(2px); }
  @keyframes slideIn { to { opacity: 1; transform: translateX(0); } }
  .rpg-close { position: absolute; top: 5px; right: 8px; font-size: 18px; color: #475569; cursor: pointer; }
@@ -526,8 +526,14 @@ body.video-active .cursor-outline {
       opacity: 1 !important; animation: none !important;
     }
     #bot-container #rpg-dialogue {
-      position: fixed !important; top: auto !important; bottom: 100px !important; left: 10px !important; right: 10px !important;
-      width: auto !important; max-width: none !important; transform: translateY(10px) !important;
+      position: absolute !important; 
+      top: auto !important; 
+      bottom: 90px !important; 
+      right: -15px !important;  /* 锚定在机器人右侧边缘 */
+      left: auto !important;    /* 解开左侧死锁，允许向左无限延伸 */
+      width: 360px !important;  /* 强制把对话框向左推宽！ */
+      max-width: 110vw !important; /* 抵消机器人的缩放比例 */
+      transform: translateY(10px) !important;
     }
     #bot-container #rpg-dialogue.active { transform: translateY(0) !important; }
     .container { padding: 30px 20px; } 
