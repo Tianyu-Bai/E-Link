@@ -170,11 +170,11 @@ kbd {
 
 /* ===================== 5. 模型全局基础样式 ===================== */
 .custom-model-viewer {
-  display: block !important;
-  visibility: visible !important;
-  opacity: 1 !important;
-  /* 🌟 配合 JS：初始状态下降低一点点渲染压力 */
-  min-render-scale: 0.5; 
+  width: 100%; max-width: 100vw; box-sizing: border-box; height: 460px;
+  background: transparent; border-radius: 16px; border: 1px solid rgba(59,130,246,0.3);
+  outline: none; overflow: hidden; transform: translateZ(0); backface-visibility: hidden; 
+  /* 🌟 替换掉刚才那行，改用下面这个：只在 3D 模型渲染时开启硬件加速 */
+  contain: paint; 
 }
 .custom-model-viewer:focus, .custom-model-viewer:active, .custom-model-viewer:focus-visible {
   outline: none !important; box-shadow: none !important; border: 1px solid rgba(59,130,246,0.3) !important;
@@ -182,8 +182,8 @@ kbd {
 
 .model-block { 
   max-width: 100vw !important; 
-  margin-top: 20px !important;    /* 顶部稍微留白 */
-  margin-bottom: 40px !important; /* 🌟 建议至少保留 40px 的安全缓冲带 */
+  margin-top: 40px !important;    
+  margin-bottom: 60px !important; /* 🌟 缩减到 60px，既能隔离显存，又不至于滑不到 */
 }
 model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar) { display: none !important; }
 
@@ -1247,27 +1247,36 @@ This project is open-source and available under the **MIT License**. Click the b
       });
     });
 
-   const observer = new IntersectionObserver((entries) => {
+    const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         const viewer = entry.target;
 
-        if (entry.isIntersecting) {
-          // 🌟 1. 只要进入视口，立刻加载并永远保持 play 状态
-          if (viewer.dataset.loaded !== "true") {
-              if (viewer.getAttribute('reveal') === 'manual') viewer.dismissPoster();
-              viewer.dataset.loaded = "true";
-              
-              // 🌟 核心保命招式：降低非当前视口模型的采样率
-              // 这样 GPU 压力会减小 4 倍，保证全员自转不闪退
-              viewer.style.imageRendering = "pixelated"; 
-              
-              setTimeout(() => {
-                try { viewer.play(); } catch(e) {}
-              }, 50);
-          }
+        if (viewer.showGestureTimer) clearTimeout(viewer.showGestureTimer);
 
-          // 引导动画延迟出场
-          if (viewer.showGestureTimer) clearTimeout(viewer.showGestureTimer);
+        if (entry.isIntersecting) {
+          // 1. 🌟 核心改进：深度睡眠其他模型
+          // 不仅暂停播放，还要剥夺其他模型的渲染优先级
+          models.forEach(m => {
+            if (m !== viewer) {
+              m.pause();
+              m.style.visibility = 'hidden'; // 🌟 让浏览器完全停止绘制该模型
+            }
+          });
+          viewer.style.visibility = 'visible';
+
+          // 2. 解锁并播放
+          if (viewer.getAttribute('reveal') === 'manual' && viewer.dataset.loaded !== "true") {
+              viewer.dismissPoster();
+              viewer.dataset.loaded = "true";
+              // 给一个微小的异步延迟，避开主线程滚动阻塞
+              requestAnimationFrame(() => {
+                try { viewer.play(); } catch(e) {}
+              });
+          } else {
+              try { viewer.play(); } catch(e) {}
+          }
+          
+          // 3. 手指动画
           viewer.showGestureTimer = setTimeout(() => {
               if (viewer.dataset.overlayDisabled !== "true") {
                 viewer.querySelectorAll('.gesture-overlay').forEach(el => {
@@ -1277,18 +1286,20 @@ This project is open-source and available under the **MIT License**. Click the b
           }, 800);
 
         } else {
-          // 🌟 2. 划出去时：【关键】删掉了 m.pause()！
-          // 我们不暂停它，只是隐藏引导动画，让它在后台默默地转。
+          // 离开视口：进入深度睡眠模式
+          viewer.pause();
+          viewer.style.visibility = 'hidden'; 
           viewer.querySelectorAll('.gesture-overlay').forEach(el => {
             el.classList.remove('gesture-active');
           });
         }
       });
     }, {
-      threshold: 0.01, // 只要沾边就加载
-      rootMargin: "500px" // 极其广阔的雷达，确保你滑回来之前它早就转起来了
+      // 🌟 调整阈值：提高到 0.3，确保模型进入视口一段距离后才开始高强度运算
+      threshold: 0.3, 
+      rootMargin: "0px" // 🌟 移除 rootMargin，避免在交界处提前唤醒导致的竞争
     });
-    
+
     models.forEach(model => observer.observe(model));
   });
 </script>
