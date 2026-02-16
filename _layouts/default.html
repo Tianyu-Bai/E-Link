@@ -787,16 +787,17 @@ body.video-active .cursor-outline {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.net.min.js"></script>
 <script>
-  // --- 🌍 双语数据源 ---
+  
+
+// --- 🌍 双语数据源 (扩展版) ---
   const dialogData_EN = {
     "start": {
       text: "Hi! I'm the Connector Guardian. I protect your neural interfaces.",
       options: [ 
-          { text: "🎬 Watch Demo Video", next: "play_video" }, // 🔥 新增
+          { text: "🎬 Watch Demo Video", next: "play_video" },
           { text: "🚀 Let's start!", next: "root_menu" } 
       ]
     },
-    // 🔥 新增：视频处理节点
     "play_video": {
        text: "Initiating Cinema Mode... Loading visual data.",
        options: [ { text: "Close Video", next: "start" } ]
@@ -804,28 +805,34 @@ body.video-active .cursor-outline {
     "root_menu": {
       text: "Select a category to inspect:",
       options: [
-        { text: "🌟 What's Special?", next: "innovation" },
+        { text: "🌟 What's Special? (ACE & Zero Force)", next: "innovation" },
         { text: "📊 Specifications (Weight/Noise)", next: "specs_menu" },
-        { text: "🛡️ Reliability & Durability", next: "reliability_menu" },
-        { text: "🔧 Usage & Compatibility", next: "usage_menu" },
+        { text: "🛡️ Reliability & Protection", next: "reliability_menu" },
+        { text: "🔧 Modular Usage", next: "usage_menu" },
+        { text: "🌍 Open Source Vision", next: "open_source" },
         { text: "Just browsing", next: "close" }
       ]
     },
     "innovation": {
-      text: "I feature a novel elastomeric interposer. This means NO precise alignment is needed and ZERO insertion force.",
+      text: "I use an Anisotropic Conductive Elastomer (ACE). It shifts the paradigm from 'Rigid Pins' to 'Soft Interconnects'.",
       options: [
-        { text: "Why is 'Zero Force' better?", next: "zero_force" },
+        { text: "Why is 'Zero Insertion Force' better?", next: "zero_force" },
+        { text: "What is the 'Sandwich' design?", next: "modularity" },
         { text: "Can it scale up?", next: "scalability" },
         { text: "Back to Menu", next: "root_menu" } 
       ]
     },
     "zero_force": {
-      text: "Traditional plugs require high force, risking probe fracture. My threaded cap converts rotation into gentle vertical pressure, protecting delicate films.",
+      text: "Traditional pin-connectors require high force and micro-alignment, risking bent pins. My threaded cap converts manual rotation into gentle, uniform pressure. No pushing, no damage!",
       options: [ { text: "Cool! Back.", next: "innovation" } ]
     },
+    "modularity": {
+      text: "It's a modular 'sandwich' structure. Housing, Adapter PCB, and Headstage can be replaced independently. You don't need to discard the whole setup if one part breaks, saving significant costs.",
+      options: [ { text: "Smart design. Back.", next: "innovation" } ]
+    },
     "scalability": {
-      text: "Yes! The fine-pitch elastomer allows scaling to 1024 channels within the same 25mm footprint. I am future-proof.",
-      options: [ { text: "Got it, Back.", next: "innovation" } ]
+      text: "Traditional pins struggle with density. Thanks to the ~100 µm pitch elastomer, I offer a clear scaling roadmap: 256 -> 512 -> 1024 channels within the same footprint!",
+      options: [ { text: "Future-proof! Back.", next: "innovation" } ]
     },
     "specs_menu": {
       text: "Checking Diagnostics... Which parameter concerns you?",
@@ -837,7 +844,7 @@ body.video-active .cursor-outline {
       ]
     },
     "weight": {
-      text: "I am ultra-light. Detached weight is only 2.8g. Even housed, I am 57% lighter (6.6g) than competitors, reducing strain on the animal.",
+      text: "Ultra-light! Detached core is only 2.8g. Fully housed, I am 6.6g, vastly reducing the burden on freely moving animals.",
       options: [ { text: "Good for mice/rats.", next: "specs_menu" } ]
     },
     "thermal": {
@@ -845,29 +852,29 @@ body.video-active .cursor-outline {
       options: [ { text: "Safe confirmed.", next: "specs_menu" } ]
     },
     "noise": {
-      text: "Crystal clear. My noise floor is 2.68 ± 0.46 µV RMS, matching the theoretical limit of the Intan chips. No signal degradation.",
+      text: "Crystal clear. Through optimized shielding, my RMS noise floor is 2.68 µV, practically matching the amplifier chip's theoretical limit.",
       options: [ { text: "Great specs.", next: "specs_menu" } ]
     },
     "reliability_menu": {
-      text: "I am built to last. What is your concern?",
+      text: "I act as physical armor for delicate probes. What is your concern?",
       options: [
         { text: "Lifespan (Cycles)", next: "cycles" },
         { text: "What if I align it wrong?", next: "misalignment" },
-        { text: "Contact Impedance?", next: "impedance" },
+        { text: "Environmental Protection?", next: "protection" },
         { text: "Back to Menu", next: "root_menu" }
       ]
     },
     "cycles": {
-      text: "Verified for 100+ mating cycles with >97% connection yield. The elastomer shows negligible wear.",
+      text: "Proven by a third-party tester, the system maintains a connection yield of >97% after hundreds of high-intensity mating cycles. The conductive elastomer demonstrates outstanding fatigue resistance and mechanical longevity.",
       options: [ { text: "Solid.", next: "reliability_menu" } ]
     },
     "misalignment": {
-      text: "No problem. The elastomer has 'structural redundancy' (pitch < pad size). Even with radial misalignment, the connection holds.",
+      text: "I am self-aligning! The elastomer has 'structural redundancy' (pitch < pad size), naturally forgiving minor manual misalignments.",
       options: [ { text: "Very forgiving.", next: "reliability_menu" } ]
     },
-    "impedance": {
-      text: "Low and stable. Contact impedance is consistently between 0.3 kΩ and 0.4 kΩ across the array.",
-      options: [ { text: "Acknowledged.", next: "reliability_menu" } ]
+    "protection": {
+      text: "The threaded base and potting create a closed isolation chamber. It blocks fluids, dust, and stays rock-solid even if the animal scratches it.",
+      options: [ { text: "True armor.", next: "reliability_menu" } ]
     },
     "usage_menu": {
       text: "Designed for researchers. Ask me about usage:",
@@ -879,128 +886,141 @@ body.video-active .cursor-outline {
       ]
     },
     "assembly": {
-      text: "Easy. No specialized micro-soldering needed. It's a 'plug-and-play' assembly using standard tools.",
+      text: "Extremely easy. It's a 'plug-and-play' twist assembly. The built-in foam washer automatically balances the pressure.",
       options: [ { text: "User friendly.", next: "usage_menu" } ]
     },
     "system": {
-      text: "Fully compatible with the Intan RHD recording system. Supports 64, 128, and 256 channel configurations.",
+      text: "High integration! Packs 4 Intan RHD2164 chips. Seamlessly compatible with Intan, Open-Ephys, and NeuroNexus DAQ systems.",
       options: [ { text: "Perfect.", next: "usage_menu" } ]
     },
     "animal": {
-      text: "Yes. The low profile fits mechanical commutators, allowing natural behavior without cable twisting.",
+      text: "Absolutely. The low profile fits mechanical commutators, allowing natural behavior without cable twisting.",
       options: [ { text: "Show me the files!", next: "show_badges" } ]
     },
+    "open_source": {
+      text: "E-Link is more than a connector; it's an Open Source infrastructure for neuroengineering. We solve the 'packaging' bottleneck so you can focus on brain science!",
+      options: [ { text: "Awesome! Show me the repo.", next: "show_badges" } ]
+    },
     "show_badges": {
-      text: "Scroll to the bottom! 👇 Those icons are your gateway to the Code, Fabrication Files, and Demo Videos.",
+      text: "Scroll down to the bottom! 👇 Those icons are your gateway to the Code, Fabrication Files, and Full System CAD.",
       options: [ { text: "Thanks, Guardian!", next: "close" } ]
     }
   };
 
   const dialogData_ZH = {
     "start": {
-      text: "你好！我是易链的守护者。由我来保护你的脑机探针。",
+      text: "你好！我是易链的守护者。我能为你的柔性高密度神经探针保驾护航",
       options: [ 
-        { text: "🎬 观看演示视频", next: "play_video" }, // 🔥 新增
-        { text: "🚀 开始探索！", next: "root_menu" } 
+        { text: "🎬 观看组装演示视频", next: "play_video" },
+        { text: "🚀 开启硬核探索！", next: "root_menu" } 
       ]
     },
-    // 🔥 新增：视频处理节点
     "play_video": {
-       text: "正在启动影院模式... 调取视觉数据。",
+       text: "正在启动影院模式，调取视觉数据中...",
        options: [ { text: "关闭视频", next: "start" } ]
     },
     "root_menu": {
-      text: "系统已就绪。请选择想要查看的类别：",
+      text: "系统已就绪。请选择想要咨询的类别：",
       options: [
-        { text: "🌟 核心亮点", next: "innovation" },
-        { text: "📊 规格参数 (重量/噪音)", next: "参数菜单" },
-        { text: "🛡️ 可靠性与耐久度", next: "可靠性菜单" },
-        { text: "🔧 使用与兼容性", next: "usage_menu" },
+        { text: "🌟 核心亮点 (弹性互连与零插拔)", next: "innovation" },
+        { text: "📊 规格参数 (重量/噪音/温度)", next: "参数菜单" },
+        { text: "🛡️ 可靠性与物理防护", next: "可靠性菜单" },
+        { text: "🔧 模块化使用与兼容", next: "usage_menu" },
+        { text: "🌍 了解本开源项目", next: "open_source" },
         { text: "随便看看", next: "close" }
       ]
     },
     "innovation": {
-      text: "我采用了新型弹性体互连技术 (Elastomeric Interposer)。这意味着无需精确对准，且实现了“零插入力”。",
+      text: "我引入了各向异性导电弹性体 (ACE)。实现了从“刚性针脚”到“弹性中介层”的范式重构",
       options: [
-        { text: "“零插入力”有什么好处？", next: "零插入力" },
+        { text: "“零插拔力”有什么好处？", next: "零插拔力" },
+        { text: "什么是“三明治”模块化结构？", next: "模块化" },
         { text: "通道数能扩展吗？", next: "可拓展性" },
         { text: "返回主菜单", next: "root_menu" } 
       ]
     },
-    "零插入力": {
-      text: "传统插头需要很大的力，容易弄断脆弱的探针。我的螺纹盖将旋转转化为轻柔的垂直压力，完美保护薄膜探针。",
-      options: [ { text: "很棒的设计！返回。", next: "innovation" } ]
+    "零插拔力": {
+      text: "传统插针不仅难对准，插拔力还会损伤探针。利用“拧瓶盖”原理，将扭矩转化为均匀的轴向压力，物理层面彻底告别断针和弯针！",
+      options: [ { text: "以柔克刚！", next: "innovation" } ]
+    },
+    "模块化": {
+      text: "外壳、转接板、放大器板（Headstage）均可独立更换。局部损坏无需整套报废，能显著降低科研团队的维护成本。",
+      options: [ { text: "经济化方案，返回", next: "innovation" } ]
     },
     "可拓展性": {
-      text: "当然！高密度弹性体允许在同样的 25mm 封装内扩展至 1024 通道。我是面向未来的设计。",
-      options: [ { text: "已知晓，返回。", next: "innovation" } ]
+      text: "传统插针方案在极高通道下体积庞大。得益于百微米级导电柱，我在极小体积内规划了 256 → 512 → 1024 通道的演进路线。",
+      options: [ { text: "能够拓展更多，返回", next: "innovation" } ]
     },
     "参数菜单": {
-      text: "正在检查诊断数据... 你关心哪个参数？",
+      text: "正在读取底层传感器数据... 你想了解什么？",
       options: [
-        { text: "重不重？ (重量)", next: "weight" },
-        { text: "发热吗？ (热学)", next: "thermal" },
-        { text: "信号干净吗？ (噪音)", next: "noise" },
+        { text: "对小鼠负担大吗？ (重量)", next: "weight" },
+        { text: "运行会发热吗？ (热学)", next: "thermal" },
+        { text: "信号保真度如何？ (噪音)", next: "noise" },
         { text: "返回主菜单", next: "root_menu" }
       ]
     },
     "weight": {
-      text: "我非常轻。拆卸后仅重 2.8g。即使含外壳，我也比竞品轻 57% (6.6g)，大大减轻了动物的负担。",
-      options: [ { text: "很适合小鼠/大鼠。", next: "specs_menu" } ]
+      text: "轻量化设计！核心组件仅 2.8g，整机(含外壳)重 6.6g，大幅降低动物的头部负重。",
+      options: [ { text: "很适合自由活动实验", next: "参数菜单" } ]
     },
     "thermal": {
-      text: "我运转冷静。稳态温度仅为 30.5°C，远低于 37°C 的生物阈值。无需主动散热。",
-      options: [ { text: "安全确认。", next: "specs_menu" } ]
+      text: "运转时稳态温度仅为 30.5°C，远低于 37°C 的生物阈值，无需任何主动散热。",
+      options: [ { text: "热安全性已确认", next: "参数菜单" } ]
     },
     "noise": {
-      text: "噪声很小。我的本底噪声为 2.68 ± 0.46 µV RMS，接近了 Intan 芯片的理论极限。信号无损耗。",
-      options: [ { text: "参数很强。", next: "specs_menu" } ]
+      text: "得益于屏蔽设计，我的实测 RMS 基底噪声低至 2.68 µV，接近放大器芯片的理想数据极限，确保单细胞级的信号保真度。",
+      options: [ { text: "参数稳健", next: "参数菜单" } ]
     },
     "可靠性菜单": {
-      text: "我经久耐用。猜你有可能担心这些？",
+      text: "我是脆弱探针的“防护铠甲”。你想了解哪方面的可靠性？",
       options: [
-        { text: "寿命 (贴合次数)", next: "cycles" },
-        { text: "如果对不准怎么办？", next: "misalignment" },
-        { text: "接触电阻多大？", next: "impedance" },
+        { text: "能扭转压合多少次？ (寿命)", next: "cycles" },
+        { text: "操作时候没完全对准怎么办？", next: "misalignment" },
+        { text: "动物抓挠和头部组织液有可能侵入？", next: "protection" },
         { text: "返回主菜单", next: "root_menu" }
       ]
     },
     "cycles": {
-      text: "已验证 100 次以上的插拔循环，连接良率 >97%。弹性导电体几乎没有磨损。",
-      options: [ { text: "很靠谱，已知晓", next: "可靠性菜单" } ]
+      text: "经数位独立测试者实测，在历经数百次高强度的连续拧转后，我的连接良率依然坚挺在 97% 以上。弹性导电体展现出了极其卓越的抗疲劳寿命。",
+      options: [ { text: "经久耐用", next: "可靠性菜单" } ]
     },
     "misalignment": {
-      text: "弹性体具有“结构冗余”（间距小于焊盘尺寸）。即使径向没对准，依然能稳定连接。",
-      options: [ { text: "容错率很高，已知晓", next: "可靠性菜单" } ]
+      text: "自然免对齐需求，导电柱具备“结构冗余”，允许物理操作上的轻微偏差，对操作者极其友好。",
+      options: [ { text: "容错率高", next: "可靠性菜单" } ]
     },
-    "impedance": {
-      text: "低且稳定。整个阵列的接触阻抗始终保持在 0.3 kΩ 到 0.4 kΩ 之间。",
-      options: [ { text: "已知晓", next: "可靠性菜单" } ]
+    "protection": {
+      text: "没问题！螺纹基座构建了一个封闭的物理防护舱，阻隔体液与粉尘，有效防止动物抓挠产生的破坏。",
+      options: [ { text: "真正的装甲", next: "可靠性菜单" } ]
     },
     "usage_menu": {
-      text: "专为相关领域人员设计。问我关于使用的问题：",
+      text: "易链系统级整合方案降低实验门槛。请问：",
       options: [
-        { text: "组装容易吗？", next: "assembly" },
-        { text: "兼容哪些采集系统？", next: "system" },
-        { text: "动物能自由活动吗？", next: "animal" },
+        { text: "组装难度大吗？", next: "assembly" },
+        { text: "可以直接接我的设备吗？", next: "system" },
+        { text: "动物自由活动实验表现如何？", next: "animal" },
         { text: "返回主菜单", next: "root_menu" }
       ]
     },
     "assembly": {
-      text: "非常容易.即拧即用的模块化设计，告别插拔带来的断针弯针，轻松建立连接",
-      options: [ { text: "已知晓", next: "usage_menu" } ]
+      text: "非常简单。模块机械化结构即拧即用。内部泡沫垫圈会自动完成压力补偿。",
+      options: [ { text: "省时省力", next: "usage_menu" } ]
     },
     "system": {
-      text: "完全兼容Intan RHD记录系统. 支持64，128，256通道设定.",
-      options: [ { text: "完美，已知晓", next: "usage_menu" } ]
+      text: "内部集成 4 颗 Intan的RHD2164芯片。输出信号完美兼容 Intan、Open-Ephys、NeuroNexus 等主流采集工作站。",
+      options: [ { text: "无缝对接", next: "usage_menu" } ]
     },
     "animal": {
-      text: "可以。低剖面设计适配机械换向器 (Commutator)，允许动物自然行为，线缆不打结。",
-      options: [ { text: "我想查看文件", next: "徽章指引" } ]
+      text: "极佳！低剖面基座设计适配机械换向器 (Commutator)，线缆不打结，保障动物最自然的行为轨迹。",
+      options: [ { text: "哪里可以获取开源文件？", next: "徽章指引" } ]
+    },
+    "open_source": {
+      text: "易链是由美国达特茅斯学院Tianyu Bai主导设计开发的一项脑机探针连接技术，更是属于神经工程社区的开源基础设施。通过解决最后的“互连”短板，设计团队希望让研究者能将更多精力投入到脑科学中！",
+      options: [ { text: "致敬！带我去看看开源仓库", next: "徽章指引" } ]
     },
     "徽章指引": {
-      text: "滑到最下面！👇红色图标是你通往代码、制造文件和演示视频的大门。",
-      options: [ { text: "谢谢易链守护者！", next: "关闭对话窗" } ]
+      text: "一直滑到页面底部 👇！点击下面的GitHub徽章，你可以直接下载制造文件 (Gerber/STL)、BOM 表和完整代码。",
+      options: [ { text: "谢谢易链守护者！", next: "close" } ]
     }
   };
       
