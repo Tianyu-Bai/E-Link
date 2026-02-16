@@ -1026,16 +1026,15 @@ body.video-active .cursor-outline {
       }
       requestAnimationFrame(raf);
 
-      // 1. 立即启动 Vanta 背景
-      if (window.VANTA) {
+      // 1. 立即启动 Vanta 背景 (加入宽度判断)
+      if (window.VANTA && window.innerWidth > 768) {
         vantaEffect = VANTA.NET({
           el: "#vanta-bg",
-         // ...其他设置
-         points: window.innerWidth < 768 ? 6.00 : 12.00, // 手机端点数减半
-         maxDistance: window.innerWidth < 768 ? 15.00 : 28.00,
-          mouseControls: true, touchControls: true, gyroControls: false,
+          points: 12.00,
+          maxDistance: 20.00,
+          mouseControls: false, touchControls: false, gyroControls: false,
           minHeight: 200.00, minWidth: 200.00, scale: 1.00, scaleMobile: 1.00,
-          color: 0x3b82f6, backgroundColor: 0x0a0a0f, points: 18.00, maxDistance: 28.00, spacing: 16.00, showDots: true
+          color: 0x3b82f6, backgroundColor: 0x0a0a0f, spacing: 16.00, showDots: true
         });
       }
 
@@ -1058,24 +1057,7 @@ body.video-active .cursor-outline {
           }
       });
   });
-
-  // 🔥 第二阶段：所有资源加载完毕（Page Load），开始静默下载动图
-  window.addEventListener('load', function() {
-      // 找到所有GIF图片和视频
-      const heavyMedia = document.querySelectorAll('img[src$=".gif"], video');
-      
-      heavyMedia.forEach(media => {
-          // 强制改为 Eager，利用空闲带宽下载
-          // 这样用户滑下去时，动图已经准备好了
-          media.setAttribute('loading', 'eager');
-          
-          // 如果是视频，设置预加载
-          if(media.tagName === 'VIDEO') {
-              media.setAttribute('preload', 'auto');
-          }
-      });
-  });
-
+ 
   const textsEN = ["Welcome to this webpage！", "Thanks for visiting us!", "Stay tuned!"];
   const textsZH = ["欢迎访问本网页！", "感谢您的关注！", "欢迎常来访问！"];
   let texts = textsEN; // 默认文本
