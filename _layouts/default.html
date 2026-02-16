@@ -96,7 +96,7 @@ body.video-active .cursor-outline {
 @keyframes spin { to { transform: rotate(360deg); } }
  
  /* --- 🚀 升级：磁性发光光标 --- */
- .container, .cursor-dot, .cursor-outline, .bot-head, .bot-eye {
+ .cursor-dot, .cursor-outline, .bot-head, .bot-eye {
     will-change: transform; /* 告诉浏览器提前分配 GPU 资源 */
     backface-visibility: hidden; /* 防止闪烁 */
     transform-style: preserve-3d;
@@ -113,8 +113,8 @@ body.video-active .cursor-outline {
    transition: opacity 0.2s ease;
  }
  .cursor-outline {
-   transition: width 0.2s, height 0.2s, background-color 0.2s, border-color 0.2s;
-    will-change: transform;
+  transition: transform 0.1s ease-out, width 0.2s, height 0.2s, background-color 0.2s, border-color 0.2s;
+   will-change: transform;
 }
  /* 悬停时的聚光灯效果 */
  body.hovering .cursor-dot { opacity: 0; } /* 隐藏中心小点 */
@@ -1026,16 +1026,29 @@ body.video-active .cursor-outline {
       }
       requestAnimationFrame(raf);
 
-      // 1. 立即启动 Vanta 背景
-      if (window.VANTA) {
+      // 1. 立即启动 Vanta 背景 (恢复满血密度版，但保留手机端低分屏渲染)
+      if (window.VANTA) { 
         vantaEffect = VANTA.NET({
           el: "#vanta-bg",
-         // ...其他设置
-         points: window.innerWidth < 768 ? 6.00 : 12.00, // 手机端点数减半
-         maxDistance: window.innerWidth < 768 ? 15.00 : 28.00,
-          mouseControls: true, touchControls: true, gyroControls: false,
-          minHeight: 200.00, minWidth: 200.00, scale: 1.00, scaleMobile: 1.00,
-          color: 0x3b82f6, backgroundColor: 0x0a0a0f, points: 18.00, maxDistance: 28.00, spacing: 16.00, showDots: true
+          
+          // 💡 手机端依靠这个来防崩溃，绝对不能删
+          scaleMobile: window.innerWidth < 768 ? 3.0 : 1.0, 
+          scale: 1.0,
+          
+          // 🚀 恢复你最初的超高密度参数！
+          points: 18.00,        // 恢复到满血 18
+          maxDistance: 28.00,   // 恢复到长手 28
+          spacing: 16.00,       // 恢复紧凑间距
+          
+          // 彻底关闭各种鼠标、触摸、陀螺仪计算（防止跟随鼠标时的微卡顿）
+          touchControls: false, 
+          gyroControls: false,
+          
+          minHeight: 200.00, 
+          minWidth: 200.00, 
+          color: 0x3b82f6, 
+          backgroundColor: 0x0a0a0f, 
+          showDots: true
         });
       }
 
@@ -1312,8 +1325,8 @@ function updateUI() {
 
     // B. 容器 3D 旋转
     if (container) {
-        const rx = (window.innerWidth / 2 - mouseX) / 80; 
-        const ry = (window.innerHeight / 2 - mouseY) / 80;
+        const rx = (window.innerWidth / 2 - mouseX) / 50; 
+        const ry = (window.innerHeight / 2 - mouseY) / 50;
         container.style.transform = `rotateY(${rx * -1}deg) rotateX(${ry}deg)`;
         
         if(containerRect) {
