@@ -64,37 +64,56 @@ title: E-Link Home
   .mobile-tip, .mobile-only { display: inline !important; }
 }
 
-/* ========================================= 2. 紧凑型双指令时间轴 (16s 周期) ========================================= */
+/* ========================================= 2. 复杂时间轴与动作动画 (丝滑防闪烁版) ========================================= */
 @keyframes timeline-drag-container {
-  /* 0s - 4s: Drag 指令显现 */
-  0%            { opacity: 0; z-index: -1; }
-  5%, 25%       { opacity: 1; z-index: 10; } 
-  30%, 100%     { opacity: 0; z-index: -1; }
+  /* 第一次出场: 0% 到 6.25% */
+  0%             { opacity: 0; z-index: 10; }
+  0.5%, 5.75%    { opacity: 1; z-index: 10; }
+  6.25%, 12%     { opacity: 0; z-index: -1; }
+  
+  /* 第二次出场: 12.5% 到 18.75% */
+  12.5%, 18.25%  { opacity: 1; z-index: 10; }
+  18.75%, 55.75% { opacity: 0; z-index: -1; }
+  
+  /* 第三次出场: 56.25% 到 62.5% */
+  56.25%, 62%    { opacity: 1; z-index: 10; }
+  62.5%, 100%    { opacity: 0; z-index: -1; }
 }
 
 @keyframes timeline-zoom-container {
-  /* 5s - 9s: Zoom 指令显现 (在 Drag 结束后 1 秒出场) */
-  0%, 30%       { opacity: 0; z-index: -1; }
-  35%, 55%      { opacity: 1; z-index: 10; } 
-  60%, 100%     { opacity: 0; z-index: -1; }
+  /* 第一次出场: 6.25% 到 12.5% */
+  0%, 5.75%      { opacity: 0; z-index: -1; }
+  6.25%, 12%     { opacity: 1; z-index: 10; }
+  12.5%, 18.25%  { opacity: 0; z-index: -1; }
+  
+  /* 第二次出场: 18.75% 到 25% */
+  18.75%, 24.5%  { opacity: 1; z-index: 10; }
+  25%, 62%       { opacity: 0; z-index: -1; }
+  
+  /* 第三次出场: 62.5% 到 68.75% */
+  62.5%, 68.25%  { opacity: 1; z-index: 10; }
+  68.75%, 100%   { opacity: 0; z-index: -1; }
 }
 
-/* --- 手势移动动画：节奏稍快，增强引导感 --- */
+/* --- 手指移动动画保持你原版的内容绝对不变 --- */
 @keyframes move-drag-hand {
   0% { transform: translateX(-40px) rotate(-15deg); opacity: 0; }
-  20%, 80% { opacity: 1; }
+  20% { opacity: 1; }
+  80% { opacity: 1; }
   100% { transform: translateX(40px) rotate(5deg); opacity: 0; }
 }
 
 @keyframes move-zoom-left-diagonal {
-  0% { transform: translate(-20px, 10px); opacity: 0; } 
-  25%, 75% { opacity: 1; }
+  0% { transform: translate(-30px, 15px); opacity: 0; } 
+  20% { opacity: 1; }
+  80% { opacity: 1; }
   100% { transform: translate(-90px, 65px); opacity: 0; } 
 }
 
 @keyframes move-zoom-right-diagonal {
-  0% { transform: translate(20px, -10px); opacity: 0; } 
-  25%, 75% { opacity: 1; }
+  0% { transform: translate(30px, -15px); opacity: 0; } 
+  20% { opacity: 1; }
+  80% { opacity: 1; }
   100% { transform: translate(90px, -65px); opacity: 0; } 
 }
 
@@ -107,12 +126,10 @@ title: E-Link Home
   text-align: center;
   width: 220px; height: 150px;
   display: flex; flex-direction: column; justify-content: center; align-items: center;
-  transition: opacity 1s ease-in-out; 
 }
 
-/* 🌟 这里统一修改为 16s 周期，与上方 Keyframes 匹配 */
-.mode-drag { animation: timeline-drag-container 16s infinite ease-in-out; }
-.mode-zoom { animation: timeline-zoom-container 16s infinite ease-in-out; }
+.mode-drag { animation: timeline-drag-container 48s infinite; }
+.mode-zoom { animation: timeline-zoom-container 48s infinite; }
 
 .icon-box { position: relative; height: 80px; width: 100%; margin-bottom: 5px; }
 
@@ -122,7 +139,6 @@ title: E-Link Home
   will-change: transform, opacity;
 }
 
-/* 🌟 手势动作频率调整为 1.5s，让演示看起来更干脆顺滑 */
 .mode-drag .hand-icon { margin-left: -25px; animation: move-drag-hand 1.5s infinite ease-in-out; }
 .mode-zoom .hand-icon { margin-left: -25px; top: 15px; }
 .mode-zoom .hand-left { animation: move-zoom-left-diagonal 1.5s infinite ease-in-out; }
@@ -133,7 +149,7 @@ title: E-Link Home
   text-shadow: 0 2px 4px black; background: rgba(0,0,0,0.4);
   padding: 4px 12px; border-radius: 12px; white-space: nowrap;
 }
-  
+
 /* ===================== 4. HUD 与交互反馈 ===================== */
 .gesture-hud {
   position: absolute; top: 12px; left: 50%;
@@ -1221,6 +1237,7 @@ This project is open-source and available under the **MIT License**. Click the b
 
 <script>
   document.addEventListener("DOMContentLoaded", () => {
+    // 1. 确保获取到所有模型
     const models = Array.from(document.querySelectorAll('model-viewer'));
     if (!models.length) return;
 
@@ -1231,6 +1248,11 @@ This project is open-source and available under the **MIT License**. Click the b
       viewer.setAttribute('min-field-of-view', '10deg'); 
       viewer.autoRotateDelay = 500; 
       
+      // 初始状态：除了第一个，其他都暂停
+      if (viewer.getAttribute('reveal') === 'manual') {
+        viewer.pause(); 
+      }
+
       let hudTimer = null;
       const hideHints = () => {
         viewer.querySelectorAll('.gesture-overlay, .gesture-hud').forEach(el => el.classList.add('gesture-hidden'));
@@ -1247,6 +1269,7 @@ This project is open-source and available under the **MIT License**. Click the b
       });
     });
 
+    // 2. 核心滑动监听器 (防死循环版)
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         const viewer = entry.target;
@@ -1254,29 +1277,23 @@ This project is open-source and available under the **MIT License**. Click the b
         if (viewer.showGestureTimer) clearTimeout(viewer.showGestureTimer);
 
         if (entry.isIntersecting) {
-          // 1. 🌟 核心改进：深度睡眠其他模型
-          // 不仅暂停播放，还要剥夺其他模型的渲染优先级
+          // A. 显存排他性：让别人暂停
           models.forEach(m => {
-            if (m !== viewer) {
-              m.pause();
-              m.style.visibility = 'hidden'; // 🌟 让浏览器完全停止绘制该模型
-            }
+            if (m !== viewer) m.pause();
           });
-          viewer.style.visibility = 'visible';
 
-          // 2. 解锁并播放
+          // B. 唤醒逻辑：增加一个 [data-loaded] 锁，防止重复执行 setAttribute
           if (viewer.getAttribute('reveal') === 'manual' && viewer.dataset.loaded !== "true") {
               viewer.dismissPoster();
-              viewer.dataset.loaded = "true";
-              // 给一个微小的异步延迟，避开主线程滚动阻塞
-              requestAnimationFrame(() => {
+              viewer.dataset.loaded = "true"; // 🌟 锁定，只执行一次
+              setTimeout(() => {
                 try { viewer.play(); } catch(e) {}
-              });
+              }, 100);
           } else {
               try { viewer.play(); } catch(e) {}
           }
           
-          // 3. 手指动画
+          // C. 手指动画延迟出场
           viewer.showGestureTimer = setTimeout(() => {
               if (viewer.dataset.overlayDisabled !== "true") {
                 viewer.querySelectorAll('.gesture-overlay').forEach(el => {
@@ -1286,18 +1303,16 @@ This project is open-source and available under the **MIT License**. Click the b
           }, 800);
 
         } else {
-          // 离开视口：进入深度睡眠模式
+          // 离开视口：停止自转
           viewer.pause();
-          viewer.style.visibility = 'hidden'; 
           viewer.querySelectorAll('.gesture-overlay').forEach(el => {
             el.classList.remove('gesture-active');
           });
         }
       });
     }, {
-      // 🌟 调整阈值：提高到 0.3，确保模型进入视口一段距离后才开始高强度运算
-      threshold: 0.3, 
-      rootMargin: "0px" // 🌟 移除 rootMargin，避免在交界处提前唤醒导致的竞争
+      threshold: 0.15, // 稍微提高一点点，防止误触
+      rootMargin: "50px 0px 50px 0px"
     });
 
     models.forEach(model => observer.observe(model));
