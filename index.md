@@ -1265,9 +1265,12 @@ This project is open-source and available under the **MIT License**. Click the b
       entries.forEach(entry => {
         const viewer = entry.target;
 
-        if (entry.isIntersecting) {
-          // 👇 【新增这一行】：当模型进入屏幕时，代码自动隐藏封面并唤醒3D引擎
-          viewer.dismissPoster(); 
+       if (entry.isIntersecting) {
+          // 延迟 300 毫秒唤醒模型，错开首屏渲染的内存峰值
+          setTimeout(() => {
+              viewer.dismissPoster(); 
+              try { viewer.play(); } catch(e) {}
+          }, 300);
           
           try { viewer.play(); } catch(e) {}
           
