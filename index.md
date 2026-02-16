@@ -64,57 +64,46 @@ title: E-Link Home
   .mobile-tip, .mobile-only { display: inline !important; }
 }
 
-/* ========================================= 2. 复杂时间轴与动作动画 (丝滑防闪烁版) ========================================= */
+/* ========================================= 2. 丝滑长间隔时间轴 (48s 周期) ========================================= */
 @keyframes timeline-drag-container {
-  /* 第一次出场: 0% 到 6.25% */
-  0%             { opacity: 0; z-index: 10; }
-  0.5%, 5.75%    { opacity: 1; z-index: 10; }
-  6.25%, 12%     { opacity: 0; z-index: -1; }
+  /* 第一次显示 (约 0s - 6s) */
+  0%            { opacity: 0; z-index: -1; }
+  2%, 12%       { opacity: 1; z-index: 10; } /* 停留约 5 秒 */
+  14.5%, 54%    { opacity: 0; z-index: -1; } /* 留出空隙给 Zoom，并进入长等待 */
   
-  /* 第二次出场: 12.5% 到 18.75% */
-  12.5%, 18.25%  { opacity: 1; z-index: 10; }
-  18.75%, 55.75% { opacity: 0; z-index: -1; }
-  
-  /* 第三次出场: 56.25% 到 62.5% */
-  56.25%, 62%    { opacity: 1; z-index: 10; }
-  62.5%, 100%    { opacity: 0; z-index: -1; }
+  /* 第二次显示 (约 26.5s - 31s) */
+  55%, 65%      { opacity: 1; z-index: 10; }
+  68%, 100%     { opacity: 0; z-index: -1; }
 }
 
 @keyframes timeline-zoom-container {
-  /* 第一次出场: 6.25% 到 12.5% */
-  0%, 5.75%      { opacity: 0; z-index: -1; }
-  6.25%, 12%     { opacity: 1; z-index: 10; }
-  12.5%, 18.25%  { opacity: 0; z-index: -1; }
+  /* 第一次显示：在 Drag 消失 2 秒后才出场 (约 8.5s - 14s) */
+  0%, 16.5%     { opacity: 0; z-index: -1; }
+  18.5%, 28%    { opacity: 1; z-index: 10; } /* 停留约 5 秒 */
+  30.5%, 66.5%  { opacity: 0; z-index: -1; }
   
-  /* 第二次出场: 18.75% 到 25% */
-  18.75%, 24.5%  { opacity: 1; z-index: 10; }
-  25%, 62%       { opacity: 0; z-index: -1; }
-  
-  /* 第三次出场: 62.5% 到 68.75% */
-  62.5%, 68.25%  { opacity: 1; z-index: 10; }
-  68.75%, 100%   { opacity: 0; z-index: -1; }
+  /* 第二次显示 (约 33s - 38s) */
+  68.5%, 78%    { opacity: 1; z-index: 10; }
+  80.5%, 100%   { opacity: 0; z-index: -1; }
 }
 
-/* --- 手指移动动画保持你原版的内容绝对不变 --- */
+/* --- 手势动画：保持 2s 节奏，非常顺滑 --- */
 @keyframes move-drag-hand {
-  0% { transform: translateX(-40px) rotate(-15deg); opacity: 0; }
-  20% { opacity: 1; }
-  80% { opacity: 1; }
-  100% { transform: translateX(40px) rotate(5deg); opacity: 0; }
+  0% { transform: translateX(-45px) rotate(-15deg); opacity: 0; }
+  20%, 80% { opacity: 1; }
+  100% { transform: translateX(45px) rotate(5deg); opacity: 0; }
 }
 
 @keyframes move-zoom-left-diagonal {
-  0% { transform: translate(-30px, 15px); opacity: 0; } 
-  20% { opacity: 1; }
-  80% { opacity: 1; }
-  100% { transform: translate(-90px, 65px); opacity: 0; } 
+  0% { transform: translate(-20px, 10px); opacity: 0; } 
+  25%, 75% { opacity: 1; }
+  100% { transform: translate(-80px, 60px); opacity: 0; } 
 }
 
 @keyframes move-zoom-right-diagonal {
-  0% { transform: translate(30px, -15px); opacity: 0; } 
-  20% { opacity: 1; }
-  80% { opacity: 1; }
-  100% { transform: translate(90px, -65px); opacity: 0; } 
+  0% { transform: translate(20px, -10px); opacity: 0; } 
+  25%, 75% { opacity: 1; }
+  100% { transform: translate(80px, -60px); opacity: 0; } 
 }
 
 /* ========================================= 3. 容器与图标样式 ========================================= */
@@ -126,10 +115,11 @@ title: E-Link Home
   text-align: center;
   width: 220px; height: 150px;
   display: flex; flex-direction: column; justify-content: center; align-items: center;
+  transition: opacity 1s ease-in-out; /* ✅ 这里的括号补全了 */
 }
 
-.mode-drag { animation: timeline-drag-container 48s infinite; }
-.mode-zoom { animation: timeline-zoom-container 48s infinite; }
+.mode-drag { animation: timeline-drag-container 48s infinite ease-in-out; }
+.mode-zoom { animation: timeline-zoom-container 48s infinite ease-in-out; }
 
 .icon-box { position: relative; height: 80px; width: 100%; margin-bottom: 5px; }
 
@@ -139,10 +129,10 @@ title: E-Link Home
   will-change: transform, opacity;
 }
 
-.mode-drag .hand-icon { margin-left: -25px; animation: move-drag-hand 1.5s infinite ease-in-out; }
+.mode-drag .hand-icon { margin-left: -25px; animation: move-drag-hand 2s infinite ease-in-out; }
 .mode-zoom .hand-icon { margin-left: -25px; top: 15px; }
-.mode-zoom .hand-left { animation: move-zoom-left-diagonal 1.5s infinite ease-in-out; }
-.mode-zoom .hand-right { animation: move-zoom-right-diagonal 1.5s infinite ease-in-out; }
+.mode-zoom .hand-left { animation: move-zoom-left-diagonal 2s infinite ease-in-out; }
+.mode-zoom .hand-right { animation: move-zoom-right-diagonal 2s infinite ease-in-out; }
 
 .gesture-text {
   color: white; font-family: sans-serif; font-weight: bold; font-size: 16px;
