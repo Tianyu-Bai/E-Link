@@ -1471,17 +1471,15 @@ function updateUI() {
       } else {
            rpgText.textContent = '';
            let i = 0;
-           // 这里的 35 到 45 之间通常是打字机效果最舒服的速度
            typeTimer = setInterval(() => {
-             rpgText.textContent += node.text.charAt(i); 
-             i++;
+             rpgText.textContent += node.text.charAt(i); i++;
              if(i >= node.text.length) {
                clearInterval(typeTimer);
-               // 稍微延迟 200 毫秒再出按钮，逻辑更自然
-               setTimeout(showButtons, 200);
+               showButtons();
              }
-           }, 40); // <--- 把这里的 10 改成 40
+           }, 20);
       }
+    }
  
     function openDialogue() {
       if(rpgDialogue.classList.contains('active')) return;
