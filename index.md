@@ -189,13 +189,18 @@ kbd {
   width: 100%; max-width: 100vw; box-sizing: border-box; height: 460px;
   background: transparent; border-radius: 16px; border: 1px solid rgba(59,130,246,0.3);
   outline: none; overflow: hidden; transform: translateZ(0); backface-visibility: hidden; 
-  content-visibility: auto; /* 🌟 救命神器：离开屏幕立刻释放底层渲染内存 */
+  /* 🌟 替换掉刚才那行，改用下面这个：只在 3D 模型渲染时开启硬件加速 */
+  contain: paint; 
 }
 .custom-model-viewer:focus, .custom-model-viewer:active, .custom-model-viewer:focus-visible {
   outline: none !important; box-shadow: none !important; border: 1px solid rgba(59,130,246,0.3) !important;
 }
 
-.model-block { max-width: 100vw !important; }
+.model-block { 
+  max-width: 100vw !important; 
+  margin-top: 60px !important;    /* 🌟 上方加空隙 */
+  margin-bottom: 120px !important; /* 🌟 下方加空隙，防止两个模型同时挤在屏幕里 */
+}
 model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar) { display: none !important; }
 
 .model-watermark-text {
@@ -1273,55 +1278,58 @@ This project is open-source and available under the **MIT License**. Click the b
       });
     });
 
-// 滑动监听器 (极限防闪退版)
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        const viewer = entry.target;
+// 滑动监听器 (丝滑稳定版)
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    const viewer = entry.target;
 
-        if (viewer.showGestureTimer) clearTimeout(viewer.showGestureTimer);
+    if (viewer.showGestureTimer) clearTimeout(viewer.showGestureTimer);
 
-        if (entry.isIntersecting) {
-          
-          // 🌟 杀手锏：排他性播放！
-          // 一旦这个模型进入视口，立刻强行让另外几个模型闭嘴暂停，榨干每一滴显存！
-          models.forEach(m => {
-            if (m !== viewer) m.pause();
-          });
-
-          if (viewer.getAttribute('reveal') === 'manual') {
-              // 🌟 延迟从 300ms 加大到 400ms，让用户滑稳了再解压模型，避开滚动时的掉帧峰值
-              setTimeout(() => {
-                  viewer.dismissPoster(); 
-                  try { viewer.play(); } catch(e) {}
-              }, 400);
-          } else {
-              try { viewer.play(); } catch(e) {}
-          }
-          
-          // 手指动画延迟出场
-          viewer.showGestureTimer = setTimeout(() => {
-              if (viewer.dataset.overlayDisabled !== "true") {
-                viewer.querySelectorAll('.gesture-overlay').forEach(el => {
-                  el.classList.add('gesture-active');
-                });
-              }
-          }, 800);
-
-        } else {
-          viewer.pause();
-          viewer.querySelectorAll('.gesture-overlay').forEach(el => {
-            el.classList.remove('gesture-active');
-          });
+    if (entry.isIntersecting) {
+      // 🌟 核心：只有当模型真正进入核心区且不在播放时才动作
+      // 强制让其他模型暂停，确保独占显存
+      models.forEach(m => {
+        if (m !== viewer) {
+          m.pause();
         }
       });
-    }, {
-      // 🌟 核心升级：不仅要求露出 50%，还把屏幕上下各砍掉 20% 的探测区
-      // 相当于在屏幕正中央画了一条狭窄的“警戒线”，每次绝对只能有一个模型碰线！
-      threshold: 0.5,
-      rootMargin: "-20% 0px -20% 0px" 
-    });
 
-    models.forEach(model => observer.observe(model));
+      // 唤醒当前模型
+      if (viewer.getAttribute('reveal') === 'manual') {
+        setTimeout(() => {
+          // 这里多做一个判断，防止已经解锁的再次触发导致的频闪
+          if (viewer.getAttribute('reveal') === 'manual') {
+             viewer.dismissPoster();
+          }
+          try { viewer.play(); } catch(e) {}
+        }, 300);
+      } else {
+        try { viewer.play(); } catch(e) {}
+      }
+
+      // 手指动画延迟出场
+      viewer.showGestureTimer = setTimeout(() => {
+        if (viewer.dataset.overlayDisabled !== "true") {
+          viewer.querySelectorAll('.gesture-overlay').forEach(el => {
+            el.classList.add('gesture-active');
+          });
+        }
+      }, 800);
+
+    } else {
+      // 滑出屏幕时，只做暂停，不做物理抹除，保住边框
+      viewer.pause();
+      viewer.querySelectorAll('.gesture-overlay').forEach(el => {
+        el.classList.remove('gesture-active');
+      });
+    }
   });
+}, {
+  // 🌟 调整：放宽阈值到 0.4，去掉 rootMargin，改用 margin-bottom 物理隔离
+  threshold: 0.4,
+  rootMargin: "0px" 
+});
+
+models.forEach(model => observer.observe(model));
   
 </script>
