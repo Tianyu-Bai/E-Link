@@ -182,8 +182,8 @@ kbd {
 
 .model-block { 
   max-width: 100vw !important; 
-  margin-top: 40px !important;    
-  margin-bottom: 60px !important; /* 🌟 缩减到 60px，既能隔离显存，又不至于滑不到 */
+  margin-top: 20px !important;    /* 顶部稍微留白 */
+  margin-bottom: 40px !important; /* 🌟 建议至少保留 40px 的安全缓冲带 */
 }
 model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar) { display: none !important; }
 
