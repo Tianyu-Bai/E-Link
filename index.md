@@ -1494,64 +1494,55 @@ This project is open-source and available under the **MIT License**. Click the b
 <script>
   document.addEventListener("DOMContentLoaded", () => {
     // ===================== E-Link 动态数据面板逻辑 =====================
-const dashboardObserver = new IntersectionObserver((entries, observer) => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      const card = entry.target;
-      const fgRing = card.querySelector('.fg-ring');
-      const numberEl = card.querySelector('.count-up');
-      
-      const targetValue = parseFloat(card.dataset.value);
-      const isFloat = card.dataset.isFloat === "true";
-      const targetPercent = parseInt(card.dataset.percent);
-      
-      // 1. 触发圆环动画
-      const circumference = 283; // 2 * pi * 45
-      const offset = circumference - (targetPercent / 100) * circumference;
-      // 增加一点小延迟，让动画显得更有节奏感
-      setTimeout(() => {
-        fgRing.style.strokeDashoffset = offset;
-      }, 100);
+    const dashboardObserver = new IntersectionObserver((entries, observer) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const card = entry.target;
+          const fgRing = card.querySelector('.fg-ring');
+          const numberEl = card.querySelector('.count-up');
+          
+          const targetValue = parseFloat(card.dataset.value);
+          const isFloat = card.dataset.isFloat === "true";
+          const targetPercent = parseInt(card.dataset.percent);
+          
+          const circumference = 283; 
+          const offset = circumference - (targetPercent / 100) * circumference;
+          setTimeout(() => {
+            fgRing.style.strokeDashoffset = offset;
+          }, 100);
 
-      // 2. 触发数字滚动动画 (easeOutExpo 效果)
-      let startTimestamp = null;
-      const duration = 2000; // 动画时长 2 秒
+          let startTimestamp = null;
+          const duration = 2000; 
 
-      const step = (timestamp) => {
-        if (!startTimestamp) startTimestamp = timestamp;
-        const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-        
-        // 缓动函数
-        const easeProgress = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
-        const currentValue = easeProgress * targetValue;
+          const step = (timestamp) => {
+            if (!startTimestamp) startTimestamp = timestamp;
+            const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+            const easeProgress = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
+            const currentValue = easeProgress * targetValue;
 
-        if (isFloat) {
-          numberEl.innerText = currentValue.toFixed(1);
-        } else {
-          numberEl.innerText = Math.floor(currentValue);
-        }
+            if (isFloat) {
+              numberEl.innerText = currentValue.toFixed(1);
+            } else {
+              numberEl.innerText = Math.floor(currentValue);
+            }
 
-        if (progress < 1) {
+            if (progress < 1) {
+              window.requestAnimationFrame(step);
+            } else {
+              numberEl.innerText = isFloat ? targetValue.toFixed(1) : targetValue;
+            }
+          };
           window.requestAnimationFrame(step);
-        } else {
-          // 确保最终数字完全一致
-          numberEl.innerText = isFloat ? targetValue.toFixed(1) : targetValue;
+          observer.unobserve(card);
         }
-      };
-      
-      window.requestAnimationFrame(step);
+      });
+    }, { threshold: 0.3 }); 
 
-      // 动画执行一次后取消监听，避免重复触发。如果希望每次滑动回来都重新播放，可以注释掉下面这行
-      observer.unobserve(card);
-    }
-  });
-}, { threshold: 0.3 }); // 元素露出 30% 时触发动画
-
-// 绑定所有的 metric-card
-document.querySelectorAll('.metric-card').forEach(card => {
-  dashboardObserver.observe(card);
-});
+    document.querySelectorAll('.metric-card').forEach(card => {
+      dashboardObserver.observe(card);
+    });
     
+    // ===================== 3D 模型交互与防闪退逻辑 =====================
     const models = Array.from(document.querySelectorAll('model-viewer'));
     if (!models.length) return;
 
@@ -1561,7 +1552,6 @@ document.querySelectorAll('.metric-card').forEach(card => {
     let scrollEndTimer = null;
     let initCheckTimer = null; 
 
-    // 核心大脑：无论何时，只找出最靠近屏幕中心的 1 个模型并唤醒
     const checkAndActivateBestModel = () => {
         let bestModel = null;
         let minDistance = Infinity;
@@ -1585,19 +1575,16 @@ document.querySelectorAll('.metric-card').forEach(card => {
         }
     };
 
-    // 监听滚动：只要屏幕在滑动，就锁定 3D 加载
     window.addEventListener('scroll', () => {
         isScrolling = true;
         clearTimeout(scrollEndTimer);
-        
-        // 🚀 提速点 1：将滚动判定停顿从 250ms 缩短到 120ms。只要手一停，瞬间反应！
         scrollEndTimer = setTimeout(() => {
             isScrolling = false;
             checkAndActivateBestModel();
         }, 120);
     }, { passive: true });
 
-// 增加一个全局锁，防止多个 3D 模型同时解压撑爆显存
+    // 增加一个全局锁，防止多个 3D 模型同时解压撑爆显存
     let isAnyModelLoading = false;
 
     // 激活模型的专用函数 (防 OOM 闪退版)
@@ -1613,7 +1600,6 @@ document.querySelectorAll('.metric-card').forEach(card => {
 
         // 如果该模型还没有解压加载
         if (viewer.getAttribute('reveal') === 'manual' && viewer.dataset.loaded !== "true") {
-            // 🚨 核心防御：如果此时有其他模型正在加载，立刻放弃本次唤醒，防止撞车闪退！
             if (isAnyModelLoading) return; 
             
             isAnyModelLoading = true;
@@ -1621,16 +1607,13 @@ document.querySelectorAll('.metric-card').forEach(card => {
                 viewer.dismissPoster();
                 viewer.dataset.loaded = "true";
                 
-                // 强制等待该模型加载完成，再释放锁
                 await new Promise(resolve => {
                     viewer.addEventListener('load', resolve, { once: true });
-                    // 设置 2.5 秒超时兜底，防止死锁导致后续模型都无法加载
                     setTimeout(resolve, 2500); 
                 });
             } catch (e) {
                 console.warn("3D 模型加载被打断:", e);
             } finally {
-                // 模型加载完毕，释放锁，允许下一个模型加载
                 isAnyModelLoading = false;
             }
         }
@@ -1640,29 +1623,11 @@ document.querySelectorAll('.metric-card').forEach(card => {
             try { viewer.play(); } catch(e) {}
         }
 
-        // 延迟展示手指交互动画
         if (viewer.dataset.overlayDisabled !== "true") {
             clearTimeout(viewer.hudTimer); 
             viewer.hudTimer = setTimeout(() => {
                 viewer.querySelectorAll('.gesture-overlay').forEach(el => el.classList.add('gesture-active'));
             }, 600);
-        }
-    };
-
-        // 🚀 提速点 2：去掉了 rAF 和 100ms 的人为延迟，一旦判定安全，瞬间下达解压指令！
-        if (viewer.getAttribute('reveal') === 'manual' && viewer.dataset.loaded !== "true") {
-            viewer.dismissPoster();
-            viewer.dataset.loaded = "true";
-        }
-        try { viewer.play(); } catch(e) {}
-
-        // 延迟展示手指交互动画
-        if (viewer.dataset.overlayDisabled !== "true") {
-            clearTimeout(viewer.hudTimer); // 加锁防重复闪烁
-            // 🚀 提速点 3：手势提示也出得更快一点（从 800ms 改为 500ms）
-            viewer.hudTimer = setTimeout(() => {
-                viewer.querySelectorAll('.gesture-overlay').forEach(el => el.classList.add('gesture-active'));
-            }, 500);
         }
     };
 
