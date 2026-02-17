@@ -201,9 +201,10 @@ kbd {
 .custom-model-viewer {
   width: 100%; max-width: 100vw; box-sizing: border-box; height: 460px;
   background: transparent; border-radius: 16px; border: 1px solid rgba(59,130,246,0.3);
-  outline: none; overflow: hidden; transform: translateZ(0); backface-visibility: hidden; 
-  /* 🌟 替换掉刚才那行，改用下面这个：只在 3D 模型渲染时开启硬件加速 */
-  contain: paint;  content-visibility: auto;
+  outline: none; overflow: hidden; 
+  /* 使用 3D 硬件加速层，防止重绘影响 GIF */
+  transform: translateZ(0); 
+  backface-visibility: hidden; 
   touch-action: pan-y;
 }
 
@@ -1596,14 +1597,39 @@ document.querySelectorAll('.metric-card').forEach(card => {
         }, 120);
     }, { passive: true });
 
-    // 激活模型的专用函数
+  // 激活模型的专用函数 (防频闪优化版)
     const activateViewer = (viewer) => {
         if (isScrolling) return; 
 
-        // 彻底暂停视野外的模型，确保 GPU 显存独占
+        // 遍历所有模型，精准控制，避免重复触发指令
         models.forEach(m => {
-            if (m !== viewer) m.pause();
+            if (m !== viewer) {
+                // 只有当其它模型还在播放时，才去暂停它
+                if (!m.paused) {
+                    m.pause();
+                }
+            }
         });
+
+        // 如果目标模型还没解压海报
+        if (viewer.getAttribute('reveal') === 'manual' && viewer.dataset.loaded !== "true") {
+            viewer.dismissPoster();
+            viewer.dataset.loaded = "true";
+        }
+        
+        // 只有当目标模型处于暂停状态时，才呼叫 play，避免 WebGL 频闪
+        if (viewer.paused) {
+            try { viewer.play(); } catch(e) {}
+        }
+
+        // 延迟展示手指交互动画
+        if (viewer.dataset.overlayDisabled !== "true") {
+            clearTimeout(viewer.hudTimer); 
+            viewer.hudTimer = setTimeout(() => {
+                viewer.querySelectorAll('.gesture-overlay').forEach(el => el.classList.add('gesture-active'));
+            }, 500);
+        }
+    };
 
         // 🚀 提速点 2：去掉了 rAF 和 100ms 的人为延迟，一旦判定安全，瞬间下达解压指令！
         if (viewer.getAttribute('reveal') === 'manual' && viewer.dataset.loaded !== "true") {
