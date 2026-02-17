@@ -509,61 +509,6 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
 </div>
 
 ## 🔬 256Ch Customized Headstage – 3D Interactive View
-<div class="elink-dynamic-dashboard" align="center">
-  <div class="metrics-grid">
-    
-    <div class="metric-card glass-panel" data-percent="100" data-value="2.8" data-is-float="true">
-      <div class="chart-box">
-        <svg viewBox="0 0 100 100">
-          <circle class="bg-ring" cx="50" cy="50" r="45"></circle>
-          <circle class="fg-ring weight-color" cx="50" cy="50" r="45"></circle>
-        </svg>
-        <div class="inner-content">
-          <div class="label">WEIGHT</div>
-          <div class="number-container">
-            <span class="number count-up">0</span><span class="unit">g</span>
-          </div>
-          <div class="sub">Ultra-light</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="metric-card glass-panel" data-percent="100" data-value="256" data-is-float="false">
-      <div class="chart-box">
-        <svg viewBox="0 0 100 100">
-          <circle class="bg-ring" cx="50" cy="50" r="45"></circle>
-          <circle class="fg-ring channel-color" cx="50" cy="50" r="45"></circle>
-        </svg>
-        <div class="inner-content">
-          <div class="label">CHANNELS</div>
-          <div class="number-container">
-            <span class="number count-up">0</span>
-          </div>
-          <div class="sub">High-Density</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="metric-card glass-panel" data-percent="100" data-value="4" data-is-float="false">
-      <div class="chart-box">
-        <svg viewBox="0 0 100 100">
-          <circle class="bg-ring" cx="50" cy="50" r="45"></circle>
-          <circle class="fg-ring pcb-color" cx="50" cy="50" r="45"></circle>
-        </svg>
-        <div class="inner-content">
-          <div class="label">PCB LAYERS</div>
-          <div class="number-container">
-            <span class="number count-up">0</span>
-          </div>
-          <div class="sub">Custom Routing</div>
-        </div>
-      </div>
-    </div>
-
-  </div>
-</div>
-
----
 
 <div class="model-block" align="center" style="position: relative; max-width: 760px; margin: 0 auto; min-height: 460px;">
   <model-viewer
@@ -622,6 +567,61 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
   </model-viewer>
 </div> 
 
+---
+
+<div class="elink-dynamic-dashboard" align="center">
+  <div class="metrics-grid">
+    
+    <div class="metric-card glass-panel" data-percent="100" data-value="2.8" data-is-float="true">
+      <div class="chart-box">
+        <svg viewBox="0 0 100 100">
+          <circle class="bg-ring" cx="50" cy="50" r="45"></circle>
+          <circle class="fg-ring weight-color" cx="50" cy="50" r="45"></circle>
+        </svg>
+        <div class="inner-content">
+          <div class="label">WEIGHT</div>
+          <div class="number-container">
+            <span class="number count-up">0</span><span class="unit">g</span>
+          </div>
+          <div class="sub">Ultra-light</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="metric-card glass-panel" data-percent="100" data-value="256" data-is-float="false">
+      <div class="chart-box">
+        <svg viewBox="0 0 100 100">
+          <circle class="bg-ring" cx="50" cy="50" r="45"></circle>
+          <circle class="fg-ring channel-color" cx="50" cy="50" r="45"></circle>
+        </svg>
+        <div class="inner-content">
+          <div class="label">CHANNELS</div>
+          <div class="number-container">
+            <span class="number count-up">0</span>
+          </div>
+          <div class="sub">High-Density</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="metric-card glass-panel" data-percent="100" data-value="4" data-is-float="false">
+      <div class="chart-box">
+        <svg viewBox="0 0 100 100">
+          <circle class="bg-ring" cx="50" cy="50" r="45"></circle>
+          <circle class="fg-ring pcb-color" cx="50" cy="50" r="45"></circle>
+        </svg>
+        <div class="inner-content">
+          <div class="label">PCB LAYERS</div>
+          <div class="number-container">
+            <span class="number count-up">0</span>
+          </div>
+          <div class="sub">Custom Routing</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
 
 <span id="en-overview"></span>
 ## 📖 Overview
@@ -708,33 +708,47 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
     </div>
 
     <div class="animal-nodes">
-      
-      <div class="node sub-node">
+    
+    <div class="node sub-node">
         <div class="icon-circle mouse-glow">
-          <span style="font-size: 30px;">🐁</span>
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M16 3H8a4 4 0 0 0-4 4v10a4 4 0 0 0 4 4h8a4 4 0 0 0 4-4V7a4 4 0 0 0-4-4z"/>
+                <path d="M12 10a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/>
+                <path d="M12 18a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/>
+                <path d="M16 12H8"/>
+            </svg>
         </div>
-        <div class="node-title">Mouse</div>
-        <div class="node-desc">Housing Removed<br><b><font color="#10b981">2.8g</font> Payload</b></div>
-      </div>
-
-      <div class="node sub-node" style="margin-top: 30px;">
-        <div class="icon-circle rat-glow">
-          <span style="font-size: 30px;">🐀</span>
-        </div>
-        <div class="node-title">Rat</div>
-        <div class="node-desc">Standard Implant<br><b><font color="#3b82f6">6.6g</font> Total</b></div>
-      </div>
-
-      <div class="node sub-node">
-        <div class="icon-circle monkey-glow">
-          <span style="font-size: 30px;">🐒</span>
-        </div>
-        <div class="node-title">Macaque</div>
-        <div class="node-desc">High Durability<br><b>Multi-Array Scalable</b></div>
-      </div>
-
+        <div class="node-title">Rattus norvegicus</div>
+        <div class="node-desc"><b>Rat</b><br>Standard In-vivo</div>
     </div>
-  </div>
+
+    <div class="node sub-node" style="margin-top: 30px;">
+        <div class="icon-circle rat-glow">
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/>
+                <path d="M8 14s1.5 2 4 2 4-2 4-2"/>
+                <line x1="9" y1="9" x2="9.01" y2="9"/>
+                <line x1="15" y1="9" x2="15.01" y2="9"/>
+            </svg>
+        </div>
+        <div class="node-title">Macaca mulatta</div>
+        <div class="node-desc"><b>Macaque (NHP)</b><br>Long-term Recording</div>
+    </div>
+
+    <div class="node sub-node">
+        <div class="icon-circle monkey-glow">
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22a7 7 0 1 0 0-14 7 7 0 0 0 0 14Z"/>
+                <circle cx="12" cy="15" r="3"/>
+                <path d="M10 15h.01M14 15h.01"/>
+                <path d="M7 11c-1-1-2-4-1-6s5 1 5 1"/>
+                <path d="M17 11c1-1 2-4 1-6s-5 1-5 1"/>
+            </svg>
+        </div>
+        <div class="node-title">Sus scrofa</div>
+        <div class="node-desc"><b>Pig</b><br>Large-scale Interface</div>
+    </div>
+
 </div>
 
 <style>
@@ -1226,61 +1240,6 @@ This project is open-source and available under the **MIT License**. Click the b
 </div> 
 
 ## 🔬 256通道定制放大器 – 三维交互模型
-<div class="elink-dynamic-dashboard" align="center">
-  <div class="metrics-grid">
-    
-    <div class="metric-card glass-panel" data-percent="100" data-value="2.8" data-is-float="true">
-      <div class="chart-box">
-        <svg viewBox="0 0 100 100">
-          <circle class="bg-ring" cx="50" cy="50" r="45"></circle>
-          <circle class="fg-ring weight-color" cx="50" cy="50" r="45"></circle>
-        </svg>
-        <div class="inner-content">
-          <div class="label" style="font-family: sans-serif; letter-spacing: 2px;">重量</div>
-          <div class="number-container">
-            <span class="number count-up">0</span><span class="unit">g</span>
-          </div>
-          <div class="sub">轻量级</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="metric-card glass-panel" data-percent="100" data-value="256" data-is-float="false">
-      <div class="chart-box">
-        <svg viewBox="0 0 100 100">
-          <circle class="bg-ring" cx="50" cy="50" r="45"></circle>
-          <circle class="fg-ring channel-color" cx="50" cy="50" r="45"></circle>
-        </svg>
-        <div class="inner-content">
-          <div class="label" style="font-family: sans-serif; letter-spacing: 2px;">通道数</div>
-          <div class="number-container">
-            <span class="number count-up">0</span>
-          </div>
-          <div class="sub">高密度采集</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="metric-card glass-panel" data-percent="100" data-value="4" data-is-float="false">
-      <div class="chart-box">
-        <svg viewBox="0 0 100 100">
-          <circle class="bg-ring" cx="50" cy="50" r="45"></circle>
-          <circle class="fg-ring pcb-color" cx="50" cy="50" r="45"></circle>
-        </svg>
-        <div class="inner-content">
-          <div class="label" style="font-family: sans-serif; letter-spacing: 2px;">PCB 层数</div>
-          <div class="number-container">
-            <span class="number count-up">0</span>
-          </div>
-          <div class="sub">定制化布线</div>
-        </div>
-      </div>
-    </div>
-
-  </div>
-</div>
-
----
 
 <div class="model-block" align="center" style="position: relative; max-width: 760px; margin: 0 auto; min-height: 460px;">
   <model-viewer
@@ -1339,6 +1298,62 @@ This project is open-source and available under the **MIT License**. Click the b
       ⟲ 重置视角
     </button>
   </model-viewer>
+</div>
+
+---
+
+<div class="elink-dynamic-dashboard" align="center">
+  <div class="metrics-grid">
+    
+    <div class="metric-card glass-panel" data-percent="100" data-value="2.8" data-is-float="true">
+      <div class="chart-box">
+        <svg viewBox="0 0 100 100">
+          <circle class="bg-ring" cx="50" cy="50" r="45"></circle>
+          <circle class="fg-ring weight-color" cx="50" cy="50" r="45"></circle>
+        </svg>
+        <div class="inner-content">
+          <div class="label" style="font-family: sans-serif; letter-spacing: 2px;">重量</div>
+          <div class="number-container">
+            <span class="number count-up">0</span><span class="unit">g</span>
+          </div>
+          <div class="sub">轻量级</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="metric-card glass-panel" data-percent="100" data-value="256" data-is-float="false">
+      <div class="chart-box">
+        <svg viewBox="0 0 100 100">
+          <circle class="bg-ring" cx="50" cy="50" r="45"></circle>
+          <circle class="fg-ring channel-color" cx="50" cy="50" r="45"></circle>
+        </svg>
+        <div class="inner-content">
+          <div class="label" style="font-family: sans-serif; letter-spacing: 2px;">通道数</div>
+          <div class="number-container">
+            <span class="number count-up">0</span>
+          </div>
+          <div class="sub">高密度采集</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="metric-card glass-panel" data-percent="100" data-value="4" data-is-float="false">
+      <div class="chart-box">
+        <svg viewBox="0 0 100 100">
+          <circle class="bg-ring" cx="50" cy="50" r="45"></circle>
+          <circle class="fg-ring pcb-color" cx="50" cy="50" r="45"></circle>
+        </svg>
+        <div class="inner-content">
+          <div class="label" style="font-family: sans-serif; letter-spacing: 2px;">PCB 层数</div>
+          <div class="number-container">
+            <span class="number count-up">0</span>
+          </div>
+          <div class="sub">定制化布线</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
 </div>
 
 <span id="cn-overview"></span>
