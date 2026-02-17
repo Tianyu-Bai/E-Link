@@ -24,10 +24,6 @@ title: E-Link Home
   
 <div align="center">
   <h1 style="border-bottom: none; margin-bottom: 5px; color: #60a5fa; font-size: 2em;">🚀 E-Link(256)</h1>
-  
-<div align="center">
-    <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=30&pause=100&color=60a5fa&center=true&vCenter=true&width=1100&lines=An+Open-Source,+Elastomer+Interconnection-based;Connector+for+Flexible+Neural+Interfaces" />
-</div>
 
 <h2 style="
   background: -webkit-linear-gradient(0deg, #60a5fa, #a78bfa);
