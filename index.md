@@ -275,17 +275,27 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
 
 /* ===================== E-Link 动态仪表盘样式 (响应式 + 6秒循环版) ===================== */
 .elink-dynamic-dashboard {
-  width: 100%; max-width: 760px; margin: 20px auto; padding: 5px;
+  width: 100%; 
+  max-width: 760px; 
+  margin: 20px auto; 
+  padding: 0 5px; /* 减小外围内边距 */
+  box-sizing: border-box; /* 核心：限制整体宽度不超过屏幕 */
 }
 .metrics-grid {
-  display: flex; justify-content: space-around; align-items: center; 
-  flex-wrap: nowrap; /* 🚨 核心：强制不换行，实现手机端并排 */
-  gap: 15px; width: 100%;
+  display: flex; 
+  justify-content: space-between; 
+  align-items: center; 
+  flex-wrap: nowrap; /* 强制手机端并排 */
+  gap: 12px; 
+  width: 100%;
+  box-sizing: border-box;
 }
 .metric-card.glass-panel {
+  flex: 1 1 0; /* 🚨 核心魔法：让三个卡片完全等分剩余空间 */
+  min-width: 0; /* 🚨 核心魔法：防止里面的文字或SVG把卡片强行撑大 */
   background: rgba(15, 23, 42, 0.6);
   border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 12px;
-  padding: 15px 5px; width: 32%; /* 强制三等分 */
+  padding: 15px 5px; 
   box-sizing: border-box; box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
   backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
   transition: transform 0.3s ease; text-align: center;
@@ -294,10 +304,11 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
 .chart-box svg { width: 100%; height: 100%; transform: rotate(-90deg); }
 .bg-ring { fill: none; stroke: rgba(255, 255, 255, 0.1); stroke-width: 6; }
 
-/* 🚨 核心：纯 CSS 实现 6秒无限循环圆环绘制，不吃 JS 性能 */
+/* 纯 CSS 实现 6秒无限循环圆环绘制 */
 .fg-ring {
   fill: none; stroke-width: 6; stroke-linecap: round;
   stroke-dasharray: 283; stroke-dashoffset: 283; 
+}
 
 .weight-color { stroke: #10b981; filter: drop-shadow(0 0 6px rgba(16, 185, 129, 0.6)); } 
 .channel-color { stroke: #3b82f6; filter: drop-shadow(0 0 6px rgba(59, 130, 246, 0.6)); } 
@@ -309,20 +320,20 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
 .inner-content .unit { font-size: 16px; font-weight: bold; color: #cbd5e1; margin-left: 2px; }
 .inner-content .sub { font-size: 10px; color: rgba(148, 163, 184, 0.8); margin-top: 2px; }
 
-/* 🚨 核心：手机端极限优化 (解决卡顿与尺寸问题) */
+/* 🚨 手机端极限优化 (解决横向撑爆与卡顿问题) */
 @media (max-width: 600px) {
-  .metrics-grid { gap: 8px; }
+  .metrics-grid { gap: 6px; } /* 缩小间距，为卡片腾出空间 */
   .metric-card.glass-panel {
     padding: 10px 2px;
-    background: rgba(15, 23, 42, 0.85); /* 稍微调暗背景 */
-    backdrop-filter: none; /* 🔴 关闭毛玻璃，彻底解决手机端滚动卡顿闪烁 */
+    background: rgba(15, 23, 42, 0.85); 
+    backdrop-filter: none; /* 关闭毛玻璃，解决滑动卡顿 */
     -webkit-backdrop-filter: none;
   }
-  .chart-box { width: 75px; height: 75px; } /* 缩小圆环，适应手机三列 */
-  .inner-content .number { font-size: 20px; }
-  .inner-content .unit { font-size: 12px; }
+  .chart-box { width: 70px; height: 70px; } /* 稍微再缩小一点点圆环，确保三列绝对装得下 */
+  .inner-content .number { font-size: 18px; }
+  .inner-content .unit { font-size: 11px; }
   .inner-content .label { font-size: 8px; font-family: sans-serif !important; letter-spacing: 0 !important; }
-  .inner-content .sub { display: none; /* 隐藏副标题，让主数据在手机上更清晰 */ }
+  .inner-content .sub { display: none; }
 }
     
   /* ===================== 高级 3D 封面特效 (HUD) ===================== */
