@@ -417,7 +417,7 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
     class="custom-model-viewer"
     src="{{ '/Videos/On skull_3.16MB.glb' | relative_url }}"
     alt="E Link on Skull 3D Model"
-    loading="eager" power-preference="low-power" reveal="auto"
+    loading="lazy"   reveal="auto"
     poster="{{ '/Images/poster.webp' | relative_url }}"
     camera-controls interpolation-decay="200" bounds="tight" field-of-view="30deg" auto-rotate  rotation-per-second="15deg"
     interaction-prompt="none" environment-image="neutral" exposure="0.75" shadow-intensity="0" tone-mapping="commerce">
@@ -478,7 +478,7 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
     class="custom-model-viewer"
     src="{{ '/Videos/Whole_2.34MB.glb' | relative_url }}"
     alt="E Link 3D Model"
-    loading="lazy"     power-preference="low-power" reveal="manual"
+    loading="lazy"       reveal="manual"
     poster="{{ '/Images/poster.webp' | relative_url }}"
     camera-controls interpolation-decay="200" bounds="tight" field-of-view="30deg" auto-rotate  rotation-per-second="15deg"
     interaction-prompt="none" environment-image="neutral" exposure="0.75" shadow-intensity="0" tone-mapping="commerce">
@@ -538,7 +538,7 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
     class="custom-model-viewer"
     src="{{ '/Videos/3D_1.85MB.glb' | relative_url }}"
     alt="E-Link 256-Channel Custom Headstage 3D Model" 
-    loading="lazy"     power-preference="low-power" reveal="manual"
+    loading="lazy"       reveal="manual"
     poster="{{ '/Images/poster.webp' | relative_url }}"
     camera-controls interpolation-decay="200" bounds="tight" field-of-view="30deg" auto-rotate  rotation-per-second="15deg"
     interaction-prompt="none" environment-image="neutral" exposure="0.75" shadow-intensity="0" tone-mapping="commerce">
@@ -982,7 +982,7 @@ This project is open-source and available under the **MIT License**. Click the b
     class="custom-model-viewer"
     src="{{ '/Videos/On skull_3.16MB.glb' | relative_url }}"
     alt="E Link on Skull 3D Model"
-    loading="lazy" power-preference="low-power" reveal="manual"
+    loading="lazy"   reveal="manual"
     poster="{{ '/Images/poster.webp' | relative_url }}"
     camera-controls interpolation-decay="200" bounds="tight" field-of-view="30deg" auto-rotate  rotation-per-second="15deg"
     interaction-prompt="none" environment-image="neutral" exposure="0.75" shadow-intensity="0" tone-mapping="commerce">
@@ -1043,7 +1043,7 @@ This project is open-source and available under the **MIT License**. Click the b
     class="custom-model-viewer"
     src="{{ '/Videos/Whole_2.34MB.glb' | relative_url }}"
     alt="E Link 3D Model" 
-    loading="lazy"     power-preference="low-power" reveal="manual"
+    loading="lazy"       reveal="manual"
     poster="{{ '/Images/poster.webp' | relative_url }}"
     camera-controls interpolation-decay="200" bounds="tight" field-of-view="30deg" auto-rotate  rotation-per-second="15deg"
     interaction-prompt="none" environment-image="neutral" exposure="0.75" shadow-intensity="0" tone-mapping="commerce">
@@ -1104,7 +1104,7 @@ This project is open-source and available under the **MIT License**. Click the b
     class="custom-model-viewer"
     src="{{ '/Videos/3D_1.85MB.glb' | relative_url }}"
     alt="E-Link 256-Channel Custom Headstage 3D Model"
-    loading="lazy"     power-preference="low-power" reveal="manual"
+    loading="lazy"       reveal="manual"
     poster="{{ '/Images/poster.webp' | relative_url }}"
     camera-controls interpolation-decay="200" bounds="tight" field-of-view="30deg" auto-rotate  rotation-per-second="15deg"
     interaction-prompt="none" environment-image="neutral" exposure="0.75" shadow-intensity="0" tone-mapping="commerce">
@@ -1597,28 +1597,46 @@ document.querySelectorAll('.metric-card').forEach(card => {
         }, 120);
     }, { passive: true });
 
-  // 激活模型的专用函数 (防频闪优化版)
-    const activateViewer = (viewer) => {
+// 增加一个全局锁，防止多个 3D 模型同时解压撑爆显存
+    let isAnyModelLoading = false;
+
+    // 激活模型的专用函数 (防 OOM 闪退版)
+    const activateViewer = async (viewer) => {
         if (isScrolling) return; 
 
-        // 遍历所有模型，精准控制，避免重复触发指令
+        // 严格暂停非当前模型，释放 GPU 活跃算力
         models.forEach(m => {
-            if (m !== viewer) {
-                // 只有当其它模型还在播放时，才去暂停它
-                if (!m.paused) {
-                    m.pause();
-                }
+            if (m !== viewer && !m.paused) {
+                m.pause();
             }
         });
 
-        // 如果目标模型还没解压海报
+        // 如果该模型还没有解压加载
         if (viewer.getAttribute('reveal') === 'manual' && viewer.dataset.loaded !== "true") {
-            viewer.dismissPoster();
-            viewer.dataset.loaded = "true";
+            // 🚨 核心防御：如果此时有其他模型正在加载，立刻放弃本次唤醒，防止撞车闪退！
+            if (isAnyModelLoading) return; 
+            
+            isAnyModelLoading = true;
+            try {
+                viewer.dismissPoster();
+                viewer.dataset.loaded = "true";
+                
+                // 强制等待该模型加载完成，再释放锁
+                await new Promise(resolve => {
+                    viewer.addEventListener('load', resolve, { once: true });
+                    // 设置 2.5 秒超时兜底，防止死锁导致后续模型都无法加载
+                    setTimeout(resolve, 2500); 
+                });
+            } catch (e) {
+                console.warn("3D 模型加载被打断:", e);
+            } finally {
+                // 模型加载完毕，释放锁，允许下一个模型加载
+                isAnyModelLoading = false;
+            }
         }
         
-        // 只有当目标模型处于暂停状态时，才呼叫 play，避免 WebGL 频闪
-        if (viewer.paused) {
+        // 确保 WebGL 上下文安全后再播放
+        if (viewer.paused && !isAnyModelLoading) {
             try { viewer.play(); } catch(e) {}
         }
 
@@ -1627,7 +1645,7 @@ document.querySelectorAll('.metric-card').forEach(card => {
             clearTimeout(viewer.hudTimer); 
             viewer.hudTimer = setTimeout(() => {
                 viewer.querySelectorAll('.gesture-overlay').forEach(el => el.classList.add('gesture-active'));
-            }, 500);
+            }, 600);
         }
     };
 
