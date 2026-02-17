@@ -25,19 +25,59 @@ title: E-Link Home
 <div align="center">
   <h1 style="border-bottom: none; margin-bottom: 5px; color: #60a5fa; font-size: 2em;">🚀 E-Link(256)</h1>
 
-<h2 style="
-  background: -webkit-linear-gradient(0deg, #60a5fa, #a78bfa);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  font-family: 'Inter', system-ui, sans-serif;
-  font-weight: 700;
-  font-size: 1.5em;
-  letter-spacing: -0.5px;
-  text-align: center;
-  margin-top: 0;
-">
+<h2 class="dynamic-gradient-title">
   An Open-Source, Elastomer Interconnection-based<br>Connector for Flexible Neural Interfaces
 </h2>
+
+<style>
+.dynamic-gradient-title {
+  /* 1. 设置一个多色彩的超长渐变背景 */
+  background: linear-gradient(
+    90deg, 
+    #60a5fa, /* 蓝色 */
+    #a78bfa, /* 紫色 */
+    #f472b6, /* 粉色 */
+    #60a5fa  /* 回到蓝色，确保循环平滑 */
+  );
+  
+  /* 背景放大，这样位移时才有变色效果 */
+  background-size: 300% auto;
+  
+  /* 2. 核心：将背景裁剪到文字上 */
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  
+  /* 3. 字体样式 */
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-weight: 800;
+  font-size: 1.6em;
+  letter-spacing: -0.5px;
+  text-align: center;
+  margin-top: 10px;
+  
+  /* 4. 触发动画：8秒循环，线性匀速 */
+  animation: shimmer-gradient 8s linear infinite;
+}
+
+/* 定义背景位移的动画 */
+@keyframes shimmer-gradient {
+  0% {
+    background-position: 0% center;
+  }
+  100% {
+    background-position: 300% center;
+  }
+}
+
+/* 针对手机端稍微调小字号 */
+@media (max-width: 600px) {
+  .dynamic-gradient-title {
+    font-size: 1.2em;
+    line-height: 1.3;
+  }
+}
+</style>
 
   <div align="center" style="margin-top: 15px;">
     <a href="https://sites.dartmouth.edu/fang-group/"><img src="https://img.shields.io/badge/Dartmouth-MINE--Lab-00693E?style=flat-square" alt="MINE Lab"></a>
