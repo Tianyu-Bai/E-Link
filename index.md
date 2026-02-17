@@ -655,6 +655,150 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
 
 <span id="en-features"></span>
 ## ✨ Key Features
+<div class="species-compatibility-container" align="center" style="margin: 40px auto; max-width: 760px;">
+  <h3 style="color: #60a5fa; margin-bottom: 20px; font-family: sans-serif;">🌍 Cross-Species Scalability</h3>
+  
+  <div class="species-glass-box">
+    <svg class="connection-lines" viewBox="0 0 600 300" preserveAspectRatio="xMidYMid meet">
+      <path class="base-line" d="M300,150 L100,220" />
+      <path class="base-line" d="M300,150 L300,250" />
+      <path class="base-line" d="M300,150 L500,220" />
+      
+      <path class="pulse-line" d="M300,150 L100,220" />
+      <path class="pulse-line" d="M300,150 L300,250" />
+      <path class="pulse-line" d="M300,150 L500,220" />
+    </svg>
+
+    <div class="node center-node">
+      <div class="hex-border">
+        <img src="https://img.icons8.com/external-solid-style-lines-studio/50/60a5fa/external-microchip-artificial-intelligence-solid-style-lines-studio.png" alt="E-Link Core" width="40" />
+      </div>
+      <div class="node-text pulse-text">E-Link (256)</div>
+    </div>
+
+    <div class="animal-nodes">
+      
+      <div class="node sub-node">
+        <div class="icon-circle mouse-glow">
+          <span style="font-size: 30px;">🐁</span>
+        </div>
+        <div class="node-title">Mouse</div>
+        <div class="node-desc">Housing Removed<br><b><font color="#10b981">2.8g</font> Payload</b></div>
+      </div>
+
+      <div class="node sub-node" style="margin-top: 30px;">
+        <div class="icon-circle rat-glow">
+          <span style="font-size: 30px;">🐀</span>
+        </div>
+        <div class="node-title">Rat</div>
+        <div class="node-desc">Standard Implant<br><b><font color="#3b82f6">6.6g</font> Total</b></div>
+      </div>
+
+      <div class="node sub-node">
+        <div class="icon-circle monkey-glow">
+          <span style="font-size: 30px;">🐒</span>
+        </div>
+        <div class="node-title">Macaque</div>
+        <div class="node-desc">High Durability<br><b>Multi-Array Scalable</b></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<style>
+/* ===================== 跨物种拓扑动画 CSS ===================== */
+.species-glass-box {
+  position: relative;
+  background: rgba(15, 23, 42, 0.4);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  border-radius: 16px;
+  padding: 30px 20px;
+  min-height: 320px;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+.connection-lines {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  z-index: 1; pointer-events: none;
+}
+
+.base-line {
+  fill: none; stroke: rgba(255, 255, 255, 0.1); stroke-width: 2;
+}
+
+.pulse-line {
+  fill: none; stroke: #60a5fa; stroke-width: 3;
+  stroke-dasharray: 15 100; /* 光点长度和间距 */
+  animation: data-flow 2s linear infinite;
+  filter: drop-shadow(0 0 5px rgba(96, 165, 250, 0.8));
+}
+
+@keyframes data-flow {
+  from { stroke-dashoffset: 115; }
+  to { stroke-dashoffset: 0; }
+}
+
+.node {
+  position: relative; z-index: 2;
+  display: flex; flex-direction: column; align-items: center;
+}
+
+.center-node { margin-bottom: 20px; }
+
+.hex-border {
+  width: 70px; height: 70px;
+  background: radial-gradient(circle, rgba(59,130,246,0.3) 0%, transparent 70%);
+  border: 2px solid #3b82f6; border-radius: 12px;
+  display: flex; justify-content: center; align-items: center;
+  box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+.node-text {
+  margin-top: 10px; font-weight: bold; color: #fff;
+  font-family: 'JetBrains Mono', monospace; font-size: 14px;
+}
+.pulse-text { text-shadow: 0 0 8px rgba(96, 165, 250, 0.8); }
+
+.animal-nodes {
+  display: flex; justify-content: space-around; width: 100%;
+}
+
+.icon-circle {
+  width: 60px; height: 60px; border-radius: 50%;
+  background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2);
+  display: flex; justify-content: center; align-items: center;
+  transition: all 0.3s ease;
+}
+.icon-circle:hover { transform: scale(1.1); border-color: #60a5fa; background: rgba(96, 165, 250, 0.1); }
+
+/* 三种动物的不同光环标识 */
+.mouse-glow { box-shadow: 0 0 10px rgba(16, 185, 129, 0.3); }
+.rat-glow { box-shadow: 0 0 10px rgba(59, 130, 246, 0.3); }
+.monkey-glow { box-shadow: 0 0 10px rgba(245, 158, 11, 0.3); }
+
+.node-title { margin-top: 8px; font-weight: bold; color: #e2e8f0; font-size: 14px; }
+.node-desc { margin-top: 4px; color: #94a3b8; font-size: 11px; text-align: center; line-height: 1.4; font-family: sans-serif; }
+
+/* 手机端响应式调整 */
+@media (max-width: 600px) {
+  .species-glass-box { padding: 20px 5px; }
+  .animal-nodes { padding: 0 10px; }
+  .icon-circle { width: 45px; height: 45px; }
+  .icon-circle span { font-size: 24px !important; }
+  .node-title { font-size: 12px; }
+  .node-desc { font-size: 9px; }
+  .connection-lines { display: none; /* 手机端连线可能不对齐，直接隐藏只留卡片 */ }
+}
+</style>
 
 * **⚡ 256-Channel High-Density Interface**
  Compact pedestal footprint supporting high-density acquisition without increasing surgical overhead.
