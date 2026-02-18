@@ -660,7 +660,7 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
   <path class="base-line" d="M300,120 L300,210" stroke="rgba(255,255,255,0.1)" fill="none" /> 
   <path class="base-line" d="M300,120 L465,195" stroke="rgba(255,255,255,0.1)" fill="none" /> 
   
-  <path class="pulse-line" d="M300,120 L135,195" />
+  <path class="pulse-line line-to-mouse" d="M300,120 L135,195" />
   <path class="pulse-line" d="M300,120 L300,210" />
   <path class="pulse-line line-to-monkey" d="M300,120 L465,195" />
 </svg>
@@ -730,6 +730,7 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
   animation: data-flow 2.5s linear infinite; filter: drop-shadow(0 0 5px rgba(96, 165, 250, 0.8));
 }
 .line-to-monkey { stroke: #f59e0b !important; filter: drop-shadow(0 0 5px rgba(245, 158, 11, 0.8)) !important;}
+.line-to-mouse { stroke: #10b981 !important; filter: drop-shadow(0 0 5px rgba(16, 185, 129, 0.8)) !important; }
 
 @keyframes data-flow { from { stroke-dashoffset: 115; } to { stroke-dashoffset: 0; } }
 
@@ -1393,7 +1394,7 @@ This project is open-source and available under the **MIT License**. Click the b
   <path class="base-line" d="M300,120 L300,210" stroke="rgba(255,255,255,0.1)" fill="none" /> 
   <path class="base-line" d="M300,120 L465,195" stroke="rgba(255,255,255,0.1)" fill="none" /> 
   
-  <path class="pulse-line" d="M300,120 L135,195" />
+  <path class="pulse-line line-to-mouse" d="M300,120 L135,195" />
   <path class="pulse-line" d="M300,120 L300,210" />
   <path class="pulse-line line-to-monkey" d="M300,120 L465,195" />
 </svg>
