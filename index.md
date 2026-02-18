@@ -1955,7 +1955,11 @@ This project is open-source and available under the **MIT License**. Click the b
         } else {
           // 滑出屏幕时清理状态
           card.dataset.dashboardInView = "false";
-          window.cancelAnimationFrame(card.dashboardAnimFrame);
+          // 🚨 100分优化：彻底杀掉该卡片的动画进程，防止内存溢出
+          if (card.dashboardAnimFrame) {
+            window.cancelAnimationFrame(card.dashboardAnimFrame);
+            card.dashboardAnimFrame = null;
+          }
           fgRing.style.strokeDashoffset = circumference;
           numberEl.innerText = "0";
         }
