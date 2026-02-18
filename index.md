@@ -1243,8 +1243,9 @@ This project is open-source and available under the **MIT License**. Click the b
 </style>
 
 <h2 class="sub-title">
-    一种基于弹性导电体互连技术的高密度柔性神经接口连接器
-  </h2>
+  一种基于弹性导电体互连技术的<br class="mobile-only-br">高密度柔性神经接口连接器
+</h2>
+  
 
   <div align="center" style="margin-top: 15px;">
     <a href="https://sites.dartmouth.edu/fang-group/"><img src="https://img.shields.io/badge/达特茅斯学院-00693E?style=flat-square" alt="方辉组"></a>
