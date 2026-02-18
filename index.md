@@ -23,8 +23,9 @@ title: E-Link Home
 </div>
   
 <div align="center" style="margin-bottom: 20px;">
-  <h1 style="display: flex; align-items: center; justify-content: center; border-bottom: none; margin-bottom: 5px; color: #ffffff; font-size: 2.2em; font-weight: 800; letter-spacing: -1px;">
-    <svg class="header-icon-svg" width="45" height="45" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-right: 15px;">
+  <h1 class="header-sync-pulse" style="display: flex; align-items: center; justify-content: center; border-bottom: none; margin-bottom: 5px; color: #ffffff; font-size: 2.2em; font-weight: 800; letter-spacing: -1px;">
+    
+    <svg width="45" height="45" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-right: 15px;">
       <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" stroke="url(#icon-gradient)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
       <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" stroke="url(#icon-gradient)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
       <defs>
@@ -35,27 +36,48 @@ title: E-Link Home
         </linearGradient>
       </defs>
     </svg>
+
     E-Link(256)
   </h1>
 </div>
 
 <style>
-/* 图标呼吸灯特效 */
-.header-icon-svg {
-  filter: drop-shadow(0 0 8px rgba(96, 165, 250, 0.4));
-  animation: icon-pulse 3s ease-in-out infinite;
+/* 100分同步呼吸动画 */
+.header-sync-pulse {
+  /* 初始阴影，增加文字和图标的厚度感 */
+  filter: drop-shadow(0 0 5px rgba(96, 165, 250, 0.2));
+  /* 3秒循环，缓入缓出，无限循环 */
+  animation: sync-pulse 3s ease-in-out infinite;
+  will-change: transform, filter;
 }
 
-@keyframes icon-pulse {
-  0%, 100% { transform: scale(1); opacity: 0.9; filter: drop-shadow(0 0 8px rgba(96, 165, 250, 0.4)); }
-  50% { transform: scale(1.05); opacity: 1; filter: drop-shadow(0 0 15px rgba(167, 139, 250, 0.7)); }
+@keyframes sync-pulse {
+  0%, 100% { 
+    transform: scale(1); 
+    opacity: 0.9;
+    filter: drop-shadow(0 0 5px rgba(96, 165, 250, 0.2));
+  }
+  50% { 
+    /* 极致轻微的放大，增加灵动感而不晃眼 */
+    transform: scale(1.03); 
+    opacity: 1;
+    /* 增强整体发光效果，包含图标和文字 */
+    filter: drop-shadow(0 0 15px rgba(167, 139, 250, 0.5));
+  }
 }
 
-/* 标题文字微调：让文字本身也带一点点淡淡的灰白渐变，更有质感 */
-h1 {
-  background: linear-gradient(to bottom, #ffffff 60%, #cbd5e1 100%);
+/* 文字渐变质感优化 */
+h1.header-sync-pulse {
+  background: linear-gradient(to bottom, #ffffff 65%, #cbd5e1 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  /* 确保 SVG 不受 background-clip 影响 */
+  display: flex !important; 
+}
+
+/* 强制让 SVG 渲染，不受文字裁剪影响 */
+h1.header-sync-pulse svg {
+  -webkit-text-fill-color: initial;
 }
 </style>
 
