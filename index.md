@@ -825,7 +825,7 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
         <div class="node-desc">Housing Removed<br><b><font color="#10b981">2.8g</font> Payload</b></div>
       </div>
 
-      <div class="node sub-node" style="margin-top: 30px;">
+      <div class="node sub-node rat-node-adjust">
         <div class="icon-circle rat-glow">
           <span style="font-size: 30px;">🐀</span>
         </div>
@@ -846,7 +846,7 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
 </div>
 
 <style>
-/* ===================== 跨物种拓扑动画 CSS ===================== */
+/* ===================== 跨物种拓扑动画 CSS - 居中修正版 ===================== */
 .species-glass-box {
   position: relative;
   background: rgba(15, 23, 42, 0.4);
@@ -858,15 +858,20 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
 }
 
+.connection-lines {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  z-index: 1; pointer-events: none;
+}
+
 .base-line {
   fill: none; stroke: rgba(255, 255, 255, 0.1); stroke-width: 2;
 }
 
-  .pulse-line {
+.pulse-line {
   fill: none; 
   stroke: #60a5fa; 
   stroke-width: 3;
-  /* 调整光点长度和间距，让它在到达图标时正好处于间隙位置，看起来像射入了图标 */
   stroke-dasharray: 20 120; 
   animation: data-flow 2.5s linear infinite;
   filter: drop-shadow(0 0 5px rgba(96, 165, 250, 0.8));
@@ -880,9 +885,10 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
 .node {
   position: relative; z-index: 2;
   display: flex; flex-direction: column; align-items: center;
+  flex: 1; /* 强制三个节点等宽，确保绝对中心 */
 }
 
-.center-node { margin-bottom: 20px; }
+.center-node { margin-bottom: 20px; flex: none; width: 100%; }
 
 .hex-border {
   width: 70px; height: 70px;
@@ -906,10 +912,15 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
 
 .animal-nodes {
   display: flex; 
-  justify-content: space-around; 
+  justify-content: space-between; 
   width: 100%;
-  align-items: flex-start; /* 🚨 确保所有节点从顶部对齐，高度一致 */
+  align-items: flex-start; /* 顶部对齐是实现等分的关键 */
   margin-top: 10px;
+}
+
+/* 核心修复：使用 transform 代替 margin-top 避免容器偏移 */
+.rat-node-adjust {
+  transform: translateY(30px);
 }
 
 .icon-circle {
@@ -925,13 +936,10 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
   transition: all 0.3s ease;
   position: relative; 
   z-index: 5;
-  /* 🚨 添加 margin 修正，确保圆心在布局中更稳定 */
-  margin: 0 auto; 
 }
 
 .icon-circle:hover { transform: scale(1.1); border-color: #60a5fa; background: rgba(96, 165, 250, 0.1); }
 
-/* 三种动物的不同光环标识 */
 .mouse-glow { box-shadow: 0 0 10px rgba(16, 185, 129, 0.3); }
 .rat-glow { box-shadow: 0 0 10px rgba(59, 130, 246, 0.3); }
 .monkey-glow { box-shadow: 0 0 10px rgba(245, 158, 11, 0.3); }
@@ -939,17 +947,13 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
 .node-title { margin-top: 8px; font-weight: bold; color: #e2e8f0; font-size: 14px; }
 .node-desc { margin-top: 4px; color: #94a3b8; font-size: 11px; text-align: center; line-height: 1.4; font-family: sans-serif; }
 
-/* 手机端响应式调整 */
 @media (max-width: 600px) {
   .species-glass-box { padding: 20px 5px; min-height: 250px; }
-  .animal-nodes { padding: 0; } /* 去掉内边距，让图标充分散开 */
   .icon-circle { width: 45px; height: 45px; }
   .icon-circle span { font-size: 24px !important; }
   .node-title { font-size: 12px; }
   .node-desc { font-size: 9px; }
-  
-  /* 🚨 核心修改：解除隐藏，并在手机上把光线稍微调细一点点，显得更精致 */
-  .connection-lines { display: block; opacity: 0.8; }
+  .connection-lines { opacity: 0.8; }
   .pulse-line { stroke-width: 2; }
 }
 </style>
@@ -1559,12 +1563,11 @@ This project is open-source and available under the **MIT License**. Click the b
 
 <span id="cn-features"></span>
 ## ✨ 核心特性
-
 <div class="species-compatibility-container" align="center" style="margin: 40px auto; max-width: 760px;">
   <h3 style="color: #60a5fa; margin-bottom: 20px; font-family: sans-serif;">🌍 跨物种适用性展望 </h3>
   
   <div class="species-glass-box">
-  <svg class="connection-lines" viewBox="0 0 600 300" preserveAspectRatio="none" style="z-index: 1;">
+<svg class="connection-lines" viewBox="0 0 600 300" preserveAspectRatio="none" style="z-index: 1;">
   <path class="base-line" d="M300,120 L135,195" stroke="rgba(255,255,255,0.1)" fill="none" /> 
   <path class="base-line" d="M300,120 L300,210" stroke="rgba(255,255,255,0.1)" fill="none" /> 
   <path class="base-line" d="M300,120 L465,195" stroke="rgba(255,255,255,0.1)" fill="none" /> 
@@ -1589,24 +1592,24 @@ This project is open-source and available under the **MIT License**. Click the b
         <div class="icon-circle mouse-glow">
           <span style="font-size: 30px;">🐁</span>
         </div>
-        <div class="node-title">Mouse</div>
-        <div class="node-desc">Housing Removed<br><b><font color="#10b981">2.8g</font> Payload</b></div>
+        <div class="node-title"><i>小鼠</i></div>
+        <div class="node-desc">顶盖移除后<br><b><font color="#10b981">2.8g</font> 载荷</b></div>
       </div>
 
-      <div class="node sub-node" style="margin-top: 30px;">
+      <div class="node sub-node rat-node-adjust">
         <div class="icon-circle rat-glow">
           <span style="font-size: 30px;">🐀</span>
         </div>
-        <div class="node-title">Rat</div>
-        <div class="node-desc">Standard Implant<br><b><font color="#3b82f6">6.6g</font> Total</b></div>
+        <div class="node-title"><i>大鼠</i></div>
+        <div class="node-desc">长期佩戴<br><b><font color="#3b82f6">6.6g</font> 共计</b></div>
       </div>
 
       <div class="node sub-node">
         <div class="icon-circle monkey-glow">
           <span style="font-size: 30px;">🐒</span>
         </div>
-        <div class="node-title">Macaque</div>
-        <div class="node-desc">High Durability<br><b>Multi-Array Scalable</b></div>
+        <div class="node-title"><i>灵长类</i></div>
+        <div class="node-desc">高耐久性<br><b>可拓展矩阵</b></div>
       </div>
 
     </div>
