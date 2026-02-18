@@ -655,7 +655,7 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
   <h3 style="color: #60a5fa; margin-bottom: 20px; font-family: sans-serif;">🌍 Future Application Roadmap </h3>
   
   <div class="species-glass-box">
-<svg class="connection-lines" viewBox="0 0 600 380" preserveAspectRatio="none" style="z-index: 1;">
+  <svg class="connection-lines" viewBox="0 0 600 380" preserveAspectRatio="none" style="z-index: 1;">
   <path class="base-line" d="M300,141 L135,225" stroke="rgba(255,255,255,0.1)" fill="none" /> 
   <path class="base-line" d="M300,141 L300,255" stroke="rgba(255,255,255,0.1)" fill="none" /> 
   <path class="base-line" d="M300,141 L465,225" stroke="rgba(255,255,255,0.1)" fill="none" /> 
@@ -711,8 +711,8 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
   background: rgba(15, 23, 42, 0.4);
   border: 1px solid rgba(59, 130, 246, 0.2);
   border-radius: 16px;
-  padding: 30px 20px 40px 20px; 
-  min-height: 380px;            
+  padding: 30px 20px 40px 20px; /* 🚨 修改点：底部增加到 40px 内边距，防止文字贴底 */
+  min-height: 380px;            /* 🚨 修改点：从 320px 增加到 380px，给大鼠腾出空间 */
   overflow: hidden;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
   transform: translateZ(0); 
@@ -736,7 +736,7 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
 
 .node {
   position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center;
-  flex: 1; min-width: 0; 
+  flex: 1; min-width: 0; /* 强制三等分，绝对居中 */
 }
 
 .center-node { margin-bottom: 20px; flex: none; width: 100%; }
@@ -753,9 +753,14 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
 .pulse-text { text-shadow: 0 0 8px rgba(96, 165, 250, 0.8); }
 
 .animal-nodes {
-  display: flex; justify-content: space-between; width: 100%; align-items: flex-start; margin-top: 45px;
+  display: flex; 
+  justify-content: space-between; 
+  width: 100%; 
+  align-items: flex-start; 
+  margin-top: 60px; /* 👈圆圈整体下移 */
 }
 
+/* 核心修复：使用 transform 代替 margin-top */
 .rat-node-adjust { transform: translateY(30px) translateZ(0); }
 
 .icon-circle {
@@ -773,8 +778,10 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
 .node-title { margin-top: 8px; font-weight: bold; color: #e2e8f0; font-size: 14px; }
 .node-desc { margin-top: 4px; color: #94a3b8; font-size: 11px; text-align: center; line-height: 1.4; font-family: sans-serif; }
 
-@media (max-width: 600px) {
+@@media (max-width: 600px) {
+  /* 🚨 核心修复：将 padding 和 min-height 与电脑端保持绝对一致，防止 SVG Y轴被压扁脱靶 */
   .species-glass-box { padding: 30px 5px 40px 5px; min-height: 380px; } 
+  
   .icon-circle { width: 45px; height: 45px; }
   .icon-circle span { font-size: 24px !important; }
   .node-title { font-size: 12px; }
@@ -1388,7 +1395,7 @@ This project is open-source and available under the **MIT License**. Click the b
   <h3 style="color: #60a5fa; margin-bottom: 20px; font-family: sans-serif;">🌍 跨物种适用性展望 </h3>
   
   <div class="species-glass-box">
-<svg class="connection-lines" viewBox="0 0 600 380" preserveAspectRatio="none" style="z-index: 1;">
+  <svg class="connection-lines" viewBox="0 0 600 380" preserveAspectRatio="none" style="z-index: 1;">
   <path class="base-line" d="M300,141 L135,225" stroke="rgba(255,255,255,0.1)" fill="none" /> 
   <path class="base-line" d="M300,141 L300,255" stroke="rgba(255,255,255,0.1)" fill="none" /> 
   <path class="base-line" d="M300,141 L465,225" stroke="rgba(255,255,255,0.1)" fill="none" /> 
@@ -1661,13 +1668,14 @@ This project is open-source and available under the **MIT License**. Click the b
 <script>
   document.addEventListener("DOMContentLoaded", () => {
   
-  // ===================== 弱网探测核心逻辑 =====================
+  // ===================== 弱网探测核心逻辑 (新增) =====================
+  // 检测用户是否开启了省流量模式，或者是 3G/2G 网络
   const isSlowNetwork = () => {
     if ('connection' in navigator) {
       const conn = navigator.connection;
       return conn.saveData || /^[23]g$/.test(conn.effectiveType);
     }
-    return false;
+    return false; // 默认放行
   };
 
   // ===================== E-Link 动态数据面板逻辑 =====================
@@ -1676,9 +1684,6 @@ This project is open-source and available under the **MIT License**. Click the b
         const card = entry.target;
         const fgRing = card.querySelector('.fg-ring');
         const numberEl = card.querySelector('.count-up');
-        
-        // 【稳定优化1】：严格的 DOM 判空，防止找不到元素导致报错
-        if (!fgRing || !numberEl) return;
         
         const targetValue = parseFloat(card.dataset.value);
         const isFloat = card.dataset.isFloat === "true";
@@ -1698,6 +1703,7 @@ This project is open-source and available under the **MIT License**. Click the b
             const elapsed = (timestamp - startTimestamp) % cycleTime;
             
             let progress = 0;
+            
             if (elapsed < growTime) {
               let p = elapsed / growTime;
               progress = p === 1 ? 1 : 1 - Math.pow(2, -10 * p);
@@ -1742,7 +1748,7 @@ This project is open-source and available under the **MIT License**. Click the b
       dashboardObserver.observe(card);
     });
     
-    // ===================== 3D 模型交互与防弹保护逻辑 =====================
+    // ===================== 3D 模型交互与弱网防闪退逻辑 =====================
     const models = Array.from(document.querySelectorAll('model-viewer'));
     if (!models.length) return;
 
@@ -1752,15 +1758,17 @@ This project is open-source and available under the **MIT License**. Click the b
     let scrollEndTimer = null;
     let initCheckTimer = null; 
 
+    // 新增：给每个模型添加点击事件，允许弱网时手动加载
     models.forEach(viewer => {
         viewer.addEventListener('click', () => {
              if (viewer.dataset.loaded !== "true") {
-                 activateViewer(viewer, true); 
+                 activateViewer(viewer, true); // force=true 强制加载
              }
         });
     });
 
     const checkAndActivateBestModel = () => {
+        // 🚨核心阻断：如果是弱网，绝不自动加载，等待用户点击
         if (isSlowNetwork()) return;
 
         let bestModel = null;
@@ -1785,18 +1793,18 @@ This project is open-source and available under the **MIT License**. Click the b
         }
     };
 
-    // 【稳定优化2】：增加防抖时间到 150ms，减少快速滑动时的计算压力
     window.addEventListener('scroll', () => {
         isScrolling = true;
         clearTimeout(scrollEndTimer);
         scrollEndTimer = setTimeout(() => {
             isScrolling = false;
             checkAndActivateBestModel();
-        }, 150); 
+        }, 120);
     }, { passive: true });
 
     let isAnyModelLoading = false;
 
+    // 激活模型的专用函数 (加入 force 参数)
     const activateViewer = async (viewer, force = false) => {
         if (isScrolling && !force) return; 
 
@@ -1814,13 +1822,12 @@ This project is open-source and available under the **MIT License**. Click the b
                 viewer.dismissPoster();
                 viewer.dataset.loaded = "true";
                 
-                // 【稳定优化3】：加入超时保护机制，最多等待 4 秒，防止因网络波动卡死整个加载锁
-                await Promise.race([
-                    new Promise(resolve => viewer.addEventListener('load', resolve, { once: true })),
-                    new Promise(resolve => setTimeout(resolve, 4000))
-                ]);
+                await new Promise(resolve => {
+                    viewer.addEventListener('load', resolve, { once: true });
+                    setTimeout(resolve, 2500); 
+                });
             } catch (e) {
-                console.warn("3D Engine Init Interrupted:", e);
+                console.warn("3D 模型加载被打断:", e);
             } finally {
                 isAnyModelLoading = false;
             }
