@@ -144,8 +144,6 @@ title: E-Link Home
     <a href="https://www.linkedin.com/in/tianyubai/"><img src="https://img.shields.io/badge/LinkedIn-Profile-0A66C2?style=flat-square&logo=linkedin&logoColor=white" alt="LinkedIn"></a>
      <a href="https://github.com/tianyu-bai/E-Link/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-MIT-A31F34?style=flat-square&logo=opensourceinitiative&logoColor=white" alt="License"></a>
   </div>
-
-  <br />
   <div align="center">
  <br>
  <img src="Images/001.PNG" alt="E-Link(256) Exploded View" width="750">
@@ -1265,8 +1263,6 @@ This project is open-source and available under the **MIT License**. Click the b
     <a href="https://www.linkedin.com/in/tianyubai/"><img src="https://img.shields.io/badge/领英-个人主页-0A66C2?style=flat-square&logo=linkedin&logoColor=white" alt="LinkedIn"></a>
      <a href="https://github.com/tianyu-bai/E-Link/blob/main/LICENSE"><img src="https://img.shields.io/badge/开源协议-MIT-A31F34?style=flat-square&logo=opensourceinitiative&logoColor=white" alt="License"></a>
   </div>
-
-  <br />
   <div align="center">
   <br>
   <img src="Images/001_CN.png" alt="E-Link_256 分解图" width="750">
