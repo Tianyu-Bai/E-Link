@@ -137,20 +137,6 @@ title: E-Link Home
 }
 </style>
 
-<h2 style="
-  background: -webkit-linear-gradient(0deg, #60a5fa, #a78bfa);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  font-family: 'Inter', system-ui, sans-serif;
-  font-weight: 700;
-  font-size: 1.5em;
-  letter-spacing: -0.5px;
-  text-align: center;
-  margin-top: 0;
-">
-  An Open-Source, Elastomer Interconnection-based<br>Connector for Flexible Neural Interfaces
-</h2>
-
   <div align="center" style="margin-top: 15px;">
     <a href="https://sites.dartmouth.edu/fang-group/"><img src="https://img.shields.io/badge/Dartmouth-MINE--Lab-00693E?style=flat-square" alt="MINE Lab"></a>
     <img src="https://img.shields.io/badge/Verified-256ch-FFA500?style=flat-square" alt="Verified" />
@@ -358,6 +344,8 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
   50% { opacity: 0.3; }
 }
 
+  
+
 /* 加一根淡淡的分隔线 */
 .gesture-hud span + span {
   position: relative;
@@ -445,7 +433,7 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
   .inner-content .sub { display: none; }
 }
     
-/* ===================== 高级 3D 封面特效 (HUD) ===================== */
+  /* ===================== 高级 3D 封面特效 (HUD) ===================== */
 /* 1. 双环反向旋转加载器 */
 .cyber-loader {
   position: relative;
@@ -494,76 +482,7 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
   90% { opacity: 0.6; }
   100% { top: 100%; opacity: 0; }
 }
-/* ===================== 玻璃质感表格 (强制覆盖模式) ===================== */
-.fancy-table {
-  background: rgba(15, 23, 42, 0.4) !important;
-  border: 1px solid rgba(59, 130, 246, 0.3) !important;
-  border-radius: 12px !important;
-  border-collapse: separate !important; /* 允许圆角生效 */
-  border-spacing: 0 !important;
-  overflow: hidden !important;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2) !important;
-  backdrop-filter: blur(8px) !important;
-  color: #e2e8f0 !important;
-}
 
-.fancy-table th {
-  background: rgba(59, 130, 246, 0.2) !important;
-  color: #60a5fa !important;
-  border: none !important;
-  border-bottom: 1px solid rgba(59, 130, 246, 0.3) !important;
-}
-
-.fancy-table td {
-  border: none !important;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
-  background: transparent !important;
-  transition: background 0.3s ease !important;
-}
-
-.fancy-table tr:hover td {
-  background: rgba(59, 130, 246, 0.15) !important; /* 鼠标悬浮时整行亮起科技蓝 */
-}
-
-.fancy-table tr:last-child td {
-  border-bottom: none !important;
-}
-/* ===================== 特性卡片瀑布流样式 ===================== */
-.feature-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 20px;
-  max-width: 760px;
-  margin: 20px auto;
-}
-.feature-card {
-  background: rgba(15, 23, 42, 0.4);
-  border: 1px solid rgba(59, 130, 246, 0.2);
-  border-radius: 12px;
-  padding: 20px;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  backdrop-filter: blur(4px);
-}
-.feature-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 20px rgba(59, 130, 246, 0.15);
-  border-color: rgba(59, 130, 246, 0.5);
-}
-.feature-icon { 
-  font-size: 2em; 
-  margin-bottom: 10px; 
-}
-.feature-card h4 { 
-  margin: 0 0 10px 0 !important; 
-  color: #60a5fa !important; /* 科技蓝标题 */
-  font-size: 1.1em; 
-}
-.feature-card p { 
-  margin: 0 !important; 
-  font-size: 0.9em; 
-  color: #94a3b8; 
-  line-height: 1.5; 
-}
 /* 顶部徽章悬浮微交互动画 */
 .nav-badges a {
   display: inline-block;
@@ -839,7 +758,7 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
 ### 📊 Quick Specifications
 
 <div style="width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 10px;">
-<table class="fancy-table" style="width: 90%; min-width: 600px; text-align: center; margin: 0 auto;">
+  <table style="margin-left: auto; margin-right: auto; width: 90%; min-width: 600px; text-align: center; border-collapse: collapse; border: 1px solid #e1e4e8;">
    <thead>
      <tr style="background-color: #f6f8fa; border-bottom: 2px solid #e1e4e8;">
        <th style="padding: 10px; border: 1px solid #e1e4e8;">Specification</th>
@@ -1037,38 +956,16 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
 }
 </style>
 
-<div class="feature-grid">
-  <div class="feature-card">
-    <div class="feature-icon">⚡</div>
-    <h4>256-Channel High-Density Interface</h4>
-    <p>Compact pedestal footprint supporting high-density acquisition without increasing surgical overhead.</p>
-  </div>
-  
-  <div class="feature-card">
-    <div class="feature-icon">🔌</div>
-    <h4>Solderless Elastomeric Interconnect</h4>
-    <p>Uses anisotropic conductive elastomer for repeatable, alignment-tolerant electrical contact.</p>
-  </div>
-  
-  <div class="feature-card">
-    <div class="feature-icon">🐭</div>
-    <h4>Optimized for In-Vivo Research</h4>
-    <p>Minimal Implant Footprint: Core components weigh only 2.8g (with housing removed), reducing head-heavy behavior and improving animal welfare during long-term recording sessions.</p>
-  </div>
-  
-  <div class="feature-card">
-    <div class="feature-icon">🛠️</div>
-    <h4>Modular & Scalable</h4>
-    <p>Separable housing, PCBs, and protective cap for rapid iteration and troubleshooting.</p>
-  </div>
-  
-  <div class="feature-card">
-    <div class="feature-icon">🧪</div>
-    <h4>Surgical-Grade Design</h4>
-    <p>Textured sidewalls for superior adhesion with dental cement or UV-curable resin.</p>
-  </div>
-</div>
-
+* **⚡ 256-Channel High-Density Interface**
+ Compact pedestal footprint supporting high-density acquisition without increasing surgical overhead.
+* **🔌 Solderless Elastomeric Interconnect**
+ Uses anisotropic conductive elastomer for repeatable, alignment-tolerant electrical contact.
+* **🐭 Optimized for In-Vivo Research**
+ Minimal Implant Footprint: Core components weigh only 2.8g (with housing removed), reducing head-heavy behavior and improving animal welfare during long-term recording sessions.
+* **🛠️ Modular & Scalable**
+ Separable housing, PCBs, and protective cap for rapid iteration and troubleshooting.
+* **🧪 Surgical-Grade Design**
+ Textured sidewalls for superior adhesion with dental cement or UV-curable resin.
 <div align="center">
  <img src="Videos/Animation%20repeat.gif" 
       alt="ELINK-256 Animation GIF" 
@@ -1083,7 +980,7 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
 ## 🧩 System Components
 
 <div align="center">
- <table class="fancy-table" style="width: 90%; text-align: center; margin: 0 auto;">
+ <table border="1" style="border-collapse: collapse; width: 90%; text-align: center;">
    <thead>
      <tr style="background-color: #f2f2f2;">
        <th>Component</th>
@@ -1141,7 +1038,7 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
 </div>
 
 <div style="width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 10px;">
-  <table class="fancy-table" style="width: 90%; min-width: 600px; text-align: center; margin: 0 auto;">
+  <table style="margin-left: auto; margin-right: auto; width: 90%; min-width: 600px; text-align: center; border-collapse: collapse; border: 1px solid #e1e4e8;">
    <thead>
      <tr style="background-color: #f6f8fa; border-bottom: 2px solid #e1e4e8;">
        <th style="padding: 10px; border: 1px solid #e1e4e8; text-align: center;">Component</th>
@@ -1271,6 +1168,7 @@ This project is open-source and available under the **MIT License**. Click the b
    <img src="https://img.shields.io/badge/License-MIT-A31F34?style=flat-square&logo=opensourceinitiative&logoColor=white" alt="License">
  </a>
 </div>
+
 </div> 
 
 <div class="github-only">
@@ -1638,7 +1536,7 @@ This project is open-source and available under the **MIT License**. Click the b
 ### 📊 规格参数
 
 <div style="width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 10px;">
-  <table class="fancy-table" style="width: 90%; min-width: 600px; text-align: center; margin: 0 auto;">
+  <table style="margin-left: auto; margin-right: auto; width: 90%; min-width: 600px; text-align: center; border-collapse: collapse; border: 1px solid #e1e4e8;">
     <thead>
       <tr style="background-color: #f6f8fa; border-bottom: 2px solid #e1e4e8;">
         <th style="padding: 10px; border: 1px solid #e1e4e8;">规格项目</th>
@@ -1845,38 +1743,16 @@ This project is open-source and available under the **MIT License**. Click the b
 }
 </style>
 
-<div class="feature-grid">
-  <div class="feature-card">
-    <div class="feature-icon">⚡</div>
-    <h4>256 通道高密度接口</h4>
-    <p>紧凑的基座占地面积，支持高密度采集，且不增加手术负担。</p>
-  </div>
-  
-  <div class="feature-card">
-    <div class="feature-icon">🔌</div>
-    <h4>弹性导电体互连</h4>
-    <p>使用各向异性导电弹性体，实现可重复、允许对准误差的一站式电气接触。</p>
-  </div>
-  
-  <div class="feature-card">
-    <div class="feature-icon">🐭</div>
-    <h4>专为体内研究优化</h4>
-    <p>最小化植入所需面积。核心组件重量仅为 2.8g（移除上盖后），最大限度减少对小鼠自由活动的限制，从而减轻动物负担。</p>
-  </div>
-  
-  <div class="feature-card">
-    <div class="feature-icon">🛠️</div>
-    <h4>模块化与可扩展</h4>
-    <p>外壳、PCB 和保护盖均可分离，便于快速迭代和故障排查。</p>
-  </div>
-  
-  <div class="feature-card">
-    <div class="feature-icon">🧪</div>
-    <h4>手术级设计</h4>
-    <p>纹理化侧壁设计，增强了与牙科水泥或紫外光固化树脂的附着力。</p>
-  </div>
-</div>
-
+* **⚡ 256 通道高密度接口**
+  紧凑的基座占地面积，支持高密度采集，且不增加手术负担。
+* **🔌 弹性导电体互连**
+  使用各向异性导电弹性体，实现可重复、允许对准误差的一站式电气接触。
+* **🐭 专为体内研究优化**
+  最小化植入所需面积。核心组件重量仅为 2.8g（移除上盖后），最大限度减少对小鼠自由活动的限制，从而减轻动物负担。
+* **🛠️ 模块化与可扩展**
+  外壳、PCB 和保护盖均可分离，便于快速迭代和故障排查。
+* **🧪 手术级设计**
+  纹理化侧壁设计，增强了与牙科水泥或紫外光固化树脂的附着力。
 <div align="center">
   <img src="Videos/Animation%20repeat.gif" 
        alt="ELINK-256 动画演示 GIF" 
@@ -1891,7 +1767,7 @@ This project is open-source and available under the **MIT License**. Click the b
 ## 🧩 系统组件
 
 <div align="center">
-  <table class="fancy-table" style="width: 90%; text-align: center; margin: 0 auto;">
+  <table border="1" style="border-collapse: collapse; width: 90%; text-align: center;">
     <thead>
       <tr style="background-color: #f2f2f2;">
         <th>组件</th>
@@ -1949,7 +1825,7 @@ This project is open-source and available under the **MIT License**. Click the b
 </div>
      
 <div style="width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 10px;">
-  <table class="fancy-table" style="width: 90%; min-width: 600px; text-align: center; margin: 0 auto;">
+  <table style="margin-left: auto; margin-right: auto; width: 90%; min-width: 600px; text-align: center; border-collapse: collapse; border: 1px solid #e1e4e8;">
     <thead>
       <tr style="background-color: #f6f8fa; border-bottom: 2px solid #e1e4e8;">
         <th style="padding: 10px; border: 1px solid #e1e4e8; text-align: center;">组件</th>
