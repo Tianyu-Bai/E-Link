@@ -838,7 +838,7 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
           <span style="font-size: 30px;">🐒</span>
         </div>
         <div class="node-title"><i>Macaque</i></div>
-        <div class="node-desc">High Durability<br><b>Multi-Array Scalable</b></div>
+        <div class="node-desc">High Durability<br><b><font color="#f59e0b">Multi-Array Scalable</font></b></div>
       </div>
 
     </div>
@@ -940,9 +940,9 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
 
 .icon-circle:hover { transform: scale(1.1); border-color: #60a5fa; background: rgba(96, 165, 250, 0.1); }
 
-.mouse-glow { box-shadow: 0 0 10px rgba(16, 185, 129, 0.3); }
-.rat-glow { box-shadow: 0 0 10px rgba(59, 130, 246, 0.3); }
-.monkey-glow { box-shadow: 0 0 10px rgba(245, 158, 11, 0.3); }
+.mouse-glow { box-shadow: 0 0 10px rgba(16, 185, 129, 0.5); }
+.rat-glow { box-shadow: 0 0 10px rgba(59, 130, 246, 0.5); }
+.monkey-glow { box-shadow: 0 0 10px rgba(245, 158, 11, 0.5); }
 
 .node-title { margin-top: 8px; font-weight: bold; color: #e2e8f0; font-size: 14px; }
 .node-desc { margin-top: 4px; color: #94a3b8; font-size: 11px; text-align: center; line-height: 1.4; font-family: sans-serif; }
@@ -1609,7 +1609,7 @@ This project is open-source and available under the **MIT License**. Click the b
           <span style="font-size: 30px;">🐒</span>
         </div>
         <div class="node-title"><i>灵长类</i></div>
-        <div class="node-desc">高耐久性<br><b>可拓展矩阵</b></div>
+        <div class="node-desc">高耐久性<br><b><font color="#f59e0b">可拓展矩阵</font></b></div>
       </div>
 
     </div>
