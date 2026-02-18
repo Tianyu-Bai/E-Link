@@ -723,7 +723,7 @@
     const modalLangCheckbox = document.getElementById('modal-lang-toggle-checkbox');
     let modalIsZh = false; 
  
-    setTimeout(() => { welcomeModal.classList.add('show'); document.body.classList.add('modal-active'); }, 100); // 稍微延时让背景加载完再弹，更顺滑
+    setTimeout(() => { welcomeModal.classList.add('show'); document.body.classList.add('modal-active'); }, 10); // 稍微延时让背景加载完再弹，更顺滑
  
     let idleInterval; let tipIndex = 0;
     function startIdleTips() {
