@@ -757,7 +757,7 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
   justify-content: space-between; 
   width: 100%; 
   align-items: flex-start; 
-  margin-top: 55px; /* 👈 从 30px 改为 45px，圆圈整体下移 15 像素 */
+  margin-top: 60px; /* 👈圆圈整体下移 */
 }
 
 /* 核心修复：使用 transform 代替 margin-top */
