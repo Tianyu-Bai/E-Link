@@ -623,7 +623,7 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
 <div class="elink-dynamic-dashboard" align="center">
   <div class="metrics-grid">
     
-    <div class="metric-card glass-panel" data-percent="100" data-value="2.8" data-is-float="false">
+    <div class="metric-card glass-panel" data-percent="100" data-value="2.8" data-is-float="true">
       <div class="chart-box">
         <svg viewBox="0 0 100 100">
           <circle class="bg-ring" cx="50" cy="50" r="45"></circle>
@@ -1400,7 +1400,7 @@ This project is open-source and available under the **MIT License**. Click the b
 <div class="elink-dynamic-dashboard" align="center">
   <div class="metrics-grid">
     
-    <div class="metric-card glass-panel" data-percent="100" data-value="2.8" data-is-float="False">
+    <div class="metric-card glass-panel" data-percent="100" data-value="2.8" data-is-float="true">
       <div class="chart-box">
         <svg viewBox="0 0 100 100">
           <circle class="bg-ring" cx="50" cy="50" r="45"></circle>
