@@ -757,7 +757,7 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
   justify-content: space-between; 
   width: 100%; 
   align-items: flex-start; 
-  margin-top: 45px; /* 👈 从 30px 改为 45px，圆圈整体下移 15 像素 */
+  margin-top: 55px; /* 👈 从 30px 改为 45px，圆圈整体下移 15 像素 */
 }
 
 /* 核心修复：使用 transform 代替 margin-top */
@@ -778,8 +778,10 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
 .node-title { margin-top: 8px; font-weight: bold; color: #e2e8f0; font-size: 14px; }
 .node-desc { margin-top: 4px; color: #94a3b8; font-size: 11px; text-align: center; line-height: 1.4; font-family: sans-serif; }
 
-@media (max-width: 600px) {
-  .species-glass-box { padding: 20px 5px 20px 5px; min-height: 310px; } 
+@@media (max-width: 600px) {
+  /* 🚨 核心修复：将 padding 和 min-height 与电脑端保持绝对一致，防止 SVG Y轴被压扁脱靶 */
+  .species-glass-box { padding: 30px 5px 40px 5px; min-height: 380px; } 
+  
   .icon-circle { width: 45px; height: 45px; }
   .icon-circle span { font-size: 24px !important; }
   .node-title { font-size: 12px; }
