@@ -3,6 +3,9 @@ layout: default
 title: E-Link Home
 ---
 
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
 <div class="lang-en" markdown="1">
 
 <div class="github-only">
@@ -45,11 +48,9 @@ title: E-Link Home
 
 <style>
 /* 1. 外层容器 */
-.main-title-wrapper {
-  margin-bottom: 20px;
-}
+.main-title-wrapper { margin-bottom: 20px; }
 
-/* 2. 主标题逻辑：保持 2.2em 大小不变，防止图标被挤压 */
+/* 2. 主标题逻辑 */
 .bi-color-title {
   background: linear-gradient(90deg, #60a5fa 0%, #a78bfa 50%, #f472b6 100%);
   -webkit-background-clip: text;
@@ -61,59 +62,37 @@ title: E-Link Home
   justify-content: center;
   border-bottom: none;
   margin-bottom: 5px;
-  font-size: 2.2em; /* 🚨 保持你原本的霸气大小 */
+  font-size: 2.2em;
   font-weight: 800;
   letter-spacing: -1px;
-  white-space: nowrap; /* 强制不换行 */
+  white-space: nowrap;
 }
 
-.title-icon {
-  width: 45px;
-  height: 45px;
-  margin-right: 15px;
-  flex-shrink: 0;
-}
+.title-icon { width: 45px; height: 45px; margin-right: 15px; flex-shrink: 0; }
 
-/* 3. 🚨 新增：副标题样式 (替代原来的内联 style) */
+/* 3. 副标题样式 */
 .sub-title {
   background: -webkit-linear-gradient(0deg, #60a5fa, #a78bfa);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   font-family: 'Inter', system-ui, sans-serif;
   font-weight: 700;
-  font-size: 1.5em; /* 电脑端保持原大小 */
+  font-size: 1.5em;
   letter-spacing: -0.5px;
   text-align: center;
   margin-top: 0;
   line-height: 1.3;
 }
 
-/* 4. 手机端专属压缩优化 */
+/* 4. 手机端优化 */
 @media (max-width: 600px) {
-  .main-title-wrapper {
-    margin-bottom: 10px; 
-  }
-  
-  /* 微调大标题图标间距，让超大字体也能居中放得下 */
-  .title-icon {
-    margin-right: 8px;
-    width: 38px;
-    height: 38px;
-  }
-
-  /* 🚨 核心魔法：缩小副标题字体 */
-  .sub-title {
-    font-size: 1.05em; /* 缩小字体，让它不再霸占屏幕 */
-    padding: 0 5px;
-  }
-  
-  /* 🚨 核心魔法：在手机端隐藏强制换行，让它自然平铺，省出垂直空间 */
-  .pc-only-br {
-    display: none;
-  }
+  .main-title-wrapper { margin-bottom: 10px;  }
+  .title-icon { margin-right: 8px; width: 38px; height: 38px; }
+  .sub-title { font-size: 1.05em; padding: 0 5px; }
+  .pc-only-br { display: none; }
 }
 
-/* 5. 呼吸动画逻辑 (不变) */
+/* 5. 呼吸动画逻辑 */
 .header-sync-pulse {
   animation: sync-pulse 3s ease-in-out infinite;
   will-change: transform, filter;
@@ -121,20 +100,10 @@ title: E-Link Home
 }
 
 @keyframes sync-pulse {
-  0%, 100% { 
-    transform: scale(1); 
-    filter: drop-shadow(0 0 8px rgba(96, 165, 250, 0.3));
-  }
-  50% { 
-    transform: scale(1.03); 
-    filter: drop-shadow(0 0 20px rgba(167, 139, 250, 0.55));
-  }
+  0%, 100% { transform: scale(1); filter: drop-shadow(0 0 8px rgba(96, 165, 250, 0.3)); }
+  50% { transform: scale(1.03); filter: drop-shadow(0 0 20px rgba(167, 139, 250, 0.55)); }
 }
-
-.header-sync-pulse svg {
-  -webkit-text-fill-color: initial;
-  filter: saturate(1.1); 
-}
+.header-sync-pulse svg { -webkit-text-fill-color: initial; filter: saturate(1.1); }
 </style>
 
   <div align="center" style="margin-top: 15px;">
@@ -146,7 +115,7 @@ title: E-Link Home
   </div>
   <div align="center">
  <br>
- <img src="Images/001.PNG" alt="E-Link(256) Exploded View" width="750">
+ <img src="Images/001.PNG" alt="E-Link(256) Exploded View" width="750" loading="lazy" decoding="async">
  <p style="margin-top: 5px; font-size: 0.95em; color: #3b82f6;">
    <b>Mating Dynamics (left) and Structural Breakdown (right) of the E-Link(256) </b>
  </p>
@@ -159,54 +128,32 @@ body, div, p, span, td, th {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
   
-/* ===================== 1. 核心设备感知与显隐逻辑 (去重合并版) ===================== */
-/* 默认：全部隐藏 */
-.pc-tip, .mobile-tip, .pc-only, .mobile-only { 
-  display: none !important; 
-}
+/* ===================== 1. 核心设备感知与显隐逻辑 ===================== */
+.pc-tip, .mobile-tip, .pc-only, .mobile-only { display: none !important; }
+@media (pointer: fine) { .pc-tip, .pc-only { display: inline !important; } }
+@media (pointer: coarse) { .mobile-tip, .mobile-only { display: inline !important; } }
 
-/* 识别电脑 (检测到鼠标等精确指针) */
-@media (pointer: fine) {
-  .pc-tip, .pc-only { display: inline !important; }
-}
-
-/* 识别手机/平板 (检测到手指等粗略指针) */
-@media (pointer: coarse) {
-  .mobile-tip, .mobile-only { display: inline !important; }
-}
-
-/* ========================================= 2. 复杂时间轴与动作动画 (丝滑防闪烁版) ========================================= */
+/* ========================================= 2. 复杂时间轴与动作动画 ========================================= */
 @keyframes timeline-drag-container {
-  /* 第一次出场: 0% 到 6.25% */
   0%             { opacity: 0; z-index: 10; }
   0.5%, 5.75%    { opacity: 1; z-index: 10; }
   6.25%, 12%     { opacity: 0; z-index: -1; }
-  
-  /* 第二次出场: 12.5% 到 18.75% */
   12.5%, 18.25%  { opacity: 1; z-index: 10; }
   18.75%, 55.75% { opacity: 0; z-index: -1; }
-  
-  /* 第三次出场: 56.25% 到 62.5% */
   56.25%, 62%    { opacity: 1; z-index: 10; }
   62.5%, 100%    { opacity: 0; z-index: -1; }
 }
 
 @keyframes timeline-zoom-container {
-  /* 第一次出场: 6.25% 到 12.5% */
   0%, 5.75%      { opacity: 0; z-index: -1; }
   6.25%, 12%     { opacity: 1; z-index: 10; }
   12.5%, 18.25%  { opacity: 0; z-index: -1; }
-  
-  /* 第二次出场: 18.75% 到 25% */
   18.75%, 24.5%  { opacity: 1; z-index: 10; }
   25%, 62%       { opacity: 0; z-index: -1; }
-  
-  /* 第三次出场: 62.5% 到 68.75% */
   62.5%, 68.25%  { opacity: 1; z-index: 10; }
   68.75%, 100%   { opacity: 0; z-index: -1; }
 }
 
-/* --- 手指移动动画保持你原版的内容绝对不变 --- */
 @keyframes move-drag-hand {
   0% { transform: translateX(-40px) rotate(-15deg); opacity: 0; }
   20% { opacity: 1; }
@@ -230,18 +177,15 @@ body, div, p, span, td, th {
 
 /* ========================================= 3. 容器与图标样式 ========================================= */
 .gesture-overlay {
-  position: absolute;
-  top: 50%; left: 50%;
+  position: absolute; top: 50%; left: 50%;
   transform: translate(-50%, -50%);
-  pointer-events: none;
-  text-align: center;
+  pointer-events: none; text-align: center;
   width: 220px; height: 150px;
   display: flex; flex-direction: column; justify-content: center; align-items: center;
 }
 
 .mode-drag { animation: timeline-drag-container 48s infinite; }
 .mode-zoom { animation: timeline-zoom-container 48s infinite; }
-
 .icon-box { position: relative; height: 80px; width: 100%; margin-bottom: 5px; }
 
 .hand-icon {
@@ -263,32 +207,18 @@ body, div, p, span, td, th {
 
 /* ===================== 4. HUD 与交互反馈 ===================== */
 .gesture-hud {
-  position: absolute; 
-  top: 12px; 
-  left: 50%;
-  transform: translateX(-50%); 
-  display: flex; 
-  align-items: center;
-  gap: 25px; /* 统一使用 25px */
-  font-size: 13px; 
-  font-family: system-ui, sans-serif;
-  color: rgba(255, 255, 255, 0.65); 
-  background: rgba(15, 23, 42, 0.45);
-  border: 1px solid rgba(59,130,246,0.25); 
-  padding: 6px 10px;
-  border-radius: 20px; 
-  white-space: nowrap; 
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px); 
-  pointer-events: none; 
-  transition: opacity 0.4s ease; 
-  z-index: 5;
+  position: absolute; top: 12px; left: 50%;
+  transform: translateX(-50%); display: flex; align-items: center;
+  gap: 25px; font-size: 13px; font-family: system-ui, sans-serif;
+  color: rgba(255, 255, 255, 0.65); background: rgba(15, 23, 42, 0.45);
+  border: 1px solid rgba(59,130,246,0.25); padding: 6px 10px;
+  border-radius: 20px; white-space: nowrap; 
+  backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); 
+  pointer-events: none; transition: opacity 0.4s ease; z-index: 5;
 }
 
 .gesture-hidden { opacity: 0 !important; visibility: hidden !important; pointer-events: none !important; animation: none !important; }
 .gesture-hidden * { animation: none !important; }
-
-/* 动画锁：不在屏幕里就暂停，进了屏幕再播放 */
 .gesture-overlay, .gesture-overlay * { animation-play-state: paused !important; }
 .gesture-overlay.gesture-active, .gesture-overlay.gesture-active * { animation-play-state: running !important; }
 
@@ -313,7 +243,6 @@ kbd {
   width: 100%; max-width: 100vw; box-sizing: border-box; height: 460px;
   background: transparent; border-radius: 16px; border: 1px solid rgba(59,130,246,0.3);
   outline: none; overflow: hidden; 
-  /* 使用 3D 硬件加速层，防止重绘影响 GIF */
   transform: translateZ(0); 
   backface-visibility: hidden; 
   touch-action: pan-y;
@@ -324,86 +253,42 @@ kbd {
 }
 
 .model-block { 
-  max-width: 100vw !important; 
-  /* 将原本的 40px 和 60px 缩减，消除视觉间隔 */
-  margin-top: 5px !important;  
-  margin-bottom: 15px !important; 
+  max-width: 100vw !important; margin-top: 5px !important;  margin-bottom: 15px !important; 
 }
 model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar) { display: none !important; }
 
 .model-watermark-text {
   position: absolute; bottom: 12px; right: 16px; font-family: 'JetBrains Mono', monospace;
   font-size: 10px; color: rgba(255, 255, 255, 0.25); pointer-events: none; z-index: 5;
-  system-ui, -apple-system, sans-serif;
-  font-weight: 400;
+  system-ui, -apple-system, sans-serif; font-weight: 400;
 }
   @keyframes text-blink {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.3; }
 }
 
-  
-
 /* 加一根淡淡的分隔线 */
-.gesture-hud span + span {
-  position: relative;
-  padding-left: 5px;
-}
-
-.gesture-hud span + span::before {
-  content: "";
-  position: absolute;
-  left: -12px; /* 放在 gap 的中间 */
-  top: 20%;
-  height: 60%;
-  width: 1px;
-  background: rgba(255, 255, 255, 0.2); /* 淡淡的分隔线 */
-}
+.gesture-hud span + span { position: relative; padding-left: 5px; }
+.gesture-hud span + span::before { content: ""; position: absolute; left: -12px; top: 20%; height: 60%; width: 1px; background: rgba(255, 255, 255, 0.2); }
   
 /* ===================== E-Link 动态仪表盘样式 ===================== */
-/* ===================== 0. 全局防频闪保护 ===================== */
 .nav-badges img, .github-only img, a img {
-  transform: translateZ(0);
-  backface-visibility: hidden;
-  -webkit-font-smoothing: antialiased;
+  transform: translateZ(0); backface-visibility: hidden; -webkit-font-smoothing: antialiased;
 }
 
-/* ===================== E-Link 动态仪表盘样式 (响应式 + 6秒循环版) ===================== */
-.elink-dynamic-dashboard {
-  width: 100%; 
-  max-width: 760px; 
-  margin: 20px auto; 
-  padding: 0 5px; /* 减小外围内边距 */
-  box-sizing: border-box; /* 核心：限制整体宽度不超过屏幕 */
-}
-.metrics-grid {
-  display: flex; 
-  justify-content: space-between; 
-  align-items: center; 
-  flex-wrap: nowrap; /* 强制手机端并排 */
-  gap: 12px; 
-  width: 100%;
-  box-sizing: border-box;
-}
+.elink-dynamic-dashboard { width: 100%;  max-width: 760px;  margin: 20px auto;  padding: 0 5px; box-sizing: border-box; }
+.metrics-grid { display: flex;  justify-content: space-between;  align-items: center;  flex-wrap: nowrap; gap: 12px;  width: 100%; box-sizing: border-box; }
 .metric-card.glass-panel {
-  flex: 1 1 0; /* 🚨 核心魔法：让三个卡片完全等分剩余空间 */
-  min-width: 0; /* 🚨 核心魔法：防止里面的文字或SVG把卡片强行撑大 */
-  background: rgba(15, 23, 42, 0.6);
+  flex: 1 1 0; min-width: 0; background: rgba(15, 23, 42, 0.6);
   border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 12px;
-  padding: 15px 5px; 
-  box-sizing: border-box; box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+  padding: 15px 5px; box-sizing: border-box; box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
   backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
   transition: transform 0.3s ease; text-align: center;
 }
 .chart-box { position: relative; width: 145px; height: 145px; margin: 0 auto; }
 .chart-box svg { width: 100%; height: 100%; transform: rotate(-90deg); }
 .bg-ring { fill: none; stroke: rgba(255, 255, 255, 0.1); stroke-width: 6; }
-
-/* 纯 CSS 实现 6秒无限循环圆环绘制 */
-.fg-ring {
-  fill: none; stroke-width: 6; stroke-linecap: round;
-  stroke-dasharray: 283; stroke-dashoffset: 283; 
-}
+.fg-ring { fill: none; stroke-width: 6; stroke-linecap: round; stroke-dasharray: 283; stroke-dashoffset: 283; }
 
 .weight-color { stroke: #10b981; filter: drop-shadow(0 0 6px rgba(16, 185, 129, 0.6)); } 
 .channel-color { stroke: #3b82f6; filter: drop-shadow(0 0 6px rgba(59, 130, 246, 0.6)); } 
@@ -415,85 +300,58 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
 .inner-content .unit { font-size: 16px; font-weight: bold; color: #cbd5e1; margin-left: 2px; }
 .inner-content .sub { font-size: 10px; color: rgba(148, 163, 184, 0.8); margin-top: 2px; }
 
-/* 🚨 手机端极限优化 (解决横向撑爆与卡顿问题) */
 @media (max-width: 600px) {
-  .metrics-grid { gap: 6px; } /* 缩小间距，为卡片腾出空间 */
-  .metric-card.glass-panel {
-    padding: 10px 2px;
-    background: rgba(15, 23, 42, 0.85); 
-    backdrop-filter: none; /* 关闭毛玻璃，解决滑动卡顿 */
-    -webkit-backdrop-filter: none;
-  }
-  .chart-box { width: 70px; height: 70px; } /* 稍微再缩小一点点圆环，确保三列绝对装得下 */
+  .metrics-grid { gap: 6px; } 
+  .metric-card.glass-panel { padding: 10px 2px; background: rgba(15, 23, 42, 0.85); backdrop-filter: none; -webkit-backdrop-filter: none; }
+  .chart-box { width: 70px; height: 70px; }
   .inner-content .number { font-size: 18px; }
   .inner-content .unit { font-size: 11px; }
   .inner-content .label { font-size: 8px; font-family: sans-serif !important; letter-spacing: 0 !important; }
   .inner-content .sub { display: none; }
 }
     
-  /* ===================== 高级 3D 封面特效 (HUD) ===================== */
-/* 1. 双环反向旋转加载器 */
-.cyber-loader {
-  position: relative;
-  width: 50px; height: 50px;
-}
-.cyber-loader::before, .cyber-loader::after {
-  content: ''; position: absolute; border-radius: 50%;
-}
+/* ===================== 高级 3D 封面特效 (HUD) ===================== */
+.cyber-loader { position: relative; width: 50px; height: 50px; }
+.cyber-loader::before, .cyber-loader::after { content: ''; position: absolute; border-radius: 50%; }
 .cyber-loader::before {
   top: 0; left: 0; right: 0; bottom: 0;
-  border: 2.5px solid transparent;
-  border-top-color: #60a5fa; border-bottom-color: #60a5fa;
-  animation: spin 1.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
-  box-shadow: 0 0 10px rgba(96, 165, 250, 0.5);
+  border: 2.5px solid transparent; border-top-color: #60a5fa; border-bottom-color: #60a5fa;
+  animation: spin 1.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite; box-shadow: 0 0 10px rgba(96, 165, 250, 0.5);
 }
 .cyber-loader::after {
   top: 8px; left: 8px; right: 8px; bottom: 8px;
-  border: 2px solid transparent;
-  border-left-color: #3b82f6; border-right-color: #3b82f6;
+  border: 2px solid transparent; border-left-color: #3b82f6; border-right-color: #3b82f6;
   animation: spin-reverse 1s linear infinite;
 }
 @keyframes spin-reverse { to { transform: rotate(-360deg); } }
 
-/* 2. 四角定位框 */
 .hud-corner {
-  position: absolute; width: 25px; height: 25px;
-  border: 2px solid rgba(96, 165, 250, 0.6);
-  box-shadow: 0 0 8px rgba(59, 130, 246, 0.4);
+  position: absolute; width: 25px; height: 25px; border: 2px solid rgba(96, 165, 250, 0.6); box-shadow: 0 0 8px rgba(59, 130, 246, 0.4);
 }
 .hud-tl { top: 20px; left: 20px; border-right: none; border-bottom: none; }
 .hud-tr { top: 20px; right: 20px; border-left: none; border-bottom: none; }
 .hud-bl { bottom: 20px; left: 20px; border-right: none; border-top: none; }
 .hud-br { bottom: 20px; right: 20px; border-left: none; border-top: none; }
 
-/* 3. 扫描线特效 */
 .scanline {
   position: absolute; top: 0; left: 0; width: 100%; height: 3px;
   background: linear-gradient(90deg, transparent, rgba(96, 165, 250, 0.8), transparent);
-  box-shadow: 0 0 15px rgba(59, 130, 246, 0.8);
-  animation: scan-sweep 3s linear infinite;
-  opacity: 0.6;
+  box-shadow: 0 0 15px rgba(59, 130, 246, 0.8); animation: scan-sweep 3s linear infinite; opacity: 0.6;
 }
-@keyframes scan-sweep {
-  0% { top: 0; opacity: 0; }
-  10% { opacity: 0.6; }
-  90% { opacity: 0.6; }
-  100% { top: 100%; opacity: 0; }
-}
+@keyframes scan-sweep { 0% { top: 0; opacity: 0; } 10% { opacity: 0.6; } 90% { opacity: 0.6; } 100% { top: 100%; opacity: 0; } }
 
-/* 顶部徽章悬浮微交互动画 */
-.nav-badges a {
-  display: inline-block;
-  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-  margin: 0 2px;
+.nav-badges a { display: inline-block; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); margin: 0 2px; }
+.nav-badges a:hover { transform: translateY(-3px) scale(1.05); filter: drop-shadow(0 5px 8px rgba(59, 130, 246, 0.4)); }
+.nav-badges a:active { transform: translateY(0) scale(0.98); }
+
+/* 点击加载动画特效 (网络优化新增) */
+.click-to-load-glow {
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
-.nav-badges a:hover {
-  transform: translateY(-3px) scale(1.05); /* 上浮并微微放大 */
-  filter: drop-shadow(0 5px 8px rgba(59, 130, 246, 0.4)); /* 产生蓝色光晕 */
-}
-/* 点击时的按压反馈 */
-.nav-badges a:active {
-  transform: translateY(0) scale(0.98);
+.click-to-load-glow:hover {
+  transform: scale(1.05);
+  text-shadow: 0 0 15px rgba(96, 165, 250, 1);
 }
 </style>
 
@@ -509,7 +367,7 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
     camera-controls interpolation-decay="200" bounds="tight" field-of-view="30deg" auto-rotate  rotation-per-second="15deg"
     interaction-prompt="none" environment-image="neutral" exposure="0.75" shadow-intensity="0" tone-mapping="commerce">
 
-    <div slot="poster" style="position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; width: 100%; background: radial-gradient(circle at center, #111827 0%, #020617 100%); font-family: 'JetBrains Mono', monospace; overflow: hidden; border-radius: 16px;">
+    <div slot="poster" style="position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; width: 100%; background: radial-gradient(circle at center, #111827 0%, #020617 100%); font-family: 'JetBrains Mono', monospace; overflow: hidden; border-radius: 16px; cursor: pointer;">
       <div style="position: absolute; inset: 0; background-image: linear-gradient(rgba(59, 130, 246, 0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(59, 130, 246, 0.08) 1px, transparent 1px); background-size: 25px 25px; z-index: 0;"></div>
       <div class="scanline" style="z-index: 1;"></div>
       <div class="hud-corner hud-tl" style="z-index: 1;"></div>
@@ -519,7 +377,7 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
       <div style="z-index: 2; display: flex; flex-direction: column; align-items: center;">
         <div class="cyber-loader"></div>
         <p style="margin-top: 25px; margin-bottom: 5px; font-size: 0.95rem; font-weight: 600; letter-spacing: 3px; color: #93c5fd; text-shadow: 0 0 10px rgba(96, 165, 250, 0.8); animation: text-blink 1.5s ease-in-out infinite;">INITIALIZING 3D SIGNAL...</p>
-        <p style="margin: 0; font-size: 0.65rem; color: rgba(148, 163, 184, 0.8); letter-spacing: 1px;">[ SCROLL TO REVEAL MODEL ]</p>
+        <p class="click-to-load-glow" style="margin: 0; font-size: 0.65rem; color: #a78bfa; letter-spacing: 1px; font-weight: bold;">[ SCROLL OR CLICK TO REVEAL ]</p>
       </div>
     </div>
     
@@ -570,7 +428,7 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
     camera-controls interpolation-decay="200" bounds="tight" field-of-view="30deg" auto-rotate  rotation-per-second="15deg"
     interaction-prompt="none" environment-image="neutral" exposure="0.75" shadow-intensity="0" tone-mapping="commerce">
 
-    <div slot="poster" style="position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; width: 100%; background: radial-gradient(circle at center, #111827 0%, #020617 100%); font-family: 'JetBrains Mono', monospace; overflow: hidden; border-radius: 16px;">
+    <div slot="poster" style="position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; width: 100%; background: radial-gradient(circle at center, #111827 0%, #020617 100%); font-family: 'JetBrains Mono', monospace; overflow: hidden; border-radius: 16px; cursor: pointer;">
       <div style="position: absolute; inset: 0; background-image: linear-gradient(rgba(59, 130, 246, 0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(59, 130, 246, 0.08) 1px, transparent 1px); background-size: 25px 25px; z-index: 0;"></div>
       <div class="scanline" style="z-index: 1;"></div>
       <div class="hud-corner hud-tl" style="z-index: 1;"></div>
@@ -580,7 +438,7 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
       <div style="z-index: 2; display: flex; flex-direction: column; align-items: center;">
         <div class="cyber-loader"></div>
         <p style="margin-top: 25px; margin-bottom: 5px; font-size: 0.95rem; font-weight: 600; letter-spacing: 3px; color: #93c5fd; text-shadow: 0 0 10px rgba(96, 165, 250, 0.8); animation: text-blink 1.5s ease-in-out infinite;">INITIALIZING 3D SIGNAL...</p>
-        <p style="margin: 0; font-size: 0.65rem; color: rgba(148, 163, 184, 0.8); letter-spacing: 1px;">[ SCROLL TO REVEAL MODEL ]</p>
+        <p class="click-to-load-glow" style="margin: 0; font-size: 0.65rem; color: #a78bfa; letter-spacing: 1px; font-weight: bold;">[ SCROLL OR CLICK TO REVEAL ]</p>
       </div>
     </div>
     
@@ -630,7 +488,7 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
     camera-controls interpolation-decay="200" bounds="tight" field-of-view="30deg" auto-rotate  rotation-per-second="15deg"
     interaction-prompt="none" environment-image="neutral" exposure="0.75" shadow-intensity="0" tone-mapping="commerce">
 
-    <div slot="poster" style="position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; width: 100%; background: radial-gradient(circle at center, #111827 0%, #020617 100%); font-family: 'JetBrains Mono', monospace; overflow: hidden; border-radius: 16px;">
+    <div slot="poster" style="position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; width: 100%; background: radial-gradient(circle at center, #111827 0%, #020617 100%); font-family: 'JetBrains Mono', monospace; overflow: hidden; border-radius: 16px; cursor: pointer;">
       <div style="position: absolute; inset: 0; background-image: linear-gradient(rgba(59, 130, 246, 0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(59, 130, 246, 0.08) 1px, transparent 1px); background-size: 25px 25px; z-index: 0;"></div>
       <div class="scanline" style="z-index: 1;"></div>
       <div class="hud-corner hud-tl" style="z-index: 1;"></div>
@@ -640,7 +498,7 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
       <div style="z-index: 2; display: flex; flex-direction: column; align-items: center;">
         <div class="cyber-loader"></div>
         <p style="margin-top: 25px; margin-bottom: 5px; font-size: 0.95rem; font-weight: 600; letter-spacing: 3px; color: #93c5fd; text-shadow: 0 0 10px rgba(96, 165, 250, 0.8); animation: text-blink 1.5s ease-in-out infinite;">INITIALIZING 3D SIGNAL...</p>
-        <p style="margin: 0; font-size: 0.65rem; color: rgba(148, 163, 184, 0.8); letter-spacing: 1px;">[ SCROLL TO REVEAL MODEL ]</p>
+        <p class="click-to-load-glow" style="margin: 0; font-size: 0.65rem; color: #a78bfa; letter-spacing: 1px; font-weight: bold;">[ SCROLL OR CLICK TO REVEAL ]</p>
       </div>
     </div>
     
@@ -742,6 +600,7 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
        alt="ELINK-256 Assembly Demo GIF" 
        width="750" 
        class="gif-blend" 
+       loading="lazy" decoding="async"
        style="border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); display: block;">
 </div>
 
@@ -803,7 +662,7 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
   
   <path class="pulse-line" d="M300,120 L135,195" />
   <path class="pulse-line" d="M300,120 L300,210" />
-  <path class="pulse-line" d="M300,120 L465,195" />
+  <path class="pulse-line line-to-monkey" d="M300,120 L465,195" />
 </svg>
 
     <div class="node center-node">
@@ -846,7 +705,7 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
 </div>
 
 <style>
-/* ===================== 跨物种拓扑动画 CSS - 居中修正版 ===================== */
+/* ===================== 跨物种拓扑动画 CSS - 居中与性能优化版 ===================== */
 .species-glass-box {
   position: relative;
   background: rgba(15, 23, 42, 0.4);
@@ -856,99 +715,60 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
   min-height: 320px;
   overflow: hidden;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-  transform: translateZ(0); /* 开启 GPU 加速 */
+  transform: translateZ(0); /* 开启 GPU 加速，防止抖动 */
   backface-visibility: hidden;
   perspective: 1000;
-  will-change: transform; /* 预告浏览器这里会有动画 */
+  will-change: transform;
 }
 
 .connection-lines {
-  position: absolute;
-  top: 0; left: 0; width: 100%; height: 100%;
-  z-index: 1; pointer-events: none;
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none;
 }
-
-.base-line {
-  fill: none; stroke: rgba(255, 255, 255, 0.1); stroke-width: 2;
-}
-
+.base-line { fill: none; stroke: rgba(255, 255, 255, 0.1); stroke-width: 2; }
 .pulse-line {
-  fill: none; 
-  stroke: #60a5fa; 
-  stroke-width: 3;
-  stroke-dasharray: 20 120; 
-  animation: data-flow 2.5s linear infinite;
-  filter: drop-shadow(0 0 5px rgba(96, 165, 250, 0.8));
+  fill: none; stroke: #60a5fa; stroke-width: 3; stroke-dasharray: 20 120; 
+  animation: data-flow 2.5s linear infinite; filter: drop-shadow(0 0 5px rgba(96, 165, 250, 0.8));
 }
+.line-to-monkey { stroke: #f59e0b !important; filter: drop-shadow(0 0 5px rgba(245, 158, 11, 0.8)) !important;}
 
-@keyframes data-flow {
-  from { stroke-dashoffset: 115; }
-  to { stroke-dashoffset: 0; }
-}
+@keyframes data-flow { from { stroke-dashoffset: 115; } to { stroke-dashoffset: 0; } }
 
 .node {
-  position: relative; z-index: 2;
-  display: flex; flex-direction: column; align-items: center;
-  flex: 1; /* 强制三个节点等宽，确保绝对中心 */
-  min-width: 0; /* 防止内容撑开容器导致偏移 */
+  position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center;
+  flex: 1; min-width: 0; /* 强制三等分，绝对居中 */
 }
 
 .center-node { margin-bottom: 20px; flex: none; width: 100%; }
 
 .hex-border {
-  width: 70px; height: 70px;
-  background: radial-gradient(circle, rgba(59,130,246,0.3) 0%, transparent 70%);
-  border: 2px solid #3b82f6; border-radius: 12px;
-  display: flex; justify-content: center; align-items: center;
-  box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
-  animation: float 3s ease-in-out infinite;
+  width: 70px; height: 70px; background: radial-gradient(circle, rgba(59,130,246,0.3) 0%, transparent 70%);
+  border: 2px solid #3b82f6; border-radius: 12px; display: flex; justify-content: center; align-items: center;
+  box-shadow: 0 0 15px rgba(59, 130, 246, 0.5); animation: float 3s ease-in-out infinite;
 }
 
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-8px); }
-}
+@keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
 
-.node-text {
-  margin-top: 10px; font-weight: bold; color: #fff;
-  font-family: 'JetBrains Mono', monospace; font-size: 14px;
-}
+.node-text { margin-top: 10px; font-weight: bold; color: #fff; font-family: 'JetBrains Mono', monospace; font-size: 14px; }
 .pulse-text { text-shadow: 0 0 8px rgba(96, 165, 250, 0.8); }
 
 .animal-nodes {
-  display: flex; 
-  justify-content: space-between; 
-  width: 100%;
-  align-items: flex-start; /* 顶部对齐是实现等分的关键 */
-  margin-top: 10px;
+  display: flex; justify-content: space-between; width: 100%; align-items: flex-start; margin-top: 10px;
 }
 
-/* 核心修复：使用 transform 代替 margin-top 避免容器偏移 */
-.rat-node-adjust {
-  transform: translateY(30px) translateZ(0); /* 同样加上 translateZ */
-}
+/* 核心修复：使用 transform 代替 margin-top */
+.rat-node-adjust { transform: translateY(30px) translateZ(0); }
 
 .icon-circle {
-  width: 60px; 
-  height: 60px; 
-  border-radius: 50%;
-  background: #0f172a; 
-  isolation: isolate; 
-  border: 1px solid rgba(255,255,255,0.2);
-  display: flex; 
-  justify-content: center; 
-  align-items: center;
-  transition: all 0.3s ease;
-  position: relative; 
-  z-index: 5;
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease;
+  width: 60px; height: 60px; border-radius: 50%; background: #0f172a; isolation: isolate; 
+  border: 1px solid rgba(255,255,255,0.2); display: flex; justify-content: center; align-items: center;
+  position: relative; z-index: 5; transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease;
 }
 
 .icon-circle:hover { transform: scale(1.1); border-color: #60a5fa; background: rgba(96, 165, 250, 0.1); }
 
 .mouse-glow { box-shadow: 0 0 10px rgba(16, 185, 129, 0.5); }
 .rat-glow { box-shadow: 0 0 10px rgba(59, 130, 246, 0.5); }
-.monkey-glow { box-shadow: 0 0 10px rgba(245, 158, 11, 0.5); }
+.monkey-glow { box-shadow: 0 0 15px rgba(245, 158, 11, 0.6); border-color: rgba(245, 158, 11, 0.5) !important; }
 
 .node-title { margin-top: 8px; font-weight: bold; color: #e2e8f0; font-size: 14px; }
 .node-desc { margin-top: 4px; color: #94a3b8; font-size: 11px; text-align: center; line-height: 1.4; font-family: sans-serif; }
@@ -979,6 +799,7 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
       alt="ELINK-256 Animation GIF" 
       class="gif-blend" 
       width="500" 
+      loading="lazy" decoding="async"
       style="border-radius: 6px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); display: block;">
 </div>
 
@@ -1029,6 +850,7 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
   <img src="Images/256HD.png" 
        alt="256Ch Headstage PCBA Assembly" 
        width="500" 
+       loading="lazy" decoding="async"
        style="border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 20px;">
   <p style="margin-top: 5px; font-size: 0.9em; color: #64748b;">
     <b>Assembled 256-Channel Headstage (Top View)</b>
@@ -1039,6 +861,7 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
   <img src="Videos/Top PCB explosive new.gif" 
        alt="4-Layer PCB Stackup Explosion" 
        width="600" 
+       loading="lazy" decoding="async"
        style="border-radius: 8px; margin-top: 10px;">
   <p style="margin-top: 5px; font-size: 0.9em; color: #64748b;">
     <b> 4-Layer Routing Structure (Top to Bottom)</b>
@@ -1229,27 +1052,18 @@ This project is open-source and available under the **MIT License**. Click the b
 
 <style>
 .bi-color-title {
-  /* 1. 渐变优化：55% 处让紫色刚好覆盖“易链”两个字，色彩最丰富 */
   background: linear-gradient(90deg, #60a5fa 0%, #a78bfa 55%, #f472b6 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
   color: transparent;
   display: flex !important;
-
-  /* 2. 🚨质感补丁：开启硬件级抗锯齿，消除深色背景下渐变文字的白边和毛刺 */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  
-  /* 3. 性能优化：强制开启 GPU 加速渲染 */
   transform: translateZ(0);
 }
 
-/* 确保 SVG 图标色彩不受文字裁剪影响，且颜色更鲜亮 */
-.header-sync-pulse svg {
-  -webkit-text-fill-color: initial;
-  filter: saturate(1.2) drop-shadow(0 0 2px rgba(167, 139, 250, 0.4));
-}
+.header-sync-pulse svg { -webkit-text-fill-color: initial; filter: saturate(1.2) drop-shadow(0 0 2px rgba(167, 139, 250, 0.4)); }
 </style>
 
 <h2 class="sub-title">
@@ -1266,7 +1080,7 @@ This project is open-source and available under the **MIT License**. Click the b
   </div>
   <div align="center">
   <br>
-  <img src="Images/001_CN.png" alt="E-Link_256 分解图" width="750">
+  <img src="Images/001_CN.png" alt="E-Link_256 分解图" width="750" loading="lazy" decoding="async">
   <p style="margin-top: 5px; font-size: 0.95em; color: #3b82f6;">
     <b>E-Link易链(256) 的插拔动态（左）和结构分解（右）</b>
   </p>
@@ -1284,7 +1098,7 @@ This project is open-source and available under the **MIT License**. Click the b
     camera-controls interpolation-decay="200" bounds="tight" field-of-view="30deg" auto-rotate  rotation-per-second="15deg"
     interaction-prompt="none" environment-image="neutral" exposure="0.75" shadow-intensity="0" tone-mapping="commerce">
 
-    <div slot="poster" style="position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; width: 100%; background: radial-gradient(circle at center, #111827 0%, #020617 100%); font-family: 'JetBrains Mono', monospace; overflow: hidden; border-radius: 16px;">
+    <div slot="poster" style="position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; width: 100%; background: radial-gradient(circle at center, #111827 0%, #020617 100%); font-family: 'JetBrains Mono', monospace; overflow: hidden; border-radius: 16px; cursor: pointer;">
       <div style="position: absolute; inset: 0; background-image: linear-gradient(rgba(59, 130, 246, 0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(59, 130, 246, 0.08) 1px, transparent 1px); background-size: 25px 25px; z-index: 0;"></div>
       <div class="scanline" style="z-index: 1;"></div>
       <div class="hud-corner hud-tl" style="z-index: 1;"></div>
@@ -1294,7 +1108,7 @@ This project is open-source and available under the **MIT License**. Click the b
       <div style="z-index: 2; display: flex; flex-direction: column; align-items: center;">
         <div class="cyber-loader"></div>
         <p style="margin-top: 25px; margin-bottom: 5px; font-size: 0.95rem; font-weight: 600; letter-spacing: 3px; color: #93c5fd; text-shadow: 0 0 10px rgba(96, 165, 250, 0.8); animation: text-blink 1.5s ease-in-out infinite;">正在初始化 3D 信号...</p>
-        <p style="margin: 0; font-size: 0.65rem; color: rgba(148, 163, 184, 0.8); letter-spacing: 1px;">[ 滑动页面自动接入引擎 ]</p>
+        <p class="click-to-load-glow" style="margin: 0; font-size: 0.65rem; color: #a78bfa; letter-spacing: 1px; font-weight: bold;">[ 滑动或点击接入引擎 ]</p>
       </div>
     </div>
     
@@ -1345,7 +1159,7 @@ This project is open-source and available under the **MIT License**. Click the b
     camera-controls interpolation-decay="200" bounds="tight" field-of-view="30deg" auto-rotate  rotation-per-second="15deg"
     interaction-prompt="none" environment-image="neutral" exposure="0.75" shadow-intensity="0" tone-mapping="commerce">
 
-    <div slot="poster" style="position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; width: 100%; background: radial-gradient(circle at center, #111827 0%, #020617 100%); font-family: 'JetBrains Mono', monospace; overflow: hidden; border-radius: 16px;">
+    <div slot="poster" style="position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; width: 100%; background: radial-gradient(circle at center, #111827 0%, #020617 100%); font-family: 'JetBrains Mono', monospace; overflow: hidden; border-radius: 16px; cursor: pointer;">
       <div style="position: absolute; inset: 0; background-image: linear-gradient(rgba(59, 130, 246, 0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(59, 130, 246, 0.08) 1px, transparent 1px); background-size: 25px 25px; z-index: 0;"></div>
       <div class="scanline" style="z-index: 1;"></div>
       <div class="hud-corner hud-tl" style="z-index: 1;"></div>
@@ -1355,7 +1169,7 @@ This project is open-source and available under the **MIT License**. Click the b
       <div style="z-index: 2; display: flex; flex-direction: column; align-items: center;">
         <div class="cyber-loader"></div>
         <p style="margin-top: 25px; margin-bottom: 5px; font-size: 0.95rem; font-weight: 600; letter-spacing: 3px; color: #93c5fd; text-shadow: 0 0 10px rgba(96, 165, 250, 0.8); animation: text-blink 1.5s ease-in-out infinite;">正在初始化 3D 信号...</p>
-        <p style="margin: 0; font-size: 0.65rem; color: rgba(148, 163, 184, 0.8); letter-spacing: 1px;">[ 滑动页面自动接入引擎 ]</p>
+        <p class="click-to-load-glow" style="margin: 0; font-size: 0.65rem; color: #a78bfa; letter-spacing: 1px; font-weight: bold;">[ 滑动或点击接入引擎 ]</p>
       </div>
     </div>
     
@@ -1406,7 +1220,7 @@ This project is open-source and available under the **MIT License**. Click the b
     camera-controls interpolation-decay="200" bounds="tight" field-of-view="30deg" auto-rotate  rotation-per-second="15deg"
     interaction-prompt="none" environment-image="neutral" exposure="0.75" shadow-intensity="0" tone-mapping="commerce">
 
-    <div slot="poster" style="position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; width: 100%; background: radial-gradient(circle at center, #111827 0%, #020617 100%); font-family: 'JetBrains Mono', monospace; overflow: hidden; border-radius: 16px;">
+    <div slot="poster" style="position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; width: 100%; background: radial-gradient(circle at center, #111827 0%, #020617 100%); font-family: 'JetBrains Mono', monospace; overflow: hidden; border-radius: 16px; cursor: pointer;">
       <div style="position: absolute; inset: 0; background-image: linear-gradient(rgba(59, 130, 246, 0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(59, 130, 246, 0.08) 1px, transparent 1px); background-size: 25px 25px; z-index: 0;"></div>
       <div class="scanline" style="z-index: 1;"></div>
       <div class="hud-corner hud-tl" style="z-index: 1;"></div>
@@ -1416,7 +1230,7 @@ This project is open-source and available under the **MIT License**. Click the b
       <div style="z-index: 2; display: flex; flex-direction: column; align-items: center;">
         <div class="cyber-loader"></div>
         <p style="margin-top: 25px; margin-bottom: 5px; font-size: 0.95rem; font-weight: 600; letter-spacing: 3px; color: #93c5fd; text-shadow: 0 0 10px rgba(96, 165, 250, 0.8); animation: text-blink 1.5s ease-in-out infinite;">正在初始化 3D 信号...</p>
-        <p style="margin: 0; font-size: 0.65rem; color: rgba(148, 163, 184, 0.8); letter-spacing: 1px;">[ 滑动页面自动接入引擎 ]</p>
+        <p class="click-to-load-glow" style="margin: 0; font-size: 0.65rem; color: #a78bfa; letter-spacing: 1px; font-weight: bold;">[ 滑动或点击接入引擎 ]</p>
       </div>
     </div>
     
@@ -1519,6 +1333,7 @@ This project is open-source and available under the **MIT License**. Click the b
        alt="ELINK-256 组装演示 GIF" 
        width="750" 
        class="gif-blend" 
+       loading="lazy" decoding="async"
        style="border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); display: block;">
 </div>
 
@@ -1580,7 +1395,7 @@ This project is open-source and available under the **MIT License**. Click the b
   
   <path class="pulse-line" d="M300,120 L135,195" />
   <path class="pulse-line" d="M300,120 L300,210" />
-  <path class="pulse-line" d="M300,120 L465,195" />
+  <path class="pulse-line line-to-monkey" d="M300,120 L465,195" />
 </svg>
 
     <div class="node center-node">
@@ -1622,124 +1437,6 @@ This project is open-source and available under the **MIT License**. Click the b
   </div>
 </div>
 
-<style>
-/* ===================== 跨物种拓扑动画 CSS - 居中修正版 ===================== */
-.species-glass-box {
-  position: relative;
-  background: rgba(15, 23, 42, 0.4);
-  border: 1px solid rgba(59, 130, 246, 0.2);
-  border-radius: 16px;
-  padding: 30px 20px;
-  min-height: 320px;
-  overflow: hidden;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-  transform: translateZ(0); /* 开启 GPU 加速 */
-  backface-visibility: hidden;
-  perspective: 1000;
-  will-change: transform; /* 预告浏览器这里会有动画 */
-}
-
-.connection-lines {
-  position: absolute;
-  top: 0; left: 0; width: 100%; height: 100%;
-  z-index: 1; pointer-events: none;
-}
-
-.base-line {
-  fill: none; stroke: rgba(255, 255, 255, 0.1); stroke-width: 2;
-}
-
-.pulse-line {
-  fill: none; 
-  stroke: #60a5fa; 
-  stroke-width: 3;
-  stroke-dasharray: 20 120; 
-  animation: data-flow 2.5s linear infinite;
-  filter: drop-shadow(0 0 5px rgba(96, 165, 250, 0.8));
-}
-
-@keyframes data-flow {
-  from { stroke-dashoffset: 115; }
-  to { stroke-dashoffset: 0; }
-}
-
-.node {
-  position: relative; z-index: 2;
-  display: flex; flex-direction: column; align-items: center;
-  flex: 1; /* 强制三个节点等宽，确保绝对中心 */
-  min-width: 0; /* 防止内容撑开容器导致偏移 */
-}
-
-.center-node { margin-bottom: 20px; flex: none; width: 100%; }
-
-.hex-border {
-  width: 70px; height: 70px;
-  background: radial-gradient(circle, rgba(59,130,246,0.3) 0%, transparent 70%);
-  border: 2px solid #3b82f6; border-radius: 12px;
-  display: flex; justify-content: center; align-items: center;
-  box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
-  animation: float 3s ease-in-out infinite;
-}
-
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-8px); }
-}
-
-.node-text {
-  margin-top: 10px; font-weight: bold; color: #fff;
-  font-family: 'JetBrains Mono', monospace; font-size: 14px;
-}
-.pulse-text { text-shadow: 0 0 8px rgba(96, 165, 250, 0.8); }
-
-.animal-nodes {
-  display: flex; 
-  justify-content: space-between; 
-  width: 100%;
-  align-items: flex-start; /* 顶部对齐是实现等分的关键 */
-  margin-top: 10px;
-}
-
-/* 核心修复：使用 transform 代替 margin-top 避免容器偏移 */
-.rat-node-adjust {
-  transform: translateY(30px) translateZ(0); /* 同样加上 translateZ */
-}
-
-.icon-circle {
-  width: 60px; 
-  height: 60px; 
-  border-radius: 50%;
-  background: #0f172a; 
-  isolation: isolate; 
-  border: 1px solid rgba(255,255,255,0.2);
-  display: flex; 
-  justify-content: center; 
-  align-items: center;
-  transition: all 0.3s ease;
-  position: relative; 
-  z-index: 5;
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease;
-}
-
-.icon-circle:hover { transform: scale(1.1); border-color: #60a5fa; background: rgba(96, 165, 250, 0.1); }
-
-.mouse-glow { box-shadow: 0 0 10px rgba(16, 185, 129, 0.5); }
-.rat-glow { box-shadow: 0 0 10px rgba(59, 130, 246, 0.5); }
-.monkey-glow { box-shadow: 0 0 10px rgba(245, 158, 11, 0.5); }
-
-.node-title { margin-top: 8px; font-weight: bold; color: #e2e8f0; font-size: 14px; }
-.node-desc { margin-top: 4px; color: #94a3b8; font-size: 11px; text-align: center; line-height: 1.4; font-family: sans-serif; }
-
-@media (max-width: 600px) {
-  .species-glass-box { padding: 20px 5px; min-height: 250px; }
-  .icon-circle { width: 45px; height: 45px; }
-  .icon-circle span { font-size: 24px !important; }
-  .node-title { font-size: 12px; }
-  .node-desc { font-size: 9px; }
-  .connection-lines { opacity: 0.8; }
-  .pulse-line { stroke-width: 2; }
-}
-</style>
 * **⚡ 256 通道高密度接口**
   紧凑的基座占地面积，支持高密度采集，且不增加手术负担。
 * **🔌 弹性导电体互连**
@@ -1755,6 +1452,7 @@ This project is open-source and available under the **MIT License**. Click the b
        alt="ELINK-256 动画演示 GIF" 
        class="gif-blend" 
        width="500" 
+       loading="lazy" decoding="async"
        style="border-radius: 6px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); display: block;">
 </div>
 
@@ -1805,6 +1503,7 @@ This project is open-source and available under the **MIT License**. Click the b
   <img src="Images/256HD.png" 
        alt="256通道放大器组装实物图" 
        width="500" 
+       loading="lazy" decoding="async"
        style="border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 20px;">
   <p style="margin-top: 5px; font-size: 0.9em; color: #64748b;">
     <b>已组装的 256 通道前置放大器 (顶视图)</b>
@@ -1815,12 +1514,13 @@ This project is open-source and available under the **MIT License**. Click the b
   <img src="Videos/Top PCB explosive new.gif" 
        alt="顶部4层电路板的设计爆炸动图" 
        width="600" 
+       loading="lazy" decoding="async"
        style="border-radius: 8px; margin-top: 10px;">
   <p style="margin-top: 5px; font-size: 0.9em; color: #64748b;">
     <b> 顶部4层电路板的设计爆炸动图 </b>
   </p>
 </div>
-     
+      
 <div style="width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 10px;">
   <table style="margin-left: auto; margin-right: auto; width: 90%; min-width: 600px; text-align: center; border-collapse: collapse; border: 1px solid #e1e4e8;">
     <thead>
@@ -1961,8 +1661,17 @@ This project is open-source and available under the **MIT License**. Click the b
 <script>
   document.addEventListener("DOMContentLoaded", () => {
   
-// ===================== E-Link 动态数据面板逻辑 (完美绝对同步版) =====================
-    // ===================== E-Link 动态数据面板逻辑 (单向循环瞬间归零版) =====================
+  // ===================== 弱网探测核心逻辑 (新增) =====================
+  // 检测用户是否开启了省流量模式，或者是 3G/2G 网络
+  const isSlowNetwork = () => {
+    if ('connection' in navigator) {
+      const conn = navigator.connection;
+      return conn.saveData || /^[23]g$/.test(conn.effectiveType);
+    }
+    return false; // 默认放行
+  };
+
+  // ===================== E-Link 动态数据面板逻辑 =====================
     const dashboardObserver = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         const card = entry.target;
@@ -1977,65 +1686,47 @@ This project is open-source and available under the **MIT License**. Click the b
           card.dataset.dashboardInView = "true";
           let startTimestamp = null;
           
-          const cycleTime = 6000;  // 动画总循环：6秒
-          const growTime = 2500;   // 🚨 增长耗时：改成 2.5 秒，让动画变慢变顺滑
+          const cycleTime = 6000; 
+          const growTime = 2500;  
 
           const step = (timestamp) => {
-            // 只要滑出屏幕，立刻终止动画循环，节省手机性能
             if (card.dataset.dashboardInView !== "true") return; 
 
             if (!startTimestamp) startTimestamp = timestamp;
-            // 🚨 核心魔法：使用 % 取余数。当到了第6秒(6000ms)，elapsed 瞬间变成 0！
             const elapsed = (timestamp - startTimestamp) % cycleTime;
             
             let progress = 0;
             
             if (elapsed < growTime) {
-              // 1. 顺时针增长阶段：从 0 开始平滑减速到 100%
               let p = elapsed / growTime;
               progress = p === 1 ? 1 : 1 - Math.pow(2, -10 * p);
             } else {
-              // 2. 保持阶段：剩余时间全部保持在 100% 满状态 (显示256, 2.8g等目标值)
-              // 不需要后退代码，因为到了6秒钟循环结束，elapsed 会自动变成 0，progress 也会瞬间变回 0
               progress = 1;
             }
 
-           // 更新数字：瞬间归零，平滑涨满
            const currentValue = isNaN(progress * targetValue) ? 0 : progress * targetValue;
-            
+           
             if (isFloat) {
-              // 重量 (2.8g) 保持一位小数滚动
               numberEl.innerText = currentValue.toFixed(1);
             } else {
-              // 🚨 针对 256 这种大数值的丝滑处理
               if (targetValue > 100) {
-                // 如果是通道数 (256)，在最后 99% 的阶段强制显示目标值，
-                // 解决 255 到 256 之间微小进度导致的渲染延迟感
                 if (progress > 0.99) {
                     numberEl.innerText = targetValue;
                 } else {
                     numberEl.innerText = Math.round(currentValue);
                 }
               } else {
-                // PCB层数 (4) 保持四舍五入
                 numberEl.innerText = Math.round(currentValue);
               }
             }
-
-            // 更新圆环：没有 CSS transition 干扰，progress=0时会直接瞬间变成空环
             fgRing.style.strokeDashoffset = circumference - (circumference * progress);
-
-            // 继续下一帧
             card.dashboardAnimFrame = window.requestAnimationFrame(step);
           };
 
-          // 启动动画
           card.dashboardAnimFrame = window.requestAnimationFrame(step);
           
         } else {
-          // 滑出屏幕时清理状态
           card.dataset.dashboardInView = "false";
-          // 优化：彻底杀掉该卡片的动画进程，防止内存溢出
           if (card.dashboardAnimFrame) {
             window.cancelAnimationFrame(card.dashboardAnimFrame);
             card.dashboardAnimFrame = null;
@@ -2050,7 +1741,7 @@ This project is open-source and available under the **MIT License**. Click the b
       dashboardObserver.observe(card);
     });
     
-    // ===================== 3D 模型交互与防闪退逻辑 =====================
+    // ===================== 3D 模型交互与弱网防闪退逻辑 =====================
     const models = Array.from(document.querySelectorAll('model-viewer'));
     if (!models.length) return;
 
@@ -2060,7 +1751,19 @@ This project is open-source and available under the **MIT License**. Click the b
     let scrollEndTimer = null;
     let initCheckTimer = null; 
 
+    // 新增：给每个模型添加点击事件，允许弱网时手动加载
+    models.forEach(viewer => {
+        viewer.addEventListener('click', () => {
+             if (viewer.dataset.loaded !== "true") {
+                 activateViewer(viewer, true); // force=true 强制加载
+             }
+        });
+    });
+
     const checkAndActivateBestModel = () => {
+        // 🚨核心阻断：如果是弱网，绝不自动加载，等待用户点击
+        if (isSlowNetwork()) return;
+
         let bestModel = null;
         let minDistance = Infinity;
         const viewportCenter = window.innerHeight / 2;
@@ -2092,23 +1795,20 @@ This project is open-source and available under the **MIT License**. Click the b
         }, 120);
     }, { passive: true });
 
-    // 增加一个全局锁，防止多个 3D 模型同时解压撑爆显存
     let isAnyModelLoading = false;
 
-    // 激活模型的专用函数 (防 OOM 闪退版)
-    const activateViewer = async (viewer) => {
-        if (isScrolling) return; 
+    // 激活模型的专用函数 (加入 force 参数)
+    const activateViewer = async (viewer, force = false) => {
+        if (isScrolling && !force) return; 
 
-        // 严格暂停非当前模型，释放 GPU 活跃算力
         models.forEach(m => {
             if (m !== viewer && !m.paused) {
                 m.pause();
             }
         });
 
-        // 如果该模型还没有解压加载
         if (viewer.getAttribute('reveal') === 'manual' && viewer.dataset.loaded !== "true") {
-            if (isAnyModelLoading) return; 
+            if (isAnyModelLoading && !force) return; 
             
             isAnyModelLoading = true;
             try {
@@ -2126,7 +1826,6 @@ This project is open-source and available under the **MIT License**. Click the b
             }
         }
         
-        // 确保 WebGL 上下文安全后再播放
         if (viewer.paused && !isAnyModelLoading) {
             try { viewer.play(); } catch(e) {}
         }
@@ -2139,7 +1838,6 @@ This project is open-source and available under the **MIT License**. Click the b
         }
     };
 
-    // 初始化模型基础设置
     models.forEach((viewer) => {
         viewer.setAttribute('auto-rotate', '');
         viewer.minimumRenderScale = isMobile ? 0.5 : 1; 
@@ -2162,7 +1860,6 @@ This project is open-source and available under the **MIT License**. Click the b
         });
     });
 
-    // 视口交叉观察者
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             const viewer = entry.target;
