@@ -114,20 +114,23 @@ title: E-Link Home
     </svg>
     E-Link(256)
   </h1>
+</div>
   
  <h2 class="sub-title">
   An Open-Source, Elastomer Interconnection-based 
   <span class="mobile-br"></span> Connector for Flexible Neural Interfaces
 </h2>
 
-  <div align="center" style="margin-top: 15px;">
+
+<div align="center" style="margin-top: 15px;">
     <a href="https://sites.dartmouth.edu/fang-group/"><img src="https://img.shields.io/badge/Dartmouth-MINE--Lab-00693E?style=flat-square" alt="MINE Lab"></a>
     <img src="https://img.shields.io/badge/Verified-256ch-FFA500?style=flat-square" alt="Verified" />
     <a href="https://tianyu-bai.github.io/"><img src="https://img.shields.io/badge/Website-Tianyu%20Bai-0077B5?style=flat-square&logo=github&logoColor=white" alt="Website"></a>
     <a href="https://www.linkedin.com/in/tianyubai/"><img src="https://img.shields.io/badge/LinkedIn-Profile-0A66C2?style=flat-square&logo=linkedin&logoColor=white" alt="LinkedIn"></a>
      <a href="https://github.com/tianyu-bai/E-Link/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-MIT-A31F34?style=flat-square&logo=opensourceinitiative&logoColor=white" alt="License"></a>
   </div>
-  <div align="center">
+  
+<div align="center">
  <br>
  <img src="Images/001.PNG" alt="E-Link(256) Exploded View" width="750" loading="lazy" decoding="async">
  <p style="margin-top: 5px; font-size: 0.95em; color: #3b82f6;">
@@ -136,6 +139,7 @@ title: E-Link Home
 </div>
 
 <style>
+  
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@400;700&display=swap');
 
 body, div, p, span, td, th {
@@ -381,7 +385,7 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
     camera-controls interpolation-decay="200" bounds="tight" field-of-view="30deg" auto-rotate  rotation-per-second="15deg"
     interaction-prompt="none" environment-image="neutral" exposure="0.75" shadow-intensity="0" tone-mapping="commerce">
 
-    <div slot="poster" style="position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; width: 100%; background: radial-gradient(circle at center, #111827 0%, #020617 100%); font-family: 'JetBrains Mono', monospace; overflow: hidden; border-radius: 16px; cursor: pointer;">
+<div slot="poster" style="position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; width: 100%; background: radial-gradient(circle at center, #111827 0%, #020617 100%); font-family: 'JetBrains Mono', monospace; overflow: hidden; border-radius: 16px; cursor: pointer;">
       <div style="position: absolute; inset: 0; background-image: linear-gradient(rgba(59, 130, 246, 0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(59, 130, 246, 0.08) 1px, transparent 1px); background-size: 25px 25px; z-index: 0;"></div>
       <div class="scanline" style="z-index: 1;"></div>
       <div class="hud-corner hud-tl" style="z-index: 1;"></div>
@@ -395,7 +399,7 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
       </div>
     </div>
     
-    <div class="model-watermark-text">Copyright © 2026 Tianyu Bai</div>
+<div class="model-watermark-text">Copyright © 2026 Tianyu Bai</div>
 
 <div class="gesture-hud">
   <span>↺ Rotate: Drag</span>
@@ -414,7 +418,7 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
   </div>
 </div>
 
-    <div class="gesture-overlay mode-drag">
+<div class="gesture-overlay mode-drag">
       <div class="icon-box"><div class="hand-icon">👆</div></div>
       <div class="gesture-text">Drag to Rotate</div>
     </div>
@@ -442,8 +446,8 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
     camera-controls interpolation-decay="200" bounds="tight" field-of-view="30deg" auto-rotate  rotation-per-second="15deg"
     interaction-prompt="none" environment-image="neutral" exposure="0.75" shadow-intensity="0" tone-mapping="commerce">
 
-    <div slot="poster" style="position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; width: 100%; background: radial-gradient(circle at center, #111827 0%, #020617 100%); font-family: 'JetBrains Mono', monospace; overflow: hidden; border-radius: 16px; cursor: pointer;">
-      <div style="position: absolute; inset: 0; background-image: linear-gradient(rgba(59, 130, 246, 0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(59, 130, 246, 0.08) 1px, transparent 1px); background-size: 25px 25px; z-index: 0;"></div>
+<div slot="poster" style="position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; width: 100%; background: radial-gradient(circle at center, #111827 0%, #020617 100%); font-family: 'JetBrains Mono', monospace; overflow: hidden; border-radius: 16px; cursor: pointer;">
+   <div style="position: absolute; inset: 0; background-image: linear-gradient(rgba(59, 130, 246, 0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(59, 130, 246, 0.08) 1px, transparent 1px); background-size: 25px 25px; z-index: 0;"></div>
       <div class="scanline" style="z-index: 1;"></div>
       <div class="hud-corner hud-tl" style="z-index: 1;"></div>
       <div class="hud-corner hud-tr" style="z-index: 1;"></div>
@@ -502,7 +506,7 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
     camera-controls interpolation-decay="200" bounds="tight" field-of-view="30deg" auto-rotate  rotation-per-second="15deg"
     interaction-prompt="none" environment-image="neutral" exposure="0.75" shadow-intensity="0" tone-mapping="commerce">
 
-    <div slot="poster" style="position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; width: 100%; background: radial-gradient(circle at center, #111827 0%, #020617 100%); font-family: 'JetBrains Mono', monospace; overflow: hidden; border-radius: 16px; cursor: pointer;">
+<div slot="poster" style="position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; width: 100%; background: radial-gradient(circle at center, #111827 0%, #020617 100%); font-family: 'JetBrains Mono', monospace; overflow: hidden; border-radius: 16px; cursor: pointer;">
       <div style="position: absolute; inset: 0; background-image: linear-gradient(rgba(59, 130, 246, 0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(59, 130, 246, 0.08) 1px, transparent 1px); background-size: 25px 25px; z-index: 0;"></div>
       <div class="scanline" style="z-index: 1;"></div>
       <div class="hud-corner hud-tl" style="z-index: 1;"></div>
@@ -552,7 +556,7 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
 <div class="elink-dynamic-dashboard" align="center">
   <div class="metrics-grid">
     
-    <div class="metric-card glass-panel" data-percent="100" data-value="2.8" data-is-float="true">
+<div class="metric-card glass-panel" data-percent="100" data-value="2.8" data-is-float="true">
       <div class="chart-box">
         <svg viewBox="0 0 100 100">
           <circle class="bg-ring" cx="50" cy="50" r="45"></circle>
@@ -568,7 +572,7 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
       </div>
     </div>
 
-    <div class="metric-card glass-panel" data-percent="100" data-value="256" data-is-float="false">
+<div class="metric-card glass-panel" data-percent="100" data-value="256" data-is-float="false">
       <div class="chart-box">
         <svg viewBox="0 0 100 100">
           <circle class="bg-ring" cx="50" cy="50" r="45"></circle>
@@ -584,7 +588,7 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
       </div>
     </div>
 
-    <div class="metric-card glass-panel" data-percent="100" data-value="4" data-is-float="false">
+<div class="metric-card glass-panel" data-percent="100" data-value="4" data-is-float="false">
       <div class="chart-box">
         <svg viewBox="0 0 100 100">
           <circle class="bg-ring" cx="50" cy="50" r="45"></circle>
@@ -681,7 +685,7 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
   <path class="pulse-line line-to-monkey" d="M300,141 L465,225" />
 </svg>
 
-    <div class="node center-node">
+ <div class="node center-node">
       <div class="hex-border">
         <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M7 2V4M12 2V4M17 2V4M22 7H20M22 12H20M22 17H20M17 22V20M12 22V20M7 22V20M2 17H4M2 12H4M2 7H4M6 6H18V18H6V6ZM9 9V15H15V9H9Z" stroke="#60a5fa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -690,9 +694,9 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
       <div class="node-text pulse-text">E-Link (256)</div>
     </div>
 
-    <div class="animal-nodes">
+ <div class="animal-nodes">
       
-      <div class="node sub-node">
+  <div class="node sub-node">
         <div class="icon-circle mouse-glow">
           <span style="font-size: 30px;">🐁</span>
         </div>
@@ -700,7 +704,7 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
         <div class="node-desc">Housing Removed<br><b><font color="#10b981">2.8g</font> Payload</b></div>
       </div>
 
-      <div class="node sub-node rat-node-adjust">
+  <div class="node sub-node rat-node-adjust">
         <div class="icon-circle rat-glow">
           <span style="font-size: 30px;">🐀</span>
         </div>
@@ -708,7 +712,7 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
         <div class="node-desc">Standard Implant<br><b><font color="#3b82f6">6.6g</font> Total</b></div>
       </div>
 
-      <div class="node sub-node">
+  <div class="node sub-node">
         <div class="icon-circle monkey-glow">
           <span style="font-size: 30px;">🐒</span>
         </div>
