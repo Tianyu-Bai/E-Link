@@ -792,21 +792,22 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
 * **🧪 Surgical-Grade Design**
  Textured sidewalls for superior adhesion with dental cement or UV-curable resin.
 <div align="center">
- <img src="Videos/Animation%20repeat.gif" 
-      alt="ELINK-256 Animation GIF" 
-      class="gif-blend" 
-      width="500" 
-      loading="lazy" decoding="async"
-      style="border-radius: 6px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); display: block;">
+<img data-src="Videos/Animation%20repeat.gif" 
+     src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+     alt="ELINK-256 Animation GIF" 
+     class="gif-blend lazy-gif" 
+     width="500" 
+     decoding="async"
+     style="border-radius: 6px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); display: block;">
 </div>
-
 <div align="center">
  <br>
- <img src="Videos/Demo%20new%20new.gif" 
+ <img data-src="Videos/Demo%20new%20new.gif" 
+       src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
        alt="ELINK-256 Assembly Demo GIF" 
        width="750" 
-       class="gif-blend" 
-       loading="lazy" decoding="async"
+       class="gif-blend lazy-gif" 
+       decoding="async"
        style="border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); display: block;">
 </div>
 
@@ -865,10 +866,12 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
 </div>
 
 <div align="center">
-  <img src="Videos/Top PCB explosive new.gif" 
+  <img data-src="Videos/Top PCB explosive new.gif" 
+       src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
        alt="4-Layer PCB Stackup Explosion" 
        width="600" 
-       loading="lazy" decoding="async"
+       class="lazy-gif"
+       decoding="async"
        style="border-radius: 8px; margin-top: 10px;">
   <p style="margin-top: 5px; font-size: 0.9em; color: #64748b;">
     <b> 4-Layer Routing Structure (Top to Bottom)</b>
@@ -1445,20 +1448,22 @@ This project is open-source and available under the **MIT License**. Click the b
 * **🧪 手术级设计**
   纹理化侧壁设计，增强了与牙科水泥或紫外光固化树脂的附着力。
 <div align="center">
-  <img src="Videos/Animation%20repeat.gif" 
+  <img data-src="Videos/Animation%20repeat.gif" 
+       src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
        alt="ELINK-256 动画演示 GIF" 
-       class="gif-blend" 
+       class="gif-blend lazy-gif" 
        width="500" 
-       loading="lazy" decoding="async"
+       decoding="async"
        style="border-radius: 6px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); display: block;">
 </div>
 
 <div align="center">
-<img src="Videos/Demo%20new%20new.gif" 
+<img data-src="Videos/Demo%20new%20new.gif" 
+       src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
        alt="ELINK-256 组装演示 GIF" 
        width="750" 
-       class="gif-blend" 
-       loading="lazy" decoding="async"
+       class="gif-blend lazy-gif" 
+       decoding="async"
        style="border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); display: block;">
 </div>
 
@@ -1517,10 +1522,12 @@ This project is open-source and available under the **MIT License**. Click the b
 </div>
 
 <div align="center">
-  <img src="Videos/Top PCB explosive new.gif" 
+  <img data-src="Videos/Top PCB explosive new.gif" 
+       src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
        alt="顶部4层电路板的设计爆炸动图" 
        width="600" 
-       loading="lazy" decoding="async"
+       class="lazy-gif"
+       decoding="async"
        style="border-radius: 8px; margin-top: 10px;">
   <p style="margin-top: 5px; font-size: 0.9em; color: #64748b;">
     <b> 顶部4层电路板的设计爆炸动图 </b>
@@ -1890,5 +1897,27 @@ This project is open-source and available under the **MIT License**. Click the b
     });
 
     models.forEach(model => observer.observe(model));
+
+  // ===================== GIF 滚动到可见时才加载 =====================
+  const gifObserver = new IntersectionObserver((entries, observer) => {
+    entries.forEach(entry => {
+      // 当 GIF 进入浏览器视口时
+      if (entry.isIntersecting) {
+        const img = entry.target;
+        // 将真实的 GIF 地址赋给 src 属性触发加载
+        img.src = img.dataset.src;
+        // 取消观察，确保只加载一次
+        observer.unobserve(img);
+      }
+    });
+  }, {
+    threshold: 0.1, // 露出 10% 时就开始加载
+    rootMargin: "50px 0px" // 提前 50px 加载，让用户感觉不到延迟
   });
+
+  // 选中所有带有 lazy-gif 类的图片并开始观察
+  document.querySelectorAll('img.lazy-gif').forEach(gif => {
+    gifObserver.observe(gif);
+  });
+});
 </script>
