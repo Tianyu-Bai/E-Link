@@ -27,23 +27,70 @@ title: E-Link Home
 
 <style>
 /* 1. 外层容器 */
-.main-title-wrapper { margin-bottom: 20px; }
-
-/* 2. Logo 容器逻辑 (修改部分) */
-.logo-container {
-  display: flex !important;
-  align-items: center;
+.main-title-wrapper { 
+  margin-bottom: 20px; 
+  display: flex;
   justify-content: center;
+}
+
+/* 2. Logo 容器逻辑 (核心修改) */
+.logo-container {
+  position: relative; /* 关键：为绝对定位的光束提供基准 */
+  display: inline-block; /* 让容器包裹住图片大小 */
+  overflow: hidden; /* 关键：隐藏移出边界的光束 */
   margin-bottom: 5px;
-  /* 去掉了之前的 background-clip: text 等文字专用属性 */
+  border-radius: 4px; /* 可选：如果光束边缘太硬，可以加一点圆角 */
+}
+
+/* ✨ 探照灯光束特效 ✨ */
+.logo-container::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 60%; /* 光束的宽度，越宽扫过的范围越大 */
+  height: 100%;
+  
+  /* 制作一道垂直的光束：两边透明，中间是高亮的蓝紫色渐变 */
+  background: linear-gradient(
+    to right, 
+    transparent 0%, 
+    rgba(96, 165, 250, 0.2) 20%,  /* 边缘柔光 */
+    rgba(167, 139, 250, 0.9) 50%,  /* 中心最亮的高光 */
+    rgba(96, 165, 250, 0.2) 80%,   /* 边缘柔光 */
+    transparent 100%
+  );
+  
+  /* 滤色混合模式：让光束像真实光线一样“照亮”底部的图片 */
+  mix-blend-mode: screen; 
+  
+  /* 初始位置：在容器左侧外面 */
+  transform: translateX(-150%) skewX(-15deg); /* skewX 让光束稍微倾斜一点，更有动感 */
+  
+  pointer-events: none; /* 确保光束不会阻挡鼠标点击图片 */
+  
+  /* 应用扫光动画：4秒扫一次，无限循环 */
+  animation: searchlight-sweep 4s ease-in-out infinite;
+}
+
+/* 探照灯移动动画关键帧 */
+@keyframes searchlight-sweep {
+  0% { 
+    transform: translateX(-150%) skewX(-15deg); /* 从左侧画面外开始 */
+  }
+  100% { 
+    transform: translateX(250%) skewX(-15deg); /* 移动到右侧画面外结束 */
+  }
 }
 
 /* 新增：Logo 图片样式 */
 .main-logo {
-  height: 60px; /* 电脑端默认高度，可根据 Logo 比例调整 */
-  width: auto;  /* 保持比例 */
+  height: 60px; 
+  width: auto;  
   object-fit: contain;
   display: block;
+  /* 为了配合扫光效果，让图片本身稍微暗一点点，对比更强烈（可选） */
+  filter: brightness(0.95); 
 }
 
 /* 3. 副标题基础样式 */
@@ -58,22 +105,23 @@ title: E-Link Home
   letter-spacing: -0.5px;
   text-align: center;
   margin-top: 0;
-  line-height: 1.4; /* 稍微增加一点行高，让多行阅读更舒适 */
+  line-height: 1.4; 
   max-width: 90%; 
   margin-left: auto;
   margin-right: auto;
 }
 
-/* 4. 手机端优化 (修改部分) */
+/* 4. 手机端优化 */
 @media (max-width: 600px) {
   .main-title-wrapper { margin-bottom: 10px; }
   
-  /* 手机端 Logo 大小调整 */
-  .main-logo { height: 35px; } 
+  /* 👇 图片整体在手机上显得太大，调小这个 height */
+  .main-logo { height: 28px; } 
 
+  /* 👇 副标题文字 */
   .sub-title { 
-    font-size: 1.35em; 
-    padding: 0 5px; 
+    font-size: 1.15em; 
+    padding: 0 10px; 
     white-space: normal; 
   }
   
@@ -83,25 +131,24 @@ title: E-Link Home
   }
 }
 
-/* 5. 呼吸动画逻辑 (保持不变，应用在图片上) */
+/* 5. 呼吸动画逻辑 (保留并直接作用于图片容器，让整体一起呼吸) */
 .header-sync-pulse {
   animation: sync-pulse 3s ease-in-out infinite;
   will-change: transform, filter;
 }
 
 @keyframes sync-pulse {
-  /* 调整了投影颜色以适应图片，也可以根据 Logo 主色调修改 rgba */
   0%, 100% { transform: scale(1); filter: drop-shadow(0 0 8px rgba(96, 165, 250, 0.3)); }
   50% { transform: scale(1.03); filter: drop-shadow(0 0 15px rgba(167, 139, 250, 0.5)); }
 }
 </style>
 
 <div class="main-title-wrapper" align="center">
-  <h1 class="logo-container">
+  <h1 class="logo-container header-sync-pulse">
     <img 
       src="{{ '/Images/ELink Logo.png' | relative_url }}" 
       alt="E-Link Logo color" 
-      class="main-logo header-sync-pulse"
+      class="main-logo"
     >
   </h1>
 </div>
