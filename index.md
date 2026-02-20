@@ -89,6 +89,7 @@ title: E-Link Home
 .header-sync-pulse svg { -webkit-text-fill-color: initial; filter: saturate(1.1); }
 </style>
 
+
 <div class="main-title-wrapper" align="center">
   <h1 class="header-sync-pulse bi-color-title">
     <svg class="title-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -118,7 +119,6 @@ title: E-Link Home
   <a href="#en-bom"><img src="https://img.shields.io/badge/🛠_BOM-3b82f6?style=flat-square&logoColor=white" alt="BOM"></a>
   <a href="#en-downloads"><img src="https://img.shields.io/badge/🔗_Downloads-3b82f6?style=flat-square&logoColor=white" alt="Downloads"></a>
 </div>
-
 
   <div align="center" style="margin-top: 15px;">
     <a href="https://sites.dartmouth.edu/fang-group/"><img src="https://img.shields.io/badge/Dartmouth-MINE--Lab-00693E?style=flat-square" alt="MINE Lab"></a>
@@ -604,6 +604,7 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
 </div>
 
 <span id="en-overview"></span>
+
 ## 📖 Overview
 
 **E-Link** (Elastomer Interconnection-based connector) is an open-source, miniature pedestal connector system based on elastomer interconnection. It provides a robust, scalable interface for flexible neural probes, specifically engineered for chronic applications in freely moving animals.
@@ -718,8 +719,8 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
     </div>
   </div>
 </div>
-
 <style>
+  
 /* ===================== 跨物种拓扑动画 CSS - 居中与性能优化版 ===================== */
 .species-glass-box {
   position: relative;
