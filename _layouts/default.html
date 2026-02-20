@@ -390,18 +390,43 @@
     </video>
   </div>
 </div>
- 
+
 <div id="welcome-modal" class="welcome-modal">
   <div class="modal-content">
-    
-    <div style="position: absolute; top: 12px; width: 100%; left: 0; text-align: center; z-index: 100; pointer-events: none; font-family: 'JetBrains Mono', monospace; opacity: 0.6;">
+
+    <div id="dynamic-mirror-bar" style="position: absolute; top: 12px; width: 100%; left: 0; text-align: center; z-index: 100; pointer-events: none; font-family: 'JetBrains Mono', monospace; opacity: 0.6;">
       <div class="m-en" style="font-size: 0.6rem; letter-spacing: 0.5px; color: #94a3b8;">
-        Mirror: <a href="https://ephys.tech" target="_blank" style="color: #60a5fa; text-decoration: none; pointer-events: auto; cursor: pointer; border-bottom: 1px solid rgba(96, 165, 250, 0.2);">ephys.tech</a> | Best viewed on Mobile 📱
+        Mirror: <a id="mirror-link-en" href="#" target="_blank" style="color: #60a5fa; text-decoration: none; pointer-events: auto; cursor: pointer; border-bottom: 1px solid rgba(96, 165, 250, 0.2);">Detecting...</a> | Best viewed on Mobile 📱
       </div>
       <div class="m-zh" style="font-size: 0.6rem; letter-spacing: 0.5px; color: #94a3b8; font-family: sans-serif;">
-        备用入口: <a href="https://ephys.tech" target="_blank" style="color: #60a5fa; text-decoration: none; pointer-events: auto; cursor: pointer; border-bottom: 1px solid rgba(96, 165, 250, 0.2);">ephys.tech</a> | 推荐手机浏览 📱
+        备用入口: <a id="mirror-link-zh" href="#" target="_blank" style="color: #60a5fa; text-decoration: none; pointer-events: auto; cursor: pointer; border-bottom: 1px solid rgba(96, 165, 250, 0.2);">检测中...</a> | 推荐手机浏览 📱
       </div>
     </div>
+
+<script>
+(function() {
+  // hostname 获取的是纯域名，如 "e-link.pages.dev"
+  const host = window.location.hostname;
+  
+  // 1. 这里只写纯域名（不要带 http）
+  const siteA = "e-link.pages.dev";
+  const siteB = "ephys.tech";
+  
+  const linkEn = document.getElementById('mirror-link-en');
+  const linkZh = document.getElementById('mirror-link-zh');
+
+  // 2. 逻辑判断
+  let targetDomain = host.includes(siteA) ? siteB : siteA;
+  
+  // 3. 拼接完整的 URL 用于跳转和显示
+  let fullURL = "https://" + targetDomain;
+
+  linkEn.href = fullURL;
+  linkEn.innerText = fullURL;
+  linkZh.href = fullURL;
+  linkZh.innerText = fullURL;
+})();
+</script>
 
     <div class="modal-title" style="margin-top: 15px;">
       <span class="m-en">✨ Hi, Welcome to E-Link!</span>
