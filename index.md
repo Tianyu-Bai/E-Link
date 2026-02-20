@@ -812,6 +812,7 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
 </style>
 
 <style>
+  
 /* 水印体特征列表专属样式 */
 .watermark-features {
   color: rgba(148, 163, 184, 0.8); /* 柔和的蓝灰色 (Slate-400)，自带水印隐匿感 */
@@ -1084,6 +1085,8 @@ This project is open-source and available under the **MIT License**. Click the b
   <hr>
   <br>
 </div>
+
+</div> 
 
 <div class="lang-zh" markdown="1">
 
@@ -1744,6 +1747,7 @@ This project is open-source and available under the **MIT License**. Click the b
   </a>
 </div>
 
+</div> 
 <script>
   document.addEventListener("DOMContentLoaded", () => {
   
