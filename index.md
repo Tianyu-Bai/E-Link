@@ -594,16 +594,6 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
 
 **E-Link** (Elastomer Interconnection-based connector) is an open-source, miniature pedestal connector system based on elastomer interconnection. It provides a robust, scalable interface for flexible neural probes, specifically engineered for chronic applications in freely moving animals.
 
-<div align="center">
- <br>
- <img src="Videos/Demo%20new%20new.gif" 
-       alt="ELINK-256 Assembly Demo GIF" 
-       width="750" 
-       class="gif-blend" 
-       loading="lazy" decoding="async"
-       style="border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); display: block;">
-</div>
-
 ---
 
 > [!NOTE]
@@ -808,6 +798,16 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
       width="500" 
       loading="lazy" decoding="async"
       style="border-radius: 6px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); display: block;">
+</div>
+
+<div align="center">
+ <br>
+ <img src="Videos/Demo%20new%20new.gif" 
+       alt="ELINK-256 Assembly Demo GIF" 
+       width="750" 
+       class="gif-blend" 
+       loading="lazy" decoding="async"
+       style="border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); display: block;">
 </div>
 
 ---
@@ -1334,15 +1334,6 @@ This project is open-source and available under the **MIT License**. Click the b
 
 **E-Link易链**，是一款基于弹性体互连技术（Elastomer Interconnection）的开源微型基座连接系统。它为柔性神经探针提供了稳固且可扩展的接口，专为自由活动动物的长期实验而优化设计
 
-<div align="center">
-<img src="Videos/Demo%20new%20new.gif" 
-       alt="ELINK-256 组装演示 GIF" 
-       width="750" 
-       class="gif-blend" 
-       loading="lazy" decoding="async"
-       style="border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); display: block;">
-</div>
-
 ---
 
 > [!NOTE]
@@ -1460,6 +1451,15 @@ This project is open-source and available under the **MIT License**. Click the b
        width="500" 
        loading="lazy" decoding="async"
        style="border-radius: 6px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); display: block;">
+</div>
+
+<div align="center">
+<img src="Videos/Demo%20new%20new.gif" 
+       alt="ELINK-256 组装演示 GIF" 
+       width="750" 
+       class="gif-blend" 
+       loading="lazy" decoding="async"
+       style="border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); display: block;">
 </div>
 
 ---
