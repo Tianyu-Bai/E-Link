@@ -123,7 +123,6 @@ title: E-Link Home
 
 
 <div align="center" style="margin-top: 15px;">
-    <a href="https://sites.dartmouth.edu/fang-group/"><img src="https://img.shields.io/badge/Dartmouth-MINE--Lab-00693E?style=flat-square" alt="MINE Lab"></a>
     <img src="https://img.shields.io/badge/Verified-256ch-FFA500?style=flat-square" alt="Verified" />
     <a href="https://tianyu-bai.github.io/"><img src="https://img.shields.io/badge/Website-Tianyu%20Bai-0077B5?style=flat-square&logo=github&logoColor=white" alt="Website"></a>
     <a href="https://www.linkedin.com/in/tianyubai/"><img src="https://img.shields.io/badge/LinkedIn-Profile-0A66C2?style=flat-square&logo=linkedin&logoColor=white" alt="LinkedIn"></a>
@@ -1005,13 +1004,13 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
 
 ---
 
-## 👥 Developers & Lab
-
-This project is developed by the **MINE Lab** at Dartmouth College. <a href="https://sites.dartmouth.edu/fang-group/"><img src="https://img.shields.io/badge/VISIT_WEBSITE_%E2%86%97-MINE_Lab-00693E?style=flat-square" alt="MINE Lab"></a>
+## 👥 Developers
 
 * **Tianyu Bai** (Lead Designer) <a href="https://tianyu-bai.github.io/"><img src="https://img.shields.io/badge/Website-Tianyu%20Bai-0077B5?style=flat-square&logo=github&logoColor=white" alt="Website"></a>
 * **Gen Li, Ph.D.**
 * **Hui Fang, Ph.D.** <a href="https://engineering.dartmouth.edu/community/faculty/hui-fang"><img src="https://img.shields.io/badge/Principal%20Investigator-444444?style=flat-square&logoColor=white" />
+
+This project is developed by the **MINE Lab** at Dartmouth College. <a href="https://sites.dartmouth.edu/fang-group/"><img src="https://img.shields.io/badge/VISIT_WEBSITE_%E2%86%97-MINE_Lab-00693E?style=flat-square" alt="MINE Lab"></a>
 
 ---
 
@@ -1025,9 +1024,10 @@ The hardware designs and visual assets in this repository correspond directly to
 * **Preprint/Full Paper**: *Coming Soon.*
   
 * We welcome feedback and collaboration from the neuroengineering community!
-
+ 
 * **Inquiries**: Thinking about using E-Link in your lab? We know setting up a new system can be tricky. If you have questions about the PCB design or 3D printing, drop us an email or open an issue. We'd love to help you get started!
-  * **Email**: [<font color="#60a5fa">support@ephys.tech</font>](mailto:support@ephys.tech)
+  * **Support**: [<font color="#60a5fa">support@ephys.tech</font>](mailto:support@ephys.tech)
+  * **Developer (Tianyu)**: [<font color="#60a5fa">tianyu@ephys.tech</font>](mailto:tianyu@ephys.tech) 
 
 ---
 
@@ -1148,7 +1148,6 @@ This project is open-source and available under the **MIT License**. Click the b
 
 
   <div align="center" style="margin-top: 15px;">
-    <a href="https://sites.dartmouth.edu/fang-group/"><img src="https://img.shields.io/badge/达特茅斯学院-00693E?style=flat-square" alt="方辉组"></a>
     <img src="https://img.shields.io/badge/已验证-256通道-FFA500?style=flat-square" alt="Verified" />
     <a href="https://tianyu-bai.github.io/"><img src="https://img.shields.io/badge/个人主页-Tianyu%20Bai-0077B5?style=flat-square&logo=github&logoColor=white" alt="Website"></a>
     <a href="https://www.linkedin.com/in/tianyubai/"><img src="https://img.shields.io/badge/领英-主页-0A66C2?style=flat-square&logo=linkedin&logoColor=white" alt="LinkedIn"></a>
@@ -1673,13 +1672,13 @@ This project is open-source and available under the **MIT License**. Click the b
 
 ---
 
-## 👥 开发者与实验室
-
-本项目由达特茅斯学院的 **MINE Lab** 开发。<a href="https://sites.dartmouth.edu/fang-group/"><img src="https://img.shields.io/badge/访问网站_%E2%86%97-MINE_Lab-00693E?style=flat-square" alt="MINE Lab"></a>
+## 👥 开发者
 
 * **白天宇** (主导研发及设计) <a href="https://tianyu-bai.github.io/"><img src="https://img.shields.io/badge/个人主页-Tianyu%20Bai-0077B5?style=flat-square&logo=github&logoColor=white" alt="Website"></a>
 * **李根**
 * **方辉教授** <a href="https://engineering.dartmouth.edu/community/faculty/hui-fang"><img src="https://img.shields.io/badge/首席研究员_(PI)-444444?style=flat-square&logoColor=white" />
+
+本项目由达特茅斯学院的 **MINE Lab**团队开发。<a href="https://sites.dartmouth.edu/fang-group/"><img src="https://img.shields.io/badge/访问网站_%E2%86%97-MINE_Lab-00693E?style=flat-square" alt="MINE Lab"></a>
 
 ---
 
@@ -1695,8 +1694,8 @@ This project is open-source and available under the **MIT License**. Click the b
 * 🤝 **我们诚挚欢迎神经工程科研同行的反馈与合作！**
 
 * **技术咨询**：有意部署 E-Link易链？作为开发者深知从零搭建一套新系统往往伴随诸多挑战。无论您在 PCB 设计、3D 打印制造，还是系统组装方面遇到任何问题，都欢迎随时通过邮件与我们取得联系。将为您提供技术支持！
-    * **技术支持**: [<font color="#60a5fa">support@ephys.tech</font>](mailto:support@ephys.tech)
-  
+  * **技术支持**: [<font color="#60a5fa">support@ephys.tech</font>](mailto:support@ephys.tech)
+  * **留言**: [<font color="#60a5fa">tianyu@ephys.tech</font>](mailto:tianyu@ephys.tech)
 ---
 
 ## 📑 引用与 DOI
