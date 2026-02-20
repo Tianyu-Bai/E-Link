@@ -27,49 +27,23 @@ title: E-Link Home
 
 <style>
 /* 1. 外层容器 */
-.main-title-wrapper { 
-  margin-bottom: 20px; 
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
+.main-title-wrapper { margin-bottom: 20px; }
 
-/* ✨ 新增：必须加上相对定位，用来框住后面的“打光”效果 ✨ */
+/* 2. Logo 容器逻辑 (修改部分) */
 .logo-container {
-  position: relative;
-  display: inline-flex; 
+  display: flex !important;
   align-items: center;
   justify-content: center;
-}
-
-/* 2. 主 Logo 样式 */
-.main-logo {
-  width: 350px; 
-  max-width: 100%;
-  height: auto;
   margin-bottom: 5px;
-  display: block;
+  /* 去掉了之前的 background-clip: text 等文字专用属性 */
 }
 
-/* ✨ 核心魔法：用 CSS 在 "Link" 区域上方打一束柔和的高光 ✨ */
-.logo-container::after {
-  content: "";
-  position: absolute;
-  top: 50%;
-  right: -2%; /* 靠右对齐，精准覆盖 "Link" 区域 */
-  transform: translateY(-50%);
-  width: 65%; /* 宽度覆盖图片的右半部分 */
-  height: 90%;
-  
-  /* 径向渐变模拟光源：中心最亮，向外渐变透明。这里的 rgba 颜色是浅紫和青蓝色系，和你的副标题呼应 */
-  background: radial-gradient(ellipse at center, rgba(167, 139, 250, 0.6) 0%, rgba(96, 165, 250, 0.2) 50%, transparent 70%);
-  
-  pointer-events: none; /* 确保光圈不会阻挡鼠标对图片的点击或保存 */
-  mix-blend-mode: screen; /* 滤色模式：能像现实中的光线一样，有效提亮底图的暗部黑字 */
-  z-index: 10;
-  
-  /* 让这束光跟着 Logo 的节奏一起呼吸闪烁，增加科技感 */
-  animation: sync-pulse 3s ease-in-out infinite;
+/* 新增：Logo 图片样式 */
+.main-logo {
+  height: 60px; /* 电脑端默认高度，可根据 Logo 比例调整 */
+  width: auto;  /* 保持比例 */
+  object-fit: contain;
+  display: block;
 }
 
 /* 3. 副标题基础样式 */
@@ -90,38 +64,42 @@ title: E-Link Home
   margin-right: auto;
 }
 
-/* 4. 手机端优化 */
+/* 4. 手机端优化 (修改部分) */
 @media (max-width: 600px) {
   .main-title-wrapper { margin-bottom: 10px; }
-  .main-logo { width: 220px; }
+  
+  /* 手机端 Logo 大小调整 */
+  .main-logo { height: 45px; } 
+
   .sub-title { 
     font-size: 1.1em; 
     padding: 0 10px; 
     white-space: normal; 
   }
+  
   .mobile-br::before {
     content: "\A";
     white-space: pre;
   }
 }
 
-/* 5. 呼吸动画逻辑 */
+/* 5. 呼吸动画逻辑 (保持不变，应用在图片上) */
 .header-sync-pulse {
   animation: sync-pulse 3s ease-in-out infinite;
   will-change: transform, filter;
-  contain: layout style;
 }
 
 @keyframes sync-pulse {
+  /* 调整了投影颜色以适应图片，也可以根据 Logo 主色调修改 rgba */
   0%, 100% { transform: scale(1); filter: drop-shadow(0 0 8px rgba(96, 165, 250, 0.3)); }
-  50% { transform: scale(1.03); filter: drop-shadow(0 0 20px rgba(167, 139, 250, 0.55)); }
+  50% { transform: scale(1.03); filter: drop-shadow(0 0 15px rgba(167, 139, 250, 0.5)); }
 }
 </style>
 
 <div class="main-title-wrapper" align="center">
   <h1 class="logo-container">
     <img 
-      src="{{ '/Images/ELink Logo.png' | relative_url }}" 
+      src="{{ '/images/ELink Logo.png' | relative_url }}" 
       alt="E-Link Logo" 
       class="main-logo header-sync-pulse"
     >
