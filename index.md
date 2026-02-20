@@ -69,7 +69,7 @@ title: E-Link Home
   .main-title-wrapper { margin-bottom: 10px; }
   
   /* 手机端 Logo 大小调整 */
-  .main-logo { height: 45px; } 
+  .main-logo { height: 35px; } 
 
   .sub-title { 
     font-size: 1.35em; 
@@ -100,7 +100,7 @@ title: E-Link Home
   <h1 class="logo-container">
     <img 
       src="{{ '/Images/ELink Logo.png' | relative_url }}" 
-      alt="E-Link Logo" 
+      alt="E-Link Logo color" 
       class="main-logo header-sync-pulse"
     >
   </h1>
