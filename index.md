@@ -40,9 +40,9 @@ title: E-Link Home
 
 .title-icon { width: 45px; height: 45px; margin-right: 15px; flex-shrink: 0; }
 
-/* 3. 副标题样式 */
+/* 3. 副标题基础样式 */
 .sub-title {
-  background: -webkit-linear-gradient(0deg, #60a5fa, #a78bfa);
+  background: linear-gradient(0deg, #60a5fa, #a78bfa);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   font-family: 'Inter', system-ui, sans-serif;
@@ -52,14 +52,27 @@ title: E-Link Home
   text-align: center;
   margin-top: 0;
   line-height: 1.3;
+  /* 增加这一行：防止文字太靠边 */
+  max-width: 90%; 
+  margin-left: auto;
+  margin-right: auto;
 }
 
 /* 4. 手机端优化 */
 @media (max-width: 600px) {
-  .main-title-wrapper { margin-bottom: 10px;  }
-  .title-icon { margin-right: 8px; width: 38px; height: 38px; }
-  .sub-title { font-size: 1.05em; padding: 0 5px; }
-  .pc-only-br { display: none; }
+  .main-title-wrapper { margin-bottom: 10px; }
+  .title-icon { margin-right: 8px; width: 32px; height: 32px; }
+  .sub-title { 
+    font-size: 1.1em; /* 稍微缩小字号 */
+    padding: 0 10px; 
+    white-space: normal; /* 确保文字可以换行 */
+  }
+  
+  /* 关键：在手机端强制换行 */
+  .mobile-br::before {
+    content: "\A";
+    white-space: pre;
+  }
 }
 
 /* 5. 呼吸动画逻辑 */
@@ -92,10 +105,10 @@ title: E-Link Home
     E-Link(256)
   </h1>
   
-  <h2 class="sub-title">
-    An Open-Source, Elastomer Interconnection-based<br class="pc-only-br">Connector for Flexible Neural Interfaces
-  </h2>
-</div>
+ <h2 class="sub-title">
+  An Open-Source, Elastomer Interconnection-based 
+  <span class="mobile-br"></span> Connector for Flexible Neural Interfaces
+</h2>
 
 <div align="center" class="nav-badges">
   <a href="#en-overview"><img src="https://img.shields.io/badge/📖_Overview-3b82f6?style=flat-square&logoColor=white" alt="Overview"></a>
