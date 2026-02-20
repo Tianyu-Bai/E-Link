@@ -859,6 +859,10 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
 * **🛠️ Modular Maintenance & On-Demand Assembly**<br>
   Separable "Sandwich" structure (Housing, Adapter PCB, Headstage). Allows independent replacement of damaged modules and supports on-demand chip soldering (e.g., populating 1, 2, or 4 Intan chips) to save research costs.
 
+* **🪶 Detachable Active Electronics for Unburdened Rest**<br>
+
+During non-recording periods, the heavy headstage and active electronics can be easily separated from the implanted pedestal. This leaves only a minimal, lightweight passive interface on the skull, significantly reducing the physical payload on the animal and promoting natural behavior between sessions.
+
 * **🐭 Optimized for Chronic In-Vivo Research**<br>
   Ultra-lightweight core (2.8g without housing) and low-profile design. Fully compatible with commutators, ensuring natural behavior and cable management during long-term recording in freely moving animals.
 
@@ -1526,6 +1530,9 @@ This project is open-source and available under the **MIT License**. Click the b
 
 * **🛠️ 模块化维护与按需组装**<br>
   采用**“三明治”式分离结构**（外壳、适配板、放大器板）。支持损坏模块的单独更换，并允许根据实验通道需求灵活焊接单/多颗芯片，显著降低了科研成本与维护门槛。
+
+* **🪶 电子模块即插即拆，释放动物头部负担**<br>
+  在非记录期间，沉重的头件设备与有源电路可与底座快速分离，仅在颅骨留下极轻量的无源底座。这大幅减轻了动物的物理载荷，最大程度保障了动物在实验间隙的自然活动状态。
 
 * **🐭 专为自由活动动物实验优化**<br>
   核心组件仅重 2.8g（移除上盖后）。低剖面设计完美适配换向器 (Commutator)，有效管理线缆并确保动物在长期慢性实验中的自然行为，提升动物福利。
