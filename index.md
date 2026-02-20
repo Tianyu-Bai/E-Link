@@ -618,7 +618,7 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
  <img data-src="Videos/Demo%20new%20new.gif" 
        src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
        alt="ELINK-256 Assembly Demo GIF" 
-       width="750" 
+       width="500" 
        class="gif-blend lazy-gif" 
        decoding="async"
        style="border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); display: block;">
@@ -923,7 +923,7 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
 <div align="center">
   <img src="Images/256HD.png" 
        alt="256Ch Headstage PCBA Assembly" 
-       width="500" 
+       width="460" 
        loading="lazy" decoding="async"
        style="border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 20px;">
   <p style="margin-top: 5px; font-size: 0.9em; color: #64748b;">
@@ -935,7 +935,7 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
   <img data-src="Videos/Top PCB explosive new.gif" 
        src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
        alt="4-Layer PCB Stackup Explosion" 
-       width="600" 
+       width="460" 
        class="lazy-gif"
        decoding="async"
        style="border-radius: 8px; margin-top: 10px;">
@@ -1405,7 +1405,7 @@ This project is open-source and available under the **MIT License**. Click the b
 <img data-src="Videos/Demo%20new%20new.gif" 
        src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
        alt="ELINK-256 组装演示 GIF" 
-       width="750" 
+       width="500" 
        class="gif-blend lazy-gif" 
        decoding="async"
        style="border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); display: block;">
@@ -1589,7 +1589,7 @@ This project is open-source and available under the **MIT License**. Click the b
 <div align="center">
   <img src="Images/256HD.png" 
        alt="256通道放大器组装实物图" 
-       width="500" 
+       width="460" 
        loading="lazy" decoding="async"
        style="border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 20px;">
   <p style="margin-top: 5px; font-size: 0.9em; color: #64748b;">
@@ -1601,7 +1601,7 @@ This project is open-source and available under the **MIT License**. Click the b
   <img data-src="Videos/Top PCB explosive new.gif" 
        src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
        alt="顶部4层电路板的设计爆炸动图" 
-       width="600" 
+       width="460" 
        class="lazy-gif"
        decoding="async"
        style="border-radius: 8px; margin-top: 10px;">
