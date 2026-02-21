@@ -20,7 +20,7 @@ title: E-Link Home
 .logo-mask-container {
 
   position: relative; 
-  display: block; 
+  display: inline-block; 
   -webkit-mask-image: var(--logo-url); 
   mask-image: var(--logo-url);
   -webkit-mask-size: contain;
@@ -37,7 +37,7 @@ title: E-Link Home
   width: 100%;
   height: 100%;
   
-  /* 👇 核心修改：大幅加宽中心的高亮区！让光斑变得像探照大灯一样巨大 */
+  /* 👇 ：大幅加宽中心的高亮区！让光斑变得像探照大灯一样巨大 */
   background: linear-gradient(
     to right, 
     transparent 0%, 
