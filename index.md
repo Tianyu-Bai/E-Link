@@ -6,6 +6,78 @@ title: E-Link Home
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
+<style>
+/* 1. 外层静态阴影容器 */
+.header-sync-pulse {
+  margin: 0;
+  display: inline-block;
+  border-radius: 4px;
+  margin-bottom: 5px;
+  filter: drop-shadow(0 0 8px rgba(96, 165, 250, 0.3)); 
+}
+
+/* 2. 【英文版专属】图片遮罩与光束扫过 */
+.logo-mask-container {
+  position: relative; 
+  display: block; 
+  -webkit-mask-image: var(--logo-url); 
+  mask-image: var(--logo-url);
+  -webkit-mask-size: contain;
+  -webkit-mask-position: center;
+  -webkit-mask-repeat: no-repeat;
+}
+.logo-mask-container::after {
+  content: ""; position: absolute; top: 0; left: 0; width: 60%; height: 100%;
+  background: linear-gradient(to right, transparent 0%, rgba(96, 165, 250, 0.2) 20%, rgba(167, 139, 250, 0.9) 50%, rgba(96, 165, 250, 0.2) 80%, transparent 100%);
+  mix-blend-mode: screen; pointer-events: none; 
+  animation: searchlight-sweep 4s ease-in-out infinite;
+}
+@keyframes searchlight-sweep {
+  0% { transform: translateX(-150%) skewX(-15deg); }
+  82.5% { transform: translateX(250%) skewX(-15deg); } 
+  100% { transform: translateX(250%) skewX(-15deg); } 
+}
+.main-logo {
+  height: 135px !important; width: auto !important;  max-width: 100% !important;
+  object-fit: contain; display: block; filter: brightness(0.95); 
+}
+
+/* 3. 【中文版专属】SVG 图标与纯文本双层背景扫光 */
+.header-sync-pulse svg { 
+  -webkit-text-fill-color: initial; 
+  filter: saturate(1.2) drop-shadow(0 0 2px rgba(167, 139, 250, 0.4)); 
+}
+.bi-color-title-sweep {
+  background: 
+    linear-gradient(105deg, transparent 20%, rgba(255, 255, 255, 0.9) 50%, transparent 80%),
+    linear-gradient(90deg, #60a5fa 0%, #a78bfa 55%, #f472b6 100%);
+  background-size: 200% auto, 100% auto; background-repeat: no-repeat;
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent; color: transparent;
+  animation: text-searchlight 4s ease-in-out infinite;
+}
+@keyframes text-searchlight {
+  0% { background-position: -150% center, 0 center; }
+  82.5% { background-position: 250% center, 0 center; }
+  100% { background-position: 250% center, 0 center; }
+}
+
+/* 4. 通用副标题样式 */
+.sub-title {
+  background: linear-gradient(90deg, #60a5fa 0%, #818cf8 50%, #a78bfa 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  font-family: 'Inter', system-ui, sans-serif; font-weight: 700;
+  font-size: 1.5em; letter-spacing: -0.5px; text-align: center;
+  margin-top: 0; line-height: 1.4; max-width: 90%; margin-left: auto; margin-right: auto;
+}
+
+@media (max-width: 768px) {
+  .main-logo { height: 80px !important; } 
+  .sub-title { font-size: 1.2em !important; padding: 0 10px !important; white-space: normal !important; }
+  .mobile-br::before { content: "\A"; white-space: pre; }
+}
+</style>
+
 <div class="lang-en" markdown="1">
 
 <div class="github-only">
@@ -25,102 +97,16 @@ title: E-Link Home
   <a href="#en-downloads"><img src="https://img.shields.io/badge/🔗_Downloads-3b82f6?style=flat-square&logoColor=white" alt="Downloads"></a>
 </div>
 
-<style>
-/* 1. 外层静态阴影容器 */
-.header-sync-pulse {
-  margin: 0;
-  display: inline-block;
-  border-radius: 4px;
-  margin-bottom: 5px;
-  filter: drop-shadow(0 0 8px rgba(96, 165, 250, 0.3)); 
-}
-
-/* 2. SVG 图标独立发光样式 */
-.header-sync-pulse svg { 
-  -webkit-text-fill-color: initial; 
-  filter: saturate(1.2) drop-shadow(0 0 2px rgba(167, 139, 250, 0.4)); 
-}
-
-/* ✨ 3. 中文标题：纯文本双层背景扫光特效 ✨ */
-.bi-color-title-sweep {
-  background: 
-    linear-gradient(
-      105deg,
-      transparent 20%, 
-      rgba(255, 255, 255, 0.9) 50%, 
-      transparent 80%
-    ),
-    linear-gradient(90deg, #60a5fa 0%, #a78bfa 55%, #f472b6 100%);
-  background-size: 200% auto, 100% auto;
-  background-repeat: no-repeat;
-  
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: transparent;
-  
-  animation: text-searchlight 4s ease-in-out infinite;
-}
-
-/* 👇 文字版的 0.7秒 停顿动画 👇 */
-@keyframes text-searchlight {
-  0% { background-position: -150% center, 0 center; }
-  82.5% { background-position: 250% center, 0 center; }
-  100% { background-position: 250% center, 0 center; }
-}
-
-/* 4. 副标题基础样式 */
-.sub-title {
-  background: linear-gradient(90deg, #60a5fa 0%, #818cf8 50%, #a78bfa 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  font-family: 'Inter', system-ui, sans-serif;
-  font-weight: 700;
-  font-size: 1.5em;
-  letter-spacing: -0.5px;
-  text-align: center;
-  margin-top: 0;
-  line-height: 1.4; 
-  max-width: 90%; 
-  margin-left: auto;
-  margin-right: auto;
-}
-
-/* 5. 手机端优化 */
-@media (max-width: 768px) {
-  .sub-title { 
-    font-size: 1.2em !important; 
-    padding: 0 10px !important; 
-    white-space: normal !important; 
-  }
-  .mobile-br::before {
-    content: "\A";
-    white-space: pre;
-  }
-}
-</style>
-
 <div align="center" style="margin-bottom: 20px;" data-aos="fade-up">
-  <h1 class="header-sync-pulse" style="display: flex; align-items: center; justify-content: center; border-bottom: none; margin-bottom: 5px; font-size: 2.2em; font-weight: 800; letter-spacing: -1px; font-family: 'Inter', 'Noto Sans SC', sans-serif;">
-    
-    <svg width="45" height="45" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-right: 15px;">
-      <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" stroke="url(#icon-gradient-zh)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-      <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" stroke="url(#icon-gradient-zh)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-      <defs>
-        <linearGradient id="icon-gradient-zh" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stop-color="#60a5fa" />
-          <stop offset="50%" stop-color="#a78bfa" />
-          <stop offset="100%" stop-color="#f472b6" />
-        </linearGradient>
-      </defs>
-    </svg>
-
-    <span class="bi-color-title-sweep">E-Link(易链256)</span>
+  <h1 class="header-sync-pulse">
+    <span class="logo-mask-container" style="--logo-url: url('{{ "/Images/ELink Logo color.png" | relative_url }}')">
+      <img src="{{ '/Images/ELink Logo color.png' | relative_url }}" alt="E-Link Logo color" class="main-logo">
+    </span>
   </h1>
 </div>
 
 <h2 class="sub-title" data-aos="fade-up" data-aos-delay="200">
-  一种基于弹性导电体互连技术的<br class="mobile-only-br">高密度柔性神经接口连接器
+  An Open-Source, Elastomer Interconnection-based <br class="mobile-only-br"> Connector for Flexible Neural Interfaces
 </h2>
 
 <div align="center" style="margin-top: 15px;">
@@ -798,7 +784,7 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
 .node-title { margin-top: 8px; font-weight: bold; color: #e2e8f0; font-size: 14px; }
 .node-desc { margin-top: 4px; color: #94a3b8; font-size: 11px; text-align: center; line-height: 1.4; font-family: sans-serif; }
 
-@@media (max-width: 600px) {
+@media (max-width: 600px) {
   /* 🚨 核心修复：将 padding 和 min-height 与电脑端保持绝对一致，防止 SVG Y轴被压扁脱靶 */
   .species-glass-box { padding: 30px 5px 40px 5px; min-height: 380px; } 
   
