@@ -112,7 +112,7 @@ title: E-Link Home
 }
 
 /* 4. 手机端优化 */
-@media (max-width: 450px) {
+@media (max-width: 260px) {
   .main-title-wrapper { margin-bottom: 10px; }
   
   /* 👇 图片整体在手机上显得太大，调小这个 height */
