@@ -26,79 +26,50 @@ title: E-Link Home
 </div>
 
 <style>
-/* 1. 外层容器 */
-.main-title-wrapper { 
-  margin-bottom: 20px; 
-  display: flex;
-  justify-content: center;
-}
-
-/* 2. 呼吸动画逻辑 (现在放在没有任何遮罩的外层 h1，彻底释放阴影发光) */
+/* 1. 外层静态阴影容器 */
 .header-sync-pulse {
   margin: 0;
   display: inline-block;
   border-radius: 4px;
   margin-bottom: 5px;
-  /* 直接给一个静态的阴影发光，不再放大跳动 */
   filter: drop-shadow(0 0 8px rgba(96, 165, 250, 0.3)); 
 }
 
-/* 3. 独立遮罩层容器 (贴合图片并负责裁剪光束) */
-.logo-mask-container {
-  position: relative; 
-  display: block; 
-  /* 👇遮罩放在内层，只裁剪光束，不影响外层阴影 👇 */
-  -webkit-mask-image: var(--logo-url); 
-  mask-image: var(--logo-url);
-  -webkit-mask-size: contain;
-  -webkit-mask-position: center;
-  -webkit-mask-repeat: no-repeat;
+/* 2. SVG 图标独立发光样式 */
+.header-sync-pulse svg { 
+  -webkit-text-fill-color: initial; 
+  filter: saturate(1.2) drop-shadow(0 0 2px rgba(167, 139, 250, 0.4)); 
 }
 
-/* ✨ 4. 探照灯光束特效 (恢复原汁原味的 transform 物理移动) ✨ */
-.logo-mask-container::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 60%; 
-  height: 100%;
+/* ✨ 3. 中文标题：纯文本双层背景扫光特效 ✨ */
+.bi-color-title-sweep {
+  background: 
+    linear-gradient(
+      105deg,
+      transparent 20%, 
+      rgba(255, 255, 255, 0.9) 50%, 
+      transparent 80%
+    ),
+    linear-gradient(90deg, #60a5fa 0%, #a78bfa 55%, #f472b6 100%);
+  background-size: 200% auto, 100% auto;
+  background-repeat: no-repeat;
   
-  background: linear-gradient(
-    to right, 
-    transparent 0%, 
-    rgba(96, 165, 250, 0.2) 20%,  
-    rgba(167, 139, 250, 0.9) 50%,  
-    rgba(96, 165, 250, 0.2) 80%,   
-    transparent 100%
-  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
   
-  mix-blend-mode: screen; 
-  pointer-events: none; 
-  /* 动画时长 4s */
-  animation: searchlight-sweep 4s ease-in-out infinite;
+  animation: text-searchlight 4s ease-in-out infinite;
 }
 
-/* 👇 实现 0.7秒 停顿 👇 */
-@keyframes searchlight-sweep {
-  0% { transform: translateX(-150%) skewX(-15deg); }
-  /* 前 82.5% 的时间 (3.3秒) 执行从左到右扫光 */
-  82.5% { transform: translateX(250%) skewX(-15deg); } 
-  /* 后 17.5% 的时间 (0.7秒) 停在右侧视线外，形成 0.7秒 的间隙！ */
-  100% { transform: translateX(250%) skewX(-15deg); } 
+/* 👇 文字版的 0.7秒 停顿动画 👇 */
+@keyframes text-searchlight {
+  0% { background-position: -150% center, 0 center; }
+  82.5% { background-position: 250% center, 0 center; }
+  100% { background-position: 250% center, 0 center; }
 }
 
-/* 5. 电脑端 Logo 图片样式  */
-.main-logo {
-  height: 135px !important; 
-  width: auto !important;  
-  max-width: 100% !important;
-  object-fit: contain;
-  display: block;
-  filter: brightness(0.95); 
-}
-
-/* 6. 副标题基础样式 */
+/* 4. 副标题基础样式 */
 .sub-title {
   background: linear-gradient(90deg, #60a5fa 0%, #818cf8 50%, #a78bfa 100%);
   -webkit-background-clip: text;
@@ -115,22 +86,13 @@ title: E-Link Home
   margin-right: auto;
 }
 
-/* 7. 手机端优化 */
+/* 5. 手机端优化 */
 @media (max-width: 768px) {
-  .main-title-wrapper { margin-bottom: 15px !important; }
-  
-  .main-logo { 
-    height: 80px !important; 
-    width: auto !important;
-    max-width: 90vw !important; 
-  } 
-
   .sub-title { 
     font-size: 1.2em !important; 
     padding: 0 10px !important; 
     white-space: normal !important; 
   }
-  
   .mobile-br::before {
     content: "\A";
     white-space: pre;
@@ -138,21 +100,27 @@ title: E-Link Home
 }
 </style>
 
-<div class="main-title-wrapper" align="center">
-  <h1 class="header-sync-pulse">
-    <span class="logo-mask-container" style="--logo-url: url('{{ "/Images/ELink Logo color.png" | relative_url }}')">
-      <img 
-        src="{{ '/Images/ELink Logo color.png' | relative_url }}" 
-        alt="E-Link Logo color" 
-        class="main-logo"
-      >
-    </span>
+<div align="center" style="margin-bottom: 20px;" data-aos="fade-up">
+  <h1 class="header-sync-pulse" style="display: flex; align-items: center; justify-content: center; border-bottom: none; margin-bottom: 5px; font-size: 2.2em; font-weight: 800; letter-spacing: -1px; font-family: 'Inter', 'Noto Sans SC', sans-serif;">
+    
+    <svg width="45" height="45" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-right: 15px;">
+      <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" stroke="url(#icon-gradient-zh)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" stroke="url(#icon-gradient-zh)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <defs>
+        <linearGradient id="icon-gradient-zh" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#60a5fa" />
+          <stop offset="50%" stop-color="#a78bfa" />
+          <stop offset="100%" stop-color="#f472b6" />
+        </linearGradient>
+      </defs>
+    </svg>
+
+    <span class="bi-color-title-sweep">E-Link(易链256)</span>
   </h1>
 </div>
-  
-<h2 class="sub-title">
-  An Open-Source, Elastomer Interconnection-based 
-  <span class="mobile-br"></span> Connector for Flexible Neural Interfaces
+
+<h2 class="sub-title" data-aos="fade-up" data-aos-delay="200">
+  一种基于弹性导电体互连技术的<br class="mobile-only-br">高密度柔性神经接口连接器
 </h2>
 
 <div align="center" style="margin-top: 15px;">
