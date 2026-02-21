@@ -17,7 +17,9 @@ title: E-Link Home
 }
 
 /* 2. 【英文版专属】图片遮罩与光束扫过 */
+/* 2. 【英文版专属】图片遮罩与光束扫过 */
 .logo-mask-container {
+  /* ...这部分保持不变... */
   position: relative; 
   display: block; 
   -webkit-mask-image: var(--logo-url); 
@@ -26,22 +28,51 @@ title: E-Link Home
   -webkit-mask-position: center;
   -webkit-mask-repeat: no-repeat;
 }
+
 .logo-mask-container::after {
-  content: ""; position: absolute; top: 0; left: 0; width: 60%; height: 100%;
-  background: linear-gradient(to right, transparent 0%, rgba(96, 165, 250, 0.2) 20%, rgba(167, 139, 250, 0.9) 50%, rgba(96, 165, 250, 0.2) 80%, transparent 100%);
-  mix-blend-mode: screen; pointer-events: none; 
-  /* 👇 修改：总时间缩短为 3.5s 👇 */
-  animation: searchlight-sweep 3.5s ease-in-out infinite;
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  /* 👇 修改1：把宽度从 60% 加大到 120%，让光束比图片本体还宽，形成大光晕 */
+  width: 120%;
+  height: 100%;
+  
+  /* 👇 修改2：调整渐变，让中间高亮部分更宽，边缘过渡更柔和 */
+  background: linear-gradient(
+    to right, 
+    transparent 0%, 
+    rgba(96, 165, 250, 0.1) 15%,  /* 极柔和边缘 */
+    rgba(167, 139, 250, 0.8) 40%,  /* 宽大的中心高光区 */
+    rgba(167, 139, 250, 0.8) 60%,  /* 宽大的中心高光区 */
+    rgba(96, 165, 250, 0.1) 85%,   /* 极柔和边缘 */
+    transparent 100%
+  );
+  
+  mix-blend-mode: screen;
+  pointer-events: none;
+  
+  /* 👇 修改3：总时间拉长到 6s，改用 linear (匀速) 保证慢速滑过时的平滑感 */
+  animation: searchlight-sweep 6s linear infinite;
 }
+
 @keyframes searchlight-sweep {
-  0% { transform: translateX(-150%) skewX(-15deg); }
-  /* 👇 修改：98% 的时间扫过，剩下 2% 停顿 👇 */
-  98% { transform: translateX(250%) skewX(-15deg); } 
-  2% { transform: translateX(250%) skewX(-15deg); } 
-}
-.main-logo {
-  height: 100px !important; width: auto !important;  max-width: 100% !important;
-  object-fit: contain; display: block; filter: brightness(0.95); 
+  /* 调整运动轨迹和时间分配 */
+  
+  /* 起点：因为光束变宽了，只需要移到 -100% 就刚好在左侧外面，一加载就会出现光晕边缘 */
+  0% { 
+    transform: translateX(-100%) skewX(-20deg); 
+  }
+  
+  /* 过程：用 80% 的时间（约 4.8秒）慢慢地从左滑到右 */
+  80% { 
+    transform: translateX(100%) skewX(-20deg); 
+  }
+  
+  /* 间隔：剩下的 20% 时间（约 1.2秒）停在右侧外面休息 */
+  100% { 
+    transform: translateX(100%) skewX(-20deg); 
+  }
 }
 
 /* 3. 【中文版专属】SVG 图标与纯文本双层背景扫光 */
