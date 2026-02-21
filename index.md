@@ -60,14 +60,6 @@ title: E-Link Home
     transparent 100%
   );
   
-  /* 👇 新增：通过遮罩把长方形光束裁剪成文字轮廓 👇 */
-  -webkit-mask-image: var(--logo-url); 
-  mask-image: var(--logo-url);
-  -webkit-mask-size: contain;
-  -webkit-mask-repeat: no-repeat;
-  -webkit-mask-position: center; /* 设为 center 完美贴合下面的 object-fit: contain */
-  /* 👆 结束新增 👆 */
-
   mix-blend-mode: screen; 
   transform: translateX(-150%) skewX(-15deg); 
   pointer-events: none; 
@@ -79,9 +71,9 @@ title: E-Link Home
   100% { transform: translateX(250%) skewX(-15deg); }
 }
 
-/* 👇 3. 电脑端 Logo 图片样式👇 */
+/* 👇 3. 电脑端 Logo 图片样式 (放大 5 倍) 👇 */
 .main-logo {
-  height: 135px !important; 
+  height: 175px !important; 
   width: auto !important;  
   max-width: 100% !important;
   object-fit: contain;
@@ -106,13 +98,13 @@ title: E-Link Home
   margin-right: auto;
 }
 
-/* 👇 5. 手机端优化 👇 */
+/* 👇 5. 手机端优化 (放大 5 倍) 👇 */
 @media (max-width: 768px) {
   .main-title-wrapper { margin-bottom: 15px !important; }
   
   /* 手机端 Logo 大小 */
   .main-logo { 
-    height: 60px !important; 
+    height: 100px !important; 
     width: auto !important;
     max-width: 90vw !important; 
   } 
@@ -143,7 +135,8 @@ title: E-Link Home
 </style>
 
 <div class="main-title-wrapper" align="center">
-  <h1 class="logo-container header-sync-pulse" style="--logo-url: url('{{ "/Images/ELink Logo color.png" | relative_url }}')">
+  <h1 class="logo-container header-sync-pulse" 
+      style="-webkit-mask-image: url('{{ "/Images/ELink Logo color.png" | relative_url }}'); mask-image: url('{{ "/Images/ELink Logo color.png" | relative_url }}'); -webkit-mask-size: 100% 100%; mask-size: 100% 100%;">
     <img 
       src="{{ '/Images/ELink Logo color.png' | relative_url }}" 
       alt="E-Link Logo color" 
@@ -151,7 +144,7 @@ title: E-Link Home
     >
   </h1>
 </div>
-  
+
 <h2 class="sub-title">
   An Open-Source, Elastomer Interconnection-based 
   <span class="mobile-br"></span> Connector for Flexible Neural Interfaces
