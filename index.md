@@ -30,14 +30,14 @@ title: E-Link Home
   content: ""; position: absolute; top: 0; left: 0; width: 60%; height: 100%;
   background: linear-gradient(to right, transparent 0%, rgba(96, 165, 250, 0.2) 20%, rgba(167, 139, 250, 0.9) 50%, rgba(96, 165, 250, 0.2) 80%, transparent 100%);
   mix-blend-mode: screen; pointer-events: none; 
-  /* 👇 修改：总时间缩短为 5s 👇 */
-  animation: searchlight-sweep 5s ease-in-out infinite;
+  /* 👇 修改：总时间缩短为 3.6s 👇 */
+  animation: searchlight-sweep 3.6s ease-in-out infinite;
 }
 @keyframes searchlight-sweep {
   0% { transform: translateX(-150%) skewX(-15deg); }
-  /* 👇 修改：90% 的时间扫过，剩下 10% 停顿 👇 */
-  90% { transform: translateX(250%) skewX(-15deg); } 
-  100% { transform: translateX(250%) skewX(-15deg); } 
+  /* 👇 修改：95% 的时间扫过，剩下 5% 停顿 👇 */
+  95% { transform: translateX(250%) skewX(-15deg); } 
+  5% { transform: translateX(250%) skewX(-15deg); } 
 }
 .main-logo {
   height: 100px !important; width: auto !important;  max-width: 100% !important;
@@ -1113,61 +1113,93 @@ This project is open-source and available under the **MIT License**. Click the b
 </div>
 
 <style>
-/* 1. 静态发光外层容器 (保持不弹跳的静态阴影) */
+/* 1. 外层静态阴影容器 */
 .header-sync-pulse {
   margin: 0;
   display: inline-block;
   border-radius: 4px;
+  margin-bottom: 5px;
   filter: drop-shadow(0 0 8px rgba(96, 165, 250, 0.3)); 
 }
 
-/* 2. SVG 图标独立样式保持不变 */
-.header-sync-pulse svg { 
-  -webkit-text-fill-color: initial; 
-  filter: saturate(1.2) drop-shadow(0 0 2px rgba(167, 139, 250, 0.4)); 
+/* 2. 图片遮罩扫光 (左侧) */
+.logo-mask-container {
+  position: relative; 
+  display: block; 
+  -webkit-mask-image: var(--logo-url); 
+  mask-image: var(--logo-url);
+  -webkit-mask-size: contain;
+  -webkit-mask-position: center;
+  -webkit-mask-repeat: no-repeat;
+}
+.logo-mask-container::after {
+  content: ""; position: absolute; top: 0; left: 0; width: 60%; height: 100%;
+  background: linear-gradient(to right, transparent 0%, rgba(96, 165, 250, 0.2) 20%, rgba(167, 139, 250, 0.9) 50%, rgba(96, 165, 250, 0.2) 80%, transparent 100%);
+  mix-blend-mode: screen; pointer-events: none; 
+  /* 恢复 4s 循环 */
+  animation: searchlight-sweep 4s ease-in-out infinite;
 }
 
-/* ✨ 3. 中文标题的纯文本走马灯特效 ✨ */
+@keyframes searchlight-sweep {
+  0% { transform: translateX(-150%) skewX(-15deg); }
+  82.5% { transform: translateX(250%) skewX(-15deg); } /* 3.3s 扫过 */
+  100% { transform: translateX(250%) skewX(-15deg); } /* 0.7s 停顿 */
+}
+
+/* 3. 纯文本渐变扫光 (右侧) */
 .bi-color-title-sweep {
-  /* 核心技巧：双层背景叠加！
-     上层是扫过的高光，下层是你原来的三色渐变底色 */
   background: 
-    linear-gradient(
-      105deg,
-      transparent 20%, 
-      rgba(255, 255, 255, 0.9) 50%, /* 扫过的高光中心变亮 */
-      transparent 80%
-    ),
+    linear-gradient(105deg, transparent 20%, rgba(255, 255, 255, 0.9) 50%, transparent 80%),
     linear-gradient(90deg, #60a5fa 0%, #a78bfa 55%, #f472b6 100%);
-    
-  /* 上层光束放大以便移动，下层底色铺满不移动 */
   background-size: 200% auto, 100% auto;
   background-repeat: no-repeat;
-  
-  /* 把双层背景完美裁剪进文字轮廓内 */
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
   color: transparent;
-  
-  /* 保持与图片版完全相同的动画节奏：总长 4s，包含 0.7s 停顿 */
+  /* 恢复 4s 循环，与图片同步 */
   animation: text-searchlight 4s ease-in-out infinite;
 }
 
-/* 👇 完美实现 3.3秒扫光 + 0.7秒停顿 👇 */
 @keyframes text-searchlight {
-  /* 移动上层的光束背景，下层底色保持在 0 center 不变 */
   0% { background-position: -150% center, 0 center; }
-  82.5% { background-position: 250% center, 0 center; }
-  100% { background-position: 250% center, 0 center; }
+  82.5% { background-position: 250% center, 0 center; } /* 3.3s 扫过 */
+  100% { background-position: 250% center, 0 center; } /* 0.7s 停顿 */
+}
+
+/* 4. 样式控制：缩小后的汉字样式 */
+.main-logo {
+  height: 100px !important; width: auto !important; max-width: 100% !important;
+  object-fit: contain; display: block; filter: brightness(0.95); 
+}
+
+.zh-text-logo {
+  font-size: 55px; /* 👈 从 70px 减小到 55px，更加精致 */
+  font-weight: 800;
+  letter-spacing: 4px;
+  font-family: 'Inter', 'Noto Sans SC', sans-serif;
+  line-height: 1;
+}
+
+.sub-title {
+  background: linear-gradient(90deg, #60a5fa 0%, #818cf8 50%, #a78bfa 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  font-family: 'Inter', system-ui, sans-serif; font-weight: 700;
+  font-size: 1.5em; letter-spacing: -0.5px; text-align: center;
+  margin-top: 0; line-height: 1.4; max-width: 90%; margin-left: auto; margin-right: auto;
+}
+
+@media (max-width: 768px) {
+  .main-logo { height: 70px !important; } 
+  .zh-text-logo { font-size: 38px !important; } /* 手机端同步缩小 */
+  .sub-title { font-size: 1.1em !important; padding: 0 10px !important; }
 }
 </style>
 
 <div align="center" style="margin-bottom: 20px;" data-aos="fade-up">
-  
   <h1 class="header-sync-pulse" style="display: flex; align-items: center; justify-content: center; gap: 15px; border-bottom: none; margin-bottom: 5px;">
 
-  <span class="logo-mask-container" style="--logo-url: url('{{ "/Images/ELink Logo color.png" | relative_url }}'); display: flex; align-items: center;">
+    <span class="logo-mask-container" style="--logo-url: url('{{ "/Images/ELink Logo color.png" | relative_url }}'); display: flex; align-items: center;">
       <img src="{{ '/Images/ELink Logo color.png' | relative_url }}" alt="E-Link Logo color" class="main-logo">
     </span>
     
