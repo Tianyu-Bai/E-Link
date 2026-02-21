@@ -76,6 +76,24 @@ title: E-Link Home
   .sub-title { font-size: 1.2em !important; padding: 0 10px !important; white-space: normal !important; }
   .mobile-br::before { content: "\A"; white-space: pre; }
 }
+
+/* 5. 新增：专门控制中文“易链”两个字的大小，使其与右侧图片高度协调 👇 */
+.zh-text-logo {
+  font-size: 70px; /* 电脑端大小，配合 100px 的图片 */
+  font-weight: 800;
+  letter-spacing: 4px;
+  font-family: 'Inter', 'Noto Sans SC', sans-serif;
+  line-height: 1;
+}
+
+@media (max-width: 768px) {
+  .main-logo { height: 80px !important; } 
+  .sub-title { font-size: 1.2em !important; padding: 0 10px !important; white-space: normal !important; }
+  .mobile-br::before { content: "\A"; white-space: pre; }
+  
+  /* 手机端汉字同步缩小 */
+  .zh-text-logo { font-size: 50px; } 
+}
 </style>
 
 <div class="lang-en" markdown="1">
@@ -1150,26 +1168,20 @@ This project is open-source and available under the **MIT License**. Click the b
 }
 </style>
 
-<div align="center" style="margin-bottom: 20px;">
-  <h1 class="header-sync-pulse" style="display: flex; align-items: center; justify-content: center; border-bottom: none; margin-bottom: 5px; font-size: 2.2em; font-weight: 800; letter-spacing: -1px; font-family: 'Inter', 'Noto Sans SC', sans-serif;">
+<div align="center" style="margin-bottom: 20px;" data-aos="fade-up">
+  
+  <h1 class="header-sync-pulse" style="display: flex; align-items: center; justify-content: center; gap: 15px; border-bottom: none; margin-bottom: 5px;">
     
-    <svg width="45" height="45" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-right: 15px;">
-      <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" stroke="url(#icon-gradient-zh)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-      <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" stroke="url(#icon-gradient-zh)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-      <defs>
-        <linearGradient id="icon-gradient-zh" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stop-color="#60a5fa" />
-          <stop offset="50%" stop-color="#a78bfa" />
-          <stop offset="100%" stop-color="#f472b6" />
-        </linearGradient>
-      </defs>
-    </svg>
+    <span class="bi-color-title-sweep zh-text-logo">易链</span>
 
-    <span class="bi-color-title-sweep">E-Link(易链256)</span>
+    <span class="logo-mask-container" style="--logo-url: url('{{ "/Images/ELink Logo color.png" | relative_url }}'); display: flex; align-items: center;">
+      <img src="{{ '/Images/ELink Logo color.png' | relative_url }}" alt="E-Link Logo color" class="main-logo">
+    </span>
+
   </h1>
 </div>
 
-<h2 class="sub-title">
+<h2 class="sub-title" data-aos="fade-up" data-aos-delay="200">
   一种基于弹性导电体互连技术的<br class="mobile-only-br">高密度柔性神经接口连接器
 </h2>
 
