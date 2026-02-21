@@ -30,11 +30,13 @@ title: E-Link Home
   content: ""; position: absolute; top: 0; left: 0; width: 60%; height: 100%;
   background: linear-gradient(to right, transparent 0%, rgba(96, 165, 250, 0.2) 20%, rgba(167, 139, 250, 0.9) 50%, rgba(96, 165, 250, 0.2) 80%, transparent 100%);
   mix-blend-mode: screen; pointer-events: none; 
-  animation: searchlight-sweep 4s ease-in-out infinite;
+  /* 👇 修改：总时间缩短为 2s 👇 */
+  animation: searchlight-sweep 2s ease-in-out infinite;
 }
 @keyframes searchlight-sweep {
   0% { transform: translateX(-150%) skewX(-15deg); }
-  82.5% { transform: translateX(250%) skewX(-15deg); } 
+  /* 👇 修改：90% 的时间 (1.8s) 扫过，剩下 10% (0.2s) 停顿 👇 */
+  90% { transform: translateX(250%) skewX(-15deg); } 
   100% { transform: translateX(250%) skewX(-15deg); } 
 }
 .main-logo {
@@ -54,11 +56,13 @@ title: E-Link Home
   background-size: 200% auto, 100% auto; background-repeat: no-repeat;
   -webkit-background-clip: text; background-clip: text;
   -webkit-text-fill-color: transparent; color: transparent;
-  animation: text-searchlight 4s ease-in-out infinite;
+  /* 👇 修改：总时间缩短为 2.6s 👇 */
+  animation: text-searchlight 2.6s ease-in-out infinite;
 }
 @keyframes text-searchlight {
   0% { background-position: -150% center, 0 center; }
-  82.5% { background-position: 250% center, 0 center; }
+  /* 👇 修改：80% 的时间扫过，剩下 20%停顿 👇 */
+  80% { background-position: 250% center, 0 center; }
   100% { background-position: 250% center, 0 center; }
 }
 
@@ -84,15 +88,6 @@ title: E-Link Home
   letter-spacing: 4px;
   font-family: 'Inter', 'Noto Sans SC', sans-serif;
   line-height: 1;
-}
-
-@media (max-width: 768px) {
-  .main-logo { height: 80px !important; } 
-  .sub-title { font-size: 1.2em !important; padding: 0 10px !important; white-space: normal !important; }
-  .mobile-br::before { content: "\A"; white-space: pre; }
-  
-  /* 手机端汉字同步缩小 */
-  .zh-text-logo { font-size: 50px; } 
 }
 </style>
 
@@ -1171,12 +1166,12 @@ This project is open-source and available under the **MIT License**. Click the b
 <div align="center" style="margin-bottom: 20px;" data-aos="fade-up">
   
   <h1 class="header-sync-pulse" style="display: flex; align-items: center; justify-content: center; gap: 15px; border-bottom: none; margin-bottom: 5px;">
-    
-    <span class="bi-color-title-sweep zh-text-logo">易链</span>
 
-    <span class="logo-mask-container" style="--logo-url: url('{{ "/Images/ELink Logo color.png" | relative_url }}'); display: flex; align-items: center;">
+  <span class="logo-mask-container" style="--logo-url: url('{{ "/Images/ELink Logo color.png" | relative_url }}'); display: flex; align-items: center;">
       <img src="{{ '/Images/ELink Logo color.png' | relative_url }}" alt="E-Link Logo color" class="main-logo">
     </span>
+    
+    <span class="bi-color-title-sweep zh-text-logo">易链</span>
 
   </h1>
 </div>
