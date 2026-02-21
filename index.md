@@ -38,7 +38,7 @@ title: E-Link Home
   100% { transform: translateX(250%) skewX(-15deg); } 
 }
 .main-logo {
-  height: 135px !important; width: auto !important;  max-width: 100% !important;
+  height: 100px !important; width: auto !important;  max-width: 100% !important;
   object-fit: contain; display: block; filter: brightness(0.95); 
 }
 
