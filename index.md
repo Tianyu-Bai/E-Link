@@ -7,15 +7,6 @@ title: E-Link Home
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
 <style>
-/* 专门为列表描述定制的洗刷样式，覆盖大标题的居中和字号 */
-.feature-desc-reveal {
-  font-size: 1em !important;
-  line-height: 1.7 !important;
-  font-weight: 400 !important;
-  text-align: left !important;
-  margin: 8px 0 0 0 !important;
-  max-width: 100% !important;
-}
 /* 1. 外层静态阴影容器 */
 .header-sync-pulse {
   margin: 0;
@@ -161,7 +152,7 @@ title: E-Link Home
   </h1>
 </div>
 
-<h2 class="elink-reveal">
+<h2 class="sub-title" data-aos="fade-up" data-aos-delay="200">
   An Open-Source, Elastomer Interconnection-based <br class="mobile-only-br"> Connector for Flexible Neural Interfaces
 </h2>
 
@@ -669,9 +660,8 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
 
 ---
 
-<div class="elink-reveal" style="font-size: 1.5rem; margin: 40px auto;">
-  The system integrates two high-density PCBs, an anisotropic elastomeric contact interface, and a lightweight pedestal housing into a fully integrated, headstage-ready solution.
-</div>
+> [!NOTE]
+> **Key Innovation:** The system integrates two high-density PCBs, an anisotropic elastomeric contact interface, and a lightweight pedestal housing into a fully integrated, headstage-ready solution.
 
 ---
 
@@ -888,63 +878,34 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
   font-weight: 600;
   text-shadow: 0 0 8px rgba(147, 197, 253, 0.2); /* 微微的发光字效 */
 }
-
 </style>
 
-<div class="watermark-features">
-  <ul style="list-style: none; padding-left: 0;">
-    
-    <li style="margin-bottom: 30px;">
-      <strong>⚡ 256-Channel High-Density & Scalable Interface</strong>
-      <div class="elink-reveal feature-desc-reveal">
-        Compact pedestal footprint supporting 256-ch acquisition. The elastomer-based design offers a clear scaling roadmap (up to 1024-ch) without increasing physical size or surgical overhead.
-      </div>
-    </li>
+<div class="watermark-features" markdown="1">
 
-    <li style="margin-bottom: 30px;">
-      <strong>🔌 Zero-Force "Soft" Interconnect</strong>
-      <div class="elink-reveal feature-desc-reveal">
-        By replacing rigid pins with Anisotropic Conductive Elastomer, the system shifts from "insertion" to "compression." This "Gentle yet Firm" philosophy eliminates common failure modes like "bent or broken pins" from the physical level.
-      </div>
-    </li>
+* **⚡ 256-Channel High-Density & Scalable Interface**<br>
+  Compact pedestal footprint supporting 256-ch acquisition. The elastomer-based design offers a clear scaling roadmap (up to 1024-ch) without increasing physical size or surgical overhead.
 
-    <li style="margin-bottom: 30px;">
-      <strong>🎯 Self-Aligning & High Tolerance</strong>
-      <div class="elink-reveal feature-desc-reveal">
-        Features a high-precision mechanical guidance structure with "Structural Redundancy." It naturally forgives minor manual misalignments, ensuring reliable contact with simple rotation — no microscopic alignment required.
-      </div>
-    </li>
+* **🔌 Zero-Force "Soft" Interconnect**<br>
+  By replacing rigid pins with Anisotropic Conductive Elastomer, the system shifts from "insertion" to "compression." This "Gentle yet Firm" philosophy eliminates common failure modes like "bent or broken pins" from the physical level.
 
-    <li style="margin-bottom: 30px;">
-      <strong>🛠️ Modular Maintenance & On-Demand Assembly</strong>
-      <div class="elink-reveal feature-desc-reveal">
-        Separable "Sandwich" structure (Housing, Adapter PCB, Headstage). Allows independent replacement of damaged modules and supports on-demand chip soldering (e.g., populating 1, 2, or 4 Intan chips) to save research costs.
-      </div>
-    </li>
+* **🎯 Self-Aligning & High Tolerance**<br>
+  Features a high-precision mechanical guidance structure with "Structural Redundancy." It naturally forgives minor manual misalignments, ensuring reliable contact with simple rotation — no microscopic alignment required.
 
-    <li style="margin-bottom: 30px;">
-      <strong>🪶 Detachable Active Electronics for Unburdened Rest</strong>
-      <div class="elink-reveal feature-desc-reveal">
-        During non-recording periods, the heavy headstage and active electronics can be easily separated from the implanted pedestal. This leaves only a minimal, lightweight passive interface on the skull, significantly reducing the physical payload on the animal and promoting natural behavior between sessions.
-      </div>
-    </li>
+* **🛠️ Modular Maintenance & On-Demand Assembly**<br>
+  Separable "Sandwich" structure (Housing, Adapter PCB, Headstage). Allows independent replacement of damaged modules and supports on-demand chip soldering (e.g., populating 1, 2, or 4 Intan chips) to save research costs.
 
-    <li style="margin-bottom: 30px;">
-      <strong>🐭 Optimized for Chronic In-Vivo Research</strong>
-      <div class="elink-reveal feature-desc-reveal">
-        Ultra-lightweight core (2.8g without housing) and low-profile design. Fully compatible with commutators, ensuring natural behavior and cable management during long-term recording in freely moving animals.
-      </div>
-    </li>
+* **🪶 Detachable Active Electronics for Unburdened Rest**<br>
+  During non-recording periods, the heavy headstage and active electronics can be easily separated from the implanted pedestal. This leaves only a minimal, lightweight passive interface on the skull, significantly 
+  reducing the physical payload on the animal and promoting natural behavior between sessions.
 
-    <li style="margin-bottom: 30px;">
-      <strong>🧪 Surgical-Grade Integration & Anatomical Adaptation</strong>
-      <div class="elink-reveal feature-desc-reveal">
-        Features textured sidewalls for superior adhesion with dental cement/UV resin. The base curvature can be customized to match the specific cranial profiles of different animals during 3D printing, ensuring a rock-solid isolation chamber that protects delicate probes from fluids and scratching.
-      </div>
-    </li>
+* **🐭 Optimized for Chronic In-Vivo Research**<br>
+  Ultra-lightweight core (2.8g without housing) and low-profile design. Fully compatible with commutators, ensuring natural behavior and cable management during long-term recording in freely moving animals.
 
-  </ul>
+* **🧪 Surgical-Grade Integration & Anatomical Adaptation**<br>
+  Features textured sidewalls for superior adhesion with dental cement/UV resin. The base curvature can be customized to match the specific cranial profiles of different animals during 3D printing, ensuring a rock-solid isolation chamber that protects delicate probes from fluids and scratching.
+
 </div>
+
 <div align="center">
 <img data-src="Videos/Animation%20repeat.gif" 
      src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
@@ -1281,9 +1242,10 @@ This project is open-source and available under the **MIT License**. Click the b
   </h1>
 </div>
 
-<h2 class="elink-reveal">
+<h2 class="sub-title" data-aos="fade-up" data-aos-delay="200">
   一种基于弹性导电体互连技术的<br class="mobile-only-br">高密度柔性神经接口连接器
 </h2>
+
 
   <div align="center" style="margin-top: 15px;">
     <a href="https://sites.dartmouth.edu/fang-group/"><img src="https://img.shields.io/badge/达特茅斯学院-00693E?style=flat-square" alt="方辉组"></a>
@@ -1554,9 +1516,8 @@ This project is open-source and available under the **MIT License**. Click the b
 
 ---
 
-<div class="elink-reveal" style="font-size: 1.3rem; margin: 60px auto; max-width: 85%; line-height: 1.6;">
-  核心创新：完全一体化的“即拧即用”数据采集方案。系统利用弹性导电介质连接高密度 PCB，实现真正的“零力插拔”，从物理层面彻底终结断针风险。
-</div>
+> [!NOTE]
+> **核心创新：** 我们打造了一种完全一体化的 “即拧即用” 数据采集方案。该系统利用弹性导电介质连接高密度 PCB，并封装于轻量级基座中。其最大的突破在于实现了“零力插拔”。免去使用者用力插拔的动作，有效规避了高密度引脚连接器常见的断针和弯针风险。
 
 ---
 
@@ -1653,61 +1614,31 @@ This project is open-source and available under the **MIT License**. Click the b
   </div>
 </div>
 
-<div class="watermark-features">
-  <ul style="list-style: none; padding-left: 0;">
-    
-    <li style="margin-bottom: 30px;">
-      <strong>⚡ 256通道高密度与可扩展接口</strong>
-      <div class="elink-reveal feature-desc-reveal">
-        在有限基座占地面积内实现256通道数据采集。得益于弹性体互连的高集成度，该系统提供了清晰的扩展路径（可达1024通道），且不会增加额外的手术复杂度。
-      </div>
-    </li>
+  <div class="watermark-features" markdown="1">
 
-    <li style="margin-bottom: 30px;">
-      <strong>🔌 零插拔力，以柔克刚</strong>
-      <div class="elink-reveal feature-desc-reveal">
-        利用各向异性导电弹性体取代传统刚性插针式连接器。通过“旋紧结构”将扭矩转化为均匀压力，从物理层面彻底规避了高密度连接器常见的断针、弯针等失效模式，让连接不再成为系统可靠性的短板。
-      </div>
-    </li>
+* **⚡ 256通道高密度与可扩展接口**<br>
+  在有限基座占地面积内实现256通道数据采集。得益于弹性体互连的高集成度，该系统提供了清晰的扩展路径（可达1024通道），且不会增加额外的手术复杂度。
 
-    <li style="margin-bottom: 30px;">
-      <strong>🎯 自对准与高容错连接</strong>
-      <div class="elink-reveal feature-desc-reveal">
-        系统具备优异的机械限位与电气容错率。无需微米级精密对齐，只需简单旋紧即可实现稳定连接，极大降低了手动操作的难度和失败风险。
-      </div>
-    </li>
+* **🔌 零插拔力，以柔克刚**<br>
+  利用各向异性导电弹性体取代传统刚性插针式连接器。通过“旋紧结构”将扭矩转化为均匀压力，从物理层面彻底规避了高密度连接器常见的断针、弯针等失效模式，让连接不再成为系统可靠性的短板。
 
-    <li style="margin-bottom: 30px;">
-      <strong>🛠️ 模块化维护与按需组装</strong>
-      <div class="elink-reveal feature-desc-reveal">
-        采用“三明治”式分离结构（外壳、适配板、放大器板）。支持损坏模块的单独更换，并允许根据实验通道需求灵活焊接单/多颗芯片，显著降低了科研成本与维护门槛。
-      </div>
-    </li>
+* **🎯 自对准与高容错连接**<br>
+  系统具备优异的机械限位与电气容错率。无需微米级精密对齐，只需简单旋紧即可实现稳定连接，极大降低了手动操作的难度和失败风险。
 
-    <li style="margin-bottom: 30px;">
-      <strong>🪶 电子模块即插即拆，释放动物头部负担</strong>
-      <div class="elink-reveal feature-desc-reveal">
-        在非记录期间，沉重的头件设备与有源电路可与底座快速分离，仅在颅骨留下极轻量的无源底座。这大幅减轻了动物的物理载荷，最大程度保障了动物在实验间隙的自然活动状态。
-      </div>
-    </li>
+* **🛠️ 模块化维护与按需组装**<br>
+  采用**“三明治”式分离结构**（外壳、适配板、放大器板）。支持损坏模块的单独更换，并允许根据实验通道需求灵活焊接单/多颗芯片，显著降低了科研成本与维护门槛。
 
-    <li style="margin-bottom: 30px;">
-      <strong>🐭 专为自由活动动物实验优化</strong>
-      <div class="elink-reveal feature-desc-reveal">
-        核心组件仅重 2.8g（移除上盖后）。低剖面设计完美适配换向器 (Commutator)，有效管理线缆并确保动物在长期慢性实验中的自然行为，提升动物福利。
-      </div>
-    </li>
+* **🪶 电子模块即插即拆，释放动物头部负担**<br>
+  在非记录期间，沉重的头件设备与有源电路可与底座快速分离，仅在颅骨留下极轻量的无源底座。这大幅减轻了动物的物理载荷，最大程度保障了动物在实验间隙的自然活动状态。
 
-    <li style="margin-bottom: 30px;">
-      <strong>🧪 手术级一体化与解剖结构适配</strong>
-      <div class="elink-reveal feature-desc-reveal">
-        侧壁纹理设计极大增强了与牙科水泥或UV树脂的附着力。基座底部的打印弧度可根据不同动物的头部曲线进行定制化调整，从而实现与颅骨的完美贴合，构建出全封闭的防护舱，有效阻隔体液侵蚀并抵抗动物抓挠。
-      </div>
-    </li>
+* **🐭 专为自由活动动物实验优化**<br>
+  核心组件仅重 2.8g（移除上盖后）。低剖面设计完美适配换向器 (Commutator)，有效管理线缆并确保动物在长期慢性实验中的自然行为，提升动物福利。
 
-  </ul>
+* **🧪 手术级一体化与解剖结构适配**<br>
+  侧壁纹理设计极大增强了与牙科水泥或UV树脂的附着力。基座底部的打印弧度可根据不同动物的头部曲线进行定制化调整，从而实现与颅骨的完美贴合，构建出全封闭的防护舱，有效阻隔体液侵蚀并抵抗动物抓挠。
+
 </div>
-
+  
 <div align="center">
   <img data-src="Videos/Animation%20repeat.gif" 
        src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
