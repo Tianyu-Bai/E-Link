@@ -37,15 +37,15 @@ title: E-Link Home
   top: 0;
   /* 起始位置稍微往左偏一点，包容性更强 */
   left: -20%; 
-  /* 💡 强行把光束拉宽到容器的 1.4 倍，让高光区彻底淹没字符 */
-  width: 140%; 
+  /* 💡 强行把光束拉宽到容器的 1.5 倍，让高光区彻底淹没字符 */
+  width: 150%; 
   height: 100%;
   
   background: linear-gradient(
     to right, 
     transparent 0%, 
     rgba(96, 165, 250, 0.4) 15%,   
-    rgba(167, 139, 250, 0.95) 30%, /* ✨ 高光区更宽 */
+    rgba(167, 139, 250, 0.95) 45%, /* ✨ 高光区更宽 */
     rgba(167, 139, 250, 0.95) 70%, 
     rgba(96, 165, 250, 0.4) 85%,   
     transparent 100%
@@ -60,7 +60,7 @@ title: E-Link Home
 
 @keyframes searchlight-sweep {
   0% { transform: translateX(-100%) skewX(-20deg); }
-  85% { transform: translateX(100%) skewX(-20deg); }
+  95% { transform: translateX(100%) skewX(-20deg); }
   100% { transform: translateX(100%) skewX(-20deg); }
 }
 
