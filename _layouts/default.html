@@ -22,6 +22,38 @@
 <script src="https://unpkg.com/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
  
 <style>
+ /* --- 滚动逐字点亮 (E-Link 专属视觉引擎) --- */
+.elink-reveal {
+  font-size: 2.2rem; 
+  font-weight: 700;
+  line-height: 1.4;
+  text-align: center;
+  margin: 60px auto;
+  max-width: 90%;
+  color: rgba(255, 255, 255, 0.15); /* 默认未点亮的暗色 */
+}
+
+/* 浅色模式下的未点亮颜色 */
+body.light-mode .elink-reveal {
+  color: rgba(15, 23, 42, 0.15);
+}
+
+.elink-reveal span {
+  transition: color 0.1s ease-out, text-shadow 0.1s ease-out;
+}
+
+/* 点亮后的状态 */
+.elink-reveal span.revealed {
+  color: #ffffff; /* 深色模式下的高亮白 */
+  text-shadow: 0 0 15px rgba(255, 255, 255, 0.3); /* 极微弱的泛光，增加精密感 */
+}
+
+/* 浅色模式下点亮后的状态 */
+body.light-mode .elink-reveal span.revealed {
+  color: #0f172a; /* 浅色模式下的深邃黑 */
+  text-shadow: none;
+}
+ 
   /* --- 0. 全局稳定性设置 --- */
   * { box-sizing: border-box; } 
   html, body { width: 100%; max-width: 100vw; overflow-x: hidden; overscroll-behavior-y: none; } 
@@ -872,18 +904,64 @@
         }
     });
 
-    // lenis 接管原生 scroll 逻辑 (防疯狂滑动)
+  // --- 洗刷引擎初始化：拆分文字 ---
+    const revealElements = document.querySelectorAll('.elink-reveal');
+    revealElements.forEach(el => {
+      const text = el.innerText;
+      el.innerHTML = '';
+      // 中英文兼容切割：中文按字切，英文按词切
+      const tokens = text.match(/[\u4e00-\u9fa5]|\b\w+\b|[^\w\s\u4e00-\u9fa5]|\s+/g) || [];
+      tokens.forEach(token => {
+        if (token.trim() === '') {
+          el.appendChild(document.createTextNode(token)); // 保留空格
+        } else {
+          const span = document.createElement('span');
+          span.innerText = token;
+          el.appendChild(span);
+        }
+      });
+    });
+
+    // lenis 接管原生 scroll 逻辑 (包含进度条与滚动洗刷)
     let scrollTimeout;
     window.addEventListener('scroll', () => {
         if(scrollTimeout) cancelAnimationFrame(scrollTimeout);
         scrollTimeout = requestAnimationFrame(() => {
+            // 1. 顶部激光进度条逻辑
             const scrolled = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
             const pb = document.getElementById("progress-bar");
             if(pb) pb.style.width = scrolled + "%";
+            
+            // 2. 右下角机器人固定逻辑
             if(botContainer && window.innerWidth > 768) {
                 if(window.scrollY > 200) { botContainer.classList.add('fixed-mode'); } 
                 else { botContainer.classList.remove('fixed-mode'); }
             }
+
+            // 3. 🔥 E-Link 专属逐字点亮逻辑
+            const windowHeight = window.innerHeight;
+            revealElements.forEach(el => {
+                const rect = el.getBoundingClientRect();
+                
+                // 触发区间：元素距离屏幕底部 80% 时开始点亮，距离 40% 时全部点亮完毕
+                const startReveal = windowHeight * 0.8;
+                const endReveal = windowHeight * 0.4;
+                
+                // 计算当前滚动进入这个区间的百分比 (0 到 1 之间)
+                let progress = (startReveal - rect.top) / (startReveal - endReveal);
+                progress = Math.max(0, Math.min(1, progress)); 
+                
+                const spans = el.querySelectorAll('span');
+                const revealCount = Math.floor(progress * spans.length);
+                
+                spans.forEach((span, index) => {
+                    if (index < revealCount) {
+                        span.classList.add('revealed');
+                    } else {
+                        span.classList.remove('revealed');
+                    }
+                });
+            });
         });
     }, { passive: true });
  
