@@ -476,7 +476,7 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
     class="custom-model-viewer"
     src="{{ '/Videos/Whole_2.34MB.glb' | relative_url }}"
     alt="E Link 3D Model"
-    loading="lazy"       reveal="manual"
+    loading="eager"       reveal="manual"
     poster="{{ '/Images/poster.webp' | relative_url }}"
     camera-controls interpolation-decay="200" bounds="tight" field-of-view="30deg" auto-rotate  rotation-per-second="15deg"
     interaction-prompt="none" environment-image="neutral" exposure="0.75" shadow-intensity="0" tone-mapping="commerce">
