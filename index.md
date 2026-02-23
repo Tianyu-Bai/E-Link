@@ -848,21 +848,32 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
 
 <style> 
 /* --- 🚀 高级动态特征列表 --- */
-.watermark-features { color: rgba(148, 163, 184, 0.4); font-size: 0.95em; line-height: 1.7; font-weight: 400; letter-spacing: 0.3px; }
-.watermark-features ul { padding-left: 20px; list-style: none; } /* 去掉原生点，更有科技感 */
-.watermark-features li { margin-bottom: 30px; opacity: 0.3; transform: translateY(10px); transition: all 0.8s cubic-bezier(0.22, 1, 0.36, 1); }
+.watermark-features { 
+  color: rgba(148, 163, 184, 0.4); /* 默认半透明灰色 */
+  font-size: 0.95em; 
+  line-height: 1.7; 
+  font-weight: 400; 
+  letter-spacing: 0.3px; 
+}
+.watermark-features ul { padding-left: 10px; list-style: none; }
+.watermark-features li { 
+  margin-bottom: 35px; 
+  padding-left: 20px;
+  position: relative;
+  transition: all 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+  border-left: 2px solid rgba(59, 130, 246, 0); /* 默认透明边条 */
+}
 
-/* 当 AOS 触发时，变亮并上移复位 */
-.watermark-features li.aos-animate { opacity: 1; transform: translateY(0); color: rgba(241, 245, 249, 0.95); }
+/* 激活状态：当滚动到此处时由 AOS 触发 */
+.watermark-features li.aos-animate { 
+  color: rgba(241, 245, 249, 0.95); 
+  border-left: 2px solid #3b82f6; /* 亮起蓝色边条 */
+}
 
-/* 浅色模式适配 (单行模式) */
+/* 浅色模式适配 */
 body.light-mode .watermark-features { color: rgba(71, 85, 105, 0.3); }
-body.light-mode .watermark-features li.aos-animate { color: #1e293b; }
+body.light-mode .watermark-features li.aos-animate { color: #1e293b; border-left-color: #2563eb; }
 body.light-mode .watermark-features strong { color: #2563eb; text-shadow: none; }
-
-/* 装饰性左边条：增加高级感 */
-.watermark-features li { position: relative; padding-left: 15px; border-left: 2px solid transparent; }
-.watermark-features li.aos-animate { border-left: 2px solid #3b82f6; }
 </style>
 
 <div class="watermark-features">
