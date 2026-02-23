@@ -834,49 +834,15 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
 .node-desc { margin-top: 4px; color: #94a3b8; font-size: 11px; text-align: center; line-height: 1.4; font-family: sans-serif; }
 
 @media (max-width: 600px) {
-  /* 1. 核心容器：增加底部 padding，确保即便有动画偏移文字也不会越界 */
-  .species-glass-box { 
-    padding: 30px 10px 50px 10px !important; /* 底部给足 50px 缓冲 */
-    min-height: 420px !important; /* 强行撑开高度，防止遮挡 */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  } 
-
-  /* 2. 恢复连线，并稍微调淡防止干扰文字 */
-  .connection-lines { 
-    display: block !important; 
-    opacity: 0.5; 
-    transform: scale(0.9); /* 手机端缩小一点线段比例 */
-    transform-origin: top center;
-  }
-
-  /* 3. 布局微调：压缩间距 */
-  .center-node { margin-bottom: 10px !important; }
-  .animal-nodes { 
-    margin-top: 40px !important; 
-    width: 110% !important; /* 稍微溢出一点容器，防止三个圆圈挤在一起 */
-    justify-content: space-around !important;
-  }
-
-  /* 4. 重点修复：减小位移。之前遮挡是因为下移（30px）后文字超出了容器 */
-  .rat-node-adjust { transform: translateY(15px) translateZ(0) !important; }
-
-  /* 5. 按照你的要求：图标 50*50 */
-  .icon-circle { 
-    width: 50px !important; 
-    height: 50px !important; 
-  }
-  .icon-circle span { font-size: 26px !important; }
+  /* 🚨 核心修复：将 padding 和 min-height 与电脑端保持绝对一致，防止 SVG Y轴被压扁脱靶 */
+  .species-glass-box { padding: 30px 5px 40px 5px; min-height: 380px; } 
   
-  /* 6. 文字防遮挡：强制换行并在底部留白 */
-  .node-title { font-size: 12px; margin-top: 8px; font-weight: bold; }
-  .node-desc { 
-    font-size: 10px !important; 
-    line-height: 1.2; 
-    max-width: 80px; /* 限制宽度强制换行，防止横向撑破 */
-    margin-bottom: 5px;
-  }
+  .icon-circle { width: 45px; height: 45px; }
+  .icon-circle span { font-size: 24px !important; }
+  .node-title { font-size: 12px; }
+  .node-desc { font-size: 9px; }
+  .connection-lines { opacity: 0.8; }
+  .pulse-line { stroke-width: 2; }
 }
 </style>
 
