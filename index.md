@@ -291,19 +291,13 @@ kbd {
   font-family: inherit; font-size: 0.9em; font-weight: 600; padding: 1px 4px; margin: 0 2px; color: #60a5fa;
 }
 
-/* ===================== 5. 模型全局基础样式 ===================== */
-.custom-model-viewer {
-  width: 100%; max-width: 100vw; box-sizing: border-box; height: 460px;
-  background: transparent; border-radius: 16px; border: 1px solid rgba(59,130,246,0.3);
-  outline: none; overflow: hidden; 
-  transform: translateZ(0); 
-  backface-visibility: hidden; 
-  touch-action: pan-y;
-}
-
-.custom-model-viewer:focus, .custom-model-viewer:active, .custom-model-viewer:focus-visible {
-  outline: none !important; box-shadow: none !important; border: 1px solid rgba(59,130,246,0.3) !important;
-}
+/* --- 🚀 3D模型 GPU 隔离与虚框修复 (终极版) --- */
+  .custom-model-viewer { width: 100%; max-width: 100vw; height: 460px; background-color: #020617; border-radius: 16px; border: 1px solid rgba(59,130,246,0.3); outline: none; overflow: hidden; position: relative; contain: paint; transform: translateZ(0); will-change: transform; backface-visibility: hidden; }
+  .custom-model-viewer::part(canvas) { background-color: transparent; }
+  .custom-model-viewer:not(.gesture-active) { transition: none !important; }
+  [slot="poster"] { position: absolute; inset: 0; background: radial-gradient(circle at center, #111827 0%, #020617 100%); z-index: 20; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1); pointer-events: none; }
+  .custom-model-viewer[data-loaded="true"] [slot="poster"] { opacity: 0; visibility: hidden; }
+  .custom-model-viewer:focus, .custom-model-viewer:active, .custom-model-viewer:focus-visible { outline: none !important; box-shadow: none !important; border: 1px solid rgba(59,130,246,0.3) !important; }
 
 .model-block { 
   max-width: 100vw !important; margin-top: 5px !important;  margin-bottom: 15px !important; 
@@ -331,21 +325,13 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
 
 .elink-dynamic-dashboard { width: 100%;  max-width: 760px;  margin: 20px auto;  padding: 0 5px; box-sizing: border-box; }
 .metrics-grid { display: flex;  justify-content: space-between;  align-items: center;  flex-wrap: nowrap; gap: 12px;  width: 100%; box-sizing: border-box; }
-.metric-card.glass-panel {
-  flex: 1 1 0; min-width: 0; background: rgba(15, 23, 42, 0.6);
-  border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 12px;
-  padding: 15px 5px; box-sizing: border-box; box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
-  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
-  transition: transform 0.3s ease; text-align: center;
-}
+.metric-card.glass-panel { flex: 1 1 0; min-width: 0; background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 12px; padding: 15px 5px; box-sizing: border-box; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4); transition: transform 0.3s ease; text-align: center; }
+  
 .chart-box { position: relative; width: 145px; height: 145px; margin: 0 auto; }
 .chart-box svg { width: 100%; height: 100%; transform: rotate(-90deg); }
 .bg-ring { fill: none; stroke: rgba(255, 255, 255, 0.1); stroke-width: 6; }
 .fg-ring { fill: none; stroke-width: 6; stroke-linecap: round; stroke-dasharray: 283; stroke-dashoffset: 283; }
 
-.weight-color { stroke: #10b981; filter: drop-shadow(0 0 6px rgba(16, 185, 129, 0.6)); } 
-.channel-color { stroke: #3b82f6; filter: drop-shadow(0 0 6px rgba(59, 130, 246, 0.6)); } 
-.pcb-color { stroke: #f59e0b; filter: drop-shadow(0 0 6px rgba(245, 158, 11, 0.6)); }    
 .inner-content { position: absolute; top: 0; left: 0; right: 0; bottom: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; }
 .inner-content .label { font-size: 10px; font-weight: 700; color: #94a3b8; margin-bottom: 2px; }
 .inner-content .number-container { display: flex; align-items: baseline; justify-content: center; }
@@ -353,6 +339,9 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
 .inner-content .unit { font-size: 16px; font-weight: bold; color: #cbd5e1; margin-left: 2px; }
 .inner-content .sub { font-size: 10px; color: rgba(148, 163, 184, 0.8); margin-top: 2px; }
 
+.weight-color { stroke: #10b981; } .channel-color { stroke: #3b82f6; } .pcb-color { stroke: #f59e0b; } 
+
+  
 @media (max-width: 600px) {
   .metrics-grid { gap: 6px; } 
   .metric-card.glass-panel { padding: 10px 2px; background: rgba(15, 23, 42, 0.85); backdrop-filter: none; -webkit-backdrop-filter: none; }
@@ -415,7 +404,7 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
     class="custom-model-viewer"
     src="{{ '/Videos/On skull_3.16MB.glb' | relative_url }}"
     alt="E Link on Skull 3D Model"
-    loading="lazy"   reveal="manual"
+    loading="eager"   reveal="manual"
     poster="{{ '/Images/poster.webp' | relative_url }}"
     camera-controls interpolation-decay="200" bounds="tight" field-of-view="30deg" auto-rotate  rotation-per-second="15deg"
     interaction-prompt="none" environment-image="neutral" exposure="0.75" shadow-intensity="0" tone-mapping="commerce">
@@ -779,12 +768,8 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
   position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none;
 }
 .base-line { fill: none; stroke: rgba(255, 255, 255, 0.1); stroke-width: 2; }
-.pulse-line {
-  fill: none; stroke: #60a5fa; stroke-width: 3; stroke-dasharray: 20 120; 
-  animation: data-flow 2.5s linear infinite; filter: drop-shadow(0 0 5px rgba(96, 165, 250, 0.8));
-}
-.line-to-monkey { stroke: #f59e0b !important; filter: drop-shadow(0 0 5px rgba(245, 158, 11, 0.8)) !important;}
-.line-to-mouse { stroke: #10b981 !important; filter: drop-shadow(0 0 5px rgba(16, 185, 129, 0.8)) !important; }
+.pulse-line { fill: none; stroke: #60a5fa; stroke-width: 3; stroke-dasharray: 20 120; animation: data-flow 2.5s linear infinite; }
+.line-to-monkey { stroke: #f59e0b !important; } .line-to-mouse { stroke: #10b981 !important; }
 
 @keyframes data-flow { from { stroke-dashoffset: 115; } to { stroke-dashoffset: 0; } }
 
@@ -1273,7 +1258,7 @@ This project is open-source and available under the **MIT License**. Click the b
     class="custom-model-viewer"
     src="{{ '/Videos/On skull_3.16MB.glb' | relative_url }}"
     alt="E Link on Skull 3D Model"
-    loading="lazy"   reveal="manual"
+    loading="eager"   reveal="manual"
     poster="{{ '/Images/poster.webp' | relative_url }}"
     camera-controls interpolation-decay="200" bounds="tight" field-of-view="30deg" auto-rotate  rotation-per-second="15deg"
     interaction-prompt="none" environment-image="neutral" exposure="0.75" shadow-intensity="0" tone-mapping="commerce">
