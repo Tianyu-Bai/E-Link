@@ -54,7 +54,7 @@ title: E-Link Home
   mix-blend-mode: screen;
   pointer-events: none;
   
-  /* 💡 时间直接拉长到 8 秒！蜗牛般的速度 */
+  /* 💡 时间直接拉长到 8 秒 */
   animation: searchlight-sweep 8s linear infinite;
 }
 
@@ -64,8 +64,7 @@ title: E-Link Home
   100% { transform: translateX(100%) skewX(-20deg); }
 }
 
-
-/* 3. 【中文版专属】SVG 图标与纯文本双层背景扫光 */
+/* 3. SVG 图标与纯文本双层背景扫光 */
 .header-sync-pulse svg { 
   -webkit-text-fill-color: initial; 
   filter: saturate(1.2) drop-shadow(0 0 2px rgba(167, 139, 250, 0.4)); 
@@ -89,7 +88,7 @@ title: E-Link Home
 }
 
 @keyframes text-searchlight {
-  /* 起点收缩：不要设置成 -150% 那么远，-50% 确保网页一加载，光晕的边缘就已经搭在文字上了 */
+  /* 起点收缩：-50% 确保网页一加载，光晕的边缘就已经搭在文字上了 */
   0% { background-position: -50% center, 0 center; }
   
   /* 慢速扫过：用 65% 的时间（约 3.9秒）慢慢从左滑到右 */
@@ -109,13 +108,7 @@ title: E-Link Home
   margin-top: 0; line-height: 1.4; max-width: 90%; margin-left: auto; margin-right: auto;
 }
 
-@media (max-width: 768px) {
-  .main-logo { height: 80px !important; } 
-  .sub-title { font-size: 1.2em !important; padding: 0 10px !important; white-space: normal !important; }
-  .mobile-br::before { content: "\A"; white-space: pre; }
-}
-
-/* 5. 新增：专门控制中文“易链”两个字的大小，使其与右侧图片高度协调 👇 */
+/* 5. 新增：专门控制中文“易链”两个字的大小，使其与右侧图片高度协调 */
 .zh-text-logo {
   font-size: 70px; /* 电脑端大小，配合 100px 的图片 */
   font-weight: 800;
@@ -123,6 +116,14 @@ title: E-Link Home
   font-family: 'Inter', 'Noto Sans SC', sans-serif;
   line-height: 1;
 }
+
+/* 👇 手机端优化适配 👇 */
+@media (max-width: 768px) {
+  .main-logo { height: 90px !important; } 
+  .sub-title { font-size: 1.2em !important; padding: 0 10px !important; white-space: normal !important; }
+  .mobile-br::before { content: "\A"; white-space: pre; }
+} 
+  
 </style>
 
 <div class="lang-en" markdown="1">
