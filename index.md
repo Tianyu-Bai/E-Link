@@ -834,15 +834,32 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
 .node-desc { margin-top: 4px; color: #94a3b8; font-size: 11px; text-align: center; line-height: 1.4; font-family: sans-serif; }
 
 @media (max-width: 600px) {
-  /* 🚨 核心修复：将 padding 和 min-height 与电脑端保持绝对一致，防止 SVG Y轴被压扁脱靶 */
-  .species-glass-box { padding: 30px 5px 40px 5px; min-height: 380px; } 
+  /* 1. 允许高度自适应，并统一上下内边距 */
+  .species-glass-box { 
+    padding: 20px 5px !important; 
+    min-height: auto !important; 
+  } 
   
-  .icon-circle { width: 45px; height: 45px; }
-  .icon-circle span { font-size: 24px !important; }
-  .node-title { font-size: 12px; }
-  .node-desc { font-size: 9px; }
-  .connection-lines { opacity: 0.8; }
-  .pulse-line { stroke-width: 2; }
+  /* 2. 压缩中心节点的底部间距 */
+  .center-node { margin-bottom: 0 !important; }
+
+  /* 3. 缩短动物节点区域与顶部的距离 */
+  .animal-nodes { margin-top: 25px !important; }
+
+  /* 4. 调整大鼠(中间节点)的偏移量，适配 50px 图标 */
+  .rat-node-adjust { transform: translateY(25px) translateZ(0); }
+
+  /* 5. 调整图标为 50*50 并微调字体 */
+  .icon-circle { 
+    width: 50px !important; 
+    height: 50px !important; 
+  }
+  .icon-circle span { font-size: 28px !important; } /* Emoji 稍微放大一点 */
+  .node-title { font-size: 13px; margin-top: 6px; }
+  .node-desc { font-size: 10px; line-height: 1.3; }
+  
+  /* 6. 隐藏装饰连线 */
+  .connection-lines { display: none; }
 }
 </style>
 
