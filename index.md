@@ -834,32 +834,49 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
 .node-desc { margin-top: 4px; color: #94a3b8; font-size: 11px; text-align: center; line-height: 1.4; font-family: sans-serif; }
 
 @media (max-width: 600px) {
-  /* 1. 允许高度自适应，并统一上下内边距 */
+  /* 1. 核心容器：增加底部 padding，确保即便有动画偏移文字也不会越界 */
   .species-glass-box { 
-    padding: 20px 5px !important; 
-    min-height: auto !important; 
+    padding: 30px 10px 50px 10px !important; /* 底部给足 50px 缓冲 */
+    min-height: 420px !important; /* 强行撑开高度，防止遮挡 */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   } 
-  
-  /* 2. 压缩中心节点的底部间距 */
-  .center-node { margin-bottom: 0 !important; }
 
-  /* 3. 缩短动物节点区域与顶部的距离 */
-  .animal-nodes { margin-top: 25px !important; }
+  /* 2. 恢复连线，并稍微调淡防止干扰文字 */
+  .connection-lines { 
+    display: block !important; 
+    opacity: 0.5; 
+    transform: scale(0.9); /* 手机端缩小一点线段比例 */
+    transform-origin: top center;
+  }
 
-  /* 4. 调整大鼠(中间节点)的偏移量，适配 50px 图标 */
-  .rat-node-adjust { transform: translateY(25px) translateZ(0); }
+  /* 3. 布局微调：压缩间距 */
+  .center-node { margin-bottom: 10px !important; }
+  .animal-nodes { 
+    margin-top: 40px !important; 
+    width: 110% !important; /* 稍微溢出一点容器，防止三个圆圈挤在一起 */
+    justify-content: space-around !important;
+  }
 
-  /* 5. 调整图标为 50*50 并微调字体 */
+  /* 4. 重点修复：减小位移。之前遮挡是因为下移（30px）后文字超出了容器 */
+  .rat-node-adjust { transform: translateY(15px) translateZ(0) !important; }
+
+  /* 5. 按照你的要求：图标 50*50 */
   .icon-circle { 
     width: 50px !important; 
     height: 50px !important; 
   }
-  .icon-circle span { font-size: 28px !important; } /* Emoji 稍微放大一点 */
-  .node-title { font-size: 13px; margin-top: 6px; }
-  .node-desc { font-size: 10px; line-height: 1.3; }
+  .icon-circle span { font-size: 26px !important; }
   
-  /* 6. 隐藏装饰连线 */
-  .connection-lines { display: none; }
+  /* 6. 文字防遮挡：强制换行并在底部留白 */
+  .node-title { font-size: 12px; margin-top: 8px; font-weight: bold; }
+  .node-desc { 
+    font-size: 10px !important; 
+    line-height: 1.2; 
+    max-width: 80px; /* 限制宽度强制换行，防止横向撑破 */
+    margin-bottom: 5px;
+  }
 }
 </style>
 
