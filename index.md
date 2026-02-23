@@ -648,15 +648,14 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
 
 **E-Link** (Elastomer Interconnection-based connector) is an open-source, miniature pedestal connector system based on elastomer interconnection. It provides a robust, scalable interface for High-Density Soft Neural Interfaces, specifically engineered for chronic applications in freely moving animals.
 
-<div align="center">
+<div align="center" data-aos="zoom-in-up" data-aos-duration="1000">
  <br>
  <img data-src="Videos/Demo%20new%20new.gif" 
        src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
        alt="ELINK-256 Assembly Demo GIF" 
        width="500" 
-       class="gif-blend lazy-gif" 
-       decoding="async"
-       style="border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); display: block;">
+       class="lazy-gif white-bg-gif" 
+       decoding="async">
 </div>
 
 ---
@@ -849,7 +848,7 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
 <style> 
 /* --- 🚀 高级动态特征列表 --- */
 .watermark-features { 
-  color: rgba(148, 163, 184, 0.4); /* 默认半透明灰色 */
+  color: rgba(148, 163, 184, 0.4); 
   font-size: 0.95em; 
   line-height: 1.7; 
   font-weight: 400; 
@@ -861,16 +860,12 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
   padding-left: 20px;
   position: relative;
   transition: all 0.8s cubic-bezier(0.22, 1, 0.36, 1);
-  border-left: 2px solid rgba(59, 130, 246, 0); /* 默认透明边条 */
+  border-left: 2px solid rgba(59, 130, 246, 0); 
 }
-
-/* 激活状态：当滚动到此处时由 AOS 触发 */
 .watermark-features li.aos-animate { 
   color: rgba(241, 245, 249, 0.95); 
-  border-left: 2px solid #3b82f6; /* 亮起蓝色边条 */
+  border-left: 2px solid #3b82f6; 
 }
-
-/* 浅色模式适配 */
 body.light-mode .watermark-features { color: rgba(71, 85, 105, 0.3); }
 body.light-mode .watermark-features li.aos-animate { color: #1e293b; border-left-color: #2563eb; }
 body.light-mode .watermark-features strong { color: #2563eb; text-shadow: none; }
@@ -914,14 +909,15 @@ body.light-mode .watermark-features strong { color: #2563eb; text-shadow: none; 
     </li>
   </ul>
 </div>
-<div align="center">
-<img data-src="Videos/Animation%20repeat.gif" 
-     src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
-     alt="ELINK-256 Animation GIF" 
-     class="gif-blend lazy-gif" 
-     width="500" 
-     decoding="async"
-     style="border-radius: 6px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); display: block;">
+
+<div align="center" data-aos="zoom-in-up" data-aos-duration="1000">
+ <br>
+ <img data-src="Videos/Animation%20repeat.gif" 
+       src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+       alt="ELINK-256 Animation GIF" 
+       width="500" 
+       class="lazy-gif white-bg-gif" 
+       decoding="async">
 </div>
 
 ---
@@ -978,15 +974,15 @@ body.light-mode .watermark-features strong { color: #2563eb; text-shadow: none; 
   </p>
 </div>
 
-<div align="center">
-  <img data-src="Videos/Top PCB explosive new.gif" 
+<div align="center" data-aos="zoom-in-up" data-aos-duration="1000">
+ <br>
+ <img data-src="Videos/Top PCB explosive new.gif" 
        src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
        alt="4-Layer PCB Stackup Explosion" 
        width="460" 
-       class="lazy-gif"
-       decoding="async"
-       style="border-radius: 8px; margin-top: 10px;">
-  <p style="margin-top: 5px; font-size: 0.9em; color: #64748b;">
+       class="lazy-gif white-bg-gif" 
+       decoding="async">
+   <p style="margin-top: 5px; font-size: 0.9em; color: #64748b;">
     <b> 4-Layer Routing Structure (Top to Bottom)</b>
   </p>
 </div>
@@ -1512,14 +1508,14 @@ This project is open-source and available under the **MIT License**. Click the b
 
 **E-Link易链**，是一款基于弹性体互连技术（Elastomer Interconnection）的开源微型基座连接系统。它为柔性神经探针提供了稳固且可扩展的接口，专为自由活动动物的长期实验而优化设计
 
-<div align="center">
-<img data-src="Videos/Demo%20new%20new.gif" 
+<div align="center" data-aos="zoom-in-up" data-aos-duration="1000">
+ <br>
+ <img data-src="Videos/Demo%20new%20new.gif" 
        src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
        alt="ELINK-256 组装演示 GIF" 
        width="500" 
-       class="gif-blend lazy-gif" 
-       decoding="async"
-       style="border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); display: block;">
+       class="lazy-gif white-bg-gif" 
+       decoding="async">
 </div>
 
 ---
@@ -1660,15 +1656,15 @@ This project is open-source and available under the **MIT License**. Click the b
     </li>
   </ul>
 </div>
-  
-<div align="center">
-  <img data-src="Videos/Animation%20repeat.gif" 
+
+<div align="center" data-aos="zoom-in-up" data-aos-duration="1000">
+ <br>
+ <img data-src="Videos/Animation%20repeat.gif" 
        src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
        alt="ELINK-256 动画演示 GIF" 
-       class="gif-blend lazy-gif" 
        width="500" 
-       decoding="async"
-       style="border-radius: 6px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); display: block;">
+       class="lazy-gif white-bg-gif" 
+       decoding="async">
 </div>
 
 ---
@@ -1725,17 +1721,14 @@ This project is open-source and available under the **MIT License**. Click the b
   </p>
 </div>
 
-<div align="center">
-  <img data-src="Videos/Top PCB explosive new.gif" 
+<div align="center" data-aos="zoom-in-up" data-aos-duration="1000">
+ <br>
+ <img data-src="Videos/Top PCB explosive new.gif" 
        src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
        alt="顶部4层电路板的设计爆炸动图" 
        width="460" 
-       class="lazy-gif"
-       decoding="async"
-       style="border-radius: 8px; margin-top: 10px;">
-  <p style="margin-top: 5px; font-size: 0.9em; color: #64748b;">
-    <b> 顶部4层电路板的设计爆炸动图 </b>
-  </p>
+       class="lazy-gif white-bg-gif" 
+       decoding="async">
 </div>
       
 <div style="width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 10px;">
