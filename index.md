@@ -165,10 +165,10 @@ title: E-Link Home
      <a href="https://github.com/tianyu-bai/E-Link/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-MIT-A31F34?style=flat-square&logo=opensourceinitiative&logoColor=white" alt="License"></a>
  </div>
   
-<div align="center">
+<div align="center" data-aos="fade-up" data-aos-duration="1200">
  <br>
- <img src="Images/001.PNG" alt="E-Link(256) Exploded View" width="750" loading="lazy" decoding="async">
- <p style="margin-top: 5px; font-size: 0.95em; color: #3b82f6;">
+ <img src="Images/001.PNG" alt="E-Link(256) Exploded View" width="750" loading="lazy" decoding="async" class="transparent-showcase">
+ <p style="margin-top: 10px; font-size: 0.95em; color: #3b82f6;">
    <b>Mating Dynamics (left) and Structural Breakdown (right) of the E-Link(256) </b>
  </p>
 </div>
@@ -648,15 +648,14 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
 
 **E-Link** (Elastomer Interconnection-based connector) is an open-source, miniature pedestal connector system based on elastomer interconnection. It provides a robust, scalable interface for High-Density Soft Neural Interfaces, specifically engineered for chronic applications in freely moving animals.
 
-<div align="center">
+<div align="center" data-aos="zoom-in-up" data-aos-duration="1000">
  <br>
  <img data-src="Videos/Demo%20new%20new.gif" 
        src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
        alt="ELINK-256 Assembly Demo GIF" 
        width="500" 
-       class="gif-blend lazy-gif" 
-       decoding="async"
-       style="border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); display: block;">
+       class="lazy-gif white-bg-gif" 
+       decoding="async">
 </div>
 
 ---
@@ -914,14 +913,14 @@ body.light-mode .watermark-features strong { color: #2563eb; text-shadow: none; 
     </li>
   </ul>
 </div>
-<div align="center">
-<img data-src="Videos/Animation%20repeat.gif" 
-     src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
-     alt="ELINK-256 Animation GIF" 
-     class="gif-blend lazy-gif" 
-     width="500" 
-     decoding="async"
-     style="border-radius: 6px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); display: block;">
+
+<div align="center" data-aos="zoom-in-up" data-aos-duration="1000">
+  <img data-src="Videos/Animation%20repeat.gif" 
+       src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+       alt="ELINK-256 Animation GIF" 
+       class="lazy-gif white-bg-gif" 
+       width="500" 
+       decoding="async">
 </div>
 
 ---
@@ -967,26 +966,26 @@ body.light-mode .watermark-features strong { color: #2563eb; text-shadow: none; 
 <span id="en-bom"></span>
 ### 🛠 Bill of Materials (BOM) of the headstage
 
-<div align="center">
+<div align="center" data-aos="fade-up" data-aos-duration="1000">
   <img src="Images/256HD.png" 
        alt="256Ch Headstage PCBA Assembly" 
        width="460" 
        loading="lazy" decoding="async"
-       style="border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 20px;">
+       class="transparent-showcase" 
+       style="margin-bottom: 15px;">
   <p style="margin-top: 5px; font-size: 0.9em; color: #64748b;">
     <b>Assembled 256-Channel Headstage (Top View)</b>
   </p>
 </div>
 
-<div align="center">
+<div align="center" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="100">
   <img data-src="Videos/Top PCB explosive new.gif" 
        src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
        alt="4-Layer PCB Stackup Explosion" 
        width="460" 
-       class="lazy-gif"
-       decoding="async"
-       style="border-radius: 8px; margin-top: 10px;">
-  <p style="margin-top: 5px; font-size: 0.9em; color: #64748b;">
+       class="lazy-gif white-bg-gif"
+       decoding="async">
+  <p style="margin-top: 10px; font-size: 0.9em; color: #64748b;">
     <b> 4-Layer Routing Structure (Top to Bottom)</b>
   </p>
 </div>
