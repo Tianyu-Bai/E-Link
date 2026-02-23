@@ -645,7 +645,7 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
 
 ## 📖 Overview
 
-**E-Link** (Elastomer Interconnection-based connector) is an open-source, miniature pedestal connector system based on elastomer interconnection. It provides a robust, scalable interface for flexible neural probes, specifically engineered for chronic applications in freely moving animals.
+**E-Link** (Elastomer Interconnection-based connector) is an open-source, miniature pedestal connector system based on elastomer interconnection. It provides a robust, scalable interface for High-Density Soft Neural Interfaces, specifically engineered for chronic applications in freely moving animals.
 
 <div align="center">
  <br>
