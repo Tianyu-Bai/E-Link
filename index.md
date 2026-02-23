@@ -846,39 +846,23 @@ model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar)
 }
 </style>
 
-<style>
-  
-/* 水印体特征列表专属样式 */
-.watermark-features {
-  color: rgba(148, 163, 184, 0.8); /* 柔和的蓝灰色 (Slate-400)，自带水印隐匿感 */
-  font-size: 0.95em;
-  line-height: 1.7;
-  font-weight: 400;
-  letter-spacing: 0.3px;
-}
+<style> 
+/* --- 🚀 高级动态特征列表 --- */
+.watermark-features { color: rgba(148, 163, 184, 0.4); font-size: 0.95em; line-height: 1.7; font-weight: 400; letter-spacing: 0.3px; }
+.watermark-features ul { padding-left: 20px; list-style: none; } /* 去掉原生点，更有科技感 */
+.watermark-features li { margin-bottom: 30px; opacity: 0.3; transform: translateY(10px); transition: all 0.8s cubic-bezier(0.22, 1, 0.36, 1); }
 
-.watermark-features ul {
-  padding-left: 20px;
-}
+/* 当 AOS 触发时，变亮并上移复位 */
+.watermark-features li.aos-animate { opacity: 1; transform: translateY(0); color: rgba(241, 245, 249, 0.95); }
 
-.watermark-features li {
-  margin-bottom: 20px;
-  opacity: 0.85; /* 整体降低透明度，压制 Emoji 的刺眼感 */
-  transition: all 0.3s ease;
-}
+/* 浅色模式适配 (单行模式) */
+body.light-mode .watermark-features { color: rgba(71, 85, 105, 0.3); }
+body.light-mode .watermark-features li.aos-animate { color: #1e293b; }
+body.light-mode .watermark-features strong { color: #2563eb; text-shadow: none; }
 
-/* 增加呼吸感：鼠标悬停时微微亮起 */
-.watermark-features li:hover {
-  opacity: 1;
-  color: rgba(241, 245, 249, 0.9);
-}
-
-/* 重新定义粗体的颜色，从“刺眼纯白”改为“低饱和浅蓝” */
-.watermark-features strong {
-  color: #93c5fd; /* 柔和的天蓝色 (Blue-300) */
-  font-weight: 600;
-  text-shadow: 0 0 8px rgba(147, 197, 253, 0.2); /* 微微的发光字效 */
-}
+/* 装饰性左边条：增加高级感 */
+.watermark-features li { position: relative; padding-left: 15px; border-left: 2px solid transparent; }
+.watermark-features li.aos-animate { border-left: 2px solid #3b82f6; }
 </style>
 
 <div class="watermark-features" markdown="1">
