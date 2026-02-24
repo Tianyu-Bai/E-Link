@@ -23,6 +23,30 @@
 <style>
   /* ===================== 0. 全局与底层重置 ===================== */
   * { box-sizing: border-box; } 
+ /* ===================== 🚀 终极防撕裂与防白条补丁 🚀 ===================== */
+  /* 1. 彻底锁定根背景色，防止手机端上下滑动（橡皮筋回弹）时露出白色底边 */
+  html {
+    background-color: #0a0a0f;
+  }
+  /* 当切换到浅色模式时，同步变白，防止穿帮 */
+  html:has(body.light-mode) {
+    background-color: #ffffff;
+  }
+
+  /* 2. 完美适配手机端动态视口（去除 URL 栏收缩带来的高度断层白条） */
+  #vanta-bg, #meteor-canvas {
+    height: 100vh !important;
+    height: 100dvh !important;
+  }
+
+  /* 3. 强制开启毛玻璃容器的 GPU 硬件加速，彻底消灭滚动时产生的横向虚线/画面撕裂 */
+  .container, .glass-panel, .footer-dashboard, .video-content, .modal-content {
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    will-change: transform, backdrop-filter;
+    background-clip: padding-box; /* 防止边框产生亚像素级别的白边漏光 */
+  }
+  /* ========================================================================= */
   html, body { width: 100%; max-width: 100vw; overflow-x: hidden; overscroll-behavior-y: none; } 
   body.modal-active { cursor: auto !important; overflow: hidden !important; }
   body.modal-active .cursor-dot, body.modal-active .cursor-outline { display: none !important; }
