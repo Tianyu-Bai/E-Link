@@ -187,16 +187,16 @@ body, div, p, span, td, th {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
-/* 修复：恢复 GIF 完整画面。只对 1x1 的 Base64 占位图进行高度压制，防止滚动条乱跳 */
+/* 修复：在真实 GIF 完全下载并渲染前，用 16/9 强行撑住空间，彻底消灭频闪 */
 .lazy-gif {
   width: 100%;
   max-width: 500px; 
   height: auto;
-}
-
-/* 魔法逻辑：只要 src 还是 data:image (透明占位符阶段)，就维持一个大致的扁平比例，等真实 GIF 替换 src 后，该限制自动失效 */
-.lazy-gif[src^="data:image"] {
   aspect-ratio: 16 / 9; 
+}
+/* JS 检测到真实加载完毕后赋予该类，解除限制自适应真实高度 */
+.lazy-gif.is-loaded {
+  aspect-ratio: auto; 
 }
   
 /* ===================== 1. 核心设备感知与显隐逻辑 ===================== */
@@ -323,7 +323,11 @@ kbd {
 .custom-model-viewer:focus, .custom-model-viewer:active, .custom-model-viewer:focus-visible {
   outline: none !important; box-shadow: none !important; border: 1px solid rgba(59,130,246,0.3) !important;
 }
-
+/* 彻底击杀桌面端浏览器为 model-viewer 和其内部 canvas 强制添加的无障碍焦点虚框 */
+model-viewer, model-viewer:focus-within, model-viewer:focus-visible {
+  outline: none !important;
+  -webkit-tap-highlight-color: transparent;
+}
 .model-block { 
   /* 修复：把 max-width: 100vw 改为 100% */
   max-width: 100% !important; margin-top: 5px !important;  margin-bottom: 15px !important; 
@@ -2060,11 +2064,14 @@ This project is open-source and available under the **MIT License**. Click the b
   const gifObserver = new IntersectionObserver((entries, observer) => {
     entries.forEach(entry => {
       // 当 GIF 进入浏览器视口时
-      if (entry.isIntersecting) {
+     if (entry.isIntersecting) {
         const img = entry.target;
+        // 关键：等真实的 GIF 完全下载并解析后，再给它打上 is-loaded 标签解除高度限制
+        img.onload = () => {
+            img.classList.add('is-loaded');
+        };
         // 将真实的 GIF 地址赋给 src 属性触发加载
         img.src = img.dataset.src;
-        // 取消观察，确保只加载一次
         observer.unobserve(img);
       }
     });
