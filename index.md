@@ -177,8 +177,23 @@ title: E-Link Home
   
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@400;700&display=swap');
 
+/* 新增：彻底锁死横向滚动条，防止 100vw 或特效越界闪烁 */
+body, html {
+  overflow-x: hidden;
+  width: 100%;
+}
+
 body, div, p, span, td, th {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+/* 新增：锁定懒加载 GIF 的比例，防止高度骤变引起纵向疯狂跳动 */
+.lazy-gif {
+  aspect-ratio: 16 / 9; /* 如果你的 GIF 是其他比例（如 4/3），请修改这里 */
+  width: 100%;
+  max-width: 500px; 
+  height: auto;
+  object-fit: cover;
 }
   
 /* ===================== 1. 核心设备感知与显隐逻辑 ===================== */
@@ -293,7 +308,8 @@ kbd {
 
 /* ===================== 5. 模型全局基础样式 ===================== */
 .custom-model-viewer {
-  width: 100%; max-width: 100vw; box-sizing: border-box; height: 460px;
+  /* 修复：把 max-width: 100vw 改为 100%，消除横向溢出 */
+  width: 100%; max-width: 100%; box-sizing: border-box; height: 460px;
   background: transparent; border-radius: 16px; border: 1px solid rgba(59,130,246,0.3);
   outline: none; overflow: hidden; 
   transform: translateZ(0); 
@@ -306,9 +322,19 @@ kbd {
 }
 
 .model-block { 
-  max-width: 100vw !important; margin-top: 5px !important;  margin-bottom: 15px !important; 
+  /* 修复：把 max-width: 100vw 改为 100% */
+  max-width: 100% !important; margin-top: 5px !important;  margin-bottom: 15px !important; 
 }
 model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar) { display: none !important; }
+
+/* 修复：确保模型加载前的占位图不会引起高度坍塌计算 */
+model-viewer > [slot="poster"] {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
 
 .model-watermark-text {
   position: absolute; bottom: 12px; right: 16px; font-family: 'JetBrains Mono', monospace;
