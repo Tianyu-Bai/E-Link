@@ -314,6 +314,10 @@ kbd {
   transform: translateZ(0); 
   backface-visibility: hidden; 
   touch-action: none;
+  /* ✅ 新增：强制独立合成层，防止滚动时与父容器重绘竞争导致闪烁 */
+  will-change: transform;
+  isolation: isolate;
+  contain: strict;
 }
 
 .custom-model-viewer:focus, .custom-model-viewer:active, .custom-model-viewer:focus-visible {
@@ -1956,21 +1960,31 @@ This project is open-source and available under the **MIT License**. Click the b
     let isAnyModelLoading = false; // ✅ 移到循环外，所有模型共享同一个锁
 
     // ✅ 移到循环外，只定义一次
-    const activateViewer = async (viewer, force = false) => {
+   const activateViewer = async (viewer, force = false) => {
       if (isScrolling && !force) return;
       models.forEach(m => { if (m !== viewer && !m.paused) m.pause(); });
 
       if (viewer.getAttribute('reveal') === 'manual' && viewer.dataset.loaded !== "true") {
         if (isAnyModelLoading && !force) return;
         isAnyModelLoading = true;
-        viewer.dismissPoster();
         viewer.dataset.loaded = "true";
+
+        // ✅ 修复：先注册 load 事件，再 dismissPoster
+        // 防止 dismissPoster 触发时 GL 上下文未就绪导致闪白帧
         const loadHandler = () => {
           isAnyModelLoading = false;
           viewer.removeEventListener('load', loadHandler);
+          // ✅ GL 就绪后再 play，避免在空白帧播放
+          try { viewer.play(); } catch(e) {}
         };
         viewer.addEventListener('load', loadHandler);
+
+        // ✅ 给浏览器一个 rAF 间隙，确保事件监听已注册后再触发加载
+        await new Promise(resolve => requestAnimationFrame(resolve));
+        viewer.dismissPoster();
+
         setTimeout(() => { isAnyModelLoading = false; }, 3000);
+        return; // ✅ 提前 return，等 load 回调里再 play，不在此处重复执行
       }
 
       if (viewer.paused && !isAnyModelLoading) { try { viewer.play(); } catch(e) {} }
@@ -1982,7 +1996,6 @@ This project is open-source and available under the **MIT License**. Click the b
         }, 500);
       }
     };
-
     // ✅ 移到循环外，只注册一次
     const checkAndActivateBestModel = () => {
       if (isSlowNetwork()) return;
