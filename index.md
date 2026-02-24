@@ -65,10 +65,6 @@ title: E-Link Home
 }
 
 /* 3. SVG 图标与纯文本双层背景扫光 */
-.header-sync-pulse svg { 
-  -webkit-text-fill-color: initial; 
-  filter: saturate(1.2) drop-shadow(0 0 2px rgba(167, 139, 250, 0.4)); 
-}
 .bi-color-title-sweep {
   background: 
     /* 1. 把高光区域变宽：修改了 transparent 的比例，让中间的白色光晕范围更大、边缘更柔和 */
@@ -1203,39 +1199,39 @@ This project is open-source and available under the **MIT License**. Click the b
   -webkit-mask-position: center;
   -webkit-mask-repeat: no-repeat;
 }
-.logo-mask-container::after {
-  content: ""; position: absolute; top: 0; left: 0; width: 60%; height: 100%;
-  background: linear-gradient(to right, transparent 0%, rgba(96, 165, 250, 0.2) 20%, rgba(167, 139, 250, 0.9) 50%, rgba(96, 165, 250, 0.2) 80%, transparent 100%);
-  mix-blend-mode: screen; pointer-events: none; 
-  /* 恢复 4s 循环 */
-  animation: searchlight-sweep 4s ease-in-out infinite;
+.lang-zh .logo-mask-container::after {
+  content: ""; position: absolute; top: 0; left: 0; width: 60%; height: 100%;
+  background: linear-gradient(to right, transparent 0%, rgba(96, 165, 250, 0.2) 20%, rgba(167, 139, 250, 0.9) 50%, rgba(96, 165, 250, 0.2) 80%, transparent 100%);
+  mix-blend-mode: screen; pointer-events: none; 
+  /* 修改点：重命名动画，防止覆盖英文版 */
+  animation: searchlight-sweep-zh 4s ease-in-out infinite;
 }
 
-@keyframes searchlight-sweep {
-  0% { transform: translateX(-150%) skewX(-15deg); }
-  82.5% { transform: translateX(250%) skewX(-15deg); } /* 3.3s 扫过 */
-  100% { transform: translateX(250%) skewX(-15deg); } /* 0.7s 停顿 */
+@keyframes searchlight-sweep-zh {
+  0% { transform: translateX(-150%) skewX(-15deg); }
+  82.5% { transform: translateX(250%) skewX(-15deg); } 
+  100% { transform: translateX(250%) skewX(-15deg); } 
 }
 
 /* 3. 纯文本渐变扫光 (右侧) */
-.bi-color-title-sweep {
-  background: 
-    linear-gradient(105deg, transparent 20%, rgba(255, 255, 255, 0.9) 50%, transparent 80%),
-    linear-gradient(90deg, #60a5fa 0%, #a78bfa 55%, #f472b6 100%);
-  background-size: 200% auto, 100% auto;
-  background-repeat: no-repeat;
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: transparent;
-  /* 恢复 4s 循环，与图片同步 */
-  animation: text-searchlight 4s ease-in-out infinite;
+.lang-zh .bi-color-title-sweep {
+  background: 
+    linear-gradient(105deg, transparent 20%, rgba(255, 255, 255, 0.9) 50%, transparent 80%),
+    linear-gradient(90deg, #60a5fa 0%, #a78bfa 55%, #f472b6 100%);
+  background-size: 200% auto, 100% auto;
+  background-repeat: no-repeat;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  /* 修改点：重命名动画 */
+  animation: text-searchlight-zh 4s ease-in-out infinite;
 }
 
-@keyframes text-searchlight {
-  0% { background-position: -150% center, 0 center; }
-  82.5% { background-position: 250% center, 0 center; } /* 3.3s 扫过 */
-  100% { background-position: 250% center, 0 center; } /* 0.7s 停顿 */
+@keyframes text-searchlight-zh {
+  0% { background-position: -150% center, 0 center; }
+  82.5% { background-position: 250% center, 0 center; } 
+  100% { background-position: 250% center, 0 center; } 
 }
 
 /* 4. 样式控制：缩小后的汉字样式 */
@@ -1983,18 +1979,20 @@ This project is open-source and available under the **MIT License**. Click the b
             if (viewer.dataset.loaded !== "true") activateViewer(viewer, true);
         });
 
-        // 监听用户的拖拽/缩放操作，隐藏操作提示
-        viewer.addEventListener('camera-change', (event) => {
-            // 确保是用户的真实交互，而不是系统自动旋转
-            if (event.detail.source === 'user-interaction') {
-                viewer.querySelectorAll('.gesture-overlay, .gesture-hud').forEach(el => {
-                    el.classList.add('gesture-hidden');
-                });
-                // 打上标记，防止它后续再次弹出来
-                viewer.dataset.overlayDisabled = "true"; 
-            }
-        });
-    });
+       // 监听用户的拖拽/缩放操作，隐藏操作提示 (性能优化版)
+        const handleCameraChange = (event) => {
+            // 确保是用户的真实交互，而不是系统自动旋转
+            if (event.detail.source === 'user-interaction' && viewer.dataset.overlayDisabled !== "true") {
+                viewer.querySelectorAll('.gesture-overlay, .gesture-hud').forEach(el => {
+                    el.classList.add('gesture-hidden');
+                });
+                // 打上标记，防止它后续再次弹出来
+                viewer.dataset.overlayDisabled = "true"; 
+                // 触发一次后立刻移除监听器，大幅释放拖拽时的浏览器性能
+                viewer.removeEventListener('camera-change', handleCameraChange);
+            }
+        };
+        viewer.addEventListener('camera-change', handleCameraChange);
 
     const checkAndActivateBestModel = () => {
         if (isSlowNetwork()) return;
