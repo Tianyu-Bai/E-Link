@@ -187,13 +187,16 @@ body, div, p, span, td, th {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
-/* 新增：锁定懒加载 GIF 的比例，防止高度骤变引起纵向疯狂跳动 */
+/* 修复：恢复 GIF 完整画面。只对 1x1 的 Base64 占位图进行高度压制，防止滚动条乱跳 */
 .lazy-gif {
-  aspect-ratio: 16 / 9; /* 如果你的 GIF 是其他比例（如 4/3），请修改这里 */
   width: 100%;
   max-width: 500px; 
   height: auto;
-  object-fit: cover;
+}
+
+/* 魔法逻辑：只要 src 还是 data:image (透明占位符阶段)，就维持一个大致的扁平比例，等真实 GIF 替换 src 后，该限制自动失效 */
+.lazy-gif[src^="data:image"] {
+  aspect-ratio: 16 / 9; 
 }
   
 /* ===================== 1. 核心设备感知与显隐逻辑 ===================== */
@@ -1947,14 +1950,18 @@ This project is open-source and available under the **MIT License**. Click the b
           card.dashboardAnimFrame = requestAnimationFrame(animate);
           
         } else {
-          // 彻底离开视野时：清理动画并复位
-          card.dataset.dashboardInView = "false";
-          cancelAnimationFrame(card.dashboardAnimFrame);
-          fgRing.style.strokeDashoffset = circumference;
-          numberEl.innerText = "0";
+          // 修复：取消“离开视野就清零”的逻辑，防止在视口边缘反复横跳导致闪烁
+          // 一旦动画完成，就让它保持最终状态
+          // card.dataset.dashboardInView = "false";
+          // cancelAnimationFrame(card.dashboardAnimFrame);
+          // fgRing.style.strokeDashoffset = circumference;
+          // numberEl.innerText = "0";
         }
       });
-    }, { threshold: 0.15 }); 
+    }, { 
+      threshold: 0.25,      // 黄金触发点：卡片露出 25% 时启动动画
+      rootMargin: "0px 0px -5% 0px" // 视口底部向内收缩 5%，防止极个别手机浏览器底部工具栏遮挡导致的误判
+    });
 
     document.querySelectorAll('.metric-card').forEach(card => dashboardObserver.observe(card));
 
