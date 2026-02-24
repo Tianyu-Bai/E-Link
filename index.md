@@ -175,7 +175,7 @@ title: E-Link Home
 
 /* 新增：彻底锁死横向滚动条，防止 100vw 或特效越界闪烁 */
 body, html {
-  overflow-x: hidden;
+  overflow-x: clip;
   width: 100%;
 }
 
@@ -313,7 +313,7 @@ kbd {
   outline: none; overflow: hidden; 
   transform: translateZ(0); 
   backface-visibility: hidden; 
-  touch-action: pan-y;
+  touch-action: none;
 }
 
 .custom-model-viewer:focus, .custom-model-viewer:active, .custom-model-viewer:focus-visible {
@@ -384,12 +384,13 @@ model-viewer > [slot="poster"] {
 
 @media (max-width: 600px) {
   .metrics-grid { gap: 6px; } 
-  .metric-card.glass-panel { padding: 10px 2px; background: rgba(15, 23, 42, 0.85); backdrop-filter: none; -webkit-backdrop-filter: none; }
+  .metric-card.glass-panel { padding: 10px 2px; background: rgba(15, 23, 42, 0.92); backdrop-filter: none; -webkit-backdrop-filter: none; }
   .chart-box { width: 70px; height: 70px; }
   .inner-content .number { font-size: 18px; }
   .inner-content .unit { font-size: 11px; }
   .inner-content .label { font-size: 8px; font-family: sans-serif !important; letter-spacing: 0 !important; }
   .inner-content .sub { display: none; }
+  .gesture-hud { backdrop-filter: none; -webkit-backdrop-filter: none; background: rgba(15, 23, 42, 0.75); }
 }
     
 /* ===================== 高级 3D 封面特效 (HUD) ===================== */
@@ -1898,18 +1899,17 @@ This project is open-source and available under the **MIT License**. Click the b
 </div> 
 <script>
   document.addEventListener("DOMContentLoaded", () => {
-  
-  // ===================== 弱网探测核心逻辑 (新增) =====================
-  // 检测用户是否开启了省流量模式，或者是 3G/2G 网络
-  const isSlowNetwork = () => {
-    if ('connection' in navigator) {
-      const conn = navigator.connection;
-      return conn.saveData || /^[23]g$/.test(conn.effectiveType);
-    }
-    return false; // 默认放行
-  };
 
-// ===================== E-Link 动态数据面板逻辑 (深度优化版) =====================
+    // ===================== 弱网探测 =====================
+    const isSlowNetwork = () => {
+      if ('connection' in navigator) {
+        const conn = navigator.connection;
+        return conn.saveData || /^[23]g$/.test(conn.effectiveType);
+      }
+      return false;
+    };
+
+    // ===================== E-Link 动态数据面板 =====================
     const dashboardObserver = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         const card = entry.target;
@@ -1917,170 +1917,148 @@ This project is open-source and available under the **MIT License**. Click the b
         const numberEl = card.querySelector('.count-up');
         const targetValue = parseFloat(card.dataset.value);
         const isFloat = card.dataset.isFloat === "true";
-        const circumference = 283; 
+        const circumference = 283;
 
         if (entry.isIntersecting) {
-          // 状态锁：防止重复启动动画
           if (card.dataset.dashboardInView === "true") return;
           card.dataset.dashboardInView = "true";
 
           let startTimestamp = null;
-          const duration = 2000; // 2秒完成
+          const duration = 2000;
 
           const animate = (timestamp) => {
             if (card.dataset.dashboardInView !== "true") return;
             if (!startTimestamp) startTimestamp = timestamp;
-            
             const elapsed = timestamp - startTimestamp;
             const progress = Math.min(elapsed / duration, 1);
-            
-            // 使用 EaseOutExpo 缓动函数，动作更丝滑
             const easeProgress = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
             const currentValue = easeProgress * targetValue;
-
             numberEl.innerText = isFloat ? currentValue.toFixed(1) : Math.round(currentValue);
             fgRing.style.strokeDashoffset = circumference - (circumference * easeProgress);
-
             if (progress < 1) {
               card.dashboardAnimFrame = requestAnimationFrame(animate);
             }
           };
-          // 确保清理旧帧后再开始新动画
           cancelAnimationFrame(card.dashboardAnimFrame);
           card.dashboardAnimFrame = requestAnimationFrame(animate);
-          
-        } else {
-          // 修复：取消“离开视野就清零”的逻辑，防止在视口边缘反复横跳导致闪烁
-          // 一旦动画完成，就让它保持最终状态
-          // card.dataset.dashboardInView = "false";
-          // cancelAnimationFrame(card.dashboardAnimFrame);
-          // fgRing.style.strokeDashoffset = circumference;
-          // numberEl.innerText = "0";
         }
       });
-    }, { 
-      threshold: 0.25,      // 黄金触发点：卡片露出 25% 时启动动画
-      rootMargin: "0px 0px -5% 0px" // 视口底部向内收缩 5%，防止极个别手机浏览器底部工具栏遮挡导致的误判
-    });
+    }, { threshold: 0.25, rootMargin: "0px 0px -5% 0px" });
 
     document.querySelectorAll('.metric-card').forEach(card => dashboardObserver.observe(card));
 
-    // ===================== 3D 模型交互优化 (防止并发冲突) =====================
+    // ===================== 3D 模型交互（已修复竞态问题）=====================
     const models = Array.from(document.querySelectorAll('model-viewer'));
     if (!models.length) return;
 
-    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
     let isScrolling = false;
     let scrollEndTimer = null;
+    let isAnyModelLoading = false; // ✅ 移到循环外，所有模型共享同一个锁
 
-    // 弱网阻断逻辑及交互隐藏逻辑
-    models.forEach(viewer => {
-        viewer.addEventListener('click', () => {
-            if (viewer.dataset.loaded !== "true") activateViewer(viewer, true);
-        });
+    // ✅ 移到循环外，只定义一次
+    const activateViewer = async (viewer, force = false) => {
+      if (isScrolling && !force) return;
+      models.forEach(m => { if (m !== viewer && !m.paused) m.pause(); });
 
-       // 监听用户的拖拽/缩放操作，隐藏操作提示 (性能优化版)
-        const handleCameraChange = (event) => {
-            // 确保是用户的真实交互，而不是系统自动旋转
-            if (event.detail.source === 'user-interaction' && viewer.dataset.overlayDisabled !== "true") {
-                viewer.querySelectorAll('.gesture-overlay, .gesture-hud').forEach(el => {
-                    el.classList.add('gesture-hidden');
-                });
-                // 打上标记，防止它后续再次弹出来
-                viewer.dataset.overlayDisabled = "true"; 
-                // 触发一次后立刻移除监听器，大幅释放拖拽时的浏览器性能
-                viewer.removeEventListener('camera-change', handleCameraChange);
-            }
-        };
-        viewer.addEventListener('camera-change', handleCameraChange);
+      if (viewer.getAttribute('reveal') === 'manual' && viewer.dataset.loaded !== "true") {
+        if (isAnyModelLoading && !force) return;
+        isAnyModelLoading = true;
+        viewer.dismissPoster();
+        viewer.dataset.loaded = "true";
+        const loadHandler = () => {
+          isAnyModelLoading = false;
+          viewer.removeEventListener('load', loadHandler);
+        };
+        viewer.addEventListener('load', loadHandler);
+        setTimeout(() => { isAnyModelLoading = false; }, 3000);
+      }
 
-    const checkAndActivateBestModel = () => {
-        if (isSlowNetwork()) return;
-        let bestModel = null;
-        let minDistance = Infinity;
-        const viewportCenter = window.innerHeight / 2;
+      if (viewer.paused && !isAnyModelLoading) { try { viewer.play(); } catch(e) {} }
 
-        models.forEach(viewer => {
-            if (viewer.dataset.inView === "true") {
-                const rect = viewer.getBoundingClientRect();
-                const distance = Math.abs((rect.top + rect.height / 2) - viewportCenter);
-                if (distance < minDistance) { minDistance = distance; bestModel = viewer; }
-            }
-        });
-        if (bestModel) activateViewer(bestModel);
+      if (viewer.dataset.overlayDisabled !== "true") {
+        clearTimeout(viewer.hudTimer);
+        viewer.hudTimer = setTimeout(() => {
+          viewer.querySelectorAll('.gesture-overlay').forEach(el => el.classList.add('gesture-active'));
+        }, 500);
+      }
     };
 
+    // ✅ 移到循环外，只注册一次
+    const checkAndActivateBestModel = () => {
+      if (isSlowNetwork()) return;
+      let bestModel = null;
+      let minDistance = Infinity;
+      const viewportCenter = window.innerHeight / 2;
+      models.forEach(viewer => {
+        if (viewer.dataset.inView === "true") {
+          const rect = viewer.getBoundingClientRect();
+          const distance = Math.abs((rect.top + rect.height / 2) - viewportCenter);
+          if (distance < minDistance) { minDistance = distance; bestModel = viewer; }
+        }
+      });
+      if (bestModel) activateViewer(bestModel);
+    };
+
+    // ✅ scroll 只注册一次
     window.addEventListener('scroll', () => {
-        isScrolling = true;
-        clearTimeout(scrollEndTimer);
-        scrollEndTimer = setTimeout(() => { isScrolling = false; checkAndActivateBestModel(); }, 150);
+      isScrolling = true;
+      clearTimeout(scrollEndTimer);
+      scrollEndTimer = setTimeout(() => {
+        isScrolling = false;
+        checkAndActivateBestModel();
+      }, 150);
     }, { passive: true });
 
-    let isAnyModelLoading = false;
-    const activateViewer = async (viewer, force = false) => {
-        if (isScrolling && !force) return;
-        models.forEach(m => { if (m !== viewer && !m.paused) m.pause(); });
+    // ✅ 每个模型单独注册 click 和 camera-change
+    models.forEach(viewer => {
+      viewer.addEventListener('click', () => {
+        if (viewer.dataset.loaded !== "true") activateViewer(viewer, true);
+      });
 
-        if (viewer.getAttribute('reveal') === 'manual' && viewer.dataset.loaded !== "true") {
-            if (isAnyModelLoading && !force) return;
-            isAnyModelLoading = true;
-            viewer.dismissPoster();
-            viewer.dataset.loaded = "true";
-            // 增加加载监听
-            const loadHandler = () => { isAnyModelLoading = false; viewer.removeEventListener('load', loadHandler); };
-            viewer.addEventListener('load', loadHandler);
-            setTimeout(() => { isAnyModelLoading = false; }, 3000); 
+      const handleCameraChange = (event) => {
+        if (event.detail.source === 'user-interaction' && viewer.dataset.overlayDisabled !== "true") {
+          viewer.querySelectorAll('.gesture-overlay, .gesture-hud').forEach(el => {
+            el.classList.add('gesture-hidden');
+          });
+          viewer.dataset.overlayDisabled = "true";
+          viewer.removeEventListener('camera-change', handleCameraChange);
         }
-        
-        if (viewer.paused && !isAnyModelLoading) { try { viewer.play(); } catch(e) {} }
+      };
+      viewer.addEventListener('camera-change', handleCameraChange);
+    });
 
-        if (viewer.dataset.overlayDisabled !== "true") {
-            clearTimeout(viewer.hudTimer); 
-            viewer.hudTimer = setTimeout(() => {
-                viewer.querySelectorAll('.gesture-overlay').forEach(el => el.classList.add('gesture-active'));
-            }, 500);
-        }
-    };
-
+    // ✅ 每个模型的可见性观察器
     const modelObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            const viewer = entry.target;
-            if (entry.isIntersecting) {
-                viewer.dataset.inView = "true";
-                if (!isScrolling) checkAndActivateBestModel();
-            } else {
-                viewer.dataset.inView = "false";
-                viewer.pause();
-                viewer.querySelectorAll('.gesture-overlay').forEach(el => el.classList.remove('gesture-active'));
-            }
-        });
+      entries.forEach(entry => {
+        const viewer = entry.target;
+        if (entry.isIntersecting) {
+          viewer.dataset.inView = "true";
+          if (!isScrolling) checkAndActivateBestModel();
+        } else {
+          viewer.dataset.inView = "false";
+          viewer.pause();
+          viewer.querySelectorAll('.gesture-overlay').forEach(el => el.classList.remove('gesture-active'));
+        }
+      });
     }, { threshold: 0.1 });
 
     models.forEach(model => modelObserver.observe(model));
 
-  // ===================== GIF 滚动到可见时才加载 =====================
-  const gifObserver = new IntersectionObserver((entries, observer) => {
-    entries.forEach(entry => {
-      // 当 GIF 进入浏览器视口时
-     if (entry.isIntersecting) {
-        const img = entry.target;
-        // 关键：等真实的 GIF 完全下载并解析后，再给它打上 is-loaded 标签解除高度限制
-        img.onload = () => {
-            img.classList.add('is-loaded');
-        };
-        // 将真实的 GIF 地址赋给 src 属性触发加载
-        img.src = img.dataset.src;
-        observer.unobserve(img);
-      }
-    });
-  }, {
-    threshold: 0.1, // 露出 10% 时就开始加载
-    rootMargin: "50px 0px" // 提前 50px 加载，让用户感觉不到延迟
-  });
+    // ===================== GIF 懒加载 =====================
+    const gifObserver = new IntersectionObserver((entries, observer) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const img = entry.target;
+          img.onload = () => { img.classList.add('is-loaded'); };
+          img.src = img.dataset.src;
+          observer.unobserve(img);
+        }
+      });
+    }, { threshold: 0.1, rootMargin: "50px 0px" });
 
-  // 选中所有带有 lazy-gif 类的图片并开始观察
-  document.querySelectorAll('img.lazy-gif').forEach(gif => {
-    gifObserver.observe(gif);
+    document.querySelectorAll('img.lazy-gif').forEach(gif => {
+      gifObserver.observe(gif);
+    });
+
   });
-});
 </script>
