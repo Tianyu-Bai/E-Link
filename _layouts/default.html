@@ -14,8 +14,7 @@
  
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=JetBrains+Mono&display=swap" rel="stylesheet">
-
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 <link rel="preload" href="{{ '/Videos/On skull_3.16MB.glb' | relative_url }}" as="fetch" type="model/gltf-binary" crossorigin>
 <link rel="canonical" href="https://e-link.pages.dev/" />
 
@@ -853,6 +852,20 @@
         if(rpgDialogue.classList.contains('active')) closeDialogue(); else openDialogue();
       });
     }
+   // 阻止对话框内部的点击事件冒泡到机器人身上（防止误触关闭）
+    if(rpgDialogue) {
+      rpgDialogue.addEventListener('click', (e) => {
+        e.stopPropagation(); 
+      });
+    }
+    
+    // 给右上角的 × 单独绑定关闭事件
+    if(rpgClose) {
+      rpgClose.addEventListener('click', (e) => {
+        e.stopPropagation();
+        closeDialogue();
+      });
+    }
  
     setTimeout(() => botSay(currentLang === 'en' ? "Click me for guide!" : "点击我答疑解惑", 60000), 1000);
  
@@ -868,15 +881,42 @@
         if(vantaEffect) vantaEffect.setOptions({ color: 0x3b82f6 });
       });
       b.addEventListener('click', function(e) {
-        e.preventDefault(); const url = this.href;
+        e.preventDefault(); 
+        const url = this.href;
+        
+        // 播放水波纹动画
         badges.forEach((sib, idx) => {
             const img = sib.querySelector('img');
             img.style.animationDelay = `${Math.abs(idx - [...badges].indexOf(this)) * 0.06}s`;
             img.classList.add('rippling');
         });
-        setTimeout(() => window.location.href = url, 500);
+        
+        setTimeout(() => {
+            // 安全判定：检查是否为本页面的锚点链接（包含 #）
+            if (url.includes('#')) {
+                const targetId = url.substring(url.indexOf('#'));
+                try {
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        // 如果找到了锚点元素，执行丝滑滚动并退出
+                        targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        return; 
+                    }
+                } catch (error) {
+                    // 忽略 querySelector 解析非标准 ID 时的报错
+                }
+            }
+            
+            // 如果不是锚点，或者没找到对应的 ID，直接跳转原始链接
+            // 如果你在 HTML 里写了 target="_blank"，这里也会完美兼容打开新标签页
+            if (this.target === '_blank') {
+                window.open(url, '_blank');
+            } else {
+                window.location.href = url;
+            }
+        }, 500);
       });
-    });
+     });
     
     document.body.addEventListener('mouseover', (e) => {
       if (e.target.closest('a, button, .ctrl-btn, .rpg-btn, #bot-container, .slider')) document.body.classList.add('hovering');
