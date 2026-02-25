@@ -181,7 +181,7 @@ body, div, p, span, td, th {
 /* 修复：在真实 GIF 完全下载并渲染前，用 16/9 强行撑住空间，彻底消灭频闪 */
 .lazy-gif {
   width: 100%;
-  max-width: 500px; 
+  max-width: 100%; 
   height: auto;
   aspect-ratio: 16 / 9; 
 }
