@@ -168,17 +168,28 @@ title: E-Link Home
   
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@400;700&display=swap');
 
-/* 新增：彻底锁死横向滚动条，防止 100vw 或特效越界闪烁 */
-body, html {
-  overflow-x: clip;
+/* 🚀 终极防溢出护盾：彻底锁死横向滚动条，修复手机端触摸失灵 */
+html {
+  overflow-x: hidden;
   width: 100%;
+  -webkit-text-size-adjust: 100%; /* 防止 iOS 旋屏时字体自动放大 */
 }
 
-body, div, p, span, td, th {
+body {
+  overflow-x: hidden;
+  width: 100%;
+  position: relative; /* 核心：限制所有绝对定位子元素的边界 */
+  margin: 0;
+  padding: 0;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
-/* ✅ 保险方案：占位由父容器负责，GIF 本身只控制透明度，不再切换 aspect-ratio */
+/* 强制所有容器盒模型包含 padding 和 border */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+/* ✅ 保险方案：占位由父容器负责 */
 .gif-placeholder {
   width: 100%;
   max-width: 500px;
@@ -1874,7 +1885,7 @@ animation: text-searchlight-zh 2.5s ease-in-out infinite;
     <div class="card-label">系统底噪</div>
     <div class="waveform-box"><canvas class="waveform-canvas"></canvas></div>
     <div class="v2-val-wrap">
-      <div class="card-value v2-count v2-val-sm">0</div><span class="card-unit">微伏(RMS)</span>
+      <div class="card-value v2-count v2-val-sm">0</div><span class="card-unit">微伏</span>
     </div>
     <div class="card-sub">接近芯片性能极值</div>
   </div>
