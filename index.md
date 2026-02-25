@@ -108,6 +108,15 @@ title: E-Link Home
   line-height: 1;
 }
 
+/* 🚀 新增：英文版 Logo 电脑端基础大小控制 */
+.main-logo {
+  height: 100px; /* 限制电脑端高度 */
+  width: auto;
+  max-width: 100%;
+  object-fit: contain;
+  display: block;
+}
+
 /* 👇 手机端优化适配 👇 */
 @media (max-width: 768px) {
   .main-logo { height: 90px !important; } 
