@@ -354,7 +354,6 @@ model-viewer, model-viewer:focus-within, model-viewer:focus-visible {
   /* 修复：把 max-width: 100vw 改为 100% */
   max-width: 100% !important; margin-top: 5px !important;  margin-bottom: 15px !important; 
 }
-
 model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar) { display: none !important; }
 
 /* 修复：确保模型加载前的占位图不会引起高度坍塌计算 */
@@ -419,19 +418,6 @@ model-viewer > [slot="poster"] {
   .inner-content .label { font-size: 8px; font-family: sans-serif !important; letter-spacing: 0 !important; }
   .inner-content .sub { display: none; }
   .gesture-hud { backdrop-filter: none; -webkit-backdrop-filter: none; background: rgba(15, 23, 42, 0.75); }
-  .lang-zh table {
-    min-width: 0 !important;
-    width: 100% !important;
-    font-size: 12px !important;
-    word-break: break-all;
-  }
-  .lang-zh th, .lang-zh td {
-    padding: 6px 4px !important;
-  }
-  model-viewer.custom-model-viewer {
-    height: 260px !important;
-    max-width: 100vw !important;
-  }
 }
     
 /* ===================== 高级 3D 封面特效 (HUD) ===================== */
@@ -758,9 +744,8 @@ model-viewer > [slot="poster"] {
 
 /* --- 手机端适配 --- */
 @media (max-width: 600px) {
-  .metrics-grid-v2 { grid-template-columns: repeat(3, 1fr); gap: 6px; padding: 0 2px !important; max-width: 100vw !important; }
-  .metric-card-v2 { padding: 10px 4px; min-width: 0; width: 100% !important; margin: 0 auto 8px auto !important;
-    box-sizing: border-box !important; backdrop-filter: none; -webkit-backdrop-filter: none; background: rgba(15, 23, 42, 0.92); }
+  .metrics-grid-v2 { grid-template-columns: repeat(3, 1fr); gap: 6px; }
+  .metric-card-v2 { padding: 12px 4px; backdrop-filter: none; -webkit-backdrop-filter: none; background: rgba(15, 23, 42, 0.92); }
   .metric-card-v2 .card-value { font-size: 20px; }
   .metric-card-v2 .card-unit { font-size: 11px; }
   .metric-card-v2 .card-label { font-size: 11px; letter-spacing: 1px; }
@@ -773,7 +758,7 @@ model-viewer > [slot="poster"] {
   .thermo-safe-line, .thermo-safe-label { display: none; }
   .waveform-box { height: 40px; max-width: 90px; }
   .yield-bar-wrapper { max-width: 90px; }
-  }
+}
 
 /* --- 浅色模式适配 --- */
 body.light-mode .metric-card-v2 { background: rgba(241, 245, 249, 0.85); border-color: rgba(148, 163, 184, 0.3); }
@@ -786,6 +771,7 @@ body.light-mode .thermo-track { background: rgba(0,0,0,0.06); border-color: rgba
 body.light-mode .yield-bar-track { background: rgba(0,0,0,0.06); border-color: rgba(0,0,0,0.06); }
 </style>
 
+<div class="metrics-grid-v2" data-aos="fade-up">
   <!-- Row 1: 圆环类 -->
   <div class="metric-card-v2" style="--card-accent: #10b981;" data-type="ring" data-percent="100" data-value="2.8" data-is-float="true">
     <div class="card-label">WEIGHT</div>
@@ -1520,98 +1506,107 @@ This project is open-source and available under the **MIT License**. Click the b
 </div>
 
 <style>
-/* 1. 外层静态阴影容器 */
-.header-sync-pulse {
+/* 1. 强制重命名的中文专属父容器类 */
+.header-sync-pulse-zh {
   margin: 0;
-  display: inline-block;
-  border-radius: 4px;
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  gap: 15px; 
   margin-bottom: 5px;
   filter: drop-shadow(0 0 8px rgba(96, 165, 250, 0.3)); 
 }
 
-/* 2. 图片遮罩扫光 (左侧) */
-.logo-mask-container {
+/* 2. 中文版专属图片遮罩扫光 */
+.logo-mask-zh {
   position: relative; 
-  display: block; 
+  display: flex; 
+  align-items: center;
   -webkit-mask-image: var(--logo-url); 
   mask-image: var(--logo-url);
   -webkit-mask-size: contain;
   -webkit-mask-position: center;
   -webkit-mask-repeat: no-repeat;
 }
-.lang-zh .logo-mask-container::after {
-  content: ""; position: absolute; top: 0; left: 0; width: 60%; height: 100%;
-  background: linear-gradient(to right, transparent 0%, rgba(96, 165, 250, 0.2) 20%, rgba(167, 139, 250, 0.9) 50%, rgba(96, 165, 250, 0.2) 80%, transparent 100%);
-  mix-blend-mode: screen; pointer-events: none; 
-  /* 修改点：重命名动画，防止覆盖英文版 */
-animation: searchlight-sweep-zh 2.5s ease-in-out infinite;
+
+.logo-mask-zh::after {
+  content: ""; 
+  position: absolute; 
+  top: 0; left: -20%; width: 150%; height: 100%;
+  background: linear-gradient(
+    to right, 
+    transparent 0%, 
+    rgba(96, 165, 250, 0.4) 15%, 
+    rgba(167, 139, 250, 0.95) 45%, 
+    rgba(167, 139, 250, 0.95) 70%, 
+    rgba(96, 165, 250, 0.4) 85%, 
+    transparent 100%
+  );
+  mix-blend-mode: screen; 
+  pointer-events: none; 
+  animation: searchlight-sweep-zh 3s linear infinite;
 }
 
 @keyframes searchlight-sweep-zh {
-  0%    { transform: translateX(-150%) skewX(-15deg); }
-  75%   { transform: translateX(250%) skewX(-15deg); }  /* 75% 扫完，25% 停顿 */
-  100%  { transform: translateX(250%) skewX(-15deg); }
+  0%    { transform: translateX(-100%) skewX(-20deg); }
+  75%   { transform: translateX(100%) skewX(-20deg); }  
+  100%  { transform: translateX(100%) skewX(-20deg); }
 }
 
-/* 3. 纯文本渐变扫光 (右侧) */
-.lang-zh .bi-color-title-sweep {
-  background: 
-    linear-gradient(105deg, transparent 20%, rgba(255, 255, 255, 0.9) 50%, transparent 80%),
-    linear-gradient(90deg, #60a5fa 0%, #a78bfa 55%, #f472b6 100%);
-  background-size: 200% auto, 100% auto;
-  background-repeat: no-repeat;
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: transparent;
-  /* 修改点：重命名动画 */
-animation: text-searchlight-zh 2.5s ease-in-out infinite;
+/* 3. 中文纯文本渐变扫光 */
+.bi-color-title-sweep-zh {
+  background: 
+    linear-gradient(105deg, transparent 0%, rgba(255, 255, 255, 0.5) 25%, rgba(255, 255, 255, 1) 50%, rgba(255, 255, 255, 0.5) 75%, transparent 100%),
+    linear-gradient(90deg, #60a5fa 0%, #a78bfa 55%, #f472b6 100%);
+  background-size: 250% auto, 100% auto;
+  background-repeat: no-repeat;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  animation: text-searchlight-zh 3s linear infinite;
 }
 
 @keyframes text-searchlight-zh {
-  0%    { background-position: -150% center, 0 center; }
-  75%   { background-position: 250% center, 0 center; }  /* 75% 扫完，25% 停顿 */
-  100%  { background-position: 250% center, 0 center; }
+  0%    { background-position: -50% center, 0 center; }
+  70%   { background-position: 150% center, 0 center; }  
+  100%  { background-position: 150% center, 0 center; }
 }
 
-/* 4. 样式控制：缩小后的汉字样式 */
-.main-logo {
-  height: 100px !important; width: auto !important; max-width: 100% !important;
-  object-fit: contain; display: block; filter: brightness(0.95); 
+/* 4. 中文 Logo 图片与文字排版精准控制 */
+.main-logo-zh {
+  height: 80px !important; /* 调整至与右侧中文大小比例更加协调 */
+  width: auto !important; 
+  max-width: 100% !important;
+  object-fit: contain; 
+  display: block; 
+  filter: brightness(0.95); 
 }
 
-.zh-text-logo {
-  font-size: 55px; /* 👈 从 70px 减小到 55px，更加精致 */
+.zh-text-logo-zh {
+  font-size: 55px; 
   font-weight: 800;
   letter-spacing: 4px;
   font-family: 'Inter', 'Noto Sans SC', sans-serif;
   line-height: 1;
+  margin: 0;
+  padding-bottom: 5px; /* 修正汉字字体内置基线导致的垂直偏移 */
 }
 
-.sub-title {
-  background: linear-gradient(90deg, #60a5fa 0%, #818cf8 50%, #a78bfa 100%);
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-  font-family: 'Inter', system-ui, sans-serif; font-weight: 700;
-  font-size: 1.5em; letter-spacing: -0.5px; text-align: center;
-  margin-top: 0; line-height: 1.4; max-width: 90%; margin-left: auto; margin-right: auto;
-}
-
+/* 手机端适配 */
 @media (max-width: 768px) {
-  .main-logo { height: 70px !important; } 
-  .zh-text-logo { font-size: 38px !important; } /* 手机端同步缩小 */
-  .sub-title { font-size: 1.1em !important; padding: 0 10px !important; }
+  .main-logo-zh { height: 60px !important; } 
+  .zh-text-logo-zh { font-size: 40px !important; } 
+  .header-sync-pulse-zh { gap: 10px; }
 }
 </style>
 
 <div align="center" style="margin-bottom: 20px;" data-aos="fade-up">
-  <h1 class="header-sync-pulse" style="display: flex; align-items: center; justify-content: center; gap: 15px; border-bottom: none; margin-bottom: 5px;">
-
-    <span class="logo-mask-container" style="--logo-url: url('{{ "/Images/ELink Logo color.png" | relative_url }}'); display: flex; align-items: center;">
-      <img src="{{ '/Images/ELink Logo color.png' | relative_url }}" alt="E-Link Logo color" class="main-logo">
+  <h1 class="header-sync-pulse-zh">
+    <span class="logo-mask-zh" style="--logo-url: url('{{ "/Images/ELink Logo color.png" | relative_url }}');">
+      <img src="{{ '/Images/ELink Logo color.png' | relative_url }}" alt="E-Link Logo color" class="main-logo-zh">
     </span>
-    
-    <span class="bi-color-title-sweep zh-text-logo">易链</span>
-
+    <span class="bi-color-title-sweep-zh zh-text-logo-zh">易链</span>
   </h1>
 </div>
 
@@ -1818,26 +1813,27 @@ animation: text-searchlight-zh 2.5s ease-in-out infinite;
   </model-viewer>
 </div>
 
-  <style>
-    /* 🚀 新增：专门修复底部排版不折行 & 手机端字体响应式缩放 */
-    .v2-val-wrap { 
-      display: flex; 
-      justify-content: center; 
-      align-items: baseline; 
-      white-space: nowrap; /* 绝对禁止折行 */
-    }
-    .v2-val-sm { 
-      font-size: 28px !important; 
-    }
-    @media (max-width: 600px) {
-      .v2-val-sm { 
-        font-size: 20px !important; /* 手机端强制缩小，防止撑爆卡片 */
-      }
-    }
-  </style>
-
 <div class="metrics-grid-v2" data-aos="fade-up">
 
+<style>
+  /* 🚀 新增：专门修复底部排版不折行 & 手机端字体响应式缩放 */
+  .v2-val-wrap { 
+    display: flex; 
+    justify-content: center; 
+    align-items: baseline; 
+    white-space: nowrap; /* 绝对禁止折行 */
+  }
+  .v2-val-sm { 
+    font-size: 28px !important; 
+  }
+  @media (max-width: 600px) {
+    .v2-val-sm { 
+      font-size: 20px !important; /* 手机端强制缩小，防止撑爆卡片 */
+    }
+  }
+</style>
+
+<div class="metrics-grid-v2" data-aos="fade-up">
   <div class="metric-card-v2" style="--card-accent: #10b981;" data-type="ring" data-percent="100" data-value="2.8" data-is-float="true">
     <div class="card-label">重量</div>
     <div class="v2-chart-box">
@@ -1916,7 +1912,8 @@ animation: text-searchlight-zh 2.5s ease-in-out infinite;
   </div>
 </div>
 
-<span id="cn-overview"></span>
+<br> <span id="cn-overview"></span>
+
 ## 📖 概览
 
 **E-Link易链**，是一款基于弹性体互连技术（Elastomer Interconnection）的开源微型基座连接系统。它为柔性神经探针提供了稳固且可扩展的接口，专为自由活动动物的长期实验而优化设计
@@ -1940,6 +1937,7 @@ animation: text-searchlight-zh 2.5s ease-in-out infinite;
 ---
 
 <span id="cn-specs"></span>
+
 ### 📊 规格参数
 
 <div style="width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 10px;">
@@ -1978,6 +1976,7 @@ animation: text-searchlight-zh 2.5s ease-in-out infinite;
 ---
 
 <span id="cn-features"></span>
+
 ## ✨ 核心特性
 <div class="species-compatibility-container" align="center" style="margin: 40px auto; max-width: 760px;">
   <h3 style="color: #60a5fa; margin-bottom: 20px; font-family: sans-serif;">🌍 跨物种适用性展望 </h3>
@@ -2085,6 +2084,7 @@ animation: text-searchlight-zh 2.5s ease-in-out infinite;
 ---
 
 <span id="cn-components"></span>
+
 ## 🧩 系统组件
 
 <div align="center">
@@ -2123,6 +2123,7 @@ animation: text-searchlight-zh 2.5s ease-in-out infinite;
 ---
 
 <span id="cn-bom"></span>
+
 ### 🛠 放大器物料清单 (BOM)
 
 <div align="center">
@@ -2244,6 +2245,7 @@ animation: text-searchlight-zh 2.5s ease-in-out infinite;
 ---
 
 <span id="cn-downloads"></span>
+
 ## 🔗 仓库与下载
 
 本项目完全开源。相关论文录用后，包含 **PCB 制造文件 (Gerber)** 和 **3D打印文件** 的完整数据集将通过以下链接提供访问。
