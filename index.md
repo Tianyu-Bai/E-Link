@@ -684,7 +684,7 @@ model-viewer > [slot="poster"] {
        alt="ELINK-256 Assembly Demo GIF" 
       width="594" 
       height="485" 
-      style="border-radius: 6px;
+      style="border-radius: 6px;"
       class="lazy-gif white-bg-gif" 
       decoding="async">
 </div>
@@ -948,7 +948,7 @@ body.light-mode .watermark-features strong { color: #2563eb; text-shadow: none; 
        alt="ELINK-256 Animation GIF" 
       width="723" 
       height="604" 
-      style="border-radius: 6px;
+      style="border-radius: 6px;"
       class="lazy-gif white-bg-gif" 
        decoding="async">
 </div>
@@ -1014,7 +1014,7 @@ body.light-mode .watermark-features strong { color: #2563eb; text-shadow: none; 
        alt="4-Layer PCB Stackup Explosion" 
       width="1000" 
       height="1109" 
-      style="border-radius: 6px;
+      style="border-radius: 6px;"
       class="lazy-gif white-bg-gif" 
        decoding="async">
    <p style="margin-top: 5px; font-size: 0.9em; color: #64748b;">
@@ -1550,7 +1550,7 @@ animation: text-searchlight-zh 2.5s ease-in-out infinite;
        alt="ELINK-256 组装演示 GIF" 
       width="594" 
       height="485"  
-      style="border-radius: 6px;
+      style="border-radius: 6px;"
       class="lazy-gif white-bg-gif" 
        decoding="async">
 </div>
@@ -1701,7 +1701,7 @@ animation: text-searchlight-zh 2.5s ease-in-out infinite;
        alt="ELINK-256 动画演示 GIF" 
        width="723" 
        height="604"  
-       style="border-radius: 6px;
+       style="border-radius: 6px;"
        class="lazy-gif white-bg-gif" 
        decoding="async">
 </div>
@@ -1767,7 +1767,7 @@ animation: text-searchlight-zh 2.5s ease-in-out infinite;
        alt="顶部4层电路板的设计爆炸动图" 
        width="1000" 
        height="1109" 
-       style="border-radius: 6px;
+       style="border-radius: 6px;"
        class="lazy-gif white-bg-gif" 
        decoding="async">
 </div>
