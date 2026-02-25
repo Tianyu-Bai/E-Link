@@ -946,18 +946,6 @@ body.light-mode .yield-bar-track { background: rgba(0,0,0,0.06); border-color: r
         </svg>
       </span>
     </div>
-
-/* --- 电脑/手机端图标切换逻辑 --- */
-
-/* 电脑端：显示 Emoji，隐藏 SVG，确保 SVG 继承绿色 */
-.icon-desktop { display: inline-block; }
-.icon-mobile { display: none; color: #10b981; }
-
-/* 当屏幕宽度小于等于 600px（手机端）时：隐藏 Emoji，显示 SVG */
-@media (max-width: 600px) {
-  .icon-desktop { display: none; }
-  .icon-mobile { display: inline-block; }
-}
     
     <div class="press-ripple"></div>
     <div class="cycles-counter-flash">+1</div>
