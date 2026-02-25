@@ -1923,15 +1923,6 @@ animation: text-searchlight-zh 2.5s ease-in-out infinite;
 <script>
   document.addEventListener("DOMContentLoaded", () => {
 
-    // ===================== 弱网探测 =====================
-    const isSlowNetwork = () => {
-      if ('connection' in navigator) {
-        const conn = navigator.connection;
-        return conn.saveData || /^[23]g$/.test(conn.effectiveType);
-      }
-      return false;
-    };
-
     // ===================== E-Link 动态数据面板 =====================
       const dashboardObserver = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
@@ -2051,11 +2042,7 @@ animation: text-searchlight-zh 2.5s ease-in-out infinite;
   // ✅ 新增：加载完立刻检查下一个，消除串行等待
   setTimeout(checkAndActivateBestModel, 100);
          };
-        };
         viewer.addEventListener('load', loadHandler);
-
-
-        
 
         await new Promise(resolve => requestAnimationFrame(resolve));
         viewer.dismissPoster();
