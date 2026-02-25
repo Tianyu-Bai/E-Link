@@ -582,7 +582,7 @@ model-viewer > [slot="poster"] {
     class="custom-model-viewer"
     src="{{ '/Videos/3D_1.85MB.glb' | relative_url }}"
     alt="E-Link 256-Channel Custom Headstage 3D Model" 
-    loading="lazy"       reveal="manual"
+    loading="eager"       reveal="manual"
     poster="{{ '/Images/poster.webp' | relative_url }}"
     camera-controls interpolation-decay="200" bounds="tight" field-of-view="30deg" auto-rotate  rotation-per-second="15deg"
     interaction-prompt="none" environment-image="neutral" exposure="0.75" shadow-intensity="0" tone-mapping="commerce">
@@ -1323,7 +1323,7 @@ animation: text-searchlight-zh 2.5s ease-in-out infinite;
     class="custom-model-viewer"
     src="{{ '/Videos/On skull_3.16MB.glb' | relative_url }}"
     alt="E Link on Skull 3D Model"
-    loading="lazy"   reveal="manual"
+    loading="eager"   reveal="manual"
     poster="{{ '/Images/poster.webp' | relative_url }}"
     camera-controls interpolation-decay="200" bounds="tight" field-of-view="30deg" auto-rotate  rotation-per-second="15deg"
     interaction-prompt="none" environment-image="neutral" exposure="0.75" shadow-intensity="0" tone-mapping="commerce">
@@ -1384,7 +1384,7 @@ animation: text-searchlight-zh 2.5s ease-in-out infinite;
     class="custom-model-viewer"
     src="{{ '/Videos/Whole_2.34MB.glb' | relative_url }}"
     alt="E Link 3D Model" 
-    loading="lazy"       reveal="manual"
+    loading="eager"       reveal="manual"
     poster="{{ '/Images/poster.webp' | relative_url }}"
     camera-controls interpolation-decay="200" bounds="tight" field-of-view="30deg" auto-rotate  rotation-per-second="15deg"
     interaction-prompt="none" environment-image="neutral" exposure="0.75" shadow-intensity="0" tone-mapping="commerce">
@@ -1445,7 +1445,7 @@ animation: text-searchlight-zh 2.5s ease-in-out infinite;
     class="custom-model-viewer"
     src="{{ '/Videos/3D_1.85MB.glb' | relative_url }}"
     alt="E-Link 256-Channel Custom Headstage 3D Model"
-    loading="lazy"       reveal="manual"
+    loading="eager"       reveal="manual"
     poster="{{ '/Images/poster.webp' | relative_url }}"
     camera-controls interpolation-decay="200" bounds="tight" field-of-view="30deg" auto-rotate  rotation-per-second="15deg"
     interaction-prompt="none" environment-image="neutral" exposure="0.75" shadow-intensity="0" tone-mapping="commerce">
