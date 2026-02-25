@@ -5,6 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
  
+ <!-- 添加 GIF 预加载 -->
+<link rel="preload" href="{{ '/Videos/Demo new new.gif' | relative_url }}" as="image" fetchpriority="high">
+<link rel="preload" href="{{ '/Videos/Animation repeat.gif' | relative_url }}" as="image" fetchpriority="high">
+<link rel="preload" href="{{ '/Videos/Top PCB explosive new.gif' | relative_url }}" as="image" fetchpriority="high">
+ 
 <title>{{ page.title }}</title>
 <link rel="shortcut icon" type="image/x-icon" href="{{ '/Images/icon/favicon.ico' | relative_url }}">
 <link rel="icon" type="image/png" sizes="32x32" href="{{ '/Images/icon/favicon-32x32.png' | relative_url }}">
@@ -267,8 +272,6 @@
     @keyframes point-up { from { transform: translateX(-50%) rotate(-90deg) translateY(0); } to { transform: translateX(-50%) rotate(-90deg) translateY(-15px); } }
   }
 </style>
-
- <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js" defer></script>
  
 </head>
  
@@ -651,7 +654,6 @@
     animateMeteors();
   }
  
-  document.addEventListener("DOMContentLoaded", function() {
     type();
     const cursorDot = document.querySelector('.cursor-dot');
     const cursorOutline = document.querySelector('.cursor-outline');
@@ -942,7 +944,6 @@
     });
     document.body.addEventListener('mouseout', (e) => {
       if (e.target.closest('a, button, .ctrl-btn, .rpg-btn, #bot-container, .slider')) document.body.classList.remove('hovering');
-    });
   });
 </script>
    
