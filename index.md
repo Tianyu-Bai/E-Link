@@ -794,7 +794,7 @@ body.light-mode .yield-bar-track { background: rgba(0,0,0,0.06); border-color: r
         </div>
       </div>
     </div>
-    <div class="card-sub">Ultra-light</div>
+    <div class="card-sub">Lightweight</div>
   </div>
 
   <div class="metric-card-v2" style="--card-accent: #3b82f6;" data-type="ring" data-percent="100" data-value="256" data-is-float="false">
@@ -1263,7 +1263,7 @@ body.light-mode .watermark-features strong { color: #2563eb; text-shadow: none; 
 
     <li data-aos="fade-up" data-aos-delay="500">
       <strong>🐭 Optimized for Chronic In-Vivo Research</strong><br>
-      Ultra-lightweight core (2.8g) and low-profile design compatible with commutators, ensuring robust long-term recording in freely moving animals.
+      Lightweight core (2.8g) and low-profile design compatible with commutators, ensuring robust long-term recording in freely moving animals.
     </li>
 
     <li data-aos="fade-up" data-aos-delay="600">
