@@ -21,8 +21,7 @@
  
 <link rel="canonical" href="https://e-link.pages.dev/" />
 
-<script src="https://unpkg.com/lenis@1.0.42/dist/lenis.min.js"></script>
- 
+<script src="https://unpkg.com/lenis@1.3.17/dist/lenis.min.js"></script>
 <style>
   /* ===================== 0. 全局与底层重置 ===================== */
   * { box-sizing: border-box; } 
@@ -542,15 +541,20 @@
   let vantaEffect;
    
   document.addEventListener("DOMContentLoaded", function() {
-      // 0. 🔥 初始化防爆级 Lenis 平滑滚动
-      const lenis = new Lenis({
-        duration: 1.2,
-        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-        direction: 'vertical', gestureDirection: 'vertical',
-        smooth: true, mouseMultiplier: 1, smoothTouch: false, touchMultiplier: 2,
-      });
-      function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
-      requestAnimationFrame(raf);
+ // 0. 🔥 防御性初始化 Lenis 平滑滚动（CDN 加载失败不会炸掉整个页面）
+      let lenis = null;
+      if (typeof Lenis !== 'undefined') {
+        lenis = new Lenis({
+          duration: 1.2,
+          easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+          direction: 'vertical', gestureDirection: 'vertical',
+          smooth: true, mouseMultiplier: 1, smoothTouch: false, touchMultiplier: 2,
+        });
+        function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
+        requestAnimationFrame(raf);
+      } else {
+        console.warn('[E-Link] Lenis not loaded, smooth scroll disabled');
+      }
 
       if (window.VANTA) { 
         vantaEffect = VANTA.NET({
@@ -559,7 +563,6 @@
           color: 0x3b82f6, backgroundColor: 0x0a0a0f, showDots: true
         });
       }
-
       initMeteors();
 
       // 图片懒加载
