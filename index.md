@@ -121,7 +121,7 @@ title: E-Link Home
 
 /* 👇 手机端优化适配 👇 */
 @media (max-width: 768px) {
-  .main-logo { height: 76px !important; } 
+  .main-logo { height: 46px !important; } 
   .sub-title { font-size: 1.2em !important; padding: 0 10px !important; white-space: normal !important; }
   .mobile-br::before { content: "\A"; white-space: pre; }
 } 
