@@ -112,7 +112,7 @@ title: E-Link Home
 
 .main-logo {
   display: block;
-  height: 50px !important;       
+  height: 120px !important;       
   width: auto !important;      
   max-width: 100% !important;     
   object-fit: contain;
