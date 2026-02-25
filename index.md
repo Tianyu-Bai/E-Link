@@ -686,6 +686,8 @@ model-viewer > [slot="poster"] {
   font-size: 34px; font-weight: 800; color: #fff;
   text-shadow: 0 2px 8px rgba(0,0,0,0.4);
   line-height: 1.1;
+  display: inline-block; /* 👈 新增：强制内联，防止 div 独占一行换行 */
+  vertical-align: baseline; /* 👈 新增：让数字底部和单位底部完美对齐 */
 }
 .metric-card-v2 .card-unit {
   font-size: 15px; font-weight: 600; color: #cbd5e1;
@@ -703,7 +705,10 @@ model-viewer > [slot="poster"] {
 .v2-chart-box .fg-ring { fill: none; stroke-width: 6; stroke-linecap: round; stroke-dasharray: 283; stroke-dashoffset: 283; transition: filter 0.3s; }
 .v2-chart-box .ring-inner {
   position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-  display: flex; flex-direction: column; justify-content: center; align-items: center;
+  display: flex; 
+  flex-direction: row; /* 👈 修改：从 column 改成 row，横向排布 */
+  justify-content: center; 
+  align-items: baseline; /* 👈 修改：基线对齐，让单位贴着数字的右下角 */
 }
 
 /* --- 温度计可视化 --- */
@@ -1776,64 +1781,89 @@ animation: text-searchlight-zh 2.5s ease-in-out infinite;
 </div>
 
 <div class="metrics-grid-v2" data-aos="fade-up">
-    <div class="metric-card-v2" style="--card-accent: #10b981;" data-type="ring" data-percent="100" data-value="2.8" data-is-float="true">
-    <div class="card-label">重量</div>
-    <div class="v2-chart-box">
-      <svg viewBox="0 0 100 100"><circle class="bg-ring" cx="50" cy="50" r="45"></circle><circle class="fg-ring weight-color" cx="50" cy="50" r="45"></circle></svg>
-      <div class="ring-inner"><span class="card-value v2-count">0</span><span class="card-unit">g</span></div>
-    </div>
-    <div class="card-sub">轻量化</div>
-  </div>
 
-  <div class="metric-card-v2" style="--card-accent: #3b82f6;" data-type="ring" data-percent="100" data-value="256" data-is-float="false">
-    <div class="card-label">通道数</div>
-    <div class="v2-chart-box">
-      <svg viewBox="0 0 100 100"><circle class="bg-ring" cx="50" cy="50" r="45"></circle><circle class="fg-ring channel-color" cx="50" cy="50" r="45"></circle></svg>
-      <div class="ring-inner"><span class="card-value v2-count">0</span></div>
-    </div>
-    <div class="card-sub">高密度采集</div>
-  </div>
+  <style>
+    /* 🚀 新增：专门修复底部排版不折行 & 手机端字体响应式缩放 */
+    .v2-val-wrap { 
+      display: flex; 
+      justify-content: center; 
+      align-items: baseline; 
+      white-space: nowrap; /* 绝对禁止折行 */
+    }
+    .v2-val-sm { 
+      font-size: 28px !important; 
+    }
+    @media (max-width: 600px) {
+      .v2-val-sm { 
+        font-size: 20px !important; /* 手机端强制缩小，防止撑爆卡片 */
+      }
+    }
+  </style>
 
-  <div class="metric-card-v2" style="--card-accent: #f59e0b;" data-type="ring" data-percent="100" data-value="4" data-is-float="false">
-    <div class="card-label">PCB 层数</div>
-    <div class="v2-chart-box">
-      <svg viewBox="0 0 100 100"><circle class="bg-ring" cx="50" cy="50" r="45"></circle><circle class="fg-ring pcb-color" cx="50" cy="50" r="45"></circle></svg>
-      <div class="ring-inner"><span class="card-value v2-count">0</span></div>
-    </div>
-    <div class="card-sub">定制化布线</div>
-  </div>
+  <div class="metric-card-v2" style="--card-accent: #10b981;" data-type="ring" data-percent="100" data-value="2.8" data-is-float="true">
+    <div class="card-label">重量</div>
+    <div class="v2-chart-box">
+      <svg viewBox="0 0 100 100"><circle class="bg-ring" cx="50" cy="50" r="45"></circle><circle class="fg-ring weight-color" cx="50" cy="50" r="45"></circle></svg>
+      <div class="ring-inner"><span class="card-value v2-count">0</span><span class="card-unit">g</span></div>
+    </div>
+    <div class="card-sub">轻量化</div>
+  </div>
 
-    <div class="metric-card-v2" style="--card-accent: #ef4444;" data-type="thermo" data-value="30.5" data-max="50">
-    <div class="card-label">工作温度</div>
-    <div class="thermo-wrapper">
-      <div class="thermo-track">
-        <div class="thermo-fill"></div>
-        <div class="thermo-safe-line"></div>
-      <div class="thermo-safe-label">37°C</div>
-      </div>
-      <div class="thermo-bulb"></div>
-    </div>
-    <div class="card-value v2-count" style="font-size: 28px;">0</div><span class="card-unit">°C</span>
-    <div class="card-sub">低于生物阈值</div>
-  </div>
+  <div class="metric-card-v2" style="--card-accent: #3b82f6;" data-type="ring" data-percent="100" data-value="256" data-is-float="false">
+    <div class="card-label">通道数</div>
+    <div class="v2-chart-box">
+      <svg viewBox="0 0 100 100"><circle class="bg-ring" cx="50" cy="50" r="45"></circle><circle class="fg-ring channel-color" cx="50" cy="50" r="45"></circle></svg>
+      <div class="ring-inner"><span class="card-value v2-count">0</span></div>
+    </div>
+    <div class="card-sub">高密度采集</div>
+  </div>
 
-  <div class="metric-card-v2" style="--card-accent: #a78bfa;" data-type="waveform" data-value="2.68" data-is-float="true" data-decimals="2">
-    <div class="card-label">系统底噪</div>
-    <div class="waveform-box"><canvas class="waveform-canvas"></canvas></div>
-    <div class="card-value v2-count" style="font-size: 28px;">0</div><span class="card-unit">µV RMS</span>
-    <div class="card-sub">接近芯片性能极值</div>
-  </div>
+  <div class="metric-card-v2" style="--card-accent: #f59e0b;" data-type="ring" data-percent="100" data-value="4" data-is-float="false">
+    <div class="card-label">PCB 层数</div>
+    <div class="v2-chart-box">
+      <svg viewBox="0 0 100 100"><circle class="bg-ring" cx="50" cy="50" r="45"></circle><circle class="fg-ring pcb-color" cx="50" cy="50" r="45"></circle></svg>
+      <div class="ring-inner"><span class="card-value v2-count">0</span></div>
+    </div>
+    <div class="card-sub">定制化布线</div>
+  </div>
 
-  <div class="metric-card-v2" style="--card-accent: #10b981;" data-type="yield" data-value="97">
-    <div class="card-label">连接良率></div>
-    <div class="card-value v2-count" style="font-size: 28px;">&gt; 97</div><span class="card-unit">%</span>
-    <div class="yield-bar-wrapper">
-      <div class="yield-bar-track"><div class="yield-bar-fill"></div></div>
-      <div class="yield-particles"></div>
-    </div>
-    <div class="card-value v2-count" style="font-size: 28px;">0</div><span class="card-unit">%</span>
-    <div class="card-sub">历经100+次插拔后</div>
-  </div>
+  <div class="metric-card-v2" style="--card-accent: #ef4444;" data-type="thermo" data-value="30.5" data-max="50">
+    <div class="card-label">工作温度</div>
+    <div class="thermo-wrapper">
+      <div class="thermo-track">
+        <div class="thermo-fill"></div>
+        <div class="thermo-safe-line"></div>
+        <div class="thermo-safe-label">37°C</div>
+      </div>
+      <div class="thermo-bulb"></div>
+    </div>
+    <div class="v2-val-wrap">
+      <div class="card-value v2-count v2-val-sm">0</div><span class="card-unit">°C</span>
+    </div>
+    <div class="card-sub">低于生物阈值</div>
+  </div>
+
+  <div class="metric-card-v2" style="--card-accent: #a78bfa;" data-type="waveform" data-value="2.68" data-is-float="true" data-decimals="2">
+    <div class="card-label">系统底噪</div>
+    <div class="waveform-box"><canvas class="waveform-canvas"></canvas></div>
+    <div class="v2-val-wrap">
+      <div class="card-value v2-count v2-val-sm">0</div><span class="card-unit">µV RMS</span>
+    </div>
+    <div class="card-sub">接近芯片性能极值</div>
+  </div>
+
+  <div class="metric-card-v2" style="--card-accent: #10b981;" data-type="yield" data-value="97">
+    <div class="card-label">连接良率</div>
+    <div class="yield-bar-wrapper">
+      <div class="yield-bar-track"><div class="yield-bar-fill"></div></div>
+      <div class="yield-particles"></div>
+    </div>
+    <div class="v2-val-wrap">
+      <span class="card-value v2-val-sm" style="margin-right: 4px;">&gt;</span>
+      <div class="card-value v2-count v2-val-sm">0</div><span class="card-unit">%</span>
+    </div>
+    <div class="card-sub">历经100+次插拔后</div>
+  </div>
 </div>
 
 <span id="cn-overview"></span>
