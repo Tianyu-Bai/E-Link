@@ -1813,8 +1813,6 @@ This project is open-source and available under the **MIT License**. Click the b
   </model-viewer>
 </div>
 
-<div class="metrics-grid-v2" data-aos="fade-up">
-
 <style>
   /* 🚀 新增：专门修复底部排版不折行 & 手机端字体响应式缩放 */
   .v2-val-wrap { 
