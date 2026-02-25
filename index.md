@@ -148,7 +148,7 @@ title: E-Link Home
   <a href="#en-downloads"><img src="https://img.shields.io/badge/🔗_Downloads-3b82f6?style=flat-square&logoColor=white" alt="Downloads"></a>
 </div>
 
-<div align="center" style="margin-bottom: 20px;" data-aos="fade-up">
+<div align="center" style="margin-bottom: 5px;" data-aos="fade-up">
   <h1 class="header-sync-pulse">
     <span class="logo-mask-container" style="--logo-url: url('{{ "/Images/ELink Logo color.png" | relative_url }}')">
       <img src="{{ '/Images/ELink Logo color.png' | relative_url }}" alt="E-Link Logo color" class="main-logo">
