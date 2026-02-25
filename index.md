@@ -118,6 +118,7 @@ title: E-Link Home
   object-fit: contain;
   margin-left: auto;
   margin-right: auto;
+} 
 
 /* 👇 手机端优化适配 👇 */
 @media (max-width: 768px) {
