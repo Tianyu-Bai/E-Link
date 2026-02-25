@@ -799,7 +799,7 @@ body.light-mode .yield-bar-track { background: rgba(0,0,0,0.06); border-color: r
     <div class="card-sub">Below Bio Threshold</div>
   </div>
 
-  <div class="metric-card-v2" style="--card-accent: #a78bfa;" data-type="waveform" data-value="2.68">
+  <div class="metric-card-v2" style="--card-accent: #a78bfa;" data-type="waveform" data-value="2.68" data-is-float="true" data-decimals="2">
     <div class="card-label">NOISE FLOOR</div>
     <div class="waveform-box"><canvas class="waveform-canvas"></canvas></div>
     <div class="card-value v2-count" style="font-size: 28px;">0</div><span class="card-unit">µV RMS</span>
@@ -907,8 +907,9 @@ body.light-mode .yield-bar-track { background: rgba(0,0,0,0.06); border-color: r
           const ease = easeOutExpo(progress);
           const currentVal = ease * targetValue;
 
-          // 数字更新
-          if (numberEl) numberEl.innerText = isFloat ? currentVal.toFixed(1) : Math.round(currentVal);
+          // 数字更新 — 支持自定义小数位数
+        const decimals = parseInt(card.dataset.decimals) || 1;
+        if (numberEl) numberEl.innerText = isFloat ? currentVal.toFixed(decimals) : Math.round(currentVal);
 
           // 类型特化
           if (type === 'ring') {
