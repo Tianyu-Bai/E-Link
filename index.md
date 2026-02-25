@@ -745,136 +745,92 @@ model-viewer > [slot="poster"] {
 .waveform-box { height: 60px; margin: 8px auto 6px; position: relative; max-width: 140px; }
 .waveform-box canvas { width: 100%; height: 100%; border-radius: 6px; }
 
-/* --- 新增：按压动画 (Stress Test Press) --- */
-.press-box {
+/* --- 按压循环可视化 --- */
+.cycles-viz {
   position: relative;
-  width: 130px; height: 130px;
-  margin: 0 auto 6px;
-  /* 创建一个淡淡的圆形背景轨道，呼应其他圆环设计 */
-  background: rgba(255, 255, 255, 0.03);
-  border-radius: 50%;
-  border: 1px solid rgba(16, 185, 129, 0.2); /* 使用绿色强调色 */
+  width: 130px;
+  height: 90px;
+  margin: 5px auto 6px;
   display: flex;
+  align-items: center;
   justify-content: center;
-  align-items: center;
-  overflow: hidden; /* 隐藏弹性体受压变宽溢出的部分 */
 }
 
-/* 内部容器，用于垂直排列活塞和基座 */
-.press-container {
-  width: 60%;
-  height: 70%;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
+.press-icon {
+  font-size: 36px;
+  animation: press-bounce 1.2s ease-in-out infinite;
+  filter: drop-shadow(0 0 8px rgba(16, 185, 129, 0.5));
 }
 
-/* 上方活塞和下方基座的通用样式 (金属质感) */
-.press-piston, .press-base {
-  width: 100%;
-  height: 15px;
-  background: linear-gradient(to right, #94a3b8, #e2e8f0, #94a3b8);
-  border-radius: 3px;
-  z-index: 2;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.3);
-}
-
-/* 下方基座稍微深一点，显得更稳固 */
-.press-base {
-  background: linear-gradient(to right, #475569, #64748b, #475569);
-}
-
-/* 中间的弹性体 (绿色核心) */
-.press-elastomer {
-  width: 80%; /* 初始宽度较窄 */
-  height: 40px; /* 初始高度较高 */
-  background: #10b981; /* 标志性的绿色 */
-  border-radius: 4px;
-  box-shadow: 0 0 15px rgba(16, 185, 129, 0.6); /* 强烈的发光效果 */
-  position: relative;
-  top: -2px; /* 微调位置以实现更好的视觉连接 */
-  
-  /* 增加一些纹理，看起来更有科技感 */
-  background-image: repeating-linear-gradient(
-    45deg,
-    rgba(255,255,255,0.1) 0px,
-    rgba(255,255,255,0.1) 2px,
-    transparent 2px,
-    transparent 4px
-  );
-  will-change: height, width, transform;
-}
-
-/* --- 动画定义 --- */
-
-/* 当父容器加上 .is-active 类时，触发内部元素的动画 */
-.press-box.is-active .press-elastomer {
-  /* 1.2秒完成一次按压循环，无限循环，快压慢回 */
-  animation: press-squeeze 1.2s cubic-bezier(0.25, 0.8, 0.25, 1) infinite;
-}
-
-.press-box.is-active .press-piston {
-  /* 活塞跟随弹性体压缩向下移动 */
-  animation: piston-follow 1.2s cubic-bezier(0.25, 0.8, 0.25, 1) infinite;
-}
-
-/* 弹性体挤压变形动画 */
-@keyframes press-squeeze {
-  0%, 100% {
-    height: 40px; /* 初始状态：高 */
-    width: 80%;   /* 初始状态：窄 */
-    filter: brightness(1);
+@keyframes press-bounce {
+  0%, 100% { 
+    transform: translateY(0) scale(1); 
+    filter: drop-shadow(0 0 8px rgba(16, 185, 129, 0.3));
   }
-  40% {
-    height: 18px; /* 压缩状态：变矮 */
-    width: 105%;  /* 压缩状态：变宽 (挤压效果) */
-    filter: brightness(1.3) drop-shadow(0 0 8px #10b981); /* 受压时更亮 */
+  15% { 
+    transform: translateY(8px) scale(1.05, 0.9); 
+    filter: drop-shadow(0 0 15px rgba(16, 185, 129, 0.8));
+  }
+  30% { 
+    transform: translateY(-4px) scale(0.98, 1.04); 
+  }
+  45% { 
+    transform: translateY(0) scale(1); 
   }
 }
 
-/* 活塞跟随运动动画 */
-@keyframes piston-follow {
-  0%, 100% {
-    transform: translateY(0);
+/* 按压时的涟漪波纹 */
+.press-ripple {
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40px;
+  height: 8px;
+  background: radial-gradient(ellipse, rgba(16, 185, 129, 0.4) 0%, transparent 70%);
+  border-radius: 50%;
+  animation: ripple-squash 1.2s ease-in-out infinite;
+}
+
+@keyframes ripple-squash {
+  0%, 100% { 
+    transform: translateX(-50%) scaleX(1); 
+    opacity: 0.3; 
   }
-  40% {
-    /* 向下移动的距离需要与弹性体压缩的高度大致匹配 */
-    transform: translateY(20px); 
+  15% { 
+    transform: translateX(-50%) scaleX(1.8); 
+    opacity: 0.8; 
+  }
+  45% { 
+    transform: translateX(-50%) scaleX(1); 
+    opacity: 0.3; 
   }
 }
 
-/* --- 手机端适配 (调整尺寸) --- */
+/* 按压计数器闪烁 */
+.cycles-counter-flash {
+  position: absolute;
+  top: 2px;
+  right: 10px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  color: #10b981;
+  opacity: 0;
+  animation: counter-tick 1.2s ease-in-out infinite;
+}
+
+@keyframes counter-tick {
+  0%, 10% { opacity: 0; transform: translateY(0); }
+  15%, 25% { opacity: 1; transform: translateY(-2px); }
+  40%, 100% { opacity: 0; transform: translateY(-8px); }
+}
+
 @media (max-width: 600px) {
-  .press-box { width: 68px; height: 68px; border-width: 1px; }
-  .press-container { width: 70%; height: 75%; }
-  .press-piston, .press-base { height: 10px; border-radius: 2px; }
-  .press-elastomer { height: 24px; border-radius: 2px; }
-  
-  /* 手机端动画幅度相应减小 */
-  @keyframes press-squeeze {
-    0%, 100% { height: 24px; width: 80%; }
-    40% { height: 12px; width: 110%; }
-  }
-  @keyframes piston-follow {
-    0%, 100% { transform: translateY(0); }
-    40% { transform: translateY(12px); }
-  }
+  .cycles-viz { width: 70px; height: 55px; }
+  .press-icon { font-size: 24px; }
+  .cycles-counter-flash { display: none; }
 }
 
-/* --- 浅色模式适配 --- */
-body.light-mode .press-box {
-    background: rgba(0,0,0,0.02);
-    border-color: rgba(16, 185, 129, 0.3);
-}
-body.light-mode .press-piston, body.light-mode .press-base {
-    background: linear-gradient(to right, #cbd5e1, #e2e8f0, #cbd5e1);
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-}
-body.light-mode .press-elastomer {
-    box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
-}
 /* --- 进度条可视化 --- */
 .yield-bar-wrapper { margin: 15px auto 8px; max-width: 140px; }
 .yield-bar-track { height: 10px; background: rgba(255,255,255,0.08); border-radius: 5px; overflow: hidden; position: relative; border: 1px solid rgba(255,255,255,0.06); }
@@ -975,18 +931,16 @@ body.light-mode .yield-bar-track { background: rgba(0,0,0,0.06); border-color: r
     <div class="card-sub">Near Chip Limit</div>
   </div>
 
-<div class="metric-card-v2" style="--card-accent: #10b981;" data-type="press" data-value="300">
-    <div class="card-label">STRESS TESTED</div>
-    <div class="press-box">
-      <div class="press-container">
-        <div class="press-piston"></div> <div class="press-elastomer"></div> <div class="press-base"></div> </div>
-    </div>
-    <div class="v2-val-wrap">
-        <span class="card-value v2-val-sm" style="margin-right: 4px;">&gt;</span>
-      <div class="card-value v2-count v2-val-sm">0</div><span class="card-unit">cycles</span>
-    </div>
-    <div class="card-sub">97%+ Yield Maintained</div>
+<div class="metric-card-v2" style="--card-accent: #10b981;" data-type="cycles" data-value="300">
+  <div class="card-label">STRESS TESTED</div>
+  <div class="cycles-viz">
+    <div class="press-icon">🫸</div>
+    <div class="press-ripple"></div>
+    <div class="cycles-counter-flash">+1</div>
   </div>
+  <div class="card-value v2-count" style="font-size: 28px;">0</div><span class="card-unit">+</span>
+  <div class="card-sub">97%+ Yield Maintained</div>
+</div>
 </div>
 
 <script>
@@ -1071,12 +1025,6 @@ document.addEventListener("DOMContentLoaded", function() {
         let startTs = null;
         let waveformRunning = true;
 
-        // 【修改点 1】如果是按压类型，进入视野即添加激活类，触发 CSS 循环动画
-        if (type === 'press') {
-            const pressBox = card.querySelector('.press-box');
-            if (pressBox) pressBox.classList.add('is-active');
-        }
-
         const animate = (ts) => {
           if (card.dataset.v2Active !== "true") { waveformRunning = false; return; }
           if (!startTs) startTs = ts;
@@ -1103,7 +1051,25 @@ document.addEventListener("DOMContentLoaded", function() {
             const canvas = card.querySelector('.waveform-canvas');
             if (canvas) drawWaveform(canvas, ease, targetValue);
           }
-          
+          else if (type === 'yield') {
+            const bar = card.querySelector('.yield-bar-fill');
+            if (bar) bar.style.width = currentVal + '%';
+            // 在动画末段爆发粒子
+            if (progress > 0.85 && !card.dataset.particlesDone) {
+              card.dataset.particlesDone = "true";
+              spawnParticles(card.querySelector('.yield-particles'), 12);
+            }
+          }
+          else if (type === 'cycles') {
+          // cycles 类型只做数字递增，按压动画由 CSS 自动循环
+           // 可选：在动画完成时爆发粒子
+          const particles = card.querySelector('.yield-particles');
+           if (particles && progress > 0.85 && !card.dataset.particlesDone) {
+            card.dataset.particlesDone = "true";
+             spawnParticles(particles, 12);
+               } 
+              }
+
           if (progress < 1) {
             card._v2Raf = requestAnimationFrame(animate);
           } else if (type === 'waveform') {
@@ -1123,11 +1089,6 @@ document.addEventListener("DOMContentLoaded", function() {
 
       } else {
         card.dataset.v2Active = "false";
-        // 【修改点 3】离开视野时，移除激活类，停止动画
-        if (type === 'press') {
-            const pressBox = card.querySelector('.press-box');
-            if (pressBox) pressBox.classList.remove('is-active');
-        }
         card.dataset.particlesDone = "";
         if (card._v2Raf) { cancelAnimationFrame(card._v2Raf); card._v2Raf = null; }
       }
@@ -1136,6 +1097,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
   // 💡 修复核心：现在它会一次性抓取网页里所有的 .metric-card-v2 (中英双语共 12 个)
   document.querySelectorAll('.metric-card-v2').forEach(c => v2Observer.observe(c));
+});
 </script>
 
 <span id="en-overview"></span>
@@ -2041,21 +2003,19 @@ This project is open-source and available under the **MIT License**. Click the b
     <div class="card-sub">接近芯片性能极值</div>
   </div>
 
- <div class="metric-card-v2" style="--card-accent: #10b981;" data-type="press" data-value="300">
-    <div class="card-label">按压连接测试</div>
-    <div class="press-box">
-      <div class="press-container">
-        <div class="press-piston"></div>
-        <div class="press-elastomer"></div>
-        <div class="press-base"></div>
-      </div>
-    </div>
-    <div class="v2-val-wrap">
-        <span class="card-value v2-val-sm" style="margin-right: 4px;">&gt;</span>
-      <div class="card-value v2-count v2-val-sm">0</div><span class="card-unit">次</span>
-    </div>
-    <div class="card-sub"> 保持 97%+ 连接良率</div>
+  <div class="metric-card-v2" style="--card-accent: #10b981;" data-type="cycles" data-value="300">
+  <div class="card-label">按压连接测试</div>
+  <div class="cycles-viz">
+    <div class="press-icon">🫸</div>
+    <div class="press-ripple"></div>
+    <div class="cycles-counter-flash">+1</div>
   </div>
+  <div class="v2-val-wrap">
+    <span class="card-value v2-val-sm" style="margin-right: 4px;">&gt;</span>
+    <div class="card-value v2-count v2-val-sm">0</div><span class="card-unit">次</span>
+  </div>
+  <div class="card-sub">保持 97%+ 连接良率</div>
+</div>
 </div>
 
 <br> <span id="cn-overview"></span>
