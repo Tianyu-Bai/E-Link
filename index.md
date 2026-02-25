@@ -1980,15 +1980,14 @@ animation: text-searchlight-zh 2.5s ease-in-out infinite;
     
     // ===================== 3D 模型交互（彻底修复 WebGL 上下文过载）=====================
     function isSlowNetwork() {
-  const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
-  if (!conn) return false;
-  
-  // 2G / slow-2g 才算慢网络
-  return ['slow-2g', '2g'].includes(conn.effectiveType);
-   }
+      const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+      if (!conn) return false;
+      // 2G / slow-2g 才算慢网络
+      return ['slow-2g', '2g'].includes(conn.effectiveType);
+    }
     
     let isAnyModelLoading = false;
-    const MAX_LIVE_CONTEXTS = 3; // ✅ 同时最多保留 3 个 WebGL 上下文（加 Vanta = 3）
+    const MAX_LIVE_CONTEXTS = 3;
 
     // ✅ 追踪哪些 viewer 当前持有活跃 WebGL 上下文
     const liveContextQueue = [];
@@ -2035,13 +2034,13 @@ animation: text-searchlight-zh 2.5s ease-in-out infinite;
 
         viewer.dataset.loaded = "true";
 
-        const loadHandler = () => {
+          const loadHandler = () => {
           isAnyModelLoading = false;
           viewer.removeEventListener('load', loadHandler);
-           try { viewer.play(); } catch(e) {}
-  // ✅ 新增：加载完立刻检查下一个，消除串行等待
-  setTimeout(checkAndActivateBestModel, 100);
-         };
+          try { viewer.play(); } catch(e) {}
+          // ✅ 新增：加载完立刻检查下一个，消除串行等待
+          setTimeout(checkAndActivateBestModel, 100);
+        };
         viewer.addEventListener('load', loadHandler);
 
         await new Promise(resolve => requestAnimationFrame(resolve));
