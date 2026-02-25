@@ -181,7 +181,7 @@ body, div, p, span, td, th {
 /* 修复：在真实 GIF 完全下载并渲染前，用 16/9 强行撑住空间，彻底消灭频闪 */
 .lazy-gif {
   width: 100%;
-  max-width: 100%; 
+  max-width: 500px; 
   height: auto;
   aspect-ratio: 16 / 9; 
 }
@@ -682,11 +682,9 @@ model-viewer > [slot="poster"] {
  <img data-src="Videos/Demo%20new%20new.gif" 
        src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
        alt="ELINK-256 Assembly Demo GIF" 
-      width="594" 
-      height="485" 
-      style="border-radius: 6px;"
-      class="lazy-gif white-bg-gif" 
-      decoding="async">
+       width="500" 
+       class="lazy-gif white-bg-gif" 
+       decoding="async">
 </div>
 
 ---
@@ -946,10 +944,8 @@ body.light-mode .watermark-features strong { color: #2563eb; text-shadow: none; 
  <img data-src="Videos/Animation%20repeat.gif" 
        src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
        alt="ELINK-256 Animation GIF" 
-      width="723" 
-      height="604" 
-      style="border-radius: 6px;"
-      class="lazy-gif white-bg-gif" 
+       width="500" 
+       class="lazy-gif white-bg-gif" 
        decoding="async">
 </div>
 
@@ -1012,10 +1008,8 @@ body.light-mode .watermark-features strong { color: #2563eb; text-shadow: none; 
  <img data-src="Videos/Top PCB explosive new.gif" 
        src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
        alt="4-Layer PCB Stackup Explosion" 
-      width="1000" 
-      height="1109" 
-      style="border-radius: 6px;"
-      class="lazy-gif white-bg-gif" 
+       width="460" 
+       class="lazy-gif white-bg-gif" 
        decoding="async">
    <p style="margin-top: 5px; font-size: 0.9em; color: #64748b;">
     <b> 4-Layer Routing Structure (Top to Bottom)</b>
@@ -1548,10 +1542,8 @@ animation: text-searchlight-zh 2.5s ease-in-out infinite;
  <img data-src="Videos/Demo%20new%20new.gif" 
        src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
        alt="ELINK-256 组装演示 GIF" 
-      width="594" 
-      height="485"  
-      style="border-radius: 6px;"
-      class="lazy-gif white-bg-gif" 
+       width="500" 
+       class="lazy-gif white-bg-gif" 
        decoding="async">
 </div>
 
@@ -1699,9 +1691,7 @@ animation: text-searchlight-zh 2.5s ease-in-out infinite;
  <img data-src="Videos/Animation%20repeat.gif" 
        src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
        alt="ELINK-256 动画演示 GIF" 
-       width="723" 
-       height="604"  
-       style="border-radius: 6px;"
+       width="500" 
        class="lazy-gif white-bg-gif" 
        decoding="async">
 </div>
@@ -1765,9 +1755,7 @@ animation: text-searchlight-zh 2.5s ease-in-out infinite;
  <img data-src="Videos/Top PCB explosive new.gif" 
        src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
        alt="顶部4层电路板的设计爆炸动图" 
-       width="1000" 
-       height="1109" 
-       style="border-radius: 6px;"
+       width="460" 
        class="lazy-gif white-bg-gif" 
        decoding="async">
 </div>
