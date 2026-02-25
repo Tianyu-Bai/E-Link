@@ -449,6 +449,11 @@ model-viewer > [slot="poster"] {
     camera-controls interpolation-decay="200" bounds="tight" field-of-view="30deg" auto-rotate  rotation-per-second="15deg"
     interaction-prompt="none" environment-image="neutral" exposure="0.75" shadow-intensity="0" tone-mapping="commerce">
 
+<!-- 添加 GIF 预加载 -->
+<link rel="preload" href="{{ '/Videos/Demo new new.gif' | relative_url }}" as="image" fetchpriority="high">
+<link rel="preload" href="{{ '/Videos/Animation repeat.gif' | relative_url }}" as="image" fetchpriority="high">
+<link rel="preload" href="{{ '/Videos/Top PCB explosive new.gif' | relative_url }}" as="image" fetchpriority="high">
+
 <div slot="poster" style="position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; width: 100%; background: radial-gradient(circle at center, #111827 0%, #020617 100%); font-family: 'JetBrains Mono', monospace; overflow: hidden; border-radius: 16px; cursor: pointer;">
       <div style="position: absolute; inset: 0; background-image: linear-gradient(rgba(59, 130, 246, 0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(59, 130, 246, 0.08) 1px, transparent 1px); background-size: 25px 25px; z-index: 0;"></div>
       <div class="scanline" style="z-index: 1;"></div>
@@ -682,7 +687,9 @@ model-viewer > [slot="poster"] {
  <img data-src="Videos/Demo%20new%20new.gif" 
        src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
        alt="ELINK-256 Assembly Demo GIF" 
-       width="500" 
+      width="594" 
+      height="485"   <!-- ← 加这行，高度 =   (实际高/宽) -->
+     style="border-radius: 6px;
        class="lazy-gif white-bg-gif" 
        decoding="async">
 </div>
@@ -944,7 +951,9 @@ body.light-mode .watermark-features strong { color: #2563eb; text-shadow: none; 
  <img data-src="Videos/Animation%20repeat.gif" 
        src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
        alt="ELINK-256 Animation GIF" 
-       width="500" 
+      width="723" 
+      height="604"   <!-- ← 加这行，高度 =   (实际高/宽) -->
+     style="border-radius: 6px;
        class="lazy-gif white-bg-gif" 
        decoding="async">
 </div>
@@ -1008,7 +1017,9 @@ body.light-mode .watermark-features strong { color: #2563eb; text-shadow: none; 
  <img data-src="Videos/Top PCB explosive new.gif" 
        src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
        alt="4-Layer PCB Stackup Explosion" 
-       width="460" 
+      width="1000" 
+      height="1109"   <!-- ← 加这行，高度 =   (实际高/宽) -->
+     style="border-radius: 6px;
        class="lazy-gif white-bg-gif" 
        decoding="async">
    <p style="margin-top: 5px; font-size: 0.9em; color: #64748b;">
@@ -1542,7 +1553,9 @@ animation: text-searchlight-zh 2.5s ease-in-out infinite;
  <img data-src="Videos/Demo%20new%20new.gif" 
        src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
        alt="ELINK-256 组装演示 GIF" 
-       width="500" 
+      width="594" 
+      height="485"   <!-- ← 加这行，高度 =   (实际高/宽) -->
+     style="border-radius: 6px;
        class="lazy-gif white-bg-gif" 
        decoding="async">
 </div>
@@ -1691,7 +1704,9 @@ animation: text-searchlight-zh 2.5s ease-in-out infinite;
  <img data-src="Videos/Animation%20repeat.gif" 
        src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
        alt="ELINK-256 动画演示 GIF" 
-       width="500" 
+       width="723" 
+       height="604"   <!-- ← 加这行，高度 =   (实际高/宽) -->
+       style="border-radius: 6px;
        class="lazy-gif white-bg-gif" 
        decoding="async">
 </div>
@@ -1755,7 +1770,9 @@ animation: text-searchlight-zh 2.5s ease-in-out infinite;
  <img data-src="Videos/Top PCB explosive new.gif" 
        src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
        alt="顶部4层电路板的设计爆炸动图" 
-       width="460" 
+       width="1000" 
+       height="1109"   <!-- ← 加这行，高度 =   (实际高/宽) -->
+       style="border-radius: 6px;
        class="lazy-gif white-bg-gif" 
        decoding="async">
 </div>
