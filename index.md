@@ -2053,13 +2053,26 @@ animation: text-searchlight-zh 2.5s ease-in-out infinite;
     models.forEach(model => modelObserver.observe(model));
 
     // ===================== GIF 懒加载 =====================
-    const gifObserver = new IntersectionObserver((entries, observer) => {
+  const gifObserver = new IntersectionObserver((entries, observer) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           const img = entry.target;
-          img.onload = () => { img.classList.add('is-loaded'); };
+          observer.unobserve(img); // ✅ 先 unobserve，防止重复触发
+
+          const markLoaded = () => {
+            requestAnimationFrame(() => {
+              img.classList.add('is-loaded'); // ✅ 延一帧再显示，避免白帧闪烁
+            });
+          };
+
+          // ✅ 先绑事件再赋 src，防止缓存命中时 onload 丢失
+          img.addEventListener('load', markLoaded, { once: true });
           img.src = img.dataset.src;
-          observer.unobserve(img);
+
+          // ✅ 兼容已缓存图片（src 赋值后 complete 立即为 true）
+          if (img.complete && img.naturalWidth > 1) {
+            markLoaded();
+          }
         }
       });
     }, { threshold: 0.1, rootMargin: "50px 0px" });
