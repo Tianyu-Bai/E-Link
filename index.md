@@ -845,14 +845,15 @@ body.light-mode .yield-bar-track { background: rgba(0,0,0,0.06); border-color: r
     <div class="card-sub">Near Chip Limit</div>
   </div>
 
-<div class="metric-card-v2" style="--card-accent: #10b981;" data-type="cycles" data-value="300">
-  <div class="card-label">STRESS TESTED</div> 
-  <div class="yield-bar-wrapper">
-    <div class="yield-bar-track"><div class="yield-bar-fill" style="width: 100%;"></div></div>
-    <div class="yield-particles"></div>
+  <div class="metric-card-v2" style="--card-accent: #10b981;" data-type="yield" data-value="97">
+    <div class="card-label">CONNECTION YIELD</div>
+    <div class="yield-bar-wrapper">
+      <div class="yield-bar-track"><div class="yield-bar-fill"></div></div>
+      <div class="yield-particles"></div>
+    </div>
+    <div class="card-value v2-count" style="font-size: 28px;">0</div><span class="card-unit">%</span>
+    <div class="card-sub">After 100+ Cycles</div>
   </div>
-  <div class="card-value v2-count" style="font-size: 28px;">0</div><span class="card-unit">+</span> 
-  <div class="card-sub">97%+ Yield Maintained</div> 
 </div>
 
 <script>
@@ -1906,30 +1907,18 @@ This project is open-source and available under the **MIT License**. Click the b
     <div class="card-sub">接近芯片性能极值</div>
   </div>
 
-<div class="metric-card-v2" style="--card-accent: #10b981;" data-type="cycles" data-value="300">
-  <div class="card-label">循环插拔测试</div>
-  <div class="yield-bar-wrapper">
-    <div class="yield-bar-track"><div class="yield-bar-fill" style="width: 100%;"></div></div>
-    <div class="yield-particles"></div>
+  <div class="metric-card-v2" style="--card-accent: #10b981;" data-type="yield" data-value="97">
+    <div class="card-label">连接良率</div>
+    <div class="yield-bar-wrapper">
+      <div class="yield-bar-track"><div class="yield-bar-fill"></div></div>
+      <div class="yield-particles"></div>
+    </div>
+    <div class="v2-val-wrap">
+      <span class="card-value v2-val-sm" style="margin-right: 4px;">&gt;</span>
+      <div class="card-value v2-count v2-val-sm">0</div><span class="card-unit">%</span>
+    </div>
+    <div class="card-sub">历经100+次插拔后</div>
   </div>
-  <div class="v2-val-wrap">
-    <span class="card-value v2-val-sm" style="margin-right: 4px;">&gt;</span>
-    <div class="card-value v2-count v2-val-sm">0</div><span class="card-unit">次</span>
-  </div>
-  <div class="card-sub">仍保持 97%+ 连接良率</div>
-</div>
-
-<div class="metric-card-v2" style="--card-accent: #10b981;" data-type="cycles" data-value="300">
-  <div class="card-label">按压连接测试</div> 
-  <div class="yield-bar-wrapper">
-    <div class="yield-bar-track"><div class="yield-bar-fill" style="width: 100%;"></div></div>
-    <div class="yield-particles"></div>
-  </div>
-  <div class="v2-val-wrap">
-    <div class="card-value v2-count v2-val-sm">0</div><span class="card-unit">+ 次</span>
-  </div>
-  <div class="card-sub">仍保持 97%+ 连接良率</div>
-</div>
 </div>
 
 <br> <span id="cn-overview"></span>
