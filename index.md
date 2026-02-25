@@ -9,120 +9,120 @@ title: E-Link Home
 <style>
 /* 1. 外层静态阴影容器 */
 .header-sync-pulse {
-  margin: 0;
-  display: inline-block;
-  border-radius: 4px;
-  margin-bottom: 5px;
-  filter: drop-shadow(0 0 8px rgba(96, 165, 250, 0.3)); 
+  margin: 0;
+  display: inline-block;
+  border-radius: 4px;
+  margin-bottom: 5px;
+  filter: drop-shadow(0 0 8px rgba(96, 165, 250, 0.3)); 
 }
 
 /* 2. 【英文版专属】图片遮罩与光束扫过 */
 .logo-mask-container {
-  position: relative; 
-  /* 加上 max-content 强行锁死物理宽度 */
-  display: inline-block; 
-  width: max-content; 
-  max-width: 100%;
-  
-  -webkit-mask-image: var(--logo-url); 
-  mask-image: var(--logo-url);
-  -webkit-mask-size: contain;
-  -webkit-mask-position: center;
-  -webkit-mask-repeat: no-repeat;
+  position: relative; 
+  /* 加上 max-content 强行锁死物理宽度 */
+  display: inline-block; 
+  width: max-content; 
+  max-width: 100%;
+  
+  -webkit-mask-image: var(--logo-url); 
+  mask-image: var(--logo-url);
+  -webkit-mask-size: contain;
+  -webkit-mask-position: center;
+  -webkit-mask-repeat: no-repeat;
 }
 
 .logo-mask-container::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  /* 起始位置稍微往左偏一点，包容性更强 */
-  left: -20%; 
-  /* 💡 强行把光束拉宽到容器的 1.5 倍，让高光区彻底淹没字符 */
-  width: 150%; 
-  height: 100%;
-  
-  background: linear-gradient(
-    to right, 
-    transparent 0%, 
-    rgba(96, 165, 250, 0.4) 15%,   
-    rgba(167, 139, 250, 0.95) 45%, /* ✨ 高光区更宽 */
-    rgba(167, 139, 250, 0.95) 70%, 
-    rgba(96, 165, 250, 0.4) 85%,   
-    transparent 100%
-  );
-  
-  mix-blend-mode: screen;
-  pointer-events: none;
-  
-  /* 💡 时间直接拉长到 3 秒 */
-  animation: searchlight-sweep 3s linear infinite;
+  content: "";
+  position: absolute;
+  top: 0;
+  /* 起始位置稍微往左偏一点，包容性更强 */
+  left: -20%; 
+  /* 💡 强行把光束拉宽到容器的 1.5 倍，让高光区彻底淹没字符 */
+  width: 150%; 
+  height: 100%;
+  
+  background: linear-gradient(
+    to right, 
+    transparent 0%, 
+    rgba(96, 165, 250, 0.4) 15%,   
+    rgba(167, 139, 250, 0.95) 45%, /* ✨ 高光区更宽 */
+    rgba(167, 139, 250, 0.95) 70%, 
+    rgba(96, 165, 250, 0.4) 85%,   
+    transparent 100%
+  );
+  
+  mix-blend-mode: screen;
+  pointer-events: none;
+  
+  /* 💡 时间直接拉长到 3 秒 */
+  animation: searchlight-sweep 3s linear infinite;
 }
 
 @keyframes searchlight-sweep {
-  0% { transform: translateX(-100%) skewX(-20deg); }
-  75% { transform: translateX(100%) skewX(-20deg); }  /* 75% 扫完，25% 停顿 */
-  100% { transform: translateX(100%) skewX(-20deg); }
+  0% { transform: translateX(-100%) skewX(-20deg); }
+  75% { transform: translateX(100%) skewX(-20deg); }  /* 75% 扫完，25% 停顿 */
+  100% { transform: translateX(100%) skewX(-20deg); }
 }
 
 /* 3. SVG 图标与纯文本双层背景扫光 */
 .bi-color-title-sweep {
-  background: 
-    /* 1. 把高光区域变宽：修改了 transparent 的比例，让中间的白色光晕范围更大、边缘更柔和 */
-    linear-gradient(105deg, transparent 0%, rgba(255, 255, 255, 0.5) 25%, rgba(255, 255, 255, 1) 50%, rgba(255, 255, 255, 0.5) 75%, transparent 100%),
-    linear-gradient(90deg, #60a5fa 0%, #a78bfa 55%, #f472b6 100%);
-  
-  /* 2. 扩大光束画布：从 200% 改为 250%，这会让整道光束在绝对尺寸上变得更宽 */
-  background-size: 250% auto, 100% auto; 
-  background-repeat: no-repeat;
-  -webkit-background-clip: text; 
-  background-clip: text;
-  -webkit-text-fill-color: transparent; 
-  color: transparent;
-  
-  /* 3. 动画设置：总时长 6秒，改用 linear (匀速) 让光缓慢滑过时更平滑，不会在文字中间忽快忽慢 */
-   /* 从 6s 缩短为 3s */
-  animation: text-searchlight 3s linear infinite;
+  background: 
+    /* 1. 把高光区域变宽：修改了 transparent 的比例，让中间的白色光晕范围更大、边缘更柔和 */
+    linear-gradient(105deg, transparent 0%, rgba(255, 255, 255, 0.5) 25%, rgba(255, 255, 255, 1) 50%, rgba(255, 255, 255, 0.5) 75%, transparent 100%),
+    linear-gradient(90deg, #60a5fa 0%, #a78bfa 55%, #f472b6 100%);
+  
+  /* 2. 扩大光束画布：从 200% 改为 250%，这会让整道光束在绝对尺寸上变得更宽 */
+  background-size: 250% auto, 100% auto; 
+  background-repeat: no-repeat;
+  -webkit-background-clip: text; 
+  background-clip: text;
+  -webkit-text-fill-color: transparent; 
+  color: transparent;
+  
+  /* 3. 动画设置：总时长 6秒，改用 linear (匀速) 让光缓慢滑过时更平滑，不会在文字中间忽快忽慢 */
+   /* 从 6s 缩短为 3s */
+  animation: text-searchlight 3s linear infinite;
 }
 
 @keyframes text-searchlight {
-  0%  { background-position: -50% center, 0 center; }
-  70% { background-position: 150% center, 0 center; }  /* 70% 扫完，30% 停顿 */
-  100% { background-position: 150% center, 0 center; }
+  0%  { background-position: -50% center, 0 center; }
+  70% { background-position: 150% center, 0 center; }  /* 70% 扫完，30% 停顿 */
+  100% { background-position: 150% center, 0 center; }
 }
 
 /* 4. 通用副标题样式 */
 .sub-title {
-  background: linear-gradient(90deg, #60a5fa 0%, #818cf8 50%, #a78bfa 100%);
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-  font-family: 'Inter', system-ui, sans-serif; font-weight: 700;
-  font-size: 1.5em; letter-spacing: -0.5px; text-align: center;
-  margin-top: 0; line-height: 1.4; max-width: 90%; margin-left: auto; margin-right: auto;
+  background: linear-gradient(90deg, #60a5fa 0%, #818cf8 50%, #a78bfa 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  font-family: 'Inter', system-ui, sans-serif; font-weight: 700;
+  font-size: 1.5em; letter-spacing: -0.5px; text-align: center;
+  margin-top: 0; line-height: 1.4; max-width: 90%; margin-left: auto; margin-right: auto;
 }
 
 /* 5. 新增：专门控制中文“易链”两个字的大小，使其与右侧图片高度协调 */
 .zh-text-logo {
-  font-size: 70px; /* 电脑端大小，配合 100px 的图片 */
-  font-weight: 800;
-  letter-spacing: 4px;
-  font-family: 'Inter', 'Noto Sans SC', sans-serif;
-  line-height: 1;
+  font-size: 70px; /* 电脑端大小，配合 100px 的图片 */
+  font-weight: 800;
+  letter-spacing: 4px;
+  font-family: 'Inter', 'Noto Sans SC', sans-serif;
+  line-height: 1;
 }
 
-/* 🚀 英文版 Logo 电脑端基础大小控制（带 !important 强制生效） */
+/* 🚀 新增：英文版 Logo 电脑端基础大小控制 */
 .main-logo {
-  height: 60px !important; 
-  width: auto !important;
-  max-width: 100% !important;
-  object-fit: contain;
-  display: block;
+  height: 30px; /* 限制电脑端高度 */
+  width: auto;
+  max-width: 100%;
+  object-fit: contain;
+  display: block;
 }
 
 /* 👇 手机端优化适配 👇 */
 @media (max-width: 768px) {
-  .main-logo { height: 75px !important; }  
-  .sub-title { font-size: 1.2em !important; padding: 0 10px !important; white-space: normal !important; }
-  .mobile-br::before { content: "\A"; white-space: pre; }
-}
+  .main-logo { height: 76px !important; } 
+  .sub-title { font-size: 1.2em !important; padding: 0 10px !important; white-space: normal !important; }
+  .mobile-br::before { content: "\A"; white-space: pre; }
+} 
   
 </style>
 
