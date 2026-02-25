@@ -1803,8 +1803,6 @@ animation: text-searchlight-zh 2.5s ease-in-out infinite;
   </model-viewer>
 </div>
 
-<div class="metrics-grid-v2" data-aos="fade-up">
-
   <style>
     /* 🚀 新增：专门修复底部排版不折行 & 手机端字体响应式缩放 */
     .v2-val-wrap { 
@@ -1901,6 +1899,7 @@ animation: text-searchlight-zh 2.5s ease-in-out infinite;
     </div>
     <div class="card-sub">历经100+次插拔后</div>
   </div>
+  
 </div>
 
 <span id="cn-overview"></span>
