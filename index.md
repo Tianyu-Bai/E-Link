@@ -110,9 +110,9 @@ title: E-Link Home
 
 /* 🚀 新增：英文版 Logo 电脑端基础大小控制 */
 .main-logo {
-  height: 30px; /* 限制电脑端高度 */
+  height: 60px; /* 限制电脑端高度 */
   width: auto;
-  max-width: 100%;
+  max-width: 200px;
   object-fit: contain;
   display: block;
 }
