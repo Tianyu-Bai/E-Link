@@ -355,9 +355,10 @@ model-viewer > [slot="poster"] {
 }
 
 .model-watermark-text {
-  position: absolute; bottom: 12px; right: 16px; font-family: 'JetBrains Mono', monospace;
+  position: absolute; bottom: 12px; right: 16px;
+  font-family: 'JetBrains Mono', monospace;
   font-size: 10px; color: rgba(255, 255, 255, 0.25); pointer-events: none; z-index: 5;
-  system-ui, -apple-system, sans-serif; font-weight: 400;
+  font-weight: 400;
 }
   @keyframes text-blink {
   0%, 100% { opacity: 1; }
@@ -455,7 +456,7 @@ model-viewer > [slot="poster"] {
 
 ## 🔬 Interactive 3D Model: E-Link Headstage Integration
  
-<div class="model-block" align="center" style="position: relative; max-width: 760px; margin: 0 auto; min-height: 460px;">
+<div class="model-block" data-lenis-prevent align="center" style="position: relative; max-width: 760px; margin: 0 auto; min-height: 460px;">
   <model-viewer
     class="custom-model-viewer"
     src="{{ '/Videos/On skull_3.16MB.glb' | relative_url }}"
@@ -516,7 +517,7 @@ model-viewer > [slot="poster"] {
 
 ## 🔬 E-Link – 3D Interactive View
  
-<div class="model-block" align="center" style="position: relative; max-width: 760px; margin: 0 auto; min-height: 460px;">
+<div class="model-block" data-lenis-prevent align="center" style="position: relative; max-width: 760px; margin: 0 auto; min-height: 460px;">
   <model-viewer
     class="custom-model-viewer"
     src="{{ '/Videos/Whole_2.34MB.glb' | relative_url }}"
@@ -576,7 +577,7 @@ model-viewer > [slot="poster"] {
 
 ## 🔬 256Ch Customized Headstage – 3D Interactive View
 
-<div class="model-block" align="center" style="position: relative; max-width: 760px; margin: 0 auto; min-height: 460px;">
+<div class="model-block" data-lenis-prevent align="center" style="position: relative; max-width: 760px; margin: 0 auto; min-height: 460px;">
   <model-viewer
     class="custom-model-viewer"
     src="{{ '/Videos/3D_1.85MB.glb' | relative_url }}"
@@ -1317,7 +1318,7 @@ animation: text-searchlight-zh 2.5s ease-in-out infinite;
 
 ## 🔬 **E-Link ：3D 交互式集成视图**
  
-<div class="model-block" align="center" style="position: relative; max-width: 760px; margin: 0 auto; min-height: 460px;">
+<div class="model-block" data-lenis-prevent align="center" style="position: relative; max-width: 760px; margin: 0 auto; min-height: 460px;">
   <model-viewer
     class="custom-model-viewer"
     src="{{ '/Videos/On skull_3.16MB.glb' | relative_url }}"
@@ -1378,7 +1379,7 @@ animation: text-searchlight-zh 2.5s ease-in-out infinite;
 
 ## 🔬 E-Link 三维交互模型
 
-<div class="model-block" align="center" style="position: relative; max-width: 760px; margin: 0 auto; min-height: 460px;">
+<div class="model-block" data-lenis-prevent align="center" style="position: relative; max-width: 760px; margin: 0 auto; min-height: 460px;">
   <model-viewer
     class="custom-model-viewer"
     src="{{ '/Videos/Whole_2.34MB.glb' | relative_url }}"
@@ -1439,7 +1440,7 @@ animation: text-searchlight-zh 2.5s ease-in-out infinite;
 
 ## 🔬 256通道定制放大器 – 三维交互模型
 
-<div class="model-block" align="center" style="position: relative; max-width: 760px; margin: 0 auto; min-height: 460px;">
+<div class="model-block" data-lenis-prevent align="center" style="position: relative; max-width: 760px; margin: 0 auto; min-height: 460px;">
   <model-viewer
     class="custom-model-viewer"
     src="{{ '/Videos/3D_1.85MB.glb' | relative_url }}"
@@ -1932,7 +1933,7 @@ animation: text-searchlight-zh 2.5s ease-in-out infinite;
     };
 
     // ===================== E-Link 动态数据面板 =====================
-    const dashboardObserver = new IntersectionObserver((entries) => {
+      const dashboardObserver = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         const card = entry.target;
         const fgRing = card.querySelector('.fg-ring');
@@ -1949,7 +1950,7 @@ animation: text-searchlight-zh 2.5s ease-in-out infinite;
           const duration = 2000;
 
           const animate = (timestamp) => {
-            if (card.dataset.dashboardInView !== "true") return;
+            if (card.dataset.dashboardInView !== "true") return;  // ✅ 已有的安全检查
             if (!startTimestamp) startTimestamp = timestamp;
             const elapsed = timestamp - startTimestamp;
             const progress = Math.min(elapsed / duration, 1);
@@ -1963,6 +1964,14 @@ animation: text-searchlight-zh 2.5s ease-in-out infinite;
           };
           cancelAnimationFrame(card.dashboardAnimFrame);
           card.dashboardAnimFrame = requestAnimationFrame(animate);
+
+        } else {
+          // ✅ 新增：离开视口时取消动画帧
+          card.dataset.dashboardInView = "false";
+          if (card.dashboardAnimFrame) {
+            cancelAnimationFrame(card.dashboardAnimFrame);
+            card.dashboardAnimFrame = null;
+          }
         }
       });
     }, { threshold: 0.25, rootMargin: "0px 0px -5% 0px" });
@@ -1975,37 +1984,93 @@ animation: text-searchlight-zh 2.5s ease-in-out infinite;
 
     let isScrolling = false;
     let scrollEndTimer = null;
-    let isAnyModelLoading = false; // ✅ 移到循环外，所有模型共享同一个锁
+    
+    
+    
+    // ===================== 3D 模型交互（彻底修复 WebGL 上下文过载）=====================
+    let isAnyModelLoading = false;
+    const MAX_LIVE_CONTEXTS = 2; // ✅ 同时最多保留 2 个 WebGL 上下文（加 Vanta = 3）
 
-    // ✅ 移到循环外，只定义一次
-   const activateViewer = async (viewer, force = false) => {
+    // ✅ 追踪哪些 viewer 当前持有活跃 WebGL 上下文
+    const liveContextQueue = [];
+
+    function reclaimContext(viewer) {
+      // 把这个 viewer 的 WebGL 上下文释放掉
+      if (viewer.dataset.loaded === "true") {
+        viewer.pause();
+        viewer._cachedSrc = viewer._cachedSrc || viewer.src;
+        viewer.src = '';           // ✅ 核心：清空 src 才会真正释放 GL 上下文
+        viewer.dataset.loaded = "reclaimed";
+      }
+    }
+
+    function ensureContextSlot(viewer) {
+      // 如果这个 viewer 已经在队列里，移到队尾（最近使用）
+      const idx = liveContextQueue.indexOf(viewer);
+      if (idx !== -1) liveContextQueue.splice(idx, 1);
+      liveContextQueue.push(viewer);
+
+      // 如果超出上限，淘汰最久未使用的（队首）
+      while (liveContextQueue.length > MAX_LIVE_CONTEXTS) {
+        const victim = liveContextQueue.shift();
+        if (victim !== viewer) {
+          reclaimContext(victim);
+        }
+      }
+    }
+
+    const activateViewer = async (viewer, force = false) => {
       if (isScrolling && !force) return;
-      models.forEach(m => { if (m !== viewer && !m.paused) m.pause(); });
+
+      // ✅ 不再简单 pause 其他模型，而是通过上下文管理器控制
+      ensureContextSlot(viewer);
 
       if (viewer.getAttribute('reveal') === 'manual' && viewer.dataset.loaded !== "true") {
         if (isAnyModelLoading && !force) return;
         isAnyModelLoading = true;
+
+        // 如果之前被回收过，恢复 src
+        if (viewer.dataset.loaded === "reclaimed" && viewer._cachedSrc) {
+          viewer.src = viewer._cachedSrc;
+        }
+
         viewer.dataset.loaded = "true";
 
-        // ✅ 修复：先注册 load 事件，再 dismissPoster
-        // 防止 dismissPoster 触发时 GL 上下文未就绪导致闪白帧
         const loadHandler = () => {
           isAnyModelLoading = false;
           viewer.removeEventListener('load', loadHandler);
-          // ✅ GL 就绪后再 play，避免在空白帧播放
           try { viewer.play(); } catch(e) {}
         };
         viewer.addEventListener('load', loadHandler);
 
-        // ✅ 给浏览器一个 rAF 间隙，确保事件监听已注册后再触发加载
         await new Promise(resolve => requestAnimationFrame(resolve));
         viewer.dismissPoster();
 
-        setTimeout(() => { isAnyModelLoading = false; }, 3000);
-        return; // ✅ 提前 return，等 load 回调里再 play，不在此处重复执行
+        // 后备超时释放锁
+        setTimeout(() => { isAnyModelLoading = false; }, 5000);
+        return;
       }
 
-      if (viewer.paused && !isAnyModelLoading) { try { viewer.play(); } catch(e) {} }
+      // 如果之前被回收过，需要重新加载
+      if (viewer.dataset.loaded === "reclaimed" && viewer._cachedSrc) {
+        if (isAnyModelLoading && !force) return;
+        isAnyModelLoading = true;
+        viewer.src = viewer._cachedSrc;
+        viewer.dataset.loaded = "true";
+
+        const reloadHandler = () => {
+          isAnyModelLoading = false;
+          viewer.removeEventListener('load', reloadHandler);
+          try { viewer.play(); } catch(e) {}
+        };
+        viewer.addEventListener('load', reloadHandler);
+        setTimeout(() => { isAnyModelLoading = false; }, 5000);
+        return;
+      }
+
+      if (viewer.paused && !isAnyModelLoading) {
+        try { viewer.play(); } catch(e) {}
+      }
 
       if (viewer.dataset.overlayDisabled !== "true") {
         clearTimeout(viewer.hudTimer);
@@ -2014,7 +2079,7 @@ animation: text-searchlight-zh 2.5s ease-in-out infinite;
         }, 500);
       }
     };
-    // ✅ 移到循环外，只注册一次
+
     const checkAndActivateBestModel = () => {
       if (isSlowNetwork()) return;
       let bestModel = null;
@@ -2030,7 +2095,6 @@ animation: text-searchlight-zh 2.5s ease-in-out infinite;
       if (bestModel) activateViewer(bestModel);
     };
 
-    // ✅ scroll 只注册一次
     window.addEventListener('scroll', () => {
       isScrolling = true;
       clearTimeout(scrollEndTimer);
@@ -2040,10 +2104,22 @@ animation: text-searchlight-zh 2.5s ease-in-out infinite;
       }, 150);
     }, { passive: true });
 
-    // ✅ 每个模型单独注册 click 和 camera-change
     models.forEach(viewer => {
       viewer.addEventListener('click', () => {
-        if (viewer.dataset.loaded !== "true") activateViewer(viewer, true);
+        activateViewer(viewer, true);
+      });
+
+      // ✅ 监听 WebGL 上下文丢失，自动恢复
+      viewer.addEventListener('error', (e) => {
+        console.warn('[E-Link] model-viewer GL error, attempting recovery');
+        if (viewer._cachedSrc) {
+          viewer.src = '';
+          viewer.dataset.loaded = "reclaimed";
+          // 如果当前在视口内，延迟后重新加载
+          if (viewer.dataset.inView === "true") {
+            setTimeout(() => activateViewer(viewer, true), 500);
+          }
+        }
       });
 
       const handleCameraChange = (event) => {
@@ -2058,7 +2134,6 @@ animation: text-searchlight-zh 2.5s ease-in-out infinite;
       viewer.addEventListener('camera-change', handleCameraChange);
     });
 
-    // ✅ 每个模型的可见性观察器
     const modelObserver = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         const viewer = entry.target;
@@ -2069,6 +2144,7 @@ animation: text-searchlight-zh 2.5s ease-in-out infinite;
           viewer.dataset.inView = "false";
           viewer.pause();
           viewer.querySelectorAll('.gesture-overlay').forEach(el => el.classList.remove('gesture-active'));
+          // ✅ 离开视口的模型不立即回收，而是由 ensureContextSlot 按需淘汰
         }
       });
     }, { threshold: 0.1 });
