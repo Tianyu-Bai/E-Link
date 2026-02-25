@@ -354,7 +354,6 @@ model-viewer, model-viewer:focus-within, model-viewer:focus-visible {
   /* 修复：把 max-width: 100vw 改为 100% */
   max-width: 100% !important; margin-top: 5px !important;  margin-bottom: 15px !important; 
 }
-
 model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar) { display: none !important; }
 
 /* 修复：确保模型加载前的占位图不会引起高度坍塌计算 */
@@ -419,19 +418,6 @@ model-viewer > [slot="poster"] {
   .inner-content .label { font-size: 8px; font-family: sans-serif !important; letter-spacing: 0 !important; }
   .inner-content .sub { display: none; }
   .gesture-hud { backdrop-filter: none; -webkit-backdrop-filter: none; background: rgba(15, 23, 42, 0.75); }
-  .lang-zh table {
-    min-width: 0 !important;
-    width: 100% !important;
-    font-size: 12px !important;
-    word-break: break-all;
-  }
-  .lang-zh th, .lang-zh td {
-    padding: 6px 4px !important;
-  }
-  model-viewer.custom-model-viewer {
-    height: 260px !important;
-    max-width: 100vw !important;
-  }
 }
     
 /* ===================== 高级 3D 封面特效 (HUD) ===================== */
@@ -758,9 +744,8 @@ model-viewer > [slot="poster"] {
 
 /* --- 手机端适配 --- */
 @media (max-width: 600px) {
-  .metrics-grid-v2 { grid-template-columns: repeat(3, 1fr); gap: 6px; padding: 0 2px !important; max-width: 100vw !important; }
-  .metric-card-v2 { padding: 10px 4px; min-width: 0; width: 100% !important; margin: 0 auto 8px auto !important;
-    box-sizing: border-box !important; backdrop-filter: none; -webkit-backdrop-filter: none; background: rgba(15, 23, 42, 0.92); }
+  .metrics-grid-v2 { grid-template-columns: repeat(3, 1fr); gap: 6px; }
+  .metric-card-v2 { padding: 12px 4px; backdrop-filter: none; -webkit-backdrop-filter: none; background: rgba(15, 23, 42, 0.92); }
   .metric-card-v2 .card-value { font-size: 20px; }
   .metric-card-v2 .card-unit { font-size: 11px; }
   .metric-card-v2 .card-label { font-size: 11px; letter-spacing: 1px; }
@@ -773,7 +758,7 @@ model-viewer > [slot="poster"] {
   .thermo-safe-line, .thermo-safe-label { display: none; }
   .waveform-box { height: 40px; max-width: 90px; }
   .yield-bar-wrapper { max-width: 90px; }
-  }
+}
 
 /* --- 浅色模式适配 --- */
 body.light-mode .metric-card-v2 { background: rgba(241, 245, 249, 0.85); border-color: rgba(148, 163, 184, 0.3); }
