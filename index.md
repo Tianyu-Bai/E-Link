@@ -1997,7 +1997,7 @@ animation: text-searchlight-zh 2.5s ease-in-out infinite;
    }
     
     let isAnyModelLoading = false;
-    const MAX_LIVE_CONTEXTS = 2; // ✅ 同时最多保留 2 个 WebGL 上下文（加 Vanta = 3）
+    const MAX_LIVE_CONTEXTS = 3; // ✅ 同时最多保留 3 个 WebGL 上下文（加 Vanta = 3）
 
     // ✅ 追踪哪些 viewer 当前持有活跃 WebGL 上下文
     const liveContextQueue = [];
