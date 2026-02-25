@@ -706,9 +706,9 @@ model-viewer > [slot="poster"] {
 .v2-chart-box .ring-inner {
   position: absolute; top: 0; left: 0; right: 0; bottom: 0;
   display: flex; 
-  flex-direction: row; /* 👈 修改：从 column 改成 row，横向排布 */
+  flex-direction: column;  /* 👈 改回 column，负责绝对居中 */
   justify-content: center; 
-  align-items: baseline; /* 👈 修改：基线对齐，让单位贴着数字的右下角 */
+  align-items: center;     /* 👈 改回 center */
 }
 
 /* --- 温度计可视化 --- */
@@ -766,7 +766,11 @@ body.light-mode .yield-bar-track { background: rgba(0,0,0,0.06); border-color: r
     <div class="card-label">WEIGHT</div>
     <div class="v2-chart-box">
       <svg viewBox="0 0 100 100"><circle class="bg-ring" cx="50" cy="50" r="45"></circle><circle class="fg-ring weight-color" cx="50" cy="50" r="45"></circle></svg>
-      <div class="ring-inner"><span class="card-value v2-count">0</span><span class="card-unit">g</span></div>
+      <div class="ring-inner">
+        <div class="v2-val-wrap">
+          <span class="card-value v2-count v2-val-sm">0</span><span class="card-unit">g</span>
+        </div>
+      </div>
     </div>
     <div class="card-sub">Ultra-light</div>
   </div>
@@ -775,7 +779,11 @@ body.light-mode .yield-bar-track { background: rgba(0,0,0,0.06); border-color: r
     <div class="card-label">CHANNELS</div>
     <div class="v2-chart-box">
       <svg viewBox="0 0 100 100"><circle class="bg-ring" cx="50" cy="50" r="45"></circle><circle class="fg-ring channel-color" cx="50" cy="50" r="45"></circle></svg>
-      <div class="ring-inner"><span class="card-value v2-count">0</span></div>
+      <div class="ring-inner">
+        <div class="v2-val-wrap">
+          <span class="card-value v2-count v2-val-sm">0</span>
+        </div>
+      </div>
     </div>
     <div class="card-sub">High-Density</div>
   </div>
@@ -784,11 +792,15 @@ body.light-mode .yield-bar-track { background: rgba(0,0,0,0.06); border-color: r
     <div class="card-label">PCB LAYERS</div>
     <div class="v2-chart-box">
       <svg viewBox="0 0 100 100"><circle class="bg-ring" cx="50" cy="50" r="45"></circle><circle class="fg-ring pcb-color" cx="50" cy="50" r="45"></circle></svg>
-      <div class="ring-inner"><span class="card-value v2-count">0</span></div>
+      <div class="ring-inner">
+        <div class="v2-val-wrap">
+          <span class="card-value v2-count v2-val-sm">0</span>
+        </div>
+      </div>
     </div>
     <div class="card-sub">Custom Routing</div>
   </div>
-
+  
   <!-- Row 2: 新增特殊可视化 -->
   <div class="metric-card-v2" style="--card-accent: #ef4444;" data-type="thermo" data-value="30.5" data-max="50">
     <div class="card-label">TEMPERATURE</div>
@@ -823,7 +835,7 @@ body.light-mode .yield-bar-track { background: rgba(0,0,0,0.06); border-color: r
 </div>
 
 <script>
-(function() {
+document.addEventListener("DOMContentLoaded", function() {
   // ===================== V2 Dashboard Animation Engine =====================
   const CIRCUMFERENCE = 2 * Math.PI * 45; // ≈ 283
   const DURATION = 2200;
@@ -913,8 +925,8 @@ body.light-mode .yield-bar-track { background: rgba(0,0,0,0.06); border-color: r
           const currentVal = ease * targetValue;
 
           // 数字更新 — 支持自定义小数位数
-        const decimals = parseInt(card.dataset.decimals) || 1;
-        if (numberEl) numberEl.innerText = isFloat ? currentVal.toFixed(decimals) : Math.round(currentVal);
+          const decimals = parseInt(card.dataset.decimals) || 1;
+          if (numberEl) numberEl.innerText = isFloat ? currentVal.toFixed(decimals) : Math.round(currentVal);
 
           // 类型特化
           if (type === 'ring') {
@@ -965,8 +977,9 @@ body.light-mode .yield-bar-track { background: rgba(0,0,0,0.06); border-color: r
     });
   }, { threshold: 0.2, rootMargin: "0px 0px -5% 0px" });
 
+  // 💡 修复核心：现在它会一次性抓取网页里所有的 .metric-card-v2 (中英双语共 12 个)
   document.querySelectorAll('.metric-card-v2').forEach(c => v2Observer.observe(c));
-})();
+});
 </script>
 
 <span id="en-overview"></span>
@@ -1800,11 +1813,15 @@ animation: text-searchlight-zh 2.5s ease-in-out infinite;
     }
   </style>
 
-  <div class="metric-card-v2" style="--card-accent: #10b981;" data-type="ring" data-percent="100" data-value="2.8" data-is-float="true">
+<div class="metric-card-v2" style="--card-accent: #10b981;" data-type="ring" data-percent="100" data-value="2.8" data-is-float="true">
     <div class="card-label">重量</div>
     <div class="v2-chart-box">
       <svg viewBox="0 0 100 100"><circle class="bg-ring" cx="50" cy="50" r="45"></circle><circle class="fg-ring weight-color" cx="50" cy="50" r="45"></circle></svg>
-      <div class="ring-inner"><span class="card-value v2-count">0</span><span class="card-unit">g</span></div>
+      <div class="ring-inner">
+        <div class="v2-val-wrap">
+          <span class="card-value v2-count v2-val-sm">0</span><span class="card-unit">g</span>
+        </div>
+      </div>
     </div>
     <div class="card-sub">轻量化</div>
   </div>
@@ -1813,7 +1830,11 @@ animation: text-searchlight-zh 2.5s ease-in-out infinite;
     <div class="card-label">通道数</div>
     <div class="v2-chart-box">
       <svg viewBox="0 0 100 100"><circle class="bg-ring" cx="50" cy="50" r="45"></circle><circle class="fg-ring channel-color" cx="50" cy="50" r="45"></circle></svg>
-      <div class="ring-inner"><span class="card-value v2-count">0</span></div>
+      <div class="ring-inner">
+        <div class="v2-val-wrap">
+          <span class="card-value v2-count v2-val-sm">0</span>
+        </div>
+      </div>
     </div>
     <div class="card-sub">高密度采集</div>
   </div>
@@ -1822,7 +1843,11 @@ animation: text-searchlight-zh 2.5s ease-in-out infinite;
     <div class="card-label">PCB 层数</div>
     <div class="v2-chart-box">
       <svg viewBox="0 0 100 100"><circle class="bg-ring" cx="50" cy="50" r="45"></circle><circle class="fg-ring pcb-color" cx="50" cy="50" r="45"></circle></svg>
-      <div class="ring-inner"><span class="card-value v2-count">0</span></div>
+      <div class="ring-inner">
+        <div class="v2-val-wrap">
+          <span class="card-value v2-count v2-val-sm">0</span>
+        </div>
+      </div>
     </div>
     <div class="card-sub">定制化布线</div>
   </div>
