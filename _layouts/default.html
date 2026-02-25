@@ -560,12 +560,30 @@
 
       initMeteors();
 
-      // 图片懒加载
+        /// 图片防抖动处理：GIF 用 eager，其他 lazy，全部预留尺寸避免 CLS
       const images = document.querySelectorAll('#main_content img');
       images.forEach((img, index) => {
-          if (index < 2) { img.setAttribute('loading', 'eager'); img.setAttribute('fetchpriority', 'high'); } 
-          else { if(!img.getAttribute('loading')) img.setAttribute('loading', 'lazy'); }
-      });
+          // ✅ 修复：检查 data-src 或 class，而不是 src（src 此时是 base64 占位图）
+          const dataSrc = img.getAttribute('data-src') || '';
+          const isGif = dataSrc.toLowerCase().includes('.gif') || img.classList.contains('lazy-gif');
+
+          // 1. 给所有没有明确尺寸的图片预留占位空间，防止加载时布局跳动 (CLS)
+          if (!img.getAttribute('width') && !img.getAttribute('height')) {
+              if (isGif) {
+                  // GIF 用 16/9 近似占位（后续你可以换成实际比例）
+                  img.style.aspectRatio = '16/9';
+                  img.style.width = '100%';
+                  img.style.height = 'auto';
+              }
+          }
+
+          // 2. GIF 和前2张静图提前加载，其余 lazy
+          if (isGif || index < 2) {
+              img.setAttribute('loading', 'eager');
+              img.setAttribute('fetchpriority', 'high');
+          } else {
+              if (!img.getAttribute('loading')) img.setAttribute('loading', 'lazy');
+          }
   });
 
   const textsEN = ["Welcome to this webpage！", "Thanks for visiting us!", "Stay tuned!"];
