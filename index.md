@@ -1077,9 +1077,6 @@ document.addEventListener("DOMContentLoaded", function() {
             if (pressBox) pressBox.classList.add('is-active');
         }
 
-        let startTs = null;
-        let waveformRunning = true;
-
         const animate = (ts) => {
           if (card.dataset.v2Active !== "true") { waveformRunning = false; return; }
           if (!startTs) startTs = ts;
@@ -1106,6 +1103,7 @@ document.addEventListener("DOMContentLoaded", function() {
             const canvas = card.querySelector('.waveform-canvas');
             if (canvas) drawWaveform(canvas, ease, targetValue);
           }
+          
           if (progress < 1) {
             card._v2Raf = requestAnimationFrame(animate);
           } else if (type === 'waveform') {
@@ -1136,34 +1134,8 @@ document.addEventListener("DOMContentLoaded", function() {
     });
   }, { threshold: 0.2, rootMargin: "0px 0px -5% 0px" });
 
-          if (progress < 1) {
-            card._v2Raf = requestAnimationFrame(animate);
-          } else if (type === 'waveform') {
-            // 数字到位后，波形持续动态运行
-            const loopWave = () => {
-              if (!waveformRunning) return;
-              const canvas = card.querySelector('.waveform-canvas');
-              if (canvas) drawWaveform(canvas, 1, targetValue);
-              card._v2Raf = requestAnimationFrame(loopWave);
-            };
-            card._v2Raf = requestAnimationFrame(loopWave);
-          }
-        };
-
-        if (card._v2Raf) cancelAnimationFrame(card._v2Raf);
-        card._v2Raf = requestAnimationFrame(animate);
-
-      } else {
-        card.dataset.v2Active = "false";
-        card.dataset.particlesDone = "";
-        if (card._v2Raf) { cancelAnimationFrame(card._v2Raf); card._v2Raf = null; }
-      }
-    });
-  }, { threshold: 0.2, rootMargin: "0px 0px -5% 0px" });
-
   // 💡 修复核心：现在它会一次性抓取网页里所有的 .metric-card-v2 (中英双语共 12 个)
   document.querySelectorAll('.metric-card-v2').forEach(c => v2Observer.observe(c));
-});
 </script>
 
 <span id="en-overview"></span>
