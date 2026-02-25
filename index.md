@@ -634,59 +634,334 @@ model-viewer > [slot="poster"] {
   </model-viewer>
 </div> 
 
-<div class="elink-dynamic-dashboard" align="center">
-  <div class="metrics-grid">
-    
-<div class="metric-card glass-panel" data-percent="100" data-value="2.8" data-is-float="true">
-      <div class="chart-box">
-        <svg viewBox="0 0 100 100">
-          <circle class="bg-ring" cx="50" cy="50" r="45"></circle>
-          <circle class="fg-ring weight-color" cx="50" cy="50" r="45"></circle>
-        </svg>
-        <div class="inner-content">
-          <div class="label">WEIGHT</div>
-          <div class="number-container">
-            <span class="number count-up">0</span><span class="unit">g</span>
-          </div>
-          <div class="sub">Ultra-light</div>
-        </div>
-      </div>
-    </div>
+<!-- ===================== E-Link Dynamic Dashboard V2 ===================== -->
 
-<div class="metric-card glass-panel" data-percent="100" data-value="256" data-is-float="false">
-      <div class="chart-box">
-        <svg viewBox="0 0 100 100">
-          <circle class="bg-ring" cx="50" cy="50" r="45"></circle>
-          <circle class="fg-ring channel-color" cx="50" cy="50" r="45"></circle>
-        </svg>
-        <div class="inner-content">
-          <div class="label">CHANNELS</div>
-          <div class="number-container">
-            <span class="number count-up">0</span>
-          </div>
-          <div class="sub">High-Density</div>
-        </div>
-      </div>
-    </div>
+<style>
+/* ====== V2 仪表盘新增样式 ====== */
+.metrics-grid-v2 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  width: 100%;
+  max-width: 760px;
+  margin: 25px auto;
+  padding: 0 5px;
+  box-sizing: border-box;
+}
 
-<div class="metric-card glass-panel" data-percent="100" data-value="4" data-is-float="false">
-      <div class="chart-box">
-        <svg viewBox="0 0 100 100">
-          <circle class="bg-ring" cx="50" cy="50" r="45"></circle>
-          <circle class="fg-ring pcb-color" cx="50" cy="50" r="45"></circle>
-        </svg>
-        <div class="inner-content">
-          <div class="label">PCB LAYERS</div>
-          <div class="number-container">
-            <span class="number count-up">0</span>
-          </div>
-          <div class="sub">Custom Routing</div>
-        </div>
-      </div>
-    </div>
+.metric-card-v2 {
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(59, 130, 246, 0.25);
+  border-radius: 14px;
+  padding: 18px 12px;
+  box-sizing: border-box;
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  text-align: center;
+  transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+.metric-card-v2:hover {
+  transform: translateY(-4px);
+  border-color: rgba(96, 165, 250, 0.5);
+  box-shadow: 0 12px 40px rgba(59, 130, 246, 0.15);
+}
+/* 卡片顶部发光线 */
+.metric-card-v2::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 10%; right: 10%; height: 2px;
+  background: var(--card-accent, #3b82f6);
+  border-radius: 0 0 4px 4px;
+  opacity: 0.6;
+  filter: blur(1px);
+}
+.metric-card-v2 .card-label {
+  font-size: 10px; font-weight: 700; color: #94a3b8;
+  letter-spacing: 2px; margin-bottom: 8px;
+  text-transform: uppercase;
+}
+.metric-card-v2 .card-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 34px; font-weight: 800; color: #fff;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.4);
+  line-height: 1.1;
+}
+.metric-card-v2 .card-unit {
+  font-size: 15px; font-weight: 600; color: #cbd5e1;
+  margin-left: 2px;
+}
+.metric-card-v2 .card-sub {
+  font-size: 10px; color: rgba(148, 163, 184, 0.75);
+  margin-top: 4px;
+}
 
+/* --- 圆环图 (沿用原有样式) --- */
+.v2-chart-box { position: relative; width: 130px; height: 130px; margin: 0 auto 6px; }
+.v2-chart-box svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.v2-chart-box .bg-ring { fill: none; stroke: rgba(255, 255, 255, 0.08); stroke-width: 6; }
+.v2-chart-box .fg-ring { fill: none; stroke-width: 6; stroke-linecap: round; stroke-dasharray: 283; stroke-dashoffset: 283; transition: filter 0.3s; }
+.v2-chart-box .ring-inner {
+  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  display: flex; flex-direction: column; justify-content: center; align-items: center;
+}
+
+/* --- 温度计可视化 --- */
+.thermo-wrapper { display: flex; flex-direction: column; align-items: center; margin: 5px auto 6px; position: relative; height: 100px; width: 40px; }
+.thermo-track { width: 16px; height: 80px; background: rgba(255,255,255,0.08); border-radius: 8px 8px 0 0; position: relative; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); }
+.thermo-fill { position: absolute; bottom: 0; left: 0; right: 0; height: 0%; background: linear-gradient(to top, #ef4444, #f97316, #fbbf24); border-radius: 6px 6px 0 0; transition: height 0.1s; box-shadow: 0 0 12px rgba(239, 68, 68, 0.4); }
+.thermo-bulb { width: 26px; height: 26px; border-radius: 50%; background: radial-gradient(circle at 40% 40%, #fca5a5, #ef4444); border: 1px solid rgba(255,255,255,0.15); box-shadow: 0 0 15px rgba(239, 68, 68, 0.5); margin-top: -4px; position: relative; z-index: 2; }
+.thermo-safe-line { position: absolute; right: -28px; top: 22%; width: 20px; border-top: 1px dashed rgba(16, 185, 129, 0.6); }
+.thermo-safe-label { position: absolute; right: -52px; top: 18%; font-size: 7px; color: #10b981; font-family: 'JetBrains Mono', monospace; white-space: nowrap; }
+
+/* --- 波形可视化 --- */
+.waveform-box { height: 60px; margin: 8px auto 6px; position: relative; max-width: 140px; }
+.waveform-box canvas { width: 100%; height: 100%; border-radius: 6px; }
+
+/* --- 进度条可视化 --- */
+.yield-bar-wrapper { margin: 15px auto 8px; max-width: 140px; }
+.yield-bar-track { height: 10px; background: rgba(255,255,255,0.08); border-radius: 5px; overflow: hidden; position: relative; border: 1px solid rgba(255,255,255,0.06); }
+.yield-bar-fill { height: 100%; width: 0%; background: linear-gradient(90deg, #3b82f6, #10b981); border-radius: 5px; position: relative; transition: width 0.1s; box-shadow: 0 0 10px rgba(16, 185, 129, 0.4); }
+.yield-bar-fill::after { content: ''; position: absolute; right: 0; top: -3px; width: 6px; height: 16px; background: #fff; border-radius: 3px; box-shadow: 0 0 8px rgba(255,255,255,0.8); }
+.yield-particles { position: relative; height: 20px; overflow: hidden; }
+.yield-particle { position: absolute; width: 3px; height: 3px; background: #10b981; border-radius: 50%; opacity: 0; box-shadow: 0 0 4px #10b981; }
+
+/* --- 手机端适配 --- */
+@media (max-width: 600px) {
+  .metrics-grid-v2 { grid-template-columns: repeat(3, 1fr); gap: 6px; }
+  .metric-card-v2 { padding: 12px 4px; backdrop-filter: none; -webkit-backdrop-filter: none; background: rgba(15, 23, 42, 0.92); }
+  .metric-card-v2 .card-value { font-size: 20px; }
+  .metric-card-v2 .card-unit { font-size: 11px; }
+  .metric-card-v2 .card-label { font-size: 7px; letter-spacing: 1px; }
+  .metric-card-v2 .card-sub { display: none; }
+  .v2-chart-box { width: 68px; height: 68px; }
+  .v2-chart-box .fg-ring, .v2-chart-box .bg-ring { stroke-width: 5; }
+  .thermo-wrapper { height: 65px; width: 28px; }
+  .thermo-track { width: 12px; height: 50px; }
+  .thermo-bulb { width: 20px; height: 20px; }
+  .thermo-safe-line, .thermo-safe-label { display: none; }
+  .waveform-box { height: 40px; max-width: 90px; }
+  .yield-bar-wrapper { max-width: 90px; }
+}
+
+/* --- 浅色模式适配 --- */
+body.light-mode .metric-card-v2 { background: rgba(241, 245, 249, 0.85); border-color: rgba(148, 163, 184, 0.3); }
+body.light-mode .metric-card-v2:hover { box-shadow: 0 12px 40px rgba(148, 163, 184, 0.15); }
+body.light-mode .metric-card-v2 .card-value { color: #1e293b; text-shadow: none; }
+body.light-mode .metric-card-v2 .card-unit { color: #475569; }
+body.light-mode .metric-card-v2 .card-label { color: #64748b; }
+body.light-mode .v2-chart-box .bg-ring { stroke: rgba(0,0,0,0.08); }
+body.light-mode .thermo-track { background: rgba(0,0,0,0.06); border-color: rgba(0,0,0,0.08); }
+body.light-mode .yield-bar-track { background: rgba(0,0,0,0.06); border-color: rgba(0,0,0,0.06); }
+</style>
+
+<div class="metrics-grid-v2" data-aos="fade-up">
+  <!-- Row 1: 圆环类 -->
+  <div class="metric-card-v2" style="--card-accent: #10b981;" data-type="ring" data-percent="100" data-value="2.8" data-is-float="true">
+    <div class="card-label">WEIGHT</div>
+    <div class="v2-chart-box">
+      <svg viewBox="0 0 100 100"><circle class="bg-ring" cx="50" cy="50" r="45"></circle><circle class="fg-ring weight-color" cx="50" cy="50" r="45"></circle></svg>
+      <div class="ring-inner"><span class="card-value v2-count">0</span><span class="card-unit">g</span></div>
+    </div>
+    <div class="card-sub">Ultra-light</div>
+  </div>
+
+  <div class="metric-card-v2" style="--card-accent: #3b82f6;" data-type="ring" data-percent="100" data-value="256" data-is-float="false">
+    <div class="card-label">CHANNELS</div>
+    <div class="v2-chart-box">
+      <svg viewBox="0 0 100 100"><circle class="bg-ring" cx="50" cy="50" r="45"></circle><circle class="fg-ring channel-color" cx="50" cy="50" r="45"></circle></svg>
+      <div class="ring-inner"><span class="card-value v2-count">0</span></div>
+    </div>
+    <div class="card-sub">High-Density</div>
+  </div>
+
+  <div class="metric-card-v2" style="--card-accent: #f59e0b;" data-type="ring" data-percent="100" data-value="4" data-is-float="false">
+    <div class="card-label">PCB LAYERS</div>
+    <div class="v2-chart-box">
+      <svg viewBox="0 0 100 100"><circle class="bg-ring" cx="50" cy="50" r="45"></circle><circle class="fg-ring pcb-color" cx="50" cy="50" r="45"></circle></svg>
+      <div class="ring-inner"><span class="card-value v2-count">0</span></div>
+    </div>
+    <div class="card-sub">Custom Routing</div>
+  </div>
+
+  <!-- Row 2: 新增特殊可视化 -->
+  <div class="metric-card-v2" style="--card-accent: #ef4444;" data-type="thermo" data-value="30.5" data-max="50">
+    <div class="card-label">TEMPERATURE</div>
+    <div class="thermo-wrapper">
+      <div class="thermo-track">
+        <div class="thermo-fill"></div>
+        <div class="thermo-safe-line"></div>
+        <div class="thermo-safe-label">37°C</div>
+      </div>
+      <div class="thermo-bulb"></div>
+    </div>
+    <div class="card-value v2-count" style="font-size: 28px;">0</div><span class="card-unit">°C</span>
+    <div class="card-sub">Below Bio Threshold</div>
+  </div>
+
+  <div class="metric-card-v2" style="--card-accent: #a78bfa;" data-type="waveform" data-value="2.68">
+    <div class="card-label">NOISE FLOOR</div>
+    <div class="waveform-box"><canvas class="waveform-canvas"></canvas></div>
+    <div class="card-value v2-count" style="font-size: 28px;">0</div><span class="card-unit">µV RMS</span>
+    <div class="card-sub">Near Chip Limit</div>
+  </div>
+
+  <div class="metric-card-v2" style="--card-accent: #10b981;" data-type="yield" data-value="97">
+    <div class="card-label">CONNECTION YIELD</div>
+    <div class="yield-bar-wrapper">
+      <div class="yield-bar-track"><div class="yield-bar-fill"></div></div>
+      <div class="yield-particles"></div>
+    </div>
+    <div class="card-value v2-count" style="font-size: 28px;">0</div><span class="card-unit">%</span>
+    <div class="card-sub">After 100+ Cycles</div>
   </div>
 </div>
+
+<script>
+(function() {
+  // ===================== V2 Dashboard Animation Engine =====================
+  const CIRCUMFERENCE = 2 * Math.PI * 45; // ≈ 283
+  const DURATION = 2200;
+
+  function easeOutExpo(t) {
+    return t === 1 ? 1 : 1 - Math.pow(2, -10 * t);
+  }
+
+  // --- 波形绘制 ---
+  function drawWaveform(canvas, progress, noiseVal) {
+    const ctx = canvas.getContext('2d');
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const w = canvas.clientWidth; const h = canvas.clientHeight;
+    canvas.width = w * dpr; canvas.height = h * dpr;
+    ctx.scale(dpr, dpr);
+    ctx.clearRect(0, 0, w, h);
+
+    // 背景网格
+    ctx.strokeStyle = 'rgba(167, 139, 250, 0.1)';
+    ctx.lineWidth = 0.5;
+    for (let y = 0; y < h; y += 10) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke(); }
+    for (let x = 0; x < w; x += 10) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke(); }
+
+    // 波形信号
+    const amplitude = (h * 0.35) * progress;
+    const noiseAmp = (noiseVal / 5) * amplitude;
+    const time = Date.now() * 0.003;
+
+    ctx.beginPath();
+    ctx.strokeStyle = `rgba(167, 139, 250, ${0.3 + progress * 0.7})`;
+    ctx.lineWidth = 1.5;
+    ctx.shadowColor = 'rgba(167, 139, 250, 0.6)';
+    ctx.shadowBlur = 6;
+
+    for (let x = 0; x < w; x++) {
+      const t = x / w;
+      const signal = Math.sin(t * 12 + time) * amplitude * 0.5
+                   + Math.sin(t * 25 + time * 1.5) * noiseAmp * 0.3
+                   + (Math.random() - 0.5) * noiseAmp * progress * 0.4;
+      const y = h / 2 + signal;
+      x === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+    ctx.shadowBlur = 0;
+  }
+
+  // --- 粒子爆发 ---
+  function spawnParticles(container, count) {
+    for (let i = 0; i < count; i++) {
+      const p = document.createElement('div');
+      p.className = 'yield-particle';
+      p.style.left = (Math.random() * 100) + '%';
+      p.style.bottom = '0';
+      p.style.opacity = '1';
+      p.style.transition = `all ${0.6 + Math.random() * 0.8}s ease-out`;
+      container.appendChild(p);
+      requestAnimationFrame(() => {
+        p.style.transform = `translateY(-${10 + Math.random() * 20}px) translateX(${(Math.random() - 0.5) * 20}px)`;
+        p.style.opacity = '0';
+      });
+      setTimeout(() => p.remove(), 1500);
+    }
+  }
+
+  // --- 主观察器 ---
+  const v2Observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      const card = entry.target;
+      const type = card.dataset.type;
+      const targetValue = parseFloat(card.dataset.value);
+      const isFloat = card.dataset.isFloat === "true";
+      const numberEl = card.querySelector('.v2-count');
+
+      if (entry.isIntersecting) {
+        if (card.dataset.v2Active === "true") return;
+        card.dataset.v2Active = "true";
+
+        let startTs = null;
+        let waveformRunning = true;
+
+        const animate = (ts) => {
+          if (card.dataset.v2Active !== "true") { waveformRunning = false; return; }
+          if (!startTs) startTs = ts;
+          const elapsed = ts - startTs;
+          const progress = Math.min(elapsed / DURATION, 1);
+          const ease = easeOutExpo(progress);
+          const currentVal = ease * targetValue;
+
+          // 数字更新
+          if (numberEl) numberEl.innerText = isFloat ? currentVal.toFixed(1) : Math.round(currentVal);
+
+          // 类型特化
+          if (type === 'ring') {
+            const ring = card.querySelector('.fg-ring');
+            if (ring) ring.style.strokeDashoffset = CIRCUMFERENCE - (CIRCUMFERENCE * ease);
+          }
+          else if (type === 'thermo') {
+            const fill = card.querySelector('.thermo-fill');
+            const maxTemp = parseFloat(card.dataset.max) || 50;
+            if (fill) fill.style.height = ((currentVal / maxTemp) * 100) + '%';
+          }
+          else if (type === 'waveform') {
+            const canvas = card.querySelector('.waveform-canvas');
+            if (canvas) drawWaveform(canvas, ease, targetValue);
+          }
+          else if (type === 'yield') {
+            const bar = card.querySelector('.yield-bar-fill');
+            if (bar) bar.style.width = currentVal + '%';
+            // 在动画末段爆发粒子
+            if (progress > 0.85 && !card.dataset.particlesDone) {
+              card.dataset.particlesDone = "true";
+              spawnParticles(card.querySelector('.yield-particles'), 12);
+            }
+          }
+
+          if (progress < 1) {
+            card._v2Raf = requestAnimationFrame(animate);
+          } else if (type === 'waveform') {
+            // 数字到位后，波形持续动态运行
+            const loopWave = () => {
+              if (!waveformRunning) return;
+              const canvas = card.querySelector('.waveform-canvas');
+              if (canvas) drawWaveform(canvas, 1, targetValue);
+              card._v2Raf = requestAnimationFrame(loopWave);
+            };
+            card._v2Raf = requestAnimationFrame(loopWave);
+          }
+        };
+
+        if (card._v2Raf) cancelAnimationFrame(card._v2Raf);
+        card._v2Raf = requestAnimationFrame(animate);
+
+      } else {
+        card.dataset.v2Active = "false";
+        card.dataset.particlesDone = "";
+        if (card._v2Raf) { cancelAnimationFrame(card._v2Raf); card._v2Raf = null; }
+      }
+    });
+  }, { threshold: 0.2, rootMargin: "0px 0px -5% 0px" });
+
+  document.querySelectorAll('.metric-card-v2').forEach(c => v2Observer.observe(c));
+})();
+</script>
 
 <span id="en-overview"></span>
 
