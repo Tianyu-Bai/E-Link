@@ -1986,7 +1986,6 @@ animation: text-searchlight-zh 2.5s ease-in-out infinite;
       return ['slow-2g', '2g'].includes(conn.effectiveType);
     }
     
-    let isAnyModelLoading = false;
     const MAX_LIVE_CONTEXTS = 3;
 
     // ✅ 追踪哪些 viewer 当前持有活跃 WebGL 上下文
@@ -2017,58 +2016,38 @@ animation: text-searchlight-zh 2.5s ease-in-out infinite;
       }
     }
 
-    const activateViewer = async (viewer, force = false) => {
+   const activateViewer = async (viewer, force = false) => {
       if (isScrolling && !force) return;
 
-      // ✅ 不再简单 pause 其他模型，而是通过上下文管理器控制
       ensureContextSlot(viewer);
 
       if (viewer.getAttribute('reveal') === 'manual' && viewer.dataset.loaded !== "true") {
-        if (isAnyModelLoading && !force) return;
-        isAnyModelLoading = true;
-
-        // 如果之前被回收过，恢复 src
         if (viewer.dataset.loaded === "reclaimed" && viewer._cachedSrc) {
           viewer.src = viewer._cachedSrc;
         }
-
         viewer.dataset.loaded = "true";
-
-          const loadHandler = () => {
-          isAnyModelLoading = false;
+        const loadHandler = () => {
           viewer.removeEventListener('load', loadHandler);
           try { viewer.play(); } catch(e) {}
-          // ✅ 新增：加载完立刻检查下一个，消除串行等待
-          setTimeout(checkAndActivateBestModel, 100);
         };
         viewer.addEventListener('load', loadHandler);
-
         await new Promise(resolve => requestAnimationFrame(resolve));
         viewer.dismissPoster();
-
-        // 后备超时释放锁
-        setTimeout(() => { isAnyModelLoading = false; }, 5000);
         return;
       }
 
-      // 如果之前被回收过，需要重新加载
       if (viewer.dataset.loaded === "reclaimed" && viewer._cachedSrc) {
-        if (isAnyModelLoading && !force) return;
-        isAnyModelLoading = true;
         viewer.src = viewer._cachedSrc;
         viewer.dataset.loaded = "true";
-
         const reloadHandler = () => {
-          isAnyModelLoading = false;
           viewer.removeEventListener('load', reloadHandler);
           try { viewer.play(); } catch(e) {}
         };
         viewer.addEventListener('load', reloadHandler);
-        setTimeout(() => { isAnyModelLoading = false; }, 5000);
         return;
       }
 
-      if (viewer.paused && !isAnyModelLoading) {
+      if (viewer.paused) {
         try { viewer.play(); } catch(e) {}
       }
 
@@ -2082,17 +2061,11 @@ animation: text-searchlight-zh 2.5s ease-in-out infinite;
 
     const checkAndActivateBestModel = () => {
       if (isSlowNetwork()) return;
-      let bestModel = null;
-      let minDistance = Infinity;
-      const viewportCenter = window.innerHeight / 2;
       models.forEach(viewer => {
         if (viewer.dataset.inView === "true") {
-          const rect = viewer.getBoundingClientRect();
-          const distance = Math.abs((rect.top + rect.height / 2) - viewportCenter);
-          if (distance < minDistance) { minDistance = distance; bestModel = viewer; }
+          activateViewer(viewer);
         }
       });
-      if (bestModel) activateViewer(bestModel);
     };
 
     window.addEventListener('scroll', () => {
