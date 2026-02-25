@@ -928,14 +928,37 @@ body.light-mode .yield-bar-track { background: rgba(0,0,0,0.06); border-color: r
   <div class="metric-card-v2" style="--card-accent: #a78bfa;" data-type="waveform" data-value="2.68" data-is-float="true" data-decimals="2">
     <div class="card-label">NOISE FLOOR</div>
     <div class="waveform-box"><canvas class="waveform-canvas"></canvas></div>
-    <div class="card-value v2-count" style="font-size: 28px;">0</div><span class="card-unit">µV RMS</span>
+    <div class="card-value v2-count" style="font-size: 28px;">0</div><span class="card-unit">µV (RMS)</span>
     <div class="card-sub">Near Chip Limit</div>
   </div>
 
 <div class="metric-card-v2" style="--card-accent: #10b981;" data-type="cycles" data-value="300">
   <div class="card-label">STRESS TESTED</div>
   <div class="cycles-viz">
-    <div class="press-icon">🫸</div>
+    
+    <div class="press-icon">
+      <span class="icon-desktop">🫸</span>
+      <span class="icon-mobile">
+        <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 3v14"></path>
+          <path d="m7 12 5 5 5-5"></path>
+          <path d="M4 21h16"></path>
+        </svg>
+      </span>
+    </div>
+
+/* --- 电脑/手机端图标切换逻辑 --- */
+
+/* 电脑端：显示 Emoji，隐藏 SVG，确保 SVG 继承绿色 */
+.icon-desktop { display: inline-block; }
+.icon-mobile { display: none; color: #10b981; }
+
+/* 当屏幕宽度小于等于 600px（手机端）时：隐藏 Emoji，显示 SVG */
+@media (max-width: 600px) {
+  .icon-desktop { display: none; }
+  .icon-mobile { display: inline-block; }
+}
+    
     <div class="press-ripple"></div>
     <div class="cycles-counter-flash">+1</div>
   </div>
