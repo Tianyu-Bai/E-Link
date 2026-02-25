@@ -178,16 +178,32 @@ body, div, p, span, td, th {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
-/* 修复：在真实 GIF 完全下载并渲染前，用 16/9 强行撑住空间，彻底消灭频闪 */
+/* ✅ 保险方案：占位由父容器负责，GIF 本身只控制透明度，不再切换 aspect-ratio */
+.gif-placeholder {
+  width: 100%;
+  max-width: 500px;
+  min-height: 280px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(15, 23, 42, 0.15);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.gif-placeholder.narrow {
+  max-width: 460px;
+}
 .lazy-gif {
   width: 100%;
-  max-width: 500px; 
   height: auto;
-  aspect-ratio: 16 / 9; 
+  display: block;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  border-radius: 6px;
 }
-/* JS 检测到真实加载完毕后赋予该类，解除限制自适应真实高度 */
 .lazy-gif.is-loaded {
-  aspect-ratio: auto; 
+  opacity: 1;
 }
   
 /* ===================== 1. 核心设备感知与显隐逻辑 ===================== */
@@ -679,12 +695,13 @@ model-viewer > [slot="poster"] {
 
 <div align="center" data-aos="zoom-in-up" data-aos-duration="1000">
  <br>
- <img data-src="Videos/Demo%20new%20new.gif" 
-       src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
-       alt="ELINK-256 Assembly Demo GIF" 
-       width="500" 
-       class="lazy-gif white-bg-gif" 
-       decoding="async">
+ <div class="gif-placeholder">
+   <img data-src="Videos/Demo%20new%20new.gif" 
+         src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+         alt="ELINK-256 Assembly Demo GIF"
+         class="lazy-gif white-bg-gif" 
+         decoding="async">
+ </div>
 </div>
 
 ---
@@ -941,13 +958,15 @@ body.light-mode .watermark-features strong { color: #2563eb; text-shadow: none; 
 
 <div align="center" data-aos="zoom-in-up" data-aos-duration="1000">
  <br>
- <img data-src="Videos/Animation%20repeat.gif" 
-       src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
-       alt="ELINK-256 Animation GIF" 
-       width="500" 
-       class="lazy-gif white-bg-gif" 
-       decoding="async">
+ <div class="gif-placeholder">
+   <img data-src="Videos/Animation%20repeat.gif" 
+         src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+         alt="ELINK-256 Animation GIF"
+         class="lazy-gif white-bg-gif" 
+         decoding="async">
+ </div>
 </div>
+
 
 ---
 
@@ -1005,12 +1024,13 @@ body.light-mode .watermark-features strong { color: #2563eb; text-shadow: none; 
 
 <div align="center" data-aos="zoom-in-up" data-aos-duration="1000">
  <br>
- <img data-src="Videos/Top PCB explosive new.gif" 
-       src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
-       alt="4-Layer PCB Stackup Explosion" 
-       width="460" 
-       class="lazy-gif white-bg-gif" 
-       decoding="async">
+ <div class="gif-placeholder narrow">
+   <img data-src="Videos/Top PCB explosive new.gif" 
+         src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+         alt="4-Layer PCB Stackup Explosion"
+         class="lazy-gif white-bg-gif" 
+         decoding="async">
+ </div>
    <p style="margin-top: 5px; font-size: 0.9em; color: #64748b;">
     <b> 4-Layer Routing Structure (Top to Bottom)</b>
   </p>
@@ -1539,12 +1559,13 @@ animation: text-searchlight-zh 2.5s ease-in-out infinite;
 
 <div align="center" data-aos="zoom-in-up" data-aos-duration="1000">
  <br>
- <img data-src="Videos/Demo%20new%20new.gif" 
-       src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
-       alt="ELINK-256 组装演示 GIF" 
-       width="500" 
-       class="lazy-gif white-bg-gif" 
-       decoding="async">
+ <div class="gif-placeholder">
+   <img data-src="Videos/Demo%20new%20new.gif" 
+         src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+         alt="ELINK-256 组装演示 GIF"
+         class="lazy-gif white-bg-gif" 
+         decoding="async">
+ </div>
 </div>
 
 ---
@@ -1688,12 +1709,13 @@ animation: text-searchlight-zh 2.5s ease-in-out infinite;
 
 <div align="center" data-aos="zoom-in-up" data-aos-duration="1000">
  <br>
- <img data-src="Videos/Animation%20repeat.gif" 
-       src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
-       alt="ELINK-256 动画演示 GIF" 
-       width="500" 
-       class="lazy-gif white-bg-gif" 
-       decoding="async">
+ <div class="gif-placeholder">
+   <img data-src="Videos/Animation%20repeat.gif" 
+         src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+         alt="ELINK-256 动画演示 GIF"
+         class="lazy-gif white-bg-gif" 
+         decoding="async">
+ </div>
 </div>
 
 ---
@@ -1752,12 +1774,13 @@ animation: text-searchlight-zh 2.5s ease-in-out infinite;
 
 <div align="center" data-aos="zoom-in-up" data-aos-duration="1000">
  <br>
- <img data-src="Videos/Top PCB explosive new.gif" 
-       src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
-       alt="顶部4层电路板的设计爆炸动图" 
-       width="460" 
-       class="lazy-gif white-bg-gif" 
-       decoding="async">
+ <div class="gif-placeholder narrow">
+   <img data-src="Videos/Top PCB explosive new.gif" 
+         src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+         alt="顶部4层电路板的设计爆炸动图"
+         class="lazy-gif white-bg-gif" 
+         decoding="async">
+ </div>
 </div>
       
 <div style="width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 10px;">
