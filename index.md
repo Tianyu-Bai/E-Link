@@ -638,21 +638,6 @@ model-viewer > [slot="poster"] {
 
 <style>
 /* ====== V2 仪表盘新增样式 ====== */
-  .v2-val-wrap { 
-  display: flex; 
-  justify-content: center; 
-  align-items: baseline; 
-  white-space: nowrap; 
-}
-.v2-val-sm { 
-  font-size: 28px !important; 
-}
-@media (max-width: 600px) {
-  .v2-val-sm { 
-    font-size: 20px !important; 
-  }
-}
-  
 .metrics-grid-v2 {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -692,7 +677,7 @@ model-viewer > [slot="poster"] {
   filter: blur(1px);
 }
 .metric-card-v2 .card-label {
-  font-size: 10px; font-weight: 700; color: #94a3b8;
+  font-size: 13px; font-weight: 700; color: #94a3b8;
   letter-spacing: 2px; margin-bottom: 8px;
   text-transform: uppercase;
 }
@@ -752,7 +737,7 @@ model-viewer > [slot="poster"] {
   .metric-card-v2 { padding: 12px 4px; backdrop-filter: none; -webkit-backdrop-filter: none; background: rgba(15, 23, 42, 0.92); }
   .metric-card-v2 .card-value { font-size: 20px; }
   .metric-card-v2 .card-unit { font-size: 11px; }
-  .metric-card-v2 .card-label { font-size: 7px; letter-spacing: 1px; }
+  .metric-card-v2 .card-label { font-size: 11px; letter-spacing: 1px; }
   .metric-card-v2 .card-sub { display: none; }
   .v2-chart-box { width: 68px; height: 68px; }
   .v2-chart-box .fg-ring, .v2-chart-box .bg-ring { stroke-width: 5; }
@@ -817,7 +802,7 @@ body.light-mode .yield-bar-track { background: rgba(0,0,0,0.06); border-color: r
   </div>
   
   <!-- Row 2: 新增特殊可视化 -->
-<div class="metric-card-v2" style="--card-accent: #ef4444;" data-type="thermo" data-value="30.5" data-max="50">
+  <div class="metric-card-v2" style="--card-accent: #ef4444;" data-type="thermo" data-value="30.5" data-max="50">
     <div class="card-label">TEMPERATURE</div>
     <div class="thermo-wrapper">
       <div class="thermo-track">
@@ -827,18 +812,14 @@ body.light-mode .yield-bar-track { background: rgba(0,0,0,0.06); border-color: r
       </div>
       <div class="thermo-bulb"></div>
     </div>
-    <div class="v2-val-wrap">
-      <div class="card-value v2-count v2-val-sm">0</div><span class="card-unit">°C</span>
-    </div>
+    <div class="card-value v2-count" style="font-size: 28px;">0</div><span class="card-unit">°C</span>
     <div class="card-sub">Below Bio Threshold</div>
   </div>
 
   <div class="metric-card-v2" style="--card-accent: #a78bfa;" data-type="waveform" data-value="2.68" data-is-float="true" data-decimals="2">
     <div class="card-label">NOISE FLOOR</div>
     <div class="waveform-box"><canvas class="waveform-canvas"></canvas></div>
-    <div class="v2-val-wrap">
-      <div class="card-value v2-count v2-val-sm">0</div><span class="card-unit">µV RMS</span>
-    </div>
+    <div class="card-value v2-count" style="font-size: 28px;">0</div><span class="card-unit">µV RMS</span>
     <div class="card-sub">Near Chip Limit</div>
   </div>
 
@@ -848,12 +829,10 @@ body.light-mode .yield-bar-track { background: rgba(0,0,0,0.06); border-color: r
       <div class="yield-bar-track"><div class="yield-bar-fill"></div></div>
       <div class="yield-particles"></div>
     </div>
-    <div class="v2-val-wrap">
-      <span class="card-value v2-val-sm" style="margin-right: 4px;">&gt;</span>
-      <div class="card-value v2-count v2-val-sm">0</div><span class="card-unit">%</span>
-    </div>
+    <div class="card-value v2-count" style="font-size: 28px;">0</div><span class="card-unit">%</span>
     <div class="card-sub">After 100+ Cycles</div>
   </div>
+</div>
 
 <script>
 document.addEventListener("DOMContentLoaded", function() {
@@ -1816,13 +1795,33 @@ animation: text-searchlight-zh 2.5s ease-in-out infinite;
 
 <div class="metrics-grid-v2" data-aos="fade-up">
 
-<div class="metric-card-v2" style="--card-accent: #10b981;" data-type="ring" data-percent="100" data-value="2.8" data-is-float="true">
+  <style>
+    /* 🚀 新增：专门修复底部排版不折行 & 手机端字体响应式缩放 */
+    .v2-val-wrap { 
+      display: flex; 
+      justify-content: center; 
+      align-items: baseline; 
+      white-space: nowrap; /* 绝对禁止折行 */
+    }
+    .v2-val-sm { 
+      font-size: 28px !important; 
+    }
+    @media (max-width: 600px) {
+      .v2-val-sm { 
+        font-size: 20px !important; /* 手机端强制缩小，防止撑爆卡片 */
+      }
+    }
+  </style>
+
+<div class="metrics-grid-v2" data-aos="fade-up">
+
+  <div class="metric-card-v2" style="--card-accent: #10b981;" data-type="ring" data-percent="100" data-value="2.8" data-is-float="true">
     <div class="card-label">重量</div>
     <div class="v2-chart-box">
       <svg viewBox="0 0 100 100"><circle class="bg-ring" cx="50" cy="50" r="45"></circle><circle class="fg-ring weight-color" cx="50" cy="50" r="45"></circle></svg>
       <div class="ring-inner">
         <div class="v2-val-wrap">
-          <span class="card-value v2-count v2-val-sm">0</span><span class="card-unit">g</span>
+          <span class="card-value v2-count v2-val-sm">0</span><span class="card-unit">克</span>
         </div>
       </div>
     </div>
@@ -1875,7 +1874,7 @@ animation: text-searchlight-zh 2.5s ease-in-out infinite;
     <div class="card-label">系统底噪</div>
     <div class="waveform-box"><canvas class="waveform-canvas"></canvas></div>
     <div class="v2-val-wrap">
-      <div class="card-value v2-count v2-val-sm">0</div><span class="card-unit">µV RMS</span>
+      <div class="card-value v2-count v2-val-sm">0</div><span class="card-unit">微伏(RMS)</span>
     </div>
     <div class="card-sub">接近芯片性能极值</div>
   </div>
