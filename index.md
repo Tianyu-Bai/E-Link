@@ -1815,26 +1815,25 @@ This project is open-source and available under the **MIT License**. Click the b
 
 <div class="metrics-grid-v2" data-aos="fade-up">
 
-  <style>
-    /* 🚀 新增：专门修复底部排版不折行 & 手机端字体响应式缩放 */
-    .v2-val-wrap { 
-      display: flex; 
-      justify-content: center; 
-      align-items: baseline; 
-      white-space: nowrap; /* 绝对禁止折行 */
-    }
+<style>
+  /* 🚀 新增：专门修复底部排版不折行 & 手机端字体响应式缩放 */
+  .v2-val-wrap { 
+    display: flex; 
+    justify-content: center; 
+    align-items: baseline; 
+    white-space: nowrap; /* 绝对禁止折行 */
+  }
+  .v2-val-sm { 
+    font-size: 28px !important; 
+  }
+  @media (max-width: 600px) {
     .v2-val-sm { 
-      font-size: 28px !important; 
+      font-size: 20px !important; /* 手机端强制缩小，防止撑爆卡片 */
     }
-    @media (max-width: 600px) {
-      .v2-val-sm { 
-        font-size: 20px !important; /* 手机端强制缩小，防止撑爆卡片 */
-      }
-    }
-  </style>
+  }
+</style>
 
 <div class="metrics-grid-v2" data-aos="fade-up">
-
   <div class="metric-card-v2" style="--card-accent: #10b981;" data-type="ring" data-percent="100" data-value="2.8" data-is-float="true">
     <div class="card-label">重量</div>
     <div class="v2-chart-box">
@@ -1913,7 +1912,8 @@ This project is open-source and available under the **MIT License**. Click the b
   </div>
 </div>
 
-<span id="cn-overview"></span>
+<br> <span id="cn-overview"></span>
+
 ## 📖 概览
 
 **E-Link易链**，是一款基于弹性体互连技术（Elastomer Interconnection）的开源微型基座连接系统。它为柔性神经探针提供了稳固且可扩展的接口，专为自由活动动物的长期实验而优化设计
@@ -1937,6 +1937,7 @@ This project is open-source and available under the **MIT License**. Click the b
 ---
 
 <span id="cn-specs"></span>
+
 ### 📊 规格参数
 
 <div style="width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 10px;">
@@ -1975,6 +1976,7 @@ This project is open-source and available under the **MIT License**. Click the b
 ---
 
 <span id="cn-features"></span>
+
 ## ✨ 核心特性
 <div class="species-compatibility-container" align="center" style="margin: 40px auto; max-width: 760px;">
   <h3 style="color: #60a5fa; margin-bottom: 20px; font-family: sans-serif;">🌍 跨物种适用性展望 </h3>
@@ -2082,6 +2084,7 @@ This project is open-source and available under the **MIT License**. Click the b
 ---
 
 <span id="cn-components"></span>
+
 ## 🧩 系统组件
 
 <div align="center">
@@ -2120,6 +2123,7 @@ This project is open-source and available under the **MIT License**. Click the b
 ---
 
 <span id="cn-bom"></span>
+
 ### 🛠 放大器物料清单 (BOM)
 
 <div align="center">
@@ -2241,6 +2245,7 @@ This project is open-source and available under the **MIT License**. Click the b
 ---
 
 <span id="cn-downloads"></span>
+
 ## 🔗 仓库与下载
 
 本项目完全开源。相关论文录用后，包含 **PCB 制造文件 (Gerber)** 和 **3D打印文件** 的完整数据集将通过以下链接提供访问。
