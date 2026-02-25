@@ -1,14 +1,10 @@
+
 <!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
- 
- <!-- 添加 GIF 预加载 -->
-<link rel="preload" href="{{ '/Videos/Demo new new.gif' | relative_url }}" as="image" fetchpriority="high">
-<link rel="preload" href="{{ '/Videos/Animation repeat.gif' | relative_url }}" as="image" fetchpriority="high">
-<link rel="preload" href="{{ '/Videos/Top PCB explosive new.gif' | relative_url }}" as="image" fetchpriority="high">
  
 <title>{{ page.title }}</title>
 <link rel="shortcut icon" type="image/x-icon" href="{{ '/Images/icon/favicon.ico' | relative_url }}">
@@ -272,6 +268,8 @@
     @keyframes point-up { from { transform: translateX(-50%) rotate(-90deg) translateY(0); } to { transform: translateX(-50%) rotate(-90deg) translateY(-15px); } }
   }
 </style>
+
+ <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js" defer></script>
  
 </head>
  
@@ -563,30 +561,12 @@
 
       initMeteors();
 
-        /// 图片防抖动处理：GIF 用 eager，其他 lazy，全部预留尺寸避免 CLS
+      // 图片懒加载
       const images = document.querySelectorAll('#main_content img');
       images.forEach((img, index) => {
-          // ✅ 修复：检查 data-src 或 class，而不是 src（src 此时是 base64 占位图）
-          const dataSrc = img.getAttribute('data-src') || '';
-          const isGif = dataSrc.toLowerCase().includes('.gif') || img.classList.contains('lazy-gif');
-
-          // 1. 给所有没有明确尺寸的图片预留占位空间，防止加载时布局跳动 (CLS)
-          if (!img.getAttribute('width') && !img.getAttribute('height')) {
-              if (isGif) {
-                  // GIF 用 16/9 近似占位（后续你可以换成实际比例）
-                  img.style.aspectRatio = '16/9';
-                  img.style.width = '100%';
-                  img.style.height = 'auto';
-              }
-          }
-
-          // 2. GIF 和前2张静图提前加载，其余 lazy
-          if (isGif || index < 2) {
-              img.setAttribute('loading', 'eager');
-              img.setAttribute('fetchpriority', 'high');
-          } else {
-              if (!img.getAttribute('loading')) img.setAttribute('loading', 'lazy');
-          }
+          if (index < 2) { img.setAttribute('loading', 'eager'); img.setAttribute('fetchpriority', 'high'); } 
+          else { if(!img.getAttribute('loading')) img.setAttribute('loading', 'lazy'); }
+      });
   });
 
   const textsEN = ["Welcome to this webpage！", "Thanks for visiting us!", "Stay tuned!"];
@@ -654,6 +634,7 @@
     animateMeteors();
   }
  
+  document.addEventListener("DOMContentLoaded", function() {
     type();
     const cursorDot = document.querySelector('.cursor-dot');
     const cursorOutline = document.querySelector('.cursor-outline');
@@ -944,6 +925,7 @@
     });
     document.body.addEventListener('mouseout', (e) => {
       if (e.target.closest('a, button, .ctrl-btn, .rpg-btn, #bot-container, .slider')) document.body.classList.remove('hovering');
+    });
   });
 </script>
    
@@ -955,7 +937,6 @@
     easing: 'ease-out-cubic', // 类似苹果的丝滑减速效果
     once: true // 设为 true 表示向下滚动出现后，往回滚不会消失
   });
- });
 </script>
 
 </body>
