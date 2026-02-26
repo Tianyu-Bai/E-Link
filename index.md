@@ -1402,29 +1402,44 @@ body.light-mode .watermark-features strong { color: #2563eb; text-shadow: none; 
 </p>
 
 <style>
-/* ===================== Intan RHX 像素级复刻 (双屏优化) ===================== */
+/* ===================== Windows 系统风格 Intan UI ===================== */
 .intan-simulator-wrapper {
   width: 100%; max-width: 860px; margin: 40px auto;
-  background: #2b2b2b; border: 1px solid #1a1a1a; border-radius: 6px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.1) inset;
-  overflow: hidden; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; user-select: none;
+  background: #f0f0f0; /* Windows 经典底色 */
+  border: 1px solid #8e8f8f; border-radius: 3px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  overflow: hidden; font-family: 'Segoe UI', sans-serif;
 }
+
+/* 顶部标题栏：Win10 风格 */
 .intan-title-bar {
-  background: linear-gradient(to bottom, #4a4a4a, #333333); padding: 5px 12px;
-  display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #111;
+  background: #ffffff; height: 32px; padding: 0 12px;
+  display: flex; justify-content: space-between; align-items: center;
 }
-.intan-title-text { color: #e0e0e0; font-size: 12px; font-weight: 600; display: flex; align-items: center; gap: 6px; letter-spacing: 0.5px; }
-.intan-window-controls span { display: inline-block; width: 12px; height: 12px; border-radius: 50%; margin-left: 6px; background: #555; }
-.intan-window-controls span.close { background: #ff5f56; } .intan-window-controls span.min { background: #ffbd2e; } .intan-window-controls span.max { background: #27c93f; }
+.intan-title-text { color: #000; font-size: 12px; display: flex; align-items: center; gap: 8px; }
 
-.intan-body { display: flex; height: 420px; background: #000; }
-
-/* 双屏核心布局 */
-.intan-plots-wrapper { flex: 1; display: flex; border-top: 1px solid #222; }
-.intan-plot-pane {
-  flex: 1; display: flex; flex-direction: column; position: relative;
-  background: #000000; border-right: 2px solid #333;
+/* 新增：Windows 菜单栏 */
+.intan-menu-bar {
+  background: #ffffff; border-bottom: 1px solid #d1d1d1;
+  padding: 2px 8px; display: flex; gap: 15px;
+  font-size: 11px; color: #000;
 }
+.intan-menu-bar span:hover { background: #e5f1fb; outline: 1px solid #a8d5ff; cursor: default; }
+
+.intan-body { display: flex; height: 420px; background: #383838; border-top: 1px solid #828790; }
+
+/* 绘图区与标签区 */
+.intan-plots-wrapper { flex: 1; display: flex; background: #000; }
+.intan-plot-pane { flex: 1; display: flex; flex-direction: column; position: relative; border-right: 1px solid #444; }
+
+/* A和B端口的最下方绿色灯点亮 */
+.hw-port-box.active .hw-led.green {
+  background: #27c93f; border-color: #1a8a29;
+  box-shadow: 0 0 5px #27c93f, inset -0.5px -0.5px 1px rgba(0,0,0,0.2);
+}
+/* C和D端口整体稍微变暗，表示未连接 */
+.hw-port-box.inactive { opacity: 0.45; filter: grayscale(80%); }
+
 
 /* 顶部时间轴 (0 - 2000 ms) */
 .intan-time-axis {
@@ -1499,22 +1514,22 @@ body.light-mode .watermark-features strong { color: #2563eb; text-shadow: none; 
   width: 4px; height: 4px; border-radius: 50%; background: #444; /* 默认熄灭状态 */
   border: 0.5px solid #222; box-shadow: inset 0.5px 0.5px 1px rgba(0,0,0,0.5);
 }
-/* A和B端口的最下方绿色灯点亮 */
-.hw-port-box.active .hw-led.green {
-  background: #27c93f; border-color: #1a8a29;
-  box-shadow: 0 0 5px #27c93f, inset -0.5px -0.5px 1px rgba(0,0,0,0.2);
-}
-/* C和D端口整体稍微变暗，表示未连接 */
-.hw-port-box.inactive { opacity: 0.45; filter: grayscale(80%); }
+
 </style>
 
 <div class="intan-simulator-wrapper" data-aos="fade-up">
   <div class="intan-title-bar">
     <div class="intan-title-text">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12h4l3-9 5 18 3-9h5"/></svg>
-      Intan RHX Interface - Simulated E-Link (256-ch) Stream
+      <img src="https://www.intantech.com/favicon.ico" width="16"> 
+      Intan Technologies RHX Data Acquisition Software - Simulated E-Link (256-ch)
     </div>
-    <div class="intan-window-controls"><span class="min"></span><span class="max"></span><span class="close"></span></div>
+    <div class="intan-window-controls">
+      <span></span><span></span><span class="close"></span>
+    </div>
+  </div>
+
+  <div class="intan-menu-bar">
+    <span>File</span><span>Setup</span><span>View</span><span>Select</span><span>Tools</span><span>Help</span>
   </div>
   
   <div class="intan-body">
@@ -1535,6 +1550,7 @@ body.light-mode .watermark-features strong { color: #2563eb; text-shadow: none; 
           </div>
         </div>
       </div>
+      
       <div class="intan-plot-pane">
         <div class="intan-time-axis">
           <span>0</span><span>400</span><span>800</span><span>1200</span><span>1600</span><span>2000 ms</span>
@@ -1552,6 +1568,56 @@ body.light-mode .watermark-features strong { color: #2563eb; text-shadow: none; 
         </div>
       </div>
     </div>
+    
+    <div class="intan-sidebar">
+      <div class="intan-btn-group">
+        <div class="intan-btn">Run</div>
+        <div class="intan-btn record">Record</div>
+      </div>
+
+      <div class="intan-panel">
+        <div class="intan-panel-title">Hardware Ports</div>
+        <div class="hw-ports-grid">
+          <div class="hw-port-box active">
+            <div class="hw-port-left"><span class="hw-port-label">A</span><div class="hw-port-connector"></div></div>
+            <div class="hw-port-leds"><div class="hw-led"></div><div class="hw-led"></div><div class="hw-led green"></div></div>
+          </div>
+          <div class="hw-port-box active">
+            <div class="hw-port-left"><span class="hw-port-label">B</span><div class="hw-port-connector"></div></div>
+            <div class="hw-port-leds"><div class="hw-led"></div><div class="hw-led"></div><div class="hw-led green"></div></div>
+          </div>
+          <div class="hw-port-box inactive">
+            <div class="hw-port-left"><span class="hw-port-label">C</span><div class="hw-port-connector"></div></div>
+            <div class="hw-port-leds"><div class="hw-led"></div><div class="hw-led"></div><div class="hw-led"></div></div>
+          </div>
+          <div class="hw-port-box inactive">
+            <div class="hw-port-left"><span class="hw-port-label">D</span><div class="hw-port-connector"></div></div>
+            <div class="hw-port-leds"><div class="hw-led"></div><div class="hw-led"></div><div class="hw-led"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="intan-panel">
+        <div class="intan-panel-title">Filter Bandwidth</div>
+        <div class="intan-setting-row"><span>High-pass</span><div class="intan-value-box">300 Hz</div></div>
+        <div class="intan-setting-row"><span>Low-pass</span><div class="intan-value-box">7.5 kHz</div></div>
+      </div>
+
+      <div class="intan-panel">
+        <div class="intan-panel-title">System Status</div>
+        <div class="intan-setting-row" style="color: #27c93f; font-weight: bold;">
+          <span>SPI Links</span><span>A, B Locked</span>
+        </div>
+        <div class="intan-setting-row" style="color: #777;">
+          <span>Unused</span><span>C, D</span>
+        </div>
+        <div class="intan-setting-row">
+          <span>Sampling</span><div class="intan-value-box" style="border:none;box-shadow:none;background:transparent;text-align:right;">30 kS/s</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
     
     <div class="intan-sidebar">
       <div class="intan-btn-group"><div class="intan-btn">Run</div><div class="intan-btn record">Record</div></div>
@@ -2407,10 +2473,16 @@ This project is open-source and available under the **MIT License**. Click the b
 <div class="intan-simulator-wrapper" data-aos="fade-up">
   <div class="intan-title-bar">
     <div class="intan-title-text">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12h4l3-9 5 18 3-9h5"/></svg>
-      Intan RHX Interface - Simulated E-Link (256-ch) Stream
+      <img src="https://www.intantech.com/favicon.ico" width="16"> 
+      Intan Technologies RHX Data Acquisition Software - Simulated E-Link (256-ch)
     </div>
-    <div class="intan-window-controls"><span class="min"></span><span class="max"></span><span class="close"></span></div>
+    <div class="intan-window-controls">
+      <span></span><span></span><span class="close"></span>
+    </div>
+  </div>
+
+  <div class="intan-menu-bar">
+    <span>File</span><span>Setup</span><span>View</span><span>Select</span><span>Tools</span><span>Help</span>
   </div>
   
   <div class="intan-body">
@@ -2431,6 +2503,7 @@ This project is open-source and available under the **MIT License**. Click the b
           </div>
         </div>
       </div>
+      
       <div class="intan-plot-pane">
         <div class="intan-time-axis">
           <span>0</span><span>400</span><span>800</span><span>1200</span><span>1600</span><span>2000 ms</span>
@@ -2450,8 +2523,12 @@ This project is open-source and available under the **MIT License**. Click the b
     </div>
     
     <div class="intan-sidebar">
-      <div class="intan-btn-group"><div class="intan-btn">Run</div><div class="intan-btn record">Record</div></div>
-     <div class="intan-panel">
+      <div class="intan-btn-group">
+        <div class="intan-btn">Run</div>
+        <div class="intan-btn record">Record</div>
+      </div>
+
+      <div class="intan-panel">
         <div class="intan-panel-title">Hardware Ports</div>
         <div class="hw-ports-grid">
           <div class="hw-port-box active">
@@ -2472,16 +2549,24 @@ This project is open-source and available under the **MIT License**. Click the b
           </div>
         </div>
       </div>
+
       <div class="intan-panel">
         <div class="intan-panel-title">Filter Bandwidth</div>
         <div class="intan-setting-row"><span>High-pass</span><div class="intan-value-box">300 Hz</div></div>
         <div class="intan-setting-row"><span>Low-pass</span><div class="intan-value-box">7.5 kHz</div></div>
       </div>
+
       <div class="intan-panel">
         <div class="intan-panel-title">System Status</div>
-        <div class="intan-setting-row" style="color: #27c93f; font-weight: bold;"><span>SPI Links</span><span>A, B Locked</span></div>
-        <div class="intan-setting-row" style="color: #777;"><span>Unused</span><span>C, D</span></div>
-        <div class="intan-setting-row"><span>Sampling</span><div class="intan-value-box" style="border:none;box-shadow:none;background:transparent;text-align:right;">30 kS/s</div></div>
+        <div class="intan-setting-row" style="color: #27c93f; font-weight: bold;">
+          <span>SPI Links</span><span>A, B Locked</span>
+        </div>
+        <div class="intan-setting-row" style="color: #777;">
+          <span>Unused</span><span>C, D</span>
+        </div>
+        <div class="intan-setting-row">
+          <span>Sampling</span><div class="intan-value-box" style="border:none;box-shadow:none;background:transparent;text-align:right;">30 kS/s</div>
+        </div>
       </div>
     </div>
   </div>
@@ -2935,20 +3020,19 @@ This project is open-source and available under the **MIT License**. Click the b
       function generateChannels(prefix) {
         const arr = [];
         for (let i = 0; i < NUM_CHANNELS; i++) {
-          // 模拟截图：A-002 和 D-008 阻抗异常 (灰色)
           let isBad = false;
-          let imp = (0.3 + Math.random() * 0.2).toFixed(2) + " kΩ";
+          // 核心调整：根据要求，阻抗设定在 420-500 kΩ 之间
+          let imp = (420 + Math.random() * 80).toFixed(0) + " kΩ"; 
           let cIdx = i % intanColors.length;
           
+          // 模拟个别异常通道（如截图中的 A-002）
           if ((prefix === 'A' && i === 2) || (prefix === 'B' && i === 8)) {
             isBad = true;
-            imp = (15 + Math.random() * 6).toFixed(1) + " MΩ";
-            cIdx = 2; // 强行指定为灰色 (#6b6b6b)
+            imp = (15 + Math.random() * 5).toFixed(1) + " MΩ";
+            cIdx = 2; // 灰色
           }
 
-          // 通道编号补零
           let idStr = i.toString().padStart(3, '0');
-          
           arr.push({
             label: `${prefix}-${idStr} ${imp}`,
             color: intanColors[cIdx],
