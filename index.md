@@ -3095,31 +3095,48 @@ function drawPane(ctx, channelsData, isLeftPane) {
     // 计算 Y 轴偏移，让色块始终居中对齐波形基准线
     const blockOffsetY = blockHeight / 2;
     
-    ctx.font = `${fontSize}px "Segoe UI", sans-serif`;
-    ctx.textBaseline = 'middle';
-    
+    ctx.font = `bold ${fontSize}px "Segoe UI", sans-serif`; // 加粗更清晰
+    ctx.textBaseline = 'middle'; // 垂直对齐基准
+    ctx.textAlign = 'center';    // 🚀 新增：水平居中对齐
+
     for (let i = 0; i < NUM_CHANNELS; i++) {
       const ch = channelsData[i];
+      
+      // 1. 绘制背景框
       ctx.fillStyle = ch.color;
-      // 画彩色背景框 (宽度减5留出右侧黑边，高度动态改变)
       ctx.fillRect(0, ch.baseY - blockOffsetY, currentLabelWidth - 3, blockHeight);
       
+      // 2. 绘制文字
       ctx.fillStyle = ch.isBad ? '#000' : '#fff';
-      // 🚀 手机端文字紧贴左边缘 (x=1)，保证阻抗值能全部显示
-      ctx.fillText(ch.label, isMobile ? 1 : 4, ch.baseY + (isMobile ? 0.5 : 1));
+      
+      // 计算水平中心点：(框宽度 - 右侧间距) / 2
+      const centerX = (currentLabelWidth - 3) / 2;
+      
+      // 这里的 ch.baseY 配合 textBaseline='middle' 实现垂直居中
+      // 这里的 centerX 配合 textAlign='center' 实现水平居中
+      // 💡 +0.5 或 +1 是微调，补偿不同设备下文字渲染的肉眼偏差
+      ctx.fillText(ch.label, centerX, ch.baseY + (isMobile ? 0.5 : 1));
     }
 
-    // 严格保留比例尺功能 (仅左屏)
     if (isLeftPane) {
-      const scaleY = channelsData[3].baseY; 
-      // 比例尺也要跟着左侧标签的宽度走
-      const scaleX = currentLabelWidth + (isMobile ? 30 : 60);
-      ctx.strokeStyle = '#fff';
+      // 1. 垂直位移：将 scaleY 向下移动 gap 的 30%，使其处于两个通道中间的空隙
+      const scaleY = channelsData[3].baseY + (gap * 0.3); 
+      
+      // 2. 缩短竖线：将原本的 +/-10 缩短为 +/-6 像素
+      const lineHeight = 6; 
+      const scaleX = currentLabelWidth + (isMobile ? 25 : 50);
+      
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.8)'; // 稍微降低一点亮度，更高级
       ctx.lineWidth = 1;
       ctx.beginPath();
-      ctx.moveTo(scaleX, scaleY - 10); ctx.lineTo(scaleX, scaleY + 10);
+      ctx.moveTo(scaleX, scaleY - lineHeight); 
+      ctx.lineTo(scaleX, scaleY + lineHeight);
       ctx.stroke();
+
+      // 3. 文字对齐：由于之前设置了 textAlign='center'，这里要改回 'left' 避免影响数字
+      ctx.textAlign = 'left'; 
       ctx.fillStyle = '#fff';
+      ctx.font = `${isMobile ? 7 : 9}px "Segoe UI", sans-serif`;
       ctx.fillText("50 µV", scaleX + 6, scaleY + 1);
     }
   }
