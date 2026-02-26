@@ -3100,9 +3100,9 @@ function drawPane(ctx, channelsData, isLeftPane) {
     ctx.textBaseline = 'middle';
     
     // 1. 设置边距布局
-    const padding = isMobile ? 3 : 5; 
-    const iconSize = isMobile ? 7 : 9; // 保存图标的大小
-    const idOffsetX = padding + iconSize + (isMobile ? 3 : 5); // 通道号要避开图标
+    const padding = isMobile ? 3 : 4; 
+    const iconSize = isMobile ? 7 : 7; // 保存图标的大小
+    const idOffsetX = padding + iconSize + (isMobile ? 3 : 4); // 通道号要避开图标
     const rightEdge = currentLabelWidth - padding - 1;
 
     for (let i = 0; i < NUM_CHANNELS; i++) {
