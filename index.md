@@ -1494,6 +1494,17 @@ body.light-mode .watermark-features strong { color: #2563eb; text-shadow: none; 
 }
 
 /* ================= 新增：Intan 物理硬件前面板复刻 ================= */
+/* 🚀 新增：Intan 滤波控制面板专属样式 */
+.intan-select {
+  background: #fff; border: 1px solid #999; padding: 1px 4px; 
+  font-family: 'Segoe UI', sans-serif; font-size: 10px; color: #111;
+  display: flex; justify-content: space-between; align-items: center;
+  box-shadow: inset 1px 1px 2px rgba(0,0,0,0.1); cursor: pointer;
+}
+.intan-radio-group { display: flex; gap: 4px; font-size: 9px; align-items: center; margin-top: 4px; }
+.intan-radio-group label { display: flex; align-items: center; gap: 2px; cursor: default; color: #333; }
+.intan-radio-group input { margin: 0; }
+  
 .hw-ports-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 2px; }
 .hw-port-box {
   border: 1.5px solid #522e8a; /* Intan 标志性紫色 */
@@ -1589,16 +1600,35 @@ body.light-mode .watermark-features strong { color: #2563eb; text-shadow: none; 
           </div>
         </div>
       </div>
+      
       <div class="intan-panel">
-        <div class="intan-panel-title">Filter Bandwidth</div>
-        <div class="intan-setting-row"><span>High-pass</span><div class="intan-value-box">300 Hz</div></div>
-        <div class="intan-setting-row"><span>Low-pass</span><div class="intan-value-box">7.5 kHz</div></div>
+        <div class="intan-panel-title">Filter Display Selector</div>
+        <div class="intan-radio-group">
+          <label><input type="radio" disabled> WIDE</label>
+          <label><input type="radio" checked> LOW</label> <label><input type="radio" disabled> HIGH</label>
+          <label><input type="radio" disabled> SPK</label>
+        </div>
       </div>
+
+      <div class="intan-panel">
+        <div class="intan-panel-title">Software Filtering</div>
+        <div class="intan-setting-row" style="margin-bottom: 6px;">
+          <span>Notch Filter</span>
+          <div class="intan-select" style="width:45px;">60 Hz <span style="font-size:8px;">▼</span></div>
+        </div>
+        <div class="intan-setting-row" style="color:#555; font-size:9px; margin-bottom:2px;">Low Pass (LFP Band)</div>
+        <div class="intan-setting-row">
+          <div class="intan-select" style="width:40px;">Bessel <span style="font-size:8px;">▼</span></div>
+          <span>Cutoff</span>
+          <div class="intan-value-box" style="width:25px;">300</div><span style="font-size:8px;">Hz</span>
+        </div>
+      </div>
+      
       <div class="intan-panel">
         <div class="intan-panel-title">System Status</div>
         <div class="intan-setting-row" style="color: #27c93f; font-weight: bold;"><span>SPI Links</span><span>A, B Locked</span></div>
         <div class="intan-setting-row" style="color: #777;"><span>Unused</span><span>C, D</span></div>
-        <div class="intan-setting-row"><span>Sampling</span><div class="intan-value-box" style="border:none;box-shadow:none;background:transparent;text-align:right;">30 kS/s</div></div>
+        <div class="intan-setting-row"><span>Sampling</span><div class="intan-value-box" style="border:none;box-shadow:none;background:transparent;text-align:right;">1 kS/s</div></div>
       </div>
     </div>
   </div>
@@ -2464,7 +2494,7 @@ This project is open-source and available under the **MIT License**. Click the b
     
     <div class="intan-sidebar">
       <div class="intan-btn-group"><div class="intan-btn">Run</div><div class="intan-btn record">Record</div></div>
-     <div class="intan-panel">
+      <div class="intan-panel">
         <div class="intan-panel-title">Hardware Ports</div>
         <div class="hw-ports-grid">
           <div class="hw-port-box active">
@@ -2485,16 +2515,35 @@ This project is open-source and available under the **MIT License**. Click the b
           </div>
         </div>
       </div>
+      
       <div class="intan-panel">
-        <div class="intan-panel-title">Filter Bandwidth</div>
-        <div class="intan-setting-row"><span>High-pass</span><div class="intan-value-box">300 Hz</div></div>
-        <div class="intan-setting-row"><span>Low-pass</span><div class="intan-value-box">7.5 kHz</div></div>
+        <div class="intan-panel-title">Filter Display Selector</div>
+        <div class="intan-radio-group">
+          <label><input type="radio" disabled> WIDE</label>
+          <label><input type="radio" checked> LOW</label> <label><input type="radio" disabled> HIGH</label>
+          <label><input type="radio" disabled> SPK</label>
+        </div>
       </div>
+
+      <div class="intan-panel">
+        <div class="intan-panel-title">Software Filtering</div>
+        <div class="intan-setting-row" style="margin-bottom: 6px;">
+          <span>Notch Filter</span>
+          <div class="intan-select" style="width:45px;">60 Hz <span style="font-size:8px;">▼</span></div>
+        </div>
+        <div class="intan-setting-row" style="color:#555; font-size:9px; margin-bottom:2px;">Low Pass (LFP Band)</div>
+        <div class="intan-setting-row">
+          <div class="intan-select" style="width:40px;">Bessel <span style="font-size:8px;">▼</span></div>
+          <span>Cutoff</span>
+          <div class="intan-value-box" style="width:25px;">300</div><span style="font-size:8px;">Hz</span>
+        </div>
+      </div>
+      
       <div class="intan-panel">
         <div class="intan-panel-title">System Status</div>
         <div class="intan-setting-row" style="color: #27c93f; font-weight: bold;"><span>SPI Links</span><span>A, B Locked</span></div>
         <div class="intan-setting-row" style="color: #777;"><span>Unused</span><span>C, D</span></div>
-        <div class="intan-setting-row"><span>Sampling</span><div class="intan-value-box" style="border:none;box-shadow:none;background:transparent;text-align:right;">30 kS/s</div></div>
+        <div class="intan-setting-row"><span>Sampling</span><div class="intan-value-box" style="border:none;box-shadow:none;background:transparent;text-align:right;">1 kS/s</div></div>
       </div>
     </div>
   </div>
@@ -2702,6 +2751,7 @@ This project is open-source and available under the **MIT License**. Click the b
 </div>
 
 </div> 
+
 <script>
   document.addEventListener("DOMContentLoaded", () => {
 
@@ -2908,14 +2958,14 @@ This project is open-source and available under the **MIT License**. Click the b
     models.forEach(model => modelObserver.observe(model));
     
 // 👇 插入开始：Intan 像素级覆盖式示波器引擎 (更真实、高连续性版) 👇
+// =========================================================================
 const intanSimulators = document.querySelectorAll('.intan-simulator-wrapper');
 
-// 1. 保留原始颜色序列
+// 1. 保留原始颜色序列 (移除了灰色，替换为紫色)
 const intanColors = [
-  '#e04a4a', '#d49b38', '#6b6b6b', '#3dc94d', '#3dc98b', '#3da1c9', '#3d61c9', '#573dc9',
-  '#993dc9', '#c93d9e', '#c93d5a', '#d47238', '#b8c93d', '#70c93d', '#3dc9c7', '#3d94c9',
-  '#3d51c9', '#6d3dc9', '#b53dc9', '#c93da6', '#c93d4a', '#d48838', '#d4b338', '#99c93d',
-  '#3dc958', '#3dc99e', '#3dbbc9', '#3d6ec9', '#4d3dc9', '#8b3dc9', '#c93dbb', '#c93d70'
+  '#e04a4a', '#d49b38', '#522e8a', '#3dc94d', 
+  '#3dc98b', '#3da1c9', '#3d61c9', '#573dc9',
+  '#993dc9', '#c93d9e', '#c93d5a', '#d47238',
 ];
 
 intanSimulators.forEach(sim => {
@@ -2926,16 +2976,57 @@ intanSimulators.forEach(sim => {
   // 强制关闭 alpha 通道，确保背景纯黑无蒙层
   const ctxL = canvasL.getContext('2d', { alpha: false });
   const ctxR = canvasR.getContext('2d', { alpha: false });
-  let width, height;
-  let lastWidth = 0; // 💡 新增：记录上一次的宽度，防止手机端滚动时误触发重绘
   
+  // 🚀 把所有变量声明提到最前面！
+  let width, height;
+  let lastWidth = 0; 
+  const NUM_CHANNELS = 20; 
+  const LABEL_WIDTH = 95; 
+  let scanX = LABEL_WIDTH; // 在这里定义！
+  const scanSpeed = 1.2; 
+  let animationFrame;
+
+  // 2. LFP 慢波通道生成逻辑
+  function generateChannels(prefix) {
+    const arr = [];
+    for (let i = 0; i < NUM_CHANNELS; i++) {
+      let isBad = false;
+      let imp = (100 + Math.random() * 100).toFixed(0) + " kΩ"; 
+      
+      if ((prefix === 'A' && i === 2) || (prefix === 'B' && i === 8)) {
+        isBad = true;
+        imp = (15 + Math.random() * 5).toFixed(1) + " MΩ";
+      }
+
+      let chColor = isBad ? '#6b6b6b' : intanColors[i % intanColors.length];
+      let idStr = (i + 108).toString().padStart(3, '0');
+      
+      arr.push({
+        label: `${prefix}-${idStr} ${imp}`,
+        color: chColor, 
+        isBad: isBad,
+        baseY: 0, 
+        lastY: 0, 
+        currentNoise: 0, 
+        drift: 0, 
+        phase: Math.random() * Math.PI * 2, 
+        freq: 3 + Math.random() * 5,        
+        coupling: 0.6 + Math.random() * 0.4 
+      });
+    }
+    return arr;
+  }
+
+  const channelsL = generateChannels('A');
+  const channelsR = generateChannels('B');
+  
+  // 3. 屏幕自适应与重置逻辑
   function resizeIntanCanvas() {
     if(canvasL.parentElement.clientWidth === 0) return;
     
     const newWidth = canvasL.parentElement.clientWidth;
     const newHeight = canvasL.parentElement.clientHeight;
     
-    // 🚀 核心修复：如果仅仅是高度变化（手机端上下滑动引起的地址栏缩放），直接退出，绝不清空画布！
     if (lastWidth === newWidth) return; 
     lastWidth = newWidth;
 
@@ -2948,222 +3039,158 @@ intanSimulators.forEach(sim => {
       canvas.height = height * dpr;
       const ctx = canvas.getContext('2d');
       ctx.scale(dpr, dpr);
-      // 初始化全屏纯黑
       ctx.fillStyle = '#000000';
       ctx.fillRect(0, 0, width, height);
     });
+
+    // 这里安全使用 scanX，因为它在上面已经被声明了
+    scanX = window.innerWidth <= 600 ? 75 : LABEL_WIDTH; 
   }
+  
   window.addEventListener('resize', resizeIntanCanvas);
   resizeIntanCanvas();
   new ResizeObserver(resizeIntanCanvas).observe(canvasL.parentElement);
 
-  const NUM_CHANNELS = 20; // 💡 优化：通道数20，让波形显示更清爽真实
-  const LABEL_WIDTH = 95; 
-  
-  // 2. 严格保留原始通道生成逻辑 (含坏道模拟)
-  function generateChannels(prefix) {
-    const arr = [];
-    for (let i = 0; i < NUM_CHANNELS; i++) {
-      let isBad = false;
-      let imp = (418 + Math.random() * 80).toFixed(0) + " kΩ"; 
-      let cIdx = i % intanColors.length;
-      
-      // 模拟个别异常通道（完全保留原始判断条件）
-      if ((prefix === 'A' && i === 2) || (prefix === 'B' && i === 8)) {
-        isBad = true;
-        imp = (15 + Math.random() * 5).toFixed(1) + " MΩ";
-        cIdx = 2; // 灰色
-      }
-
-      let idStr = (i + 108).toString().padStart(3, '0');
-      arr.push({
-        label: `${prefix}-${idStr} ${imp}`,
-        color: intanColors[cIdx],
-        isBad: isBad,
-        baseY: 0, 
-        lastY: 0, 
-        currentNoise: 0, // 💡 新增：用于存储上一帧噪声，生成连续的平滑曲线
-        isSpiking: false, 
-        spikeProgress: 0, 
-        spikeAmp: 0,
-        firingRate: isBad ? 0 : (0.001 + Math.random() * 0.006) // 稍微降低整体放电频率，更自然
-      });
-    }
-    return arr;
-  }
-  
-  const channelsL = generateChannels('A');
-  const channelsR = generateChannels('B');
-
-  let scanX = LABEL_WIDTH; 
-  const scanSpeed = 1.2; // 保持原始扫描感
-  let animationFrame;
-
-function drawPane(ctx, channelsData, isLeftPane) {
-    // 🚀 1. 新增：动态判断手机端，并设定专属尺寸
+  // 4. LFP 物理绘制引擎
+  function drawPane(ctx, channelsData, isLeftPane) {
     const isMobile = window.innerWidth <= 600;
-    
-    // 手机端彩色框宽度设为 75（原本是 95），腾出 20px 给波形
     const currentLabelWidth = isMobile ? 75 : LABEL_WIDTH; 
     
-    // 扫描刷新逻辑：擦除当前位置前方的一小条区域
     const eraseWidth = 2; 
     ctx.fillStyle = '#000000';
     
-    // 处理回绕时的擦除 (注意这里改用 currentLabelWidth)
     if (scanX + eraseWidth > width) {
-      ctx.fillRect(scanX, 0, width - scanX, height);
-      ctx.fillRect(currentLabelWidth, 0, eraseWidth - (width - scanX), height);
+        ctx.fillRect(scanX, 0, width - scanX, height);
+        ctx.fillRect(currentLabelWidth, 0, eraseWidth - (width - scanX), height);
     } else {
-      ctx.fillRect(scanX, 0, eraseWidth, height);
+        ctx.fillRect(scanX, 0, eraseWidth, height);
     }
 
     const gap = height / (NUM_CHANNELS + 0.5);
     const maxAmplitude = gap * 0.9; 
+    
+    // 模拟宏观皮层状态：Delta + Theta
+    const time_sec = scanX / width * 2.0; 
+    const globalLFP = Math.sin(time_sec * 1.5 * Math.PI * 2) * 0.35 + 
+                      Math.sin(time_sec * 4.0 * Math.PI * 2) * 0.15;
 
     for (let i = 0; i < NUM_CHANNELS; i++) {
-      const ch = channelsData[i];
-      ch.baseY = gap * (i + 0.5);
-      
-      let signal = 0;
+        const ch = channelsData[i];
+        ch.baseY = gap * (i + 0.5);
+        let signal = 0;
 
-      // 🚀 终极物理特征分离逻辑：
-      if (ch.isBad) {
-        ch.isSpiking = false; 
-        const time_sec = scanX / width * 2.0; 
-        const powerLineInterference = Math.sin(time_sec * 60 * Math.PI * 2) * 0.15; 
-        ch.currentNoise = ch.currentNoise * 0.3 + (Math.random() - 0.5) * 0.25; 
-        signal = powerLineInterference + ch.currentNoise;
-      } else {
-        ch.currentNoise = ch.currentNoise * 0.65 + (Math.random() - 0.5) * 0.06;
-        signal = ch.currentNoise; 
-        
-        if (!ch.isSpiking && Math.random() < ch.firingRate) {
-          ch.isSpiking = true; 
-          ch.spikeProgress = 0; 
-          ch.spikeAmp = 0.7 + Math.random() * 0.6; 
+        if (ch.isBad) {
+            // Notch 60Hz 开启状态下的坏通道漂移
+            ch.drift = ch.drift * 0.98 + (Math.random() - 0.5) * 0.2;
+            if (ch.drift > 1.2) ch.drift = 1.2;
+            if (ch.drift < -1.2) ch.drift = -1.2;
+            
+            ch.currentNoise = ch.currentNoise * 0.5 + (Math.random() - 0.5) * 0.3; 
+            signal = ch.drift + ch.currentNoise;
+        } else {
+            // 正常的 ECoG LFP 慢波
+            ch.currentNoise = ch.currentNoise * 0.8 + (Math.random() - 0.5) * 0.05;
+            const localLFP = Math.sin(time_sec * ch.freq * Math.PI * 2 + ch.phase) * 0.15;
+            signal = globalLFP * ch.coupling + localLFP + ch.currentNoise;
         }
 
-        if (ch.isSpiking) {
-          let t = ch.spikeProgress;
-          let spikeShape = (Math.exp(-Math.pow((t - 0.25) * 15, 2)) * -1.0) + (Math.exp(-Math.pow((t - 0.5) * 10, 2)) * 0.3);
-          signal += spikeShape * ch.spikeAmp;
-          ch.spikeProgress += 0.12; 
-          if (ch.spikeProgress >= 1) ch.isSpiking = false;
+        const currentY = ch.baseY + signal * maxAmplitude;
+
+        if (scanX > currentLabelWidth + scanSpeed) {
+            ctx.beginPath();
+            ctx.strokeStyle = ch.color; 
+            ctx.lineWidth = 1.2;
+            ctx.lineJoin = 'round'; 
+            ctx.lineCap = 'round';
+            ctx.moveTo(scanX - scanSpeed, ch.lastY);
+            ctx.lineTo(scanX, currentY);
+            ctx.stroke();
         }
-      }
-
-      const currentY = ch.baseY + signal * maxAmplitude;
-
-      // 只有在非起始点时才画线 (注意这里改用 currentLabelWidth)
-      if (scanX > currentLabelWidth + scanSpeed) {
-        ctx.beginPath();
-        ctx.strokeStyle = ch.color; 
-        ctx.lineWidth = 1.2;
-        ctx.lineJoin = 'round'; 
-        ctx.lineCap = 'round';
-        ctx.moveTo(scanX - scanSpeed, ch.lastY);
-        ctx.lineTo(scanX, currentY);
-        ctx.stroke();
-      }
-      ch.lastY = currentY;
+        ch.lastY = currentY;
     }
 
-    // 重绘左侧标签区域 (注意这里改用 currentLabelWidth)
     ctx.fillStyle = '#000000';
     ctx.fillRect(0, 0, currentLabelWidth, height);
     
-    // 🚀 2. 字体极限压缩：手机端改到 7.5px (为了塞进更窄的框)
     const fontSize = isMobile ? 7.5 : 10;
-    // 🚀 3. 彩色框高度压缩：手机端色块高度变矮 (8px)，电脑端保持 11px
     const blockHeight = isMobile ? 8 : 11;
-    // 计算 Y 轴偏移，让色块始终居中对齐波形基准线
     const blockOffsetY = blockHeight / 2;
-    
     ctx.font = `${fontSize}px "Segoe UI", sans-serif`;
     ctx.textBaseline = 'middle';
     
     for (let i = 0; i < NUM_CHANNELS; i++) {
-      const ch = channelsData[i];
-      ctx.fillStyle = ch.color;
-      // 画彩色背景框 (宽度减5留出右侧黑边，高度动态改变)
-      ctx.fillRect(0, ch.baseY - blockOffsetY, currentLabelWidth - 3, blockHeight);
-      
-      ctx.fillStyle = ch.isBad ? '#000' : '#fff';
-      // 🚀 手机端文字紧贴左边缘 (x=1)，保证阻抗值能全部显示
-      ctx.fillText(ch.label, isMobile ? 1 : 4, ch.baseY + (isMobile ? 0.5 : 1));
+        const ch = channelsData[i];
+        ctx.fillStyle = ch.color;
+        ctx.fillRect(0, ch.baseY - blockOffsetY, currentLabelWidth - 3, blockHeight);
+        ctx.fillStyle = ch.isBad ? '#000' : '#fff';
+        ctx.fillText(ch.label, isMobile ? 1 : 4, ch.baseY + (isMobile ? 0.5 : 1));
     }
 
-    // 严格保留比例尺功能 (仅左屏)
     if (isLeftPane) {
-      const scaleY = channelsData[3].baseY; 
-      // 比例尺也要跟着左侧标签的宽度走
-      const scaleX = currentLabelWidth + (isMobile ? 30 : 60);
-      ctx.strokeStyle = '#fff';
-      ctx.lineWidth = 1;
-      ctx.beginPath();
-      ctx.moveTo(scaleX, scaleY - 10); ctx.lineTo(scaleX, scaleY + 10);
-      ctx.stroke();
-      ctx.fillStyle = '#fff';
-      ctx.fillText("50 µV", scaleX + 6, scaleY + 1);
+        const scaleY = channelsData[3].baseY; 
+        const scaleX = currentLabelWidth + (isMobile ? 30 : 60);
+        ctx.strokeStyle = '#fff';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(scaleX, scaleY - 10); ctx.lineTo(scaleX, scaleY + 10);
+        ctx.stroke();
+        ctx.fillStyle = '#fff';
+        ctx.fillText("50 µV", scaleX + 6, scaleY + 1);
     }
   }
-
- function renderDualSweep() {
+  
+  function renderDualSweep() {
     if (!window.isPageScrolling) {
-      drawPane(ctxL, channelsL, true);
-      drawPane(ctxR, channelsR, false);
+        drawPane(ctxL, channelsL, true);
+        drawPane(ctxR, channelsR, false);
 
-      scanX += scanSpeed;
-      if (scanX >= width) {
-        // 🚀 核心修复：回到左侧时，如果是手机则回到 75，否则回到原本的 LABEL_WIDTH
-        scanX = window.innerWidth <= 600 ? 75 : LABEL_WIDTH; 
-      }
+        scanX += scanSpeed;
+        if (scanX >= width) {
+            scanX = window.innerWidth <= 600 ? 75 : LABEL_WIDTH; 
+        }
     }
     animationFrame = requestAnimationFrame(renderDualSweep);
   }
 
   const observer = new IntersectionObserver((entries) => {
     if (entries[0].isIntersecting && canvasL.offsetParent !== null) {
-      if (!animationFrame) renderDualSweep();
+        if (!animationFrame) renderDualSweep();
     } else {
-      if (animationFrame) cancelAnimationFrame(animationFrame);
-      animationFrame = null;
+        if (animationFrame) cancelAnimationFrame(animationFrame);
+        animationFrame = null;
     }
   }, { threshold: 0.1 });
   observer.observe(sim);
-});
+}); // <--- ✅ intanSimulators.forEach 在这里安全闭合了！
 // 👆 插入结束 👆
 
-    
-    // ===================== GIF 懒加载 =====================
+
+  // ===================== GIF 懒加载 =====================
   const gifObserver = new IntersectionObserver((entries, observer) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          const img = entry.target;
-          observer.unobserve(img); // ✅ 先 unobserve，防止重复触发
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const img = entry.target;
+        observer.unobserve(img);
 
-          const markLoaded = () => {
-            requestAnimationFrame(() => {
-              img.classList.add('is-loaded'); // ✅ 延一帧再显示，避免白帧闪烁
-            });
-          };
+        const markLoaded = () => {
+          requestAnimationFrame(() => {
+            img.classList.add('is-loaded'); 
+          });
+        };
 
-          // ✅ 先绑事件再赋 src，防止缓存命中时 onload 丢失
-          img.addEventListener('load', markLoaded, { once: true });
-          img.src = img.dataset.src;
+        img.addEventListener('load', markLoaded, { once: true });
+        img.src = img.dataset.src;
 
-          // ✅ 兼容已缓存图片（src 赋值后 complete 立即为 true）
-          if (img.complete && img.naturalWidth > 1) {
-            markLoaded();
-          }
+        if (img.complete && img.naturalWidth > 1) {
+          markLoaded();
         }
-      });
-    }, { threshold: 0.1, rootMargin: "50px 0px" });
-
-    document.querySelectorAll('img.lazy-gif').forEach(gif => {
-      gifObserver.observe(gif);
+      }
     });
+  }, { threshold: 0.1, rootMargin: "50px 0px" });
 
+  document.querySelectorAll('img.lazy-gif').forEach(gif => {
+    gifObserver.observe(gif);
   });
+
+}); // <--- ✅ 最外层的 DOMContentLoaded 在这里安全闭合了！
 </script>
