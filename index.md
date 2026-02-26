@@ -1392,108 +1392,200 @@ body.light-mode .watermark-features strong { color: #2563eb; text-shadow: none; 
  </div>
 </div>
 
-
 ---
-<br>
-<h3 id="en-signal-demo" style="text-align: center; margin-top: 30px;">⚡ Representative Spike Signal Acquisition (Simulation)</h3>
-<p style="text-align: center; color: #64748b; font-size: 0.95em; max-width: 600px; margin: 0 auto; margin-bottom: 20px;">
+
+<span id="en-signal-demo"></span>
+### ⚡ Representative Spike Signal Acquisition (Simulation)
+
+<p style="color: #64748b; font-size: 0.95em; margin-bottom: 20px;">
   An interactive illustration demonstrating typical high-pass filtered action potentials (Spikes). This simulates the expected visual characteristics and signal-to-noise ratio when recording with the E-Link system.
 </p>
 
 <style>
-/* ===================== Intan RHX 模拟器UI ===================== */
+/* ===================== Intan RHX 像素级复刻 (双屏优化) ===================== */
 .intan-simulator-wrapper {
   width: 100%; max-width: 860px; margin: 40px auto;
-  background: #2b2b2b; border: 1px solid #1a1a1a; border-radius: 8px;
-  box-shadow: 0 15px 50px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+  background: #2b2b2b; border: 1px solid #1a1a1a; border-radius: 6px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.1) inset;
   overflow: hidden; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; user-select: none;
 }
 .intan-title-bar {
-  background: linear-gradient(to bottom, #4a4a4a, #333333); padding: 6px 12px;
+  background: linear-gradient(to bottom, #4a4a4a, #333333); padding: 5px 12px;
   display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #111;
 }
 .intan-title-text { color: #e0e0e0; font-size: 12px; font-weight: 600; display: flex; align-items: center; gap: 6px; letter-spacing: 0.5px; }
 .intan-window-controls span { display: inline-block; width: 12px; height: 12px; border-radius: 50%; margin-left: 6px; background: #555; }
 .intan-window-controls span.close { background: #ff5f56; } .intan-window-controls span.min { background: #ffbd2e; } .intan-window-controls span.max { background: #27c93f; }
-.intan-body { display: flex; height: 380px; background: #383838; }
-.intan-plot-area {
-  flex: 1; position: relative; background: #000000;
-  border-right: 2px solid #222; border-top: 2px solid #222; box-shadow: inset 0 0 10px rgba(0,0,0,0.8); overflow: hidden;
+
+.intan-body { display: flex; height: 420px; background: #000; }
+
+/* 双屏核心布局 */
+.intan-plots-wrapper { flex: 1; display: flex; border-top: 1px solid #222; }
+.intan-plot-pane {
+  flex: 1; display: flex; flex-direction: column; position: relative;
+  background: #000000; border-right: 2px solid #333;
 }
-.intan-plot-area::before {
-  content: ''; position: absolute; inset: 0;
-  background-image: 
-    linear-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.07) 1px, transparent 1px),
-    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-  background-size: 100px 100px, 100px 100px, 20px 20px, 20px 20px; background-position: center center; z-index: 0; pointer-events: none;
+
+/* 顶部时间轴 (0 - 2000 ms) */
+.intan-time-axis {
+  height: 20px; display: flex; justify-content: space-between; align-items: flex-end;
+  padding: 0 10px 0 100px; /* 避开左侧通道标签区 */
+  border-bottom: 1px solid #444; color: #aaa; font-family: 'JetBrains Mono', monospace; font-size: 10px;
+  background: #000; z-index: 10;
 }
-.intan-canvas { width: 100%; height: 100%; display: block; z-index: 1; position: relative; }
-.intan-axes-label { position: absolute; bottom: 10px; left: 10px; color: #888; font-family: 'JetBrains Mono', monospace; font-size: 10px; z-index: 2; }
-.intan-sidebar { width: 200px; background: #d4d0c8; padding: 15px 10px; display: flex; flex-direction: column; gap: 12px; box-shadow: inset 1px 0 0 rgba(255,255,255,0.5); }
+.intan-time-axis span { position: relative; }
+.intan-time-axis span::after {
+  content: ''; position: absolute; bottom: -5px; left: 50%; transform: translateX(-50%);
+  width: 1px; height: 5px; background: #888;
+}
+
+/* 绘图区背景：仅保留垂直对齐线 */
+.intan-canvas-container {
+  flex: 1; position: relative; overflow: hidden;
+  background-image: linear-gradient(90deg, transparent 99.5%, rgba(255, 255, 255, 0.15) 100%);
+  background-size: 20% 100%; /* 将横向平分为5段 (400,800,1200,1600,2000) */
+  background-position: 100px 0; /* 避开左侧标签区 */
+}
+.intan-canvas { width: 100%; height: 100%; display: block; }
+
+/* 底部状态栏 */
+.intan-pane-footer {
+  height: 22px; background: #e0e0e0; display: flex; justify-content: space-between; align-items: center;
+  padding: 0 8px; font-size: 11px; color: #333; font-weight: 500; border-top: 1px solid #111;
+}
+.intan-footer-tools { display: flex; align-items: center; gap: 8px; color: #555; }
+.intan-footer-tools input[type="checkbox"] { margin: 0; }
+
+/* 右侧控制面板 (保留原样) */
+.intan-sidebar { width: 180px; background: #d4d0c8; padding: 10px; display: flex; flex-direction: column; gap: 10px; box-shadow: inset 1px 0 0 rgba(255,255,255,0.5); border-left: 1px solid #111;}
 .intan-btn-group { display: flex; gap: 8px; }
-.intan-btn {
-  flex: 1; background: linear-gradient(to bottom, #f0f0f0, #dcdcdc); border: 1px solid #888; border-radius: 3px;
-  padding: 8px 0; font-size: 12px; font-weight: 600; color: #333; cursor: pointer; box-shadow: inset 1px 1px 0 #fff, 1px 1px 2px rgba(0,0,0,0.1); display: flex; justify-content: center; align-items: center; gap: 5px;
-}
+.intan-btn { flex: 1; background: linear-gradient(to bottom, #f0f0f0, #dcdcdc); border: 1px solid #888; border-radius: 3px; padding: 6px 0; font-size: 11px; font-weight: bold; color: #333; cursor: pointer; box-shadow: inset 1px 1px 0 #fff, 1px 1px 2px rgba(0,0,0,0.1); text-align: center;}
 .intan-btn:active { background: #d0d0d0; box-shadow: inset 1px 1px 3px rgba(0,0,0,0.2); }
-.intan-btn.record::before { content: ''; display: inline-block; width: 8px; height: 8px; background: #ef4444; border-radius: 50%; box-shadow: 0 0 4px #ef4444; animation: rec-blink 1s infinite alternate; }
-@keyframes rec-blink { 0% { opacity: 0.4; } 100% { opacity: 1; } }
-.intan-panel { background: #f0f0f0; border: 1px solid #aaa; border-radius: 3px; padding: 8px; box-shadow: inset 1px 1px 2px #fff; }
-.intan-panel-title { font-size: 10px; color: #555; font-weight: bold; margin-bottom: 6px; text-transform: uppercase; border-bottom: 1px solid #ccc; padding-bottom: 2px; }
-.intan-setting-row { display: flex; justify-content: space-between; font-size: 11px; color: #111; margin-bottom: 4px; align-items: center; }
-.intan-value-box { background: #fff; border: 1px solid #999; padding: 1px 4px; font-family: 'JetBrains Mono', monospace; width: 65px; text-align: right; box-shadow: inset 1px 1px 2px rgba(0,0,0,0.1); }
-.intan-ports { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
-.intan-port { display: flex; align-items: center; gap: 4px; font-size: 10px; color: #333; }
-.port-led { width: 10px; height: 10px; border-radius: 50%; background: #27c93f; border: 1px solid #1a8a29; box-shadow: inset -1px -1px 2px rgba(0,0,0,0.3), 0 0 5px #27c93f; }
+.intan-btn.record::before { content: ''; display: inline-block; width: 6px; height: 6px; background: #ef4444; border-radius: 50%; box-shadow: 0 0 4px #ef4444; margin-right: 4px; animation: rec-blink 1s infinite alternate; }
+
+.intan-panel { background: #f0f0f0; border: 1px solid #aaa; border-radius: 3px; padding: 6px; box-shadow: inset 1px 1px 2px #fff; }
+.intan-panel-title { font-size: 9px; color: #555; font-weight: bold; margin-bottom: 4px; border-bottom: 1px solid #ccc; padding-bottom: 2px; }
+.intan-setting-row { display: flex; justify-content: space-between; font-size: 10px; color: #111; margin-bottom: 4px; align-items: center; }
+.intan-value-box { background: #fff; border: 1px solid #999; padding: 1px 4px; font-family: 'JetBrains Mono', monospace; width: 55px; text-align: right; box-shadow: inset 1px 1px 2px rgba(0,0,0,0.1); }
+.intan-ports { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; }
+.intan-port { display: flex; align-items: center; gap: 4px; font-size: 9px; color: #333; }
+.port-led { width: 8px; height: 8px; border-radius: 50%; }
+.port-led.on { background: #27c93f; border: 1px solid #1a8a29; box-shadow: inset -1px -1px 2px rgba(0,0,0,0.3), 0 0 5px #27c93f; }
+.port-led.off { background: #666; border: 1px solid #444; box-shadow: inset 1px 1px 2px rgba(0,0,0,0.5); }
+
 @media (max-width: 600px) {
   .intan-body { flex-direction: column; height: auto; }
-  .intan-plot-area { height: 280px; }
+  .intan-plots-wrapper { flex-direction: column; height: 450px; }
+  .intan-plot-pane { border-right: none; border-bottom: 2px solid #222; }
   .intan-sidebar { width: 100%; flex-direction: row; flex-wrap: wrap; }
-  .intan-btn-group, .intan-panel { flex: 1; min-width: 140px; }
+  .intan-btn-group, .intan-panel { flex: 1; min-width: 120px; }
 }
+/* ================= 新增：Intan 物理硬件前面板复刻 ================= */
+.hw-ports-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 2px; }
+.hw-port-box {
+  border: 1.5px solid #522e8a; /* Intan 标志性紫色 */
+  border-radius: 4px; background: #fff;
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 4px 6px; box-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+}
+.hw-port-left { display: flex; flex-direction: column; align-items: center; gap: 3px; }
+.hw-port-label { font-family: Arial, sans-serif; font-size: 13px; font-weight: 800; color: #222; line-height: 1; margin-left: 2px;}
+.hw-port-connector {
+  width: 14px; height: 5px; background: #111; border-radius: 1px;
+  border-top: 1px solid #d4af37; /* 模拟接口的金手指反光 */
+}
+.hw-port-leds { display: flex; flex-direction: column; gap: 2px; }
+.hw-led {
+  width: 4px; height: 4px; border-radius: 50%; background: #444; /* 默认熄灭状态 */
+  border: 0.5px solid #222; box-shadow: inset 0.5px 0.5px 1px rgba(0,0,0,0.5);
+}
+/* A和B端口的最下方绿色灯点亮 */
+.hw-port-box.active .hw-led.green {
+  background: #27c93f; border-color: #1a8a29;
+  box-shadow: 0 0 5px #27c93f, inset -0.5px -0.5px 1px rgba(0,0,0,0.2);
+}
+/* C和D端口整体稍微变暗，表示未连接 */
+.hw-port-box.inactive { opacity: 0.45; filter: grayscale(80%); }
 </style>
 
 <div class="intan-simulator-wrapper" data-aos="fade-up">
   <div class="intan-title-bar">
     <div class="intan-title-text">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12h4l3-9 5 18 3-9h5"/></svg>
-      Intan RHX Interface - Simulated Data Stream
+      Intan RHX Interface - Simulated E-Link (256-ch) Stream
     </div>
-    <div class="intan-window-controls">
-      <span class="min"></span><span class="max"></span><span class="close"></span>
-    </div>
+    <div class="intan-window-controls"><span class="min"></span><span class="max"></span><span class="close"></span></div>
   </div>
   
   <div class="intan-body">
-    <div class="intan-plot-area">
-      <canvas class="intan-canvas"></canvas>
-      <div class="intan-axes-label">X: 10 ms/div &nbsp;&nbsp; Y: 50 µV/div &nbsp;&nbsp; CH: 1-16 (Rep.)</div>
+    <div class="intan-plots-wrapper">
+      <div class="intan-plot-pane">
+        <div class="intan-time-axis">
+          <span>0</span><span>400</span><span>800</span><span>1200</span><span>1600</span><span>2000 ms</span>
+        </div>
+        <div class="intan-canvas-container">
+          <canvas class="intan-canvas canvas-left"></canvas>
+        </div>
+        <div class="intan-pane-footer">
+          <span>⛶ Port A (128 ch)</span>
+          <div class="intan-footer-tools">
+            <span>➕ ➖ ⭱</span>
+            <label><input type="checkbox" checked> show pinned</label>
+            <span>▤ 🗗</span>
+          </div>
+        </div>
+      </div>
+      <div class="intan-plot-pane">
+        <div class="intan-time-axis">
+          <span>0</span><span>400</span><span>800</span><span>1200</span><span>1600</span><span>2000 ms</span>
+        </div>
+        <div class="intan-canvas-container">
+          <canvas class="intan-canvas canvas-right"></canvas>
+        </div>
+        <div class="intan-pane-footer">
+          <span>⛶ Port B (128 ch)</span>
+          <div class="intan-footer-tools">
+            <span>➕ ➖ ⭱</span>
+            <label><input type="checkbox" checked> show pinned</label>
+            <span>▤ 🗗</span>
+          </div>
+        </div>
+      </div>
     </div>
     
     <div class="intan-sidebar">
-      <div class="intan-btn-group">
-        <div class="intan-btn" style="background: #e6e6e6; box-shadow: inset 0 0 5px rgba(0,0,0,0.2);">Run</div>
-        <div class="intan-btn record">Record</div>
-      </div>
+      <div class="intan-btn-group"><div class="intan-btn">Run</div><div class="intan-btn record">Record</div></div>
       <div class="intan-panel">
-        <div class="intan-panel-title">Connected Ports</div>
-        <div class="intan-ports">
-          <div class="intan-port"><div class="port-led"></div>Port A</div>
-          <div class="intan-port"><div class="port-led"></div>Port B</div>
-          <div class="intan-port"><div class="port-led"></div>Port C</div>
-          <div class="intan-port"><div class="port-led"></div>Port D</div>
+        <div class="intan-panel-title">Hardware Ports</div>
+        <div class="hw-ports-grid">
+          <div class="hw-port-box active">
+            <div class="hw-port-left"><span class="hw-port-label">A</span><div class="hw-port-connector"></div></div>
+            <div class="hw-port-leds"><div class="hw-led"></div><div class="hw-led"></div><div class="hw-led green"></div></div>
+          </div>
+          <div class="hw-port-box active">
+            <div class="hw-port-left"><span class="hw-port-label">B</span><div class="hw-port-connector"></div></div>
+            <div class="hw-port-leds"><div class="hw-led"></div><div class="hw-led"></div><div class="hw-led green"></div></div>
+          </div>
+          <div class="hw-port-box inactive">
+            <div class="hw-port-left"><span class="hw-port-label">C</span><div class="hw-port-connector"></div></div>
+            <div class="hw-port-leds"><div class="hw-led"></div><div class="hw-led"></div><div class="hw-led"></div></div>
+          </div>
+          <div class="hw-port-box inactive">
+            <div class="hw-port-left"><span class="hw-port-label">D</span><div class="hw-port-connector"></div></div>
+            <div class="hw-port-leds"><div class="hw-led"></div><div class="hw-led"></div><div class="hw-led"></div></div>
+          </div>
         </div>
       </div>
       <div class="intan-panel">
         <div class="intan-panel-title">Filter Bandwidth</div>
         <div class="intan-setting-row"><span>High-pass</span><div class="intan-value-box">300 Hz</div></div>
         <div class="intan-setting-row"><span>Low-pass</span><div class="intan-value-box">7.5 kHz</div></div>
-        <div class="intan-setting-row"><span>DSP Notch</span><div class="intan-value-box">60 Hz</div></div>
       </div>
       <div class="intan-panel">
         <div class="intan-panel-title">System Status</div>
-        <div class="intan-setting-row" style="color: #27c93f; font-weight: bold;"><span>SPI Status</span><span>Locked</span></div>
-        <div class="intan-setting-row"><span>Sampling</span><span style="font-family: 'JetBrains Mono';">30 kS/s</span></div>
+        <div class="intan-setting-row" style="color: #27c93f; font-weight: bold;"><span>SPI Links</span><span>A, B Locked</span></div>
+        <div class="intan-setting-row" style="color: #777;"><span>Unused</span><span>C, D</span></div>
+        <div class="intan-setting-row"><span>Sampling</span><div class="intan-value-box" style="border:none;box-shadow:none;background:transparent;text-align:right;">30 kS/s</div></div>
       </div>
     </div>
   </div>
@@ -2305,9 +2397,10 @@ This project is open-source and available under the **MIT License**. Click the b
 
 ---
 
-<br>
-<h3 id="cn-signal-demo" style="text-align: center; margin-top: 30px;">⚡ 代表性 Spike 信号采集示意</h3>
-<p style="text-align: center; color: #64748b; font-size: 0.95em; max-width: 600px; margin: 0 auto; margin-bottom: 20px;">
+<span id="cn-signal-demo"></span>
+### ⚡ 代表性 Spike 信号采集示意
+
+<p style="color: #64748b; font-size: 0.95em; margin-bottom: 20px;">
   本交互模块为模拟演示，用以直观呈现系统在进行高通滤波后，捕获单细胞级动作电位（Spikes）的典型波形特征与低底噪表现。
 </p>
 
@@ -2315,43 +2408,80 @@ This project is open-source and available under the **MIT License**. Click the b
   <div class="intan-title-bar">
     <div class="intan-title-text">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12h4l3-9 5 18 3-9h5"/></svg>
-      Intan RHX Interface - Simulated Data Stream
+      Intan RHX Interface - Simulated E-Link (256-ch) Stream
     </div>
-    <div class="intan-window-controls">
-      <span class="min"></span><span class="max"></span><span class="close"></span>
-    </div>
+    <div class="intan-window-controls"><span class="min"></span><span class="max"></span><span class="close"></span></div>
   </div>
   
   <div class="intan-body">
-    <div class="intan-plot-area">
-      <canvas class="intan-canvas"></canvas>
-      <div class="intan-axes-label">X: 10 ms/div &nbsp;&nbsp; Y: 50 µV/div &nbsp;&nbsp; CH: 1-16 (代表性通道)</div>
+    <div class="intan-plots-wrapper">
+      <div class="intan-plot-pane">
+        <div class="intan-time-axis">
+          <span>0</span><span>400</span><span>800</span><span>1200</span><span>1600</span><span>2000 ms</span>
+        </div>
+        <div class="intan-canvas-container">
+          <canvas class="intan-canvas canvas-left"></canvas>
+        </div>
+        <div class="intan-pane-footer">
+          <span>⛶ Port A (128 ch)</span>
+          <div class="intan-footer-tools">
+            <span>➕ ➖ ⭱</span>
+            <label><input type="checkbox" checked> show pinned</label>
+            <span>▤ 🗗</span>
+          </div>
+        </div>
+      </div>
+      <div class="intan-plot-pane">
+        <div class="intan-time-axis">
+          <span>0</span><span>400</span><span>800</span><span>1200</span><span>1600</span><span>2000 ms</span>
+        </div>
+        <div class="intan-canvas-container">
+          <canvas class="intan-canvas canvas-right"></canvas>
+        </div>
+        <div class="intan-pane-footer">
+          <span>⛶ Port B (128 ch)</span>
+          <div class="intan-footer-tools">
+            <span>➕ ➖ ⭱</span>
+            <label><input type="checkbox" checked> show pinned</label>
+            <span>▤ 🗗</span>
+          </div>
+        </div>
+      </div>
     </div>
     
     <div class="intan-sidebar">
-      <div class="intan-btn-group">
-        <div class="intan-btn" style="background: #e6e6e6; box-shadow: inset 0 0 5px rgba(0,0,0,0.2);">Run</div>
-        <div class="intan-btn record">Record</div>
-      </div>
-      <div class="intan-panel">
-        <div class="intan-panel-title">已连接端口</div>
-        <div class="intan-ports">
-          <div class="intan-port"><div class="port-led"></div>Port A</div>
-          <div class="intan-port"><div class="port-led"></div>Port B</div>
-          <div class="intan-port"><div class="port-led"></div>Port C</div>
-          <div class="intan-port"><div class="port-led"></div>Port D</div>
+      <div class="intan-btn-group"><div class="intan-btn">Run</div><div class="intan-btn record">Record</div></div>
+     <div class="intan-panel">
+        <div class="intan-panel-title">Hardware Ports</div>
+        <div class="hw-ports-grid">
+          <div class="hw-port-box active">
+            <div class="hw-port-left"><span class="hw-port-label">A</span><div class="hw-port-connector"></div></div>
+            <div class="hw-port-leds"><div class="hw-led"></div><div class="hw-led"></div><div class="hw-led green"></div></div>
+          </div>
+          <div class="hw-port-box active">
+            <div class="hw-port-left"><span class="hw-port-label">B</span><div class="hw-port-connector"></div></div>
+            <div class="hw-port-leds"><div class="hw-led"></div><div class="hw-led"></div><div class="hw-led green"></div></div>
+          </div>
+          <div class="hw-port-box inactive">
+            <div class="hw-port-left"><span class="hw-port-label">C</span><div class="hw-port-connector"></div></div>
+            <div class="hw-port-leds"><div class="hw-led"></div><div class="hw-led"></div><div class="hw-led"></div></div>
+          </div>
+          <div class="hw-port-box inactive">
+            <div class="hw-port-left"><span class="hw-port-label">D</span><div class="hw-port-connector"></div></div>
+            <div class="hw-port-leds"><div class="hw-led"></div><div class="hw-led"></div><div class="hw-led"></div></div>
+          </div>
         </div>
       </div>
       <div class="intan-panel">
-        <div class="intan-panel-title">滤波带宽</div>
+        <div class="intan-panel-title">Filter Bandwidth</div>
         <div class="intan-setting-row"><span>High-pass</span><div class="intan-value-box">300 Hz</div></div>
         <div class="intan-setting-row"><span>Low-pass</span><div class="intan-value-box">7.5 kHz</div></div>
-        <div class="intan-setting-row"><span>DSP Notch</span><div class="intan-value-box">60 Hz</div></div>
       </div>
       <div class="intan-panel">
-        <div class="intan-panel-title">系统状态</div>
-        <div class="intan-setting-row" style="color: #27c93f; font-weight: bold;"><span>SPI 状态</span><span>Locked</span></div>
-        <div class="intan-setting-row"><span>采样率</span><span style="font-family: 'JetBrains Mono';">30 kS/s</span></div>
+        <div class="intan-panel-title">System Status</div>
+        <div class="intan-setting-row" style="color: #27c93f; font-weight: bold;"><span>SPI Links</span><span>A, B Locked</span></div>
+        <div class="intan-setting-row" style="color: #777;"><span>Unused</span><span>C, D</span></div>
+        <div class="intan-setting-row"><span>Sampling</span><div class="intan-value-box" style="border:none;box-shadow:none;background:transparent;text-align:right;">30 kS/s</div></div>
       </div>
     </div>
   </div>
@@ -2764,129 +2894,190 @@ This project is open-source and available under the **MIT License**. Click the b
 
     models.forEach(model => modelObserver.observe(model));
 
-// 👇 插入开始：Intan 示波器动画引擎 👇
-    const intanCanvases = document.querySelectorAll('.intan-canvas');
-    if (intanCanvases.length > 0) {
-      intanCanvases.forEach(canvas => {
-        const ctx = canvas.getContext('2d', { alpha: false }); // 优化性能，背景不透明
-        let width, height;
-        
-        function resizeIntanCanvas() {
-          if(canvas.parentElement.clientWidth === 0) return;
-          const dpr = Math.min(window.devicePixelRatio || 1, 2);
-          width = canvas.parentElement.clientWidth;
-          height = canvas.parentElement.clientHeight;
-          canvas.width = width * dpr;
-          canvas.height = height * dpr;
-          ctx.scale(dpr, dpr);
-        }
-        window.addEventListener('resize', resizeIntanCanvas);
-        resizeIntanCanvas();
-        new ResizeObserver(resizeIntanCanvas).observe(canvas.parentElement);
+// 👇 插入开始：Intan 像素级示波器动画引擎 👇
+    const intanSimulators = document.querySelectorAll('.intan-simulator-wrapper');
+    
+    // Intan 经典的通道颜色序列 (从截图提取的色彩组)
+    const intanColors = [
+      '#e04a4a', '#d49b38', '#6b6b6b', '#3dc94d', '#3dc98b', '#3da1c9', '#3d61c9', '#573dc9',
+      '#993dc9', '#c93d9e', '#c93d5a', '#d47238', '#b8c93d', '#70c93d', '#3dc9c7', '#3d94c9',
+      '#3d51c9', '#6d3dc9', '#b53dc9', '#c93da6', '#c93d4a', '#d48838', '#d4b338', '#99c93d',
+      '#3dc958', '#3dc99e', '#3dbbc9', '#3d6ec9', '#4d3dc9', '#8b3dc9', '#c93dbb', '#c93d70'
+    ];
 
-        const NUM_CHANNELS = 16; 
-        const channels = [];
+    intanSimulators.forEach(sim => {
+      const canvasL = sim.querySelector('.canvas-left');
+      const canvasR = sim.querySelector('.canvas-right');
+      if (!canvasL || !canvasR) return;
+
+      const ctxL = canvasL.getContext('2d', { alpha: false });
+      const ctxR = canvasR.getContext('2d', { alpha: false });
+      let width, height;
+      
+      function resizeIntanCanvas() {
+        if(canvasL.parentElement.clientWidth === 0) return;
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        width = canvasL.parentElement.clientWidth;
+        height = canvasL.parentElement.clientHeight;
+        canvasL.width = width * dpr; canvasL.height = height * dpr;
+        canvasR.width = width * dpr; canvasR.height = height * dpr;
+        ctxL.scale(dpr, dpr); ctxR.scale(dpr, dpr);
+      }
+      window.addEventListener('resize', resizeIntanCanvas);
+      resizeIntanCanvas();
+      new ResizeObserver(resizeIntanCanvas).observe(canvasL.parentElement);
+
+      // 显示密度：截图里大概能看到 36 根线
+      const NUM_CHANNELS = 36; 
+      const LABEL_WIDTH = 95; // 左侧彩色标签列的宽度
+      
+      // 生成通道数据
+      function generateChannels(prefix) {
+        const arr = [];
         for (let i = 0; i < NUM_CHANNELS; i++) {
-          channels.push({
+          // 模拟截图：A-002 和 D-008 阻抗异常 (灰色)
+          let isBad = false;
+          let imp = (0.3 + Math.random() * 0.2).toFixed(2) + " kΩ";
+          let cIdx = i % intanColors.length;
+          
+          if ((prefix === 'A' && i === 2) || (prefix === 'B' && i === 8)) {
+            isBad = true;
+            imp = (15 + Math.random() * 6).toFixed(1) + " MΩ";
+            cIdx = 2; // 强行指定为灰色 (#6b6b6b)
+          }
+
+          // 通道编号补零
+          let idStr = i.toString().padStart(3, '0');
+          
+          arr.push({
+            label: `${prefix}-${idStr} ${imp}`,
+            color: intanColors[cIdx],
+            isBad: isBad,
             baseY: 0, lastY: 0, isSpiking: false, spikeProgress: 0, spikeAmp: 0,
-            firingRate: 0.002 + Math.random() * 0.012 
+            firingRate: isBad ? 0 : (0.002 + Math.random() * 0.015) 
           });
         }
+        return arr;
+      }
+      
+      const channelsL = generateChannels('A');
+      const channelsR = generateChannels('B'); // 对应你的硬件 Port B
 
-        let scanX = 0; 
-        const scanSpeed = 3; 
-        let animationFrame;
+      let scanX = LABEL_WIDTH; // 扫描从标签右侧开始
+      const scanSpeed = 3; 
+      let animationFrame;
 
-        // 初始全黑背景
+      ctxL.fillStyle = '#000000'; ctxL.fillRect(0, 0, 9999, 9999);
+      ctxR.fillStyle = '#000000'; ctxR.fillRect(0, 0, 9999, 9999);
+
+      function getSpikeShape(t) {
+        return (Math.exp(-Math.pow((t - 0.3) * 12, 2)) * -1.0) + (Math.exp(-Math.pow((t - 0.6) * 8, 2)) * 0.3);
+      }
+
+      function drawPane(ctx, channelsData, isLeftPane) {
+        const eraseWidth = 30;
+        
+        // 1. 画擦除条
         ctx.fillStyle = '#000000';
-        ctx.fillRect(0, 0, 9999, 9999);
-
-        // 细胞外动作电位波形函数
-        function getSpikeShape(t) {
-          const depol = Math.exp(-Math.pow((t - 0.3) * 12, 2)) * -1.0; 
-          const repol = Math.exp(-Math.pow((t - 0.6) * 8, 2)) * 0.3;
-          return depol + repol;
+        if (scanX + eraseWidth > width) {
+          ctx.fillRect(scanX, 0, width - scanX, height);
+          ctx.fillRect(LABEL_WIDTH, 0, eraseWidth - (width - scanX), height);
+        } else {
+          ctx.fillRect(scanX, 0, eraseWidth, height);
         }
 
-        function renderSpikeSweep() {
-          const eraseWidth = 25;
-          ctx.fillStyle = '#000000';
-          if (scanX + eraseWidth > width) {
-            ctx.fillRect(scanX, 0, width - scanX, height);
-            ctx.fillRect(0, 0, eraseWidth - (width - scanX), height);
-          } else {
-            ctx.fillRect(scanX, 0, eraseWidth, height);
-          }
+        // 2. 绘制信号线
+        const gap = height / (NUM_CHANNELS + 0.5);
+        const maxAmplitude = gap * 0.8; 
 
-          ctx.globalCompositeOperation = 'lighter';
-          ctx.strokeStyle = 'rgba(57, 255, 20, 0.85)'; 
-          ctx.lineWidth = 1.5;
-          ctx.lineCap = 'round';
-          ctx.lineJoin = 'round';
-
-          const gap = height / (NUM_CHANNELS + 1);
-          const maxAmplitude = gap * 0.8; 
-
-          ctx.beginPath();
-          for (let i = 0; i < NUM_CHANNELS; i++) {
-            const ch = channels[i];
-            ch.baseY = gap * (i + 1);
-            
-            // 极微小的白噪声
-            let signal = (Math.random() - 0.5) * 0.12; 
-
-            if (!ch.isSpiking && Math.random() < ch.firingRate) {
-              ch.isSpiking = true;
-              ch.spikeProgress = 0;
-              ch.spikeAmp = 0.7 + Math.random() * 0.5; 
-            }
-
-            if (ch.isSpiking) {
-              signal += getSpikeShape(ch.spikeProgress) * ch.spikeAmp;
-              ch.spikeProgress += 0.08; 
-              if (ch.spikeProgress >= 1) ch.isSpiking = false;
-            }
-
-            const currentY = ch.baseY + signal * maxAmplitude;
-
-            if (scanX === 0) {
-              ctx.moveTo(scanX, currentY);
-            } else {
-              ctx.moveTo(scanX - scanSpeed, ch.lastY);
-              ctx.lineTo(scanX, currentY);
-            }
-            ch.lastY = currentY;
-          }
-          ctx.stroke();
+        for (let i = 0; i < NUM_CHANNELS; i++) {
+          const ch = channelsData[i];
+          ch.baseY = gap * (i + 0.5);
           
           ctx.beginPath();
-          ctx.moveTo(scanX, 0);
-          ctx.lineTo(scanX, height);
-          ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
-          ctx.lineWidth = 1;
-          ctx.stroke();
+          ctx.strokeStyle = ch.color; 
+          ctx.lineWidth = 1.0;
+          
+          // 极微小的白噪声 (坏通道噪声略大)
+          let signal = (Math.random() - 0.5) * (ch.isBad ? 0.05 : 0.15); 
 
-          ctx.globalCompositeOperation = 'source-over';
-
-          scanX += scanSpeed;
-          if (scanX >= width) {
-            scanX = 0;
-            for (let i = 0; i < NUM_CHANNELS; i++) channels[i].lastY = channels[i].baseY; 
+          if (!ch.isSpiking && Math.random() < ch.firingRate) {
+            ch.isSpiking = true; ch.spikeProgress = 0; ch.spikeAmp = 0.6 + Math.random() * 0.5; 
           }
-          animationFrame = requestAnimationFrame(renderSpikeSweep);
+          if (ch.isSpiking) {
+            signal += getSpikeShape(ch.spikeProgress) * ch.spikeAmp;
+            ch.spikeProgress += 0.08; 
+            if (ch.spikeProgress >= 1) ch.isSpiking = false;
+          }
+
+          const currentY = ch.baseY + signal * maxAmplitude;
+          if (scanX === LABEL_WIDTH) { ctx.moveTo(scanX, currentY); } 
+          else { ctx.moveTo(scanX - scanSpeed, ch.lastY); ctx.lineTo(scanX, currentY); }
+          
+          ctx.stroke();
+          ch.lastY = currentY;
+        }
+        
+        // 3. 画垂直扫描指示线
+        ctx.beginPath();
+        ctx.moveTo(scanX, 0); ctx.lineTo(scanX, height);
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)'; ctx.lineWidth = 1; ctx.stroke();
+
+        // 4. 重绘左侧标签区域 (绝对还原截图)
+        ctx.fillStyle = '#000000';
+        ctx.fillRect(0, 0, LABEL_WIDTH, height);
+        
+        ctx.font = '10px "Segoe UI", sans-serif';
+        ctx.textBaseline = 'middle';
+        
+        for (let i = 0; i < NUM_CHANNELS; i++) {
+          const ch = channelsData[i];
+          // 彩色背景块
+          ctx.fillStyle = ch.color;
+          ctx.fillRect(0, ch.baseY - 5, LABEL_WIDTH - 5, 11);
+          // 文字
+          ctx.fillStyle = ch.isBad ? '#000' : '#fff'; // 深灰块用黑字，其他用白字
+          ctx.fillText(ch.label, 4, ch.baseY + 1);
         }
 
-        const observer = new IntersectionObserver((entries) => {
-          if (entries[0].isIntersecting && canvas.offsetParent !== null) {
-            if (!animationFrame) renderSpikeSweep();
-          } else {
-            if (animationFrame) cancelAnimationFrame(animationFrame);
-            animationFrame = null;
+        // 左屏专属：画中间的 50 µV 比例尺 (仿照截图里的位置)
+        if (isLeftPane) {
+          const scaleY = channelsData[3].baseY; // 大约放在第4个通道中间
+          const scaleX = LABEL_WIDTH + 80;
+          ctx.strokeStyle = '#fff';
+          ctx.beginPath();
+          ctx.moveTo(scaleX, scaleY - 10); ctx.lineTo(scaleX, scaleY + 10);
+          ctx.stroke();
+          ctx.fillStyle = '#fff';
+          ctx.fillText("50 µV", scaleX + 6, scaleY + 1);
+        }
+      }
+
+      function renderDualSweep() {
+        drawPane(ctxL, channelsL, true);
+        drawPane(ctxR, channelsR, false);
+
+        scanX += scanSpeed;
+        if (scanX >= width) {
+          scanX = LABEL_WIDTH;
+          for (let i = 0; i < NUM_CHANNELS; i++) {
+             channelsL[i].lastY = channelsL[i].baseY; 
+             channelsR[i].lastY = channelsR[i].baseY;
           }
-        }, { threshold: 0.1 });
-        observer.observe(canvas.parentElement);
-      });
-    }
+        }
+        animationFrame = requestAnimationFrame(renderDualSweep);
+      }
+
+      const observer = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && canvasL.offsetParent !== null) {
+          if (!animationFrame) renderDualSweep();
+        } else {
+          if (animationFrame) cancelAnimationFrame(animationFrame);
+          animationFrame = null;
+        }
+      }, { threshold: 0.1 });
+      observer.observe(sim);
+    });
     // 👆 插入结束 👆
     
     // ===================== GIF 懒加载 =====================
