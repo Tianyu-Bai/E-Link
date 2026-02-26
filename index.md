@@ -1400,7 +1400,7 @@ body.light-mode .watermark-features strong { color: #2563eb; text-shadow: none; 
 ### ⚡ Representative Spike Signal Acquisition (Simulation)
 
 <p style="color: #64748b; font-size: 0.95em; margin-bottom: 20px;">
-  An interactive illustration demonstrating typical high-pass filtered action potentials (Spikes). This simulates the expected visual characteristics and signal-to-noise ratio when recording with the E-Link system.
+  An interactive simulation demonstrating the acquisition of extracellular action potentials (spikes). The signals are modeled within a standard spike-band filter (300 Hz – 7.5 kHz) at a 30 kS/s sampling rate, reflecting the expected waveform morphology, thermal noise floor, and signal-to-noise ratio (SNR) during high-density recordings with the E-Link system.
 </p>
 
 <style>
@@ -2414,7 +2414,7 @@ This project is open-source and available under the **MIT License**. Click the b
 ### ⚡ 代表性 Spike 信号采集示意
 
 <p style="color: #64748b; font-size: 0.95em; margin-bottom: 20px;">
-  本交互模块为模拟演示，用以直观呈现系统在进行高通滤波后，捕获单细胞级动作电位（Spikes）的典型波形特征与低底噪表现。
+  本交互模块为模拟演示，展示了系统在标准 Spike 频段（300 Hz – 7.5 kHz）下的胞外动作电位采集能力。该模型以 30 kS/s 的采样率，直观呈现了使用 E-Link 系统进行高密度记录时预期的波形动力学特征、系统热噪声底噪以及信噪比 (SNR) 表现。
 </p>
 
 <div class="intan-simulator-wrapper" data-aos="fade-up">
@@ -2912,7 +2912,7 @@ const intanSimulators = document.querySelectorAll('.intan-simulator-wrapper');
 
 // 1. 保留原始颜色序列
 const intanColors = [
-  '#e04a4a', '#d49b38', '#6b6b6b', '#3dc94d', '#3dc98b', '#3da1c9', '#3d61c9', '#573dc9',
+  '#e04a4a', '#d49b38', '#3dc94d', '#3dc98b', '#3da1c9', '#3d61c9', '#573dc9',
   '#993dc9', '#c93d9e', '#c93d5a', '#d47238', '#b8c93d', '#70c93d', '#3dc9c7', '#3d94c9',
   '#3d51c9', '#6d3dc9', '#b53dc9', '#c93da6', '#c93d4a', '#d48838', '#d4b338', '#99c93d',
   '#3dc958', '#3dc99e', '#3dbbc9', '#3d6ec9', '#4d3dc9', '#8b3dc9', '#c93dbb', '#c93d70'
