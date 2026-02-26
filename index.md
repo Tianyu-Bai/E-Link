@@ -1453,7 +1453,7 @@ body.light-mode .watermark-features strong { color: #2563eb; text-shadow: none; 
   overflow: hidden;
   background: #000000;
   min-height: 0; /* 🚀 核心：防止被 canvas 撑破高度 */
-  display: flex; /* 让内容自适应 */
+  display: block; /* 让内容自适应 */
 }
 .intan-canvas { width: 100%; height: 100%; display: block; }
 
