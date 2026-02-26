@@ -1416,9 +1416,20 @@ body.light-mode .watermark-features strong { color: #2563eb; text-shadow: none; 
   background: linear-gradient(to bottom, #4a4a4a, #333333); padding: 5px 12px;
   display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #111;
 }
-.intan-title-text { color: #e0e0e0; font-size: 12px; font-weight: 600; display: flex; align-items: center; gap: 6px; letter-spacing: 0.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.intan-window-controls { display: flex; align-items: center; flex-shrink: 0; }
-.intan-window-controls span { display: block; width: 12px; height: 12px; border-radius: 50%; margin-left: 6px; background: #555; flex-shrink: 0; }
+.intan-title-text { 
+  color: #e0e0e0; font-size: 12px; font-weight: 600; 
+  display: flex; align-items: center; gap: 6px; letter-spacing: 0.5px; 
+  line-height: 1.3; /* 增加一点行高，两行文字看起来更舒服 */
+}
+.intan-title-text svg { 
+  flex-shrink: 0; /* 保护左侧的 SVG 小图标在文字折行时不会被压扁 */
+}
+.intan-window-controls { 
+  display: flex; align-items: center; flex-shrink: 0; /* 保护三个圆圈永远不换行且不被压缩 */
+}
+.intan-window-controls span { 
+  display: block; width: 12px; height: 12px; border-radius: 50%; margin-left: 6px; background: #555; flex-shrink: 0; 
+}
 .intan-window-controls span.close { background: #ff5f56; } .intan-window-controls span.min { background: #ffbd2e; } .intan-window-controls span.max { background: #27c93f; }
 
 .intan-body { display: flex; height: 420px; background: #000; }
@@ -2959,7 +2970,7 @@ intanSimulators.forEach(sim => {
   new ResizeObserver(resizeIntanCanvas).observe(canvasL.parentElement);
 
   const NUM_CHANNELS = 20; // 💡 优化：通道数20，让波形显示更清爽真实
-  const LABEL_WIDTH = 65; 
+  const LABEL_WIDTH = 70; 
   
   // 2. 严格保留原始通道生成逻辑 (含坏道模拟)
   function generateChannels(prefix) {
@@ -3007,8 +3018,8 @@ function drawPane(ctx, channelsData, isLeftPane) {
     // 🚀 1. 新增：动态判断手机端，并设定专属尺寸
     const isMobile = window.innerWidth <= 600;
     
-    // 手机端彩色框宽度设为 55（原本是 95），腾出 20px 给波形
-    const currentLabelWidth = isMobile ? 55 : LABEL_WIDTH; 
+    // 手机端彩色框宽度设为 62（原本是 95），腾出 20px 给波形
+    const currentLabelWidth = isMobile ? 62 : LABEL_WIDTH; 
     
     // 扫描刷新逻辑：擦除当前位置前方的一小条区域
     const eraseWidth = 2; 
@@ -3027,7 +3038,7 @@ function drawPane(ctx, channelsData, isLeftPane) {
 
     for (let i = 0; i < NUM_CHANNELS; i++) {
       const ch = channelsData[i];
-      ch.baseY = gap * (i + 0.5);
+      ch.baseY = Math.floor(gap * (i + 0.5)) + 0.5;
       
       let signal = 0;
 
@@ -3057,8 +3068,8 @@ function drawPane(ctx, channelsData, isLeftPane) {
         }
       }
 
-      const currentY = ch.baseY + signal * maxAmplitude;
-
+      const currentY = Math.floor(ch.baseY + signal * maxAmplitude) + 0.5;
+      
       // 只有在非起始点时才画线 (注意这里改用 currentLabelWidth)
       if (scanX > currentLabelWidth + scanSpeed) {
         ctx.beginPath();
@@ -3120,8 +3131,8 @@ function drawPane(ctx, channelsData, isLeftPane) {
 
       scanX += scanSpeed;
       if (scanX >= width) {
-        // 🚀 核心修复：回到左侧时，如果是手机则回到 75，否则回到原本的 LABEL_WIDTH
-        scanX = window.innerWidth <= 600 ? 75 : LABEL_WIDTH; 
+        // 🚀 核心修复：回到左侧时，如果是手机则回到 62，否则回到原本的 LABEL_WIDTH
+        scanX = window.innerWidth <= 600 ? 62 : LABEL_WIDTH; 
       }
     }
     animationFrame = requestAnimationFrame(renderDualSweep);
