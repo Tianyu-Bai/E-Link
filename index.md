@@ -352,6 +352,7 @@ kbd {
   will-change: transform;
   isolation: isolate;
   contain: strict;
+  content-visibility: auto;
 }
 
 .custom-model-viewer:focus, .custom-model-viewer:active, .custom-model-viewer:focus-visible {
@@ -957,6 +958,17 @@ body.light-mode .yield-bar-track { background: rgba(0,0,0,0.06); border-color: r
 
 <script>
 document.addEventListener("DOMContentLoaded", function() {
+  // 🚀 全局滚动状态锁 (专门拯救电脑端平滑滚动掉帧)
+  window.isPageScrolling = false;
+  let pageScrollTimer = null;
+  window.addEventListener('scroll', () => {
+    window.isPageScrolling = true;
+    clearTimeout(pageScrollTimer);
+    pageScrollTimer = setTimeout(() => {
+      window.isPageScrolling = false;
+    }, 150); // 停止滚动 150ms 后恢复状态
+  }, { passive: true });
+  
   // ===================== V2 Dashboard Animation Engine =====================
   const CIRCUMFERENCE = 2 * Math.PI * 45; // ≈ 283
   const DURATION = 2200;
@@ -1408,6 +1420,9 @@ body.light-mode .watermark-features strong { color: #2563eb; text-shadow: none; 
   background: #2b2b2b; border: 1px solid #1a1a1a; border-radius: 6px;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.1) inset;
   overflow: hidden; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; user-select: none;
+  transform: translateZ(0); 
+  contain: strict; /* 🚀 电脑端防抖神器：严格隔离布局和绘制 */
+  content-visibility: auto; /* 🚀 离开视口时浏览器会自动跳过它的渲染 */
 }
 .intan-title-bar {
   background: linear-gradient(to bottom, #4a4a4a, #333333); padding: 5px 12px;
@@ -2914,12 +2929,21 @@ intanSimulators.forEach(sim => {
   const ctxL = canvasL.getContext('2d', { alpha: false });
   const ctxR = canvasR.getContext('2d', { alpha: false });
   let width, height;
+  let lastWidth = 0; // 💡 新增：记录上一次的宽度，防止手机端滚动时误触发重绘
   
   function resizeIntanCanvas() {
     if(canvasL.parentElement.clientWidth === 0) return;
+    
+    const newWidth = canvasL.parentElement.clientWidth;
+    const newHeight = canvasL.parentElement.clientHeight;
+    
+    // 🚀 核心修复：如果仅仅是高度变化（手机端上下滑动引起的地址栏缩放），直接退出，绝不清空画布！
+    if (lastWidth === newWidth) return; 
+    lastWidth = newWidth;
+
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
-    width = canvasL.parentElement.clientWidth;
-    height = canvasL.parentElement.clientHeight;
+    width = newWidth;
+    height = newHeight;
     
     [canvasL, canvasR].forEach(canvas => {
       canvas.width = width * dpr;
@@ -2935,7 +2959,7 @@ intanSimulators.forEach(sim => {
   resizeIntanCanvas();
   new ResizeObserver(resizeIntanCanvas).observe(canvasL.parentElement);
 
-  const NUM_CHANNELS = 24; // 💡 优化：通道数从 36 降至 24，让波形显示更清爽真实
+  const NUM_CHANNELS = 20; // 💡 优化：通道数20，让波形显示更清爽真实
   const LABEL_WIDTH = 95; 
   
   // 2. 严格保留原始通道生成逻辑 (含坏道模拟)
@@ -2953,7 +2977,7 @@ intanSimulators.forEach(sim => {
         cIdx = 2; // 灰色
       }
 
-      let idStr = i.toString().padStart(3, '0');
+      let idStr = (i + 108).toString().padStart(3, '0');
       arr.push({
         label: `${prefix}-${idStr} ${imp}`,
         color: intanColors[cIdx],
@@ -2979,7 +3003,7 @@ intanSimulators.forEach(sim => {
 
   function drawPane(ctx, channelsData, isLeftPane) {
     // 扫描刷新逻辑：擦除当前位置前方的一小条区域
-    const eraseWidth = 25; 
+    const eraseWidth = 2; 
     ctx.fillStyle = '#000000';
     
     // 处理回绕时的擦除
@@ -3066,13 +3090,17 @@ intanSimulators.forEach(sim => {
   }
 
   function renderDualSweep() {
-    drawPane(ctxL, channelsL, true);
-    drawPane(ctxR, channelsR, false);
+    // 🚀 核心修复：如果页面正在滚动，直接跳过 Canvas 绘制，把算力全部让给 Lenis 平滑滚动！
+    if (!window.isPageScrolling) {
+      drawPane(ctxL, channelsL, true);
+      drawPane(ctxR, channelsR, false);
 
-    scanX += scanSpeed;
-    if (scanX >= width) {
-      scanX = LABEL_WIDTH;
+      scanX += scanSpeed;
+      if (scanX >= width) {
+        scanX = LABEL_WIDTH;
+      }
     }
+    // 动画帧继续循环，但滚动时不执行繁重的 drawPane
     animationFrame = requestAnimationFrame(renderDualSweep);
   }
 
