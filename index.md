@@ -351,7 +351,8 @@ kbd {
   /* ✅ 新增：强制独立合成层，防止滚动时与父容器重绘竞争导致闪烁 */
   will-change: transform;
   isolation: isolate;
-  contain: strict;
+  contain: paint layout size; /* 对于已经设定了明确固定高度 460px 的 3D 模型，加上 size 是安全的 */
+  content-visibility: auto;
   content-visibility: auto;
 }
 
@@ -1421,7 +1422,8 @@ body.light-mode .watermark-features strong { color: #2563eb; text-shadow: none; 
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.1) inset;
   overflow: hidden; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; user-select: none;
   transform: translateZ(0); 
-  contain: strict; /* 🚀 电脑端防抖神器：严格隔离布局和绘制 */
+  contain: paint layout; 
+  content-visibility: auto;
   content-visibility: auto; /* 🚀 离开视口时浏览器会自动跳过它的渲染 */
 }
 .intan-title-bar {
