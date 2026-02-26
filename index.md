@@ -1416,8 +1416,9 @@ body.light-mode .watermark-features strong { color: #2563eb; text-shadow: none; 
   background: linear-gradient(to bottom, #4a4a4a, #333333); padding: 5px 12px;
   display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #111;
 }
-.intan-title-text { color: #e0e0e0; font-size: 12px; font-weight: 600; display: flex; align-items: center; gap: 6px; letter-spacing: 0.5px; }
-.intan-window-controls span { display: inline-block; width: 12px; height: 12px; border-radius: 50%; margin-left: 6px; background: #555; }
+.intan-title-text { color: #e0e0e0; font-size: 12px; font-weight: 600; display: flex; align-items: center; gap: 6px; letter-spacing: 0.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.intan-window-controls { display: flex; align-items: center; flex-shrink: 0; }
+.intan-window-controls span { display: block; width: 12px; height: 12px; border-radius: 50%; margin-left: 6px; background: #555; flex-shrink: 0; }
 .intan-window-controls span.close { background: #ff5f56; } .intan-window-controls span.min { background: #ffbd2e; } .intan-window-controls span.max { background: #27c93f; }
 
 .intan-body { display: flex; height: 420px; background: #000; }
@@ -2958,7 +2959,7 @@ intanSimulators.forEach(sim => {
   new ResizeObserver(resizeIntanCanvas).observe(canvasL.parentElement);
 
   const NUM_CHANNELS = 20; // 💡 优化：通道数20，让波形显示更清爽真实
-  const LABEL_WIDTH = 95; 
+  const LABEL_WIDTH = 65; 
   
   // 2. 严格保留原始通道生成逻辑 (含坏道模拟)
   function generateChannels(prefix) {
@@ -3006,8 +3007,8 @@ function drawPane(ctx, channelsData, isLeftPane) {
     // 🚀 1. 新增：动态判断手机端，并设定专属尺寸
     const isMobile = window.innerWidth <= 600;
     
-    // 手机端彩色框宽度设为 75（原本是 95），腾出 20px 给波形
-    const currentLabelWidth = isMobile ? 75 : LABEL_WIDTH; 
+    // 手机端彩色框宽度设为 55（原本是 95），腾出 20px 给波形
+    const currentLabelWidth = isMobile ? 55 : LABEL_WIDTH; 
     
     // 扫描刷新逻辑：擦除当前位置前方的一小条区域
     const eraseWidth = 2; 
