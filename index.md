@@ -982,12 +982,6 @@ document.addEventListener("DOMContentLoaded", function() {
     ctx.scale(dpr, dpr);
     ctx.clearRect(0, 0, w, h);
 
-    // 背景网格
-    ctx.strokeStyle = 'rgba(167, 139, 250, 0.1)';
-    ctx.lineWidth = 0.5;
-    for (let y = 0; y < h; y += 10) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke(); }
-    for (let x = 0; x < w; x += 10) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke(); }
-
     // 波形信号
     const amplitude = (h * 0.35) * progress;
     const noiseAmp = (noiseVal / 5) * amplitude;
@@ -1454,15 +1448,15 @@ body.light-mode .watermark-features strong { color: #2563eb; text-shadow: none; 
 
 /* 绘图区背景：仅保留垂直对齐线 */
 .intan-canvas-container {
- /* 🚀 核心修复：打破 Flexbox 撑破机制 */
-  flex: 1 1 0%; /* 让它能伸能缩，但基准是 0 */
+  flex: 1 1 0%; /* 🚀 核心：强制分配剩余空间 */
   position: relative; 
   overflow: hidden;
-  background: #000000; /* 纯黑背景 */
-  min-height: 0; 
-  display: block; 
+  background: #000000;
+  min-height: 0; /* 🚀 核心：防止被 canvas 撑破高度 */
+  display: flex; /* 让内容自适应 */
 }
 .intan-canvas { width: 100%; height: 100%; display: block; }
+
 
 /* 底部状态栏 */
 .intan-pane-footer {
@@ -1493,13 +1487,12 @@ body.light-mode .watermark-features strong { color: #2563eb; text-shadow: none; 
 
 @media (max-width: 600px) {
   .intan-body { flex-direction: column; height: auto; }
-  .intan-plots-wrapper { flex-direction: column; height: 450px; }
-  .intan-plot-pane { border-right: none; border-bottom: 2px solid #222; }
+  .intan-plots-wrapper { flex-direction: column; height: 450px;  min-height: 450px;}
+  .intan-plot-pane {flex: 1 1 220px;  height: 220px;}
   .intan-sidebar { width: 100%; flex-direction: row; flex-wrap: wrap; }
   .intan-btn-group, .intan-panel { flex: 1; min-width: 120px; }
 }
 
-  
 /* ================= 新增：Intan 物理硬件前面板复刻 ================= */
 .hw-ports-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 2px; }
 .hw-port-box {
@@ -3123,7 +3116,7 @@ function drawPane(ctx, channelsData, isLeftPane) {
 
       scanX += scanSpeed;
       if (scanX >= width) {
-        // 🚀 让扫描线回绕时，也能识别手机端变窄的宽度
+        // 🚀 核心修复：回到左侧时，如果是手机则回到 75，否则回到原本的 LABEL_WIDTH
         scanX = window.innerWidth <= 600 ? 75 : LABEL_WIDTH; 
       }
     }
