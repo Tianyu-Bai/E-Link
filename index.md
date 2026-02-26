@@ -1449,6 +1449,7 @@ body.light-mode .watermark-features strong { color: #2563eb; text-shadow: none; 
   padding: 0 10px 0 100px; /* 避开左侧通道标签区 */
   border-bottom: 1px solid #444; color: #aaa; font-family: 'JetBrains Mono', monospace; font-size: 10px;
   background: #000; z-index: 10;
+  flex-shrink: 0; /* 🚀 新增：严禁被挤压 */
 }
 .intan-time-axis span { position: relative; }
 .intan-time-axis span::after {
@@ -1459,9 +1460,8 @@ body.light-mode .watermark-features strong { color: #2563eb; text-shadow: none; 
 /* 绘图区背景：仅保留垂直对齐线 */
 .intan-canvas-container {
   flex: 1; position: relative; overflow: hidden;
-  background-image: linear-gradient(90deg, transparent 99.5%, rgba(255, 255, 255, 0.15) 100%);
-  background-size: 20% 100%; /* 将横向平分为5段 (400,800,1200,1600,2000) */
-  background-position: 100px 0; /* 避开左侧标签区 */
+  background: #000000; /* 直接上纯黑色 */
+  min-height: 0; /* 🚀 新增：打破 Flexbox 默认的 min-height: auto，强制其绝对服从外层高度，这是修复越界的核心！ */
 }
 .intan-canvas { width: 100%; height: 100%; display: block; }
 
@@ -1469,6 +1469,7 @@ body.light-mode .watermark-features strong { color: #2563eb; text-shadow: none; 
 .intan-pane-footer {
   height: 22px; background: #e0e0e0; display: flex; justify-content: space-between; align-items: center;
   padding: 0 8px; font-size: 11px; color: #333; font-weight: 500; border-top: 1px solid #111;
+  flex-shrink: 0; /* 🚀 新增：严禁被挤压 */
 }
 .intan-footer-tools { display: flex; align-items: center; gap: 8px; color: #555; }
 .intan-footer-tools input[type="checkbox"] { margin: 0; }
@@ -3023,23 +3024,44 @@ intanSimulators.forEach(sim => {
       const ch = channelsData[i];
       ch.baseY = gap * (i + 0.5);
       
-      // 💡 真实感核心：使用一阶低通滤波器生成连续背景噪声，取代生硬的纯随机跳变
-      ch.currentNoise = ch.currentNoise * 0.65 + (Math.random() - 0.5) * (ch.isBad ? 0.015 : 0.06);
-      let signal = ch.currentNoise; 
+      let signal = 0;
 
-      if (!ch.isSpiking && Math.random() < ch.firingRate) {
-        ch.isSpiking = true; 
-        ch.spikeProgress = 0; 
-        ch.spikeAmp = 0.7 + Math.random() * 0.6; // 引入放电幅度随机性，使其错落有致
-      }
-      
-      if (ch.isSpiking) {
-        // 💡 真实感核心：更接近真实动作电位 (Spike) 的波形模拟：尖锐的去极化 + 微弱极化恢复尾部
-        let t = ch.spikeProgress;
-        let spikeShape = (Math.exp(-Math.pow((t - 0.25) * 15, 2)) * -1.0) + (Math.exp(-Math.pow((t - 0.5) * 10, 2)) * 0.3);
-        signal += spikeShape * ch.spikeAmp;
-        ch.spikeProgress += 0.12; // Spike 周期变短，让波形在视觉上更锋利
-        if (ch.spikeProgress >= 1) ch.isSpiking = false;
+      // 🚀 终极物理特征分离逻辑：
+      if (ch.isBad) {
+        // 【坏通道：高阻抗特征模拟】
+        ch.isSpiking = false; // 绝对没有 Spike
+        
+        // 特征 1: 引入经典的 60Hz (或 50Hz) 工频干扰 (Power Line Noise)
+        // 屏幕宽度代表 2000ms (2秒)，所以 x坐标比例 * 2.0 就是当前时间(秒)
+        const time_sec = scanX / width * 2.0; 
+        const powerLineInterference = Math.sin(time_sec * 60 * Math.PI * 2) * 0.15; 
+        
+        // 特征 2: 引入较大的热噪声 (Thermal Noise)，高阻抗带来高噪声
+        ch.currentNoise = ch.currentNoise * 0.3 + (Math.random() - 0.5) * 0.25; 
+        
+        // 最终坏通道的信号 = 工频干扰 + 明显的底噪
+        signal = powerLineInterference + ch.currentNoise;
+
+      } else {
+        // 【正常通道：健康脑电底噪】
+        ch.currentNoise = ch.currentNoise * 0.65 + (Math.random() - 0.5) * 0.06;
+        signal = ch.currentNoise; 
+        
+        // 触发 Spike 放电
+        if (!ch.isSpiking && Math.random() < ch.firingRate) {
+          ch.isSpiking = true; 
+          ch.spikeProgress = 0; 
+          ch.spikeAmp = 0.7 + Math.random() * 0.6; 
+        }
+        
+        // 渲染 Spike 波形
+        if (ch.isSpiking) {
+          let t = ch.spikeProgress;
+          let spikeShape = (Math.exp(-Math.pow((t - 0.25) * 15, 2)) * -1.0) + (Math.exp(-Math.pow((t - 0.5) * 10, 2)) * 0.3);
+          signal += spikeShape * ch.spikeAmp;
+          ch.spikeProgress += 0.12; 
+          if (ch.spikeProgress >= 1) ch.isSpiking = false;
+        }
       }
 
       const currentY = ch.baseY + signal * maxAmplitude;
@@ -3049,7 +3071,7 @@ intanSimulators.forEach(sim => {
         ctx.beginPath();
         ctx.strokeStyle = ch.color; 
         ctx.lineWidth = 1.2;
-        ctx.lineJoin = 'round'; // 💡 新增：保证曲线转折处极致圆滑连续
+        ctx.lineJoin = 'round'; 
         ctx.lineCap = 'round';
         ctx.moveTo(scanX - scanSpeed, ch.lastY);
         ctx.lineTo(scanX, currentY);
@@ -3066,7 +3088,10 @@ intanSimulators.forEach(sim => {
     ctx.fillStyle = '#000000';
     ctx.fillRect(0, 0, LABEL_WIDTH, height);
     
-    ctx.font = '10px "Segoe UI", sans-serif';
+    // 🚀 新增：判断如果是手机端（屏幕宽度<=600），就把字体缩小到 8px，否则保持 10px
+    const isMobile = window.innerWidth <= 600;
+    const fontSize = isMobile ? 8 : 10;
+    ctx.font = `${fontSize}px "Segoe UI", sans-serif`;
     ctx.textBaseline = 'middle';
     
     for (let i = 0; i < NUM_CHANNELS; i++) {
@@ -3074,7 +3099,8 @@ intanSimulators.forEach(sim => {
       ctx.fillStyle = ch.color;
       ctx.fillRect(0, ch.baseY - 5, LABEL_WIDTH - 5, 11);
       ctx.fillStyle = ch.isBad ? '#000' : '#fff';
-      ctx.fillText(ch.label, 4, ch.baseY + 1);
+      // 🚀 手机端稍微把文字往左靠一点点 (从 4 改为 2)，腾出更多空间给阻抗值
+      ctx.fillText(ch.label, isMobile ? 2 : 4, ch.baseY + 1);
     }
 
     // 5. 严格保留比例尺功能 (仅左屏)
