@@ -2992,7 +2992,8 @@ intanSimulators.forEach(sim => {
       let idStr = (i + 108).toString().padStart(3, '0');
       
       arr.push({
-        label: `${prefix}-${idStr} ${imp}`,
+        id: `${prefix}-${idStr}`, // ✅ 存储通道号：A-108
+        imp: imp,                 // ✅ 存储阻抗值：466 kΩ
         color: chColor, // 直接使用判定好的颜色
         isBad: isBad,
         baseY: 0, 
@@ -3095,27 +3096,44 @@ function drawPane(ctx, channelsData, isLeftPane) {
     // 计算 Y 轴偏移，让色块始终居中对齐波形基准线
     const blockOffsetY = blockHeight / 2;
     
-   ctx.font = `${fontSize}px "Segoe UI", "Arial", sans-serif`;
-    ctx.textBaseline = 'middle'; // 垂直对齐基准
-    ctx.textAlign = 'center';    // 🚀 新增：水平居中对齐
+   ctx.font = `${fontSize}px "Segoe UI", "Arial", sans-serif`; // 保持非加粗，还原工业感
+    ctx.textBaseline = 'middle';
+    
+    // 1. 设置边距布局
+    const padding = isMobile ? 3 : 5; 
+    const iconSize = isMobile ? 7 : 9; // 保存图标的大小
+    const idOffsetX = padding + iconSize + (isMobile ? 3 : 5); // 通道号要避开图标
+    const rightEdge = currentLabelWidth - padding - 1;
 
     for (let i = 0; i < NUM_CHANNELS; i++) {
       const ch = channelsData[i];
+      const textY = ch.baseY + (isMobile ? 0.5 : 1); // 统一的文字/图标中心线
       
-      // 1. 绘制背景框
+      // 2. 绘制背景框
       ctx.fillStyle = ch.color;
       ctx.fillRect(0, ch.baseY - blockOffsetY, currentLabelWidth - 3, blockHeight);
       
-      // 2. 绘制文字
-      ctx.fillStyle = ch.isBad ? '#000' : '#fff';
+      // 3. 准备绘制颜色（坏通道用半透明黑，好通道用纯白）
+      const themeColor = ch.isBad ? 'rgba(0,0,0,0.7)' : '#fff';
+      ctx.fillStyle = themeColor;
+
+      // --- 🚀 绘制“保存”图标 (软盘形状) ---
+      const iconY = textY - iconSize / 2;
+      // 画软盘主体
+      ctx.fillRect(padding, iconY, iconSize, iconSize);
+      // 挖掉软盘顶部的写保护标签区 (涂上底色)
+      ctx.fillStyle = ch.color;
+      ctx.fillRect(padding + iconSize * 0.2, iconY + iconSize * 0.1, iconSize * 0.6, iconSize * 0.3);
+      // 恢复颜色画文字
+      ctx.fillStyle = themeColor;
+
+      // --- 绘制通道号 (靠左) ---
+      ctx.textAlign = 'left';
+      ctx.fillText(ch.id, idOffsetX, textY);
       
-      // 计算水平中心点：(框宽度 - 右侧间距) / 2
-      const centerX = (currentLabelWidth - 3) / 2;
-      
-      // 这里的 ch.baseY 配合 textBaseline='middle' 实现垂直居中
-      // 这里的 centerX 配合 textAlign='center' 实现水平居中
-      // 💡 +0.5 或 +1 是微调，补偿不同设备下文字渲染的肉眼偏差
-      ctx.fillText(ch.label, centerX, ch.baseY + (isMobile ? 0.5 : 1));
+      // --- 绘制阻抗值 (靠右) ---
+      ctx.textAlign = 'right';
+      ctx.fillText(ch.imp, rightEdge, textY);
     }
 
     if (isLeftPane) {
