@@ -2893,191 +2893,195 @@ This project is open-source and available under the **MIT License**. Click the b
     }, { threshold: 0.1 });
 
     models.forEach(model => modelObserver.observe(model));
+// 👇 插入开始：Intan 像素级覆盖式示波器引擎 (100% 功能保留版) 👇
+const intanSimulators = document.querySelectorAll('.intan-simulator-wrapper');
 
-// 👇 插入开始：Intan 像素级示波器动画引擎 👇
-    const intanSimulators = document.querySelectorAll('.intan-simulator-wrapper');
+// 1. 保留原始颜色序列
+const intanColors = [
+  '#e04a4a', '#d49b38', '#6b6b6b', '#3dc94d', '#3dc98b', '#3da1c9', '#3d61c9', '#573dc9',
+  '#993dc9', '#c93d9e', '#c93d5a', '#d47238', '#b8c93d', '#70c93d', '#3dc9c7', '#3d94c9',
+  '#3d51c9', '#6d3dc9', '#b53dc9', '#c93da6', '#c93d4a', '#d48838', '#d4b338', '#99c93d',
+  '#3dc958', '#3dc99e', '#3dbbc9', '#3d6ec9', '#4d3dc9', '#8b3dc9', '#c93dbb', '#c93d70'
+];
+
+intanSimulators.forEach(sim => {
+  const canvasL = sim.querySelector('.canvas-left');
+  const canvasR = sim.querySelector('.canvas-right');
+  if (!canvasL || !canvasR) return;
+
+  // 强制关闭 alpha 通道，确保背景纯黑无蒙层
+  const ctxL = canvasL.getContext('2d', { alpha: false });
+  const ctxR = canvasR.getContext('2d', { alpha: false });
+  let width, height;
+  
+  function resizeIntanCanvas() {
+    if(canvasL.parentElement.clientWidth === 0) return;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    width = canvasL.parentElement.clientWidth;
+    height = canvasL.parentElement.clientHeight;
     
-    // Intan 经典的通道颜色序列 (从截图提取的色彩组)
-    const intanColors = [
-      '#e04a4a', '#d49b38', '#6b6b6b', '#3dc94d', '#3dc98b', '#3da1c9', '#3d61c9', '#573dc9',
-      '#993dc9', '#c93d9e', '#c93d5a', '#d47238', '#b8c93d', '#70c93d', '#3dc9c7', '#3d94c9',
-      '#3d51c9', '#6d3dc9', '#b53dc9', '#c93da6', '#c93d4a', '#d48838', '#d4b338', '#99c93d',
-      '#3dc958', '#3dc99e', '#3dbbc9', '#3d6ec9', '#4d3dc9', '#8b3dc9', '#c93dbb', '#c93d70'
-    ];
-
-    intanSimulators.forEach(sim => {
-      const canvasL = sim.querySelector('.canvas-left');
-      const canvasR = sim.querySelector('.canvas-right');
-      if (!canvasL || !canvasR) return;
-
-      const ctxL = canvasL.getContext('2d', { alpha: false });
-      const ctxR = canvasR.getContext('2d', { alpha: false });
-      let width, height;
-      
-      function resizeIntanCanvas() {
-        if(canvasL.parentElement.clientWidth === 0) return;
-        const dpr = Math.min(window.devicePixelRatio || 1, 2);
-        width = canvasL.parentElement.clientWidth;
-        height = canvasL.parentElement.clientHeight;
-        canvasL.width = width * dpr; canvasL.height = height * dpr;
-        canvasR.width = width * dpr; canvasR.height = height * dpr;
-        ctxL.scale(dpr, dpr); ctxR.scale(dpr, dpr);
-      }
-      window.addEventListener('resize', resizeIntanCanvas);
-      resizeIntanCanvas();
-      new ResizeObserver(resizeIntanCanvas).observe(canvasL.parentElement);
-
-      // 显示密度：截图里大概能看到 36 根线
-      const NUM_CHANNELS = 36; 
-      const LABEL_WIDTH = 95; // 左侧彩色标签列的宽度
-      
-      // 生成通道数据
-      function generateChannels(prefix) {
-        const arr = [];
-        for (let i = 0; i < NUM_CHANNELS; i++) {
-          let isBad = false;
-          // 核心调整：根据要求，阻抗设定在 418-500 kΩ 之间
-          let imp = (418 + Math.random() * 80).toFixed(0) + " kΩ"; 
-          let cIdx = i % intanColors.length;
-          
-          // 模拟个别异常通道（如截图中的 A-002）
-          if ((prefix === 'A' && i === 2) || (prefix === 'B' && i === 8)) {
-            isBad = true;
-            imp = (15 + Math.random() * 5).toFixed(1) + " MΩ";
-            cIdx = 2; // 灰色
-          }
-
-          let idStr = i.toString().padStart(3, '0');
-          arr.push({
-            label: `${prefix}-${idStr} ${imp}`,
-            color: intanColors[cIdx],
-            isBad: isBad,
-            baseY: 0, lastY: 0, isSpiking: false, spikeProgress: 0, spikeAmp: 0,
-            firingRate: isBad ? 0 : (0.002 + Math.random() * 0.015) 
-          });
-        }
-        return arr;
-      }
-      
-      const channelsL = generateChannels('A');
-      const channelsR = generateChannels('B'); // 对应你的硬件 Port B
-
-      let scanX = LABEL_WIDTH; // 扫描从标签右侧开始
-      const scanSpeed = 1; 
-      let animationFrame;
-
-      ctxL.fillStyle = '#000000'; ctxL.fillRect(0, 0, 9999, 9999);
-      ctxR.fillStyle = '#000000'; ctxR.fillRect(0, 0, 9999, 9999);
-
-      function getSpikeShape(t) {
-        return (Math.exp(-Math.pow((t - 0.3) * 12, 2)) * -1.0) + (Math.exp(-Math.pow((t - 0.6) * 8, 2)) * 0.3);
-      }
-
-      function drawPane(ctx, channelsData, isLeftPane) {
-        const eraseWidth = 30;
-        
-        // 1. 画擦除条
-        ctx.fillStyle = '#000000';
-        if (scanX + eraseWidth > width) {
-          ctx.fillRect(scanX, 0, width - scanX, height);
-          ctx.fillRect(LABEL_WIDTH, 0, eraseWidth - (width - scanX), height);
-        } else {
-          ctx.fillRect(scanX, 0, eraseWidth, height);
-        }
-
-        // 2. 绘制信号线
-        const gap = height / (NUM_CHANNELS + 0.5);
-        const maxAmplitude = gap * 0.8; 
-
-        for (let i = 0; i < NUM_CHANNELS; i++) {
-          const ch = channelsData[i];
-          ch.baseY = gap * (i + 0.5);
-          
-          ctx.beginPath();
-          ctx.strokeStyle = ch.color; 
-          ctx.lineWidth = 1.0;
-          
-          // 极微小的白噪声 (坏通道噪声略大)
-          let signal = (Math.random() - 0.5) * (ch.isBad ? 0.05 : 0.15); 
-
-          if (!ch.isSpiking && Math.random() < ch.firingRate) {
-            ch.isSpiking = true; ch.spikeProgress = 0; ch.spikeAmp = 0.6 + Math.random() * 0.5; 
-          }
-          if (ch.isSpiking) {
-            signal += getSpikeShape(ch.spikeProgress) * ch.spikeAmp;
-            ch.spikeProgress += 0.08; 
-            if (ch.spikeProgress >= 1) ch.isSpiking = false;
-          }
-
-          const currentY = ch.baseY + signal * maxAmplitude;
-          if (scanX === LABEL_WIDTH) { ctx.moveTo(scanX, currentY); } 
-          else { ctx.moveTo(scanX - scanSpeed, ch.lastY); ctx.lineTo(scanX, currentY); }
-          
-          ctx.stroke();
-          ch.lastY = currentY;
-        }
-        
-        // 3. 画垂直扫描指示线
-        ctx.beginPath();
-        ctx.moveTo(scanX, 0); ctx.lineTo(scanX, height);
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)'; ctx.lineWidth = 1; ctx.stroke();
-
-        // 4. 重绘左侧标签区域 (绝对还原截图)
-        ctx.fillStyle = '#000000';
-        ctx.fillRect(0, 0, LABEL_WIDTH, height);
-        
-        ctx.font = '10px "Segoe UI", sans-serif';
-        ctx.textBaseline = 'middle';
-        
-        for (let i = 0; i < NUM_CHANNELS; i++) {
-          const ch = channelsData[i];
-          // 彩色背景块
-          ctx.fillStyle = ch.color;
-          ctx.fillRect(0, ch.baseY - 5, LABEL_WIDTH - 5, 11);
-          // 文字
-          ctx.fillStyle = ch.isBad ? '#000' : '#fff'; // 深灰块用黑字，其他用白字
-          ctx.fillText(ch.label, 4, ch.baseY + 1);
-        }
-
-        // 左屏专属：画中间的 50 µV 比例尺 (仿照截图里的位置)
-        if (isLeftPane) {
-          const scaleY = channelsData[3].baseY; // 大约放在第4个通道中间
-          const scaleX = LABEL_WIDTH + 80;
-          ctx.strokeStyle = '#fff';
-          ctx.beginPath();
-          ctx.moveTo(scaleX, scaleY - 10); ctx.lineTo(scaleX, scaleY + 10);
-          ctx.stroke();
-          ctx.fillStyle = '#fff';
-          ctx.fillText("50 µV", scaleX + 6, scaleY + 1);
-        }
-      }
-
-      function renderDualSweep() {
-        drawPane(ctxL, channelsL, true);
-        drawPane(ctxR, channelsR, false);
-
-        scanX += scanSpeed;
-        if (scanX >= width) {
-          scanX = LABEL_WIDTH;
-          for (let i = 0; i < NUM_CHANNELS; i++) {
-             channelsL[i].lastY = channelsL[i].baseY; 
-             channelsR[i].lastY = channelsR[i].baseY;
-          }
-        }
-        animationFrame = requestAnimationFrame(renderDualSweep);
-      }
-
-      const observer = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting && canvasL.offsetParent !== null) {
-          if (!animationFrame) renderDualSweep();
-        } else {
-          if (animationFrame) cancelAnimationFrame(animationFrame);
-          animationFrame = null;
-        }
-      }, { threshold: 0.1 });
-      observer.observe(sim);
+    [canvasL, canvasR].forEach(canvas => {
+      canvas.width = width * dpr;
+      canvas.height = height * dpr;
+      const ctx = canvas.getContext('2d');
+      ctx.scale(dpr, dpr);
+      // 初始化全屏纯黑
+      ctx.fillStyle = '#000000';
+      ctx.fillRect(0, 0, width, height);
     });
-    // 👆 插入结束 👆
+  }
+  window.addEventListener('resize', resizeIntanCanvas);
+  resizeIntanCanvas();
+  new ResizeObserver(resizeIntanCanvas).observe(canvasL.parentElement);
+
+  const NUM_CHANNELS = 36; 
+  const LABEL_WIDTH = 95; 
+  
+  // 2. 严格保留原始通道生成逻辑 (含坏道模拟)
+  function generateChannels(prefix) {
+    const arr = [];
+    for (let i = 0; i < NUM_CHANNELS; i++) {
+      let isBad = false;
+      let imp = (418 + Math.random() * 80).toFixed(0) + " kΩ"; 
+      let cIdx = i % intanColors.length;
+      
+      // 模拟个别异常通道（完全保留原始判断条件）
+      if ((prefix === 'A' && i === 2) || (prefix === 'B' && i === 8)) {
+        isBad = true;
+        imp = (15 + Math.random() * 5).toFixed(1) + " MΩ";
+        cIdx = 2; // 灰色
+      }
+
+      let idStr = i.toString().padStart(3, '0');
+      arr.push({
+        label: `${prefix}-${idStr} ${imp}`,
+        color: intanColors[cIdx],
+        isBad: isBad,
+        baseY: 0, 
+        lastY: 0, 
+        isSpiking: false, 
+        spikeProgress: 0, 
+        spikeAmp: 0,
+        firingRate: isBad ? 0 : (0.002 + Math.random() * 0.015) 
+      });
+    }
+    return arr;
+  }
+  
+  const channelsL = generateChannels('A');
+  const channelsR = generateChannels('B');
+
+  let scanX = LABEL_WIDTH; 
+  const scanSpeed = 1.2; // 略微提升扫描感
+  let animationFrame;
+
+  // 3. 严格保留原始波形算法
+  function getSpikeShape(t) {
+    return (Math.exp(-Math.pow((t - 0.3) * 12, 2)) * -1.0) + (Math.exp(-Math.pow((t - 0.6) * 8, 2)) * 0.3);
+  }
+
+  function drawPane(ctx, channelsData, isLeftPane) {
+    // 扫描刷新逻辑：擦除当前位置前方的一小条区域
+    const eraseWidth = 25; 
+    ctx.fillStyle = '#000000';
+    
+    // 处理回绕时的擦除
+    if (scanX + eraseWidth > width) {
+      ctx.fillRect(scanX, 0, width - scanX, height);
+      ctx.fillRect(LABEL_WIDTH, 0, eraseWidth - (width - scanX), height);
+    } else {
+      ctx.fillRect(scanX, 0, eraseWidth, height);
+    }
+
+    const gap = height / (NUM_CHANNELS + 0.5);
+    const maxAmplitude = gap * 0.8; 
+
+    for (let i = 0; i < NUM_CHANNELS; i++) {
+      const ch = channelsData[i];
+      ch.baseY = gap * (i + 0.5);
+      
+      // 信号计算
+      let signal = (Math.random() - 0.5) * (ch.isBad ? 0.05 : 0.15); 
+      if (!ch.isSpiking && Math.random() < ch.firingRate) {
+        ch.isSpiking = true; ch.spikeProgress = 0; ch.spikeAmp = 0.6 + Math.random() * 0.5; 
+      }
+      if (ch.isSpiking) {
+        signal += getSpikeShape(ch.spikeProgress) * ch.spikeAmp;
+        ch.spikeProgress += 0.08; 
+        if (ch.spikeProgress >= 1) ch.isSpiking = false;
+      }
+
+      const currentY = ch.baseY + signal * maxAmplitude;
+
+      // 只有在非起始点时才画线，防止回绕连线
+      if (scanX > LABEL_WIDTH + scanSpeed) {
+        ctx.beginPath();
+        ctx.strokeStyle = ch.color; 
+        ctx.lineWidth = 1.1; // 稍微加粗提高清晰度
+        ctx.moveTo(scanX - scanSpeed, ch.lastY);
+        ctx.lineTo(scanX, currentY);
+        ctx.stroke();
+      }
+      ch.lastY = currentY;
+    }
+    
+    // 扫描指示线（极淡的白线，模仿屏幕刷新感）
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.2)';
+    ctx.fillRect(scanX, 0, 1, height);
+
+    // 4. 重绘左侧标签区域 (保持置顶)
+    ctx.fillStyle = '#000000';
+    ctx.fillRect(0, 0, LABEL_WIDTH, height);
+    
+    ctx.font = '10px "Segoe UI", sans-serif';
+    ctx.textBaseline = 'middle';
+    
+    for (let i = 0; i < NUM_CHANNELS; i++) {
+      const ch = channelsData[i];
+      ctx.fillStyle = ch.color;
+      ctx.fillRect(0, ch.baseY - 5, LABEL_WIDTH - 5, 11);
+      ctx.fillStyle = ch.isBad ? '#000' : '#fff';
+      ctx.fillText(ch.label, 4, ch.baseY + 1);
+    }
+
+    // 5. 严格保留比例尺功能 (仅左屏)
+    if (isLeftPane) {
+      const scaleY = channelsData[3].baseY; 
+      const scaleX = LABEL_WIDTH + 60;
+      ctx.strokeStyle = '#fff';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(scaleX, scaleY - 10); ctx.lineTo(scaleX, scaleY + 10);
+      ctx.stroke();
+      ctx.fillStyle = '#fff';
+      ctx.fillText("50 µV", scaleX + 6, scaleY + 1);
+    }
+  }
+
+  function renderDualSweep() {
+    drawPane(ctxL, channelsL, true);
+    drawPane(ctxR, channelsR, false);
+
+    scanX += scanSpeed;
+    if (scanX >= width) {
+      scanX = LABEL_WIDTH;
+      // 回绕时不需要清空lastY，因为是直接覆盖
+    }
+    animationFrame = requestAnimationFrame(renderDualSweep);
+  }
+
+  const observer = new IntersectionObserver((entries) => {
+    if (entries[0].isIntersecting && canvasL.offsetParent !== null) {
+      if (!animationFrame) renderDualSweep();
+    } else {
+      if (animationFrame) cancelAnimationFrame(animationFrame);
+      animationFrame = null;
+    }
+  }, { threshold: 0.1 });
+  observer.observe(sim);
+});
+// 👆 插入结束 👆
+
     
     // ===================== GIF 懒加载 =====================
   const gifObserver = new IntersectionObserver((entries, observer) => {
