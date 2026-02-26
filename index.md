@@ -2893,10 +2893,10 @@ This project is open-source and available under the **MIT License**. Click the b
     }, { threshold: 0.1 });
 
     models.forEach(model => modelObserver.observe(model));
-// 👇 插入开始：Intan 像素级覆盖式示波器引擎 (100% 功能保留版) 👇
+
+// 👇 插入开始：Intan 2秒恒定扫描 & 100% 功能保留版 👇
 const intanSimulators = document.querySelectorAll('.intan-simulator-wrapper');
 
-// 1. 保留原始颜色序列
 const intanColors = [
   '#e04a4a', '#d49b38', '#6b6b6b', '#3dc94d', '#3dc98b', '#3da1c9', '#3d61c9', '#573dc9',
   '#993dc9', '#c93d9e', '#c93d5a', '#d47238', '#b8c93d', '#70c93d', '#3dc9c7', '#3d94c9',
@@ -2909,7 +2909,6 @@ intanSimulators.forEach(sim => {
   const canvasR = sim.querySelector('.canvas-right');
   if (!canvasL || !canvasR) return;
 
-  // 强制关闭 alpha 通道，确保背景纯黑无蒙层
   const ctxL = canvasL.getContext('2d', { alpha: false });
   const ctxR = canvasR.getContext('2d', { alpha: false });
   let width, height;
@@ -2919,13 +2918,10 @@ intanSimulators.forEach(sim => {
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
     width = canvasL.parentElement.clientWidth;
     height = canvasL.parentElement.clientHeight;
-    
     [canvasL, canvasR].forEach(canvas => {
-      canvas.width = width * dpr;
-      canvas.height = height * dpr;
+      canvas.width = width * dpr; canvas.height = height * dpr;
       const ctx = canvas.getContext('2d');
       ctx.scale(dpr, dpr);
-      // 初始化全屏纯黑
       ctx.fillStyle = '#000000';
       ctx.fillRect(0, 0, width, height);
     });
@@ -2937,31 +2933,22 @@ intanSimulators.forEach(sim => {
   const NUM_CHANNELS = 36; 
   const LABEL_WIDTH = 95; 
   
-  // 2. 严格保留原始通道生成逻辑 (含坏道模拟)
   function generateChannels(prefix) {
     const arr = [];
     for (let i = 0; i < NUM_CHANNELS; i++) {
       let isBad = false;
       let imp = (418 + Math.random() * 80).toFixed(0) + " kΩ"; 
       let cIdx = i % intanColors.length;
-      
-      // 模拟个别异常通道（完全保留原始判断条件）
       if ((prefix === 'A' && i === 2) || (prefix === 'B' && i === 8)) {
         isBad = true;
         imp = (15 + Math.random() * 5).toFixed(1) + " MΩ";
-        cIdx = 2; // 灰色
+        cIdx = 2;
       }
-
-      let idStr = i.toString().padStart(3, '0');
       arr.push({
-        label: `${prefix}-${idStr} ${imp}`,
+        label: `${prefix}-${i.toString().padStart(3, '0')} ${imp}`,
         color: intanColors[cIdx],
         isBad: isBad,
-        baseY: 0, 
-        lastY: 0, 
-        isSpiking: false, 
-        spikeProgress: 0, 
-        spikeAmp: 0,
+        baseY: 0, lastY: 0, isSpiking: false, spikeProgress: 0, spikeAmp: 0,
         firingRate: isBad ? 0 : (0.002 + Math.random() * 0.015) 
       });
     }
@@ -2972,35 +2959,34 @@ intanSimulators.forEach(sim => {
   const channelsR = generateChannels('B');
 
   let scanX = LABEL_WIDTH; 
-  const scanSpeed = 1.2; // 略微提升扫描感
+  let lastTime = performance.now();
+  const SCAN_PERIOD = 2000; // 严格2秒走完一屏
   let animationFrame;
 
-  // 3. 严格保留原始波形算法
   function getSpikeShape(t) {
     return (Math.exp(-Math.pow((t - 0.3) * 12, 2)) * -1.0) + (Math.exp(-Math.pow((t - 0.6) * 8, 2)) * 0.3);
   }
 
-  function drawPane(ctx, channelsData, isLeftPane) {
-    // 扫描刷新逻辑：擦除当前位置前方的一小条区域
-    const eraseWidth = 25; 
-    ctx.fillStyle = '#000000';
+  function drawPane(ctx, channelsData, isLeftPane, currentScanX, step) {
+    const eraseWidth = 15; // 缩小后的黑色条宽度，更精致
     
-    // 处理回绕时的擦除
-    if (scanX + eraseWidth > width) {
-      ctx.fillRect(scanX, 0, width - scanX, height);
-      ctx.fillRect(LABEL_WIDTH, 0, eraseWidth - (width - scanX), height);
+    // 1. 擦除逻辑
+    ctx.fillStyle = '#000000';
+    if (currentScanX + eraseWidth > width) {
+      ctx.fillRect(currentScanX, 0, width - currentScanX, height);
+      ctx.fillRect(LABEL_WIDTH, 0, eraseWidth - (width - currentScanX), height);
     } else {
-      ctx.fillRect(scanX, 0, eraseWidth, height);
+      ctx.fillRect(currentScanX, 0, eraseWidth, height);
     }
 
     const gap = height / (NUM_CHANNELS + 0.5);
     const maxAmplitude = gap * 0.8; 
 
+    // 2. 绘制信号线
     for (let i = 0; i < NUM_CHANNELS; i++) {
       const ch = channelsData[i];
       ch.baseY = gap * (i + 0.5);
       
-      // 信号计算
       let signal = (Math.random() - 0.5) * (ch.isBad ? 0.05 : 0.15); 
       if (!ch.isSpiking && Math.random() < ch.firingRate) {
         ch.isSpiking = true; ch.spikeProgress = 0; ch.spikeAmp = 0.6 + Math.random() * 0.5; 
@@ -3012,30 +2998,28 @@ intanSimulators.forEach(sim => {
       }
 
       const currentY = ch.baseY + signal * maxAmplitude;
-
-      // 只有在非起始点时才画线，防止回绕连线
-      if (scanX > LABEL_WIDTH + scanSpeed) {
+      
+      // 只有在非回绕点绘制，step是动态计算的步长
+      if (currentScanX > LABEL_WIDTH + step) {
         ctx.beginPath();
         ctx.strokeStyle = ch.color; 
-        ctx.lineWidth = 1.1; // 稍微加粗提高清晰度
-        ctx.moveTo(scanX - scanSpeed, ch.lastY);
-        ctx.lineTo(scanX, currentY);
+        ctx.lineWidth = 1.0;
+        ctx.moveTo(currentScanX - step, ch.lastY);
+        ctx.lineTo(currentScanX, currentY);
         ctx.stroke();
       }
       ch.lastY = currentY;
     }
     
-    // 扫描指示线（极淡的白线，模仿屏幕刷新感）
+    // 3. 扫描指示线
     ctx.fillStyle = 'rgba(255, 255, 255, 0.2)';
-    ctx.fillRect(scanX, 0, 1, height);
+    ctx.fillRect(currentScanX, 0, 1, height);
 
-    // 4. 重绘左侧标签区域 (保持置顶)
+    // 4. 重绘左侧标签区域
     ctx.fillStyle = '#000000';
     ctx.fillRect(0, 0, LABEL_WIDTH, height);
-    
     ctx.font = '10px "Segoe UI", sans-serif';
     ctx.textBaseline = 'middle';
-    
     for (let i = 0; i < NUM_CHANNELS; i++) {
       const ch = channelsData[i];
       ctx.fillStyle = ch.color;
@@ -3044,10 +3028,10 @@ intanSimulators.forEach(sim => {
       ctx.fillText(ch.label, 4, ch.baseY + 1);
     }
 
-    // 5. 严格保留比例尺功能 (仅左屏)
+    // 5. 比例尺 (增加手机端宽度自适应)
     if (isLeftPane) {
       const scaleY = channelsData[3].baseY; 
-      const scaleX = LABEL_WIDTH + 60;
+      const scaleX = LABEL_WIDTH + (width < 500 ? 30 : 60); // 手机上靠左一点
       ctx.strokeStyle = '#fff';
       ctx.lineWidth = 1;
       ctx.beginPath();
@@ -3058,21 +3042,27 @@ intanSimulators.forEach(sim => {
     }
   }
 
-  function renderDualSweep() {
-    drawPane(ctxL, channelsL, true);
-    drawPane(ctxR, channelsR, false);
+  function renderDualSweep(time) {
+    const deltaTime = time - lastTime;
+    lastTime = time;
 
-    scanX += scanSpeed;
+    // 计算当前步长：(总宽度 / 2000ms) * 帧间隔时间
+    const step = ((width - LABEL_WIDTH) / SCAN_PERIOD) * deltaTime;
+    
+    drawPane(ctxL, channelsL, true, scanX, step);
+    drawPane(ctxR, channelsR, false, scanX, step);
+
+    scanX += step;
     if (scanX >= width) {
       scanX = LABEL_WIDTH;
-      // 回绕时不需要清空lastY，因为是直接覆盖
     }
     animationFrame = requestAnimationFrame(renderDualSweep);
   }
 
   const observer = new IntersectionObserver((entries) => {
-    if (entries[0].isIntersecting && canvasL.offsetParent !== null) {
-      if (!animationFrame) renderDualSweep();
+    if (entries[0].isIntersecting) {
+      lastTime = performance.now(); // 激活时重置时间防止跳变
+      if (!animationFrame) animationFrame = requestAnimationFrame(renderDualSweep);
     } else {
       if (animationFrame) cancelAnimationFrame(animationFrame);
       animationFrame = null;
@@ -3082,7 +3072,6 @@ intanSimulators.forEach(sim => {
 });
 // 👆 插入结束 👆
 
-    
     // ===================== GIF 懒加载 =====================
   const gifObserver = new IntersectionObserver((entries, observer) => {
       entries.forEach(entry => {
