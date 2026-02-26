@@ -2936,8 +2936,8 @@ This project is open-source and available under the **MIT License**. Click the b
         const arr = [];
         for (let i = 0; i < NUM_CHANNELS; i++) {
           let isBad = false;
-          // 核心调整：根据要求，阻抗设定在 420-500 kΩ 之间
-          let imp = (420 + Math.random() * 80).toFixed(0) + " kΩ"; 
+          // 核心调整：根据要求，阻抗设定在 418-500 kΩ 之间
+          let imp = (418 + Math.random() * 80).toFixed(0) + " kΩ"; 
           let cIdx = i % intanColors.length;
           
           // 模拟个别异常通道（如截图中的 A-002）
@@ -2963,7 +2963,7 @@ This project is open-source and available under the **MIT License**. Click the b
       const channelsR = generateChannels('B'); // 对应你的硬件 Port B
 
       let scanX = LABEL_WIDTH; // 扫描从标签右侧开始
-      const scanSpeed = 3; 
+      const scanSpeed = 1; 
       let animationFrame;
 
       ctxL.fillStyle = '#000000'; ctxL.fillRect(0, 0, 9999, 9999);
