@@ -2965,28 +2965,31 @@ intanSimulators.forEach(sim => {
     const arr = [];
     for (let i = 0; i < NUM_CHANNELS; i++) {
       let isBad = false;
-      let imp = (418 + Math.random() * 80).toFixed(0) + " kΩ"; 
-      let cIdx = i % intanColors.length;
+      // 1. 正常 ECoG 通道阻抗设定为 366-466 kΩ
+      let imp = (366 + Math.random() * 100).toFixed(0) + " kΩ";
       
-      // 模拟个别异常通道（完全保留原始判断条件）
+      // 2. 判定坏通道
       if ((prefix === 'A' && i === 2) || (prefix === 'B' && i === 8)) {
         isBad = true;
-        imp = (15 + Math.random() * 5).toFixed(1) + " MΩ";
-        cIdx = 2; // 灰色
+        imp = (15 + Math.random() * 5).toFixed(1) + " MΩ"; // 坏通道巨大阻抗
       }
 
+      // 3. 核心修复：坏通道强行上锁为灰色 '#6b6b6b'，好通道循环取彩色
+      let chColor = isBad ? '#6b6b6b' : intanColors[i % intanColors.length];
+
       let idStr = (i + 108).toString().padStart(3, '0');
+      
       arr.push({
         label: `${prefix}-${idStr} ${imp}`,
-        color: intanColors[cIdx],
+        color: chColor, // 直接使用判定好的颜色
         isBad: isBad,
         baseY: 0, 
         lastY: 0, 
-        currentNoise: 0, // 💡 新增：用于存储上一帧噪声，生成连续的平滑曲线
+        currentNoise: 0, 
         isSpiking: false, 
         spikeProgress: 0, 
         spikeAmp: 0,
-        firingRate: isBad ? 0 : (0.001 + Math.random() * 0.006) // 稍微降低整体放电频率，更自然
+        firingRate: isBad ? 0 : (0.001 + Math.random() * 0.006) 
       });
     }
     return arr;
