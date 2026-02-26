@@ -2976,6 +2976,46 @@ intanSimulators.forEach(sim => {
   const ctxR = canvasR.getContext('2d', { alpha: false });
   let width, height;
   let lastWidth = 0; // 💡 新增：记录上一次的宽度，防止手机端滚动时误触发重绘
+  const NUM_CHANNELS = 20; // 💡 优化：通道数20，让波形显示更清爽真实
+  const LABEL_WIDTH = 95; 
+  let scanX = LABEL_WIDTH; // 这里先给个默认值
+  const scanSpeed = 1.2; 
+  let animationFrame;
+
+  // 2. 严格保留原始通道生成逻辑 (含坏道模拟)
+function generateChannels(prefix) {
+    const arr = [];
+    for (let i = 0; i < NUM_CHANNELS; i++) {
+      let isBad = false;
+      let imp = (100 + Math.random() * 100).toFixed(0) + " kΩ"; 
+      
+      if ((prefix === 'A' && i === 2) || (prefix === 'B' && i === 8)) {
+        isBad = true;
+        imp = (15 + Math.random() * 5).toFixed(1) + " MΩ";
+      }
+
+      let chColor = isBad ? '#6b6b6b' : intanColors[i % intanColors.length];
+      let idStr = (i + 108).toString().padStart(3, '0');
+      
+      arr.push({
+        label: `${prefix}-${idStr} ${imp}`,
+        color: chColor, 
+        isBad: isBad,
+        baseY: 0, 
+        lastY: 0, 
+        currentNoise: 0, 
+        // LFP 慢波专属参数：
+        drift: 0, // 坏通道的基线漂移
+        phase: Math.random() * Math.PI * 2, // 每个通道的局部相位
+        freq: 3 + Math.random() * 5,        // 局部震荡频率 (Theta 波段为主)
+        coupling: 0.6 + Math.random() * 0.4 // 耦合度：跟随全局皮层活动的紧密程度
+      });
+    }
+    return arr;
+  }
+
+  const channelsL = generateChannels('A');
+  const channelsR = generateChannels('B');
   
   function resizeIntanCanvas() {
     if(canvasL.parentElement.clientWidth === 0) return;
@@ -3008,44 +3048,6 @@ intanSimulators.forEach(sim => {
   window.addEventListener('resize', resizeIntanCanvas);
   resizeIntanCanvas();
   new ResizeObserver(resizeIntanCanvas).observe(canvasL.parentElement);
-
-  const NUM_CHANNELS = 20; // 💡 优化：通道数20，让波形显示更清爽真实
-  const LABEL_WIDTH = 95; 
-  
-  // 2. 严格保留原始通道生成逻辑 (含坏道模拟)
-function generateChannels(prefix) {
-    const arr = [];
-    for (let i = 0; i < NUM_CHANNELS; i++) {
-      let isBad = false;
-      let imp = (100 + Math.random() * 100).toFixed(0) + " kΩ"; 
-      
-      if ((prefix === 'A' && i === 2) || (prefix === 'B' && i === 8)) {
-        isBad = true;
-        imp = (15 + Math.random() * 5).toFixed(1) + " MΩ";
-      }
-
-      let chColor = isBad ? '#6b6b6b' : intanColors[i % intanColors.length];
-      let idStr = (i + 108).toString().padStart(3, '0');
-      
-      arr.push({
-        label: `${prefix}-${idStr} ${imp}`,
-        color: chColor, 
-        isBad: isBad,
-        baseY: 0, 
-        lastY: 0, 
-        currentNoise: 0, 
-        // LFP 慢波专属参数：
-        drift: 0, // 坏通道的基线漂移
-        phase: Math.random() * Math.PI * 2, // 每个通道的局部相位
-        freq: 3 + Math.random() * 5,        // 局部震荡频率 (Theta 波段为主)
-        coupling: 0.6 + Math.random() * 0.4 // 耦合度：跟随全局皮层活动的紧密程度
-      });
-    }
-    return arr;
-  }
-  
-  const channelsL = generateChannels('A');
-  const channelsR = generateChannels('B');
 
   let scanX = LABEL_WIDTH; 
   const scanSpeed = 1.2; // 保持原始扫描感
