@@ -2970,7 +2970,7 @@ intanSimulators.forEach(sim => {
   new ResizeObserver(resizeIntanCanvas).observe(canvasL.parentElement);
 
   const NUM_CHANNELS = 20; // 💡 优化：通道数20，让波形显示更清爽真实
-  const LABEL_WIDTH = 120; 
+  const LABEL_WIDTH = 100; 
   
   // 2. 严格保留原始通道生成逻辑 (含坏道模拟)
   function generateChannels(prefix) {
@@ -3019,8 +3019,8 @@ function drawPane(ctx, channelsData, isLeftPane) {
     // 🚀 1. 新增：动态判断手机端，并设定专属尺寸
     const isMobile = window.innerWidth <= 600;
     
-    // 手机端彩色框宽度设为88（原本是 95），腾出 20px 给波形
-    const currentLabelWidth = isMobile ? 88 : LABEL_WIDTH; 
+    // 手机端彩色框宽度设为80（原本是 95），腾出 20px 给波形
+    const currentLabelWidth = isMobile ? 80 : LABEL_WIDTH; 
     
     // 扫描刷新逻辑：擦除当前位置前方的一小条区域
     const eraseWidth = 2; 
@@ -3166,8 +3166,8 @@ function drawPane(ctx, channelsData, isLeftPane) {
 
       scanX += scanSpeed;
       if (scanX >= width) {
-        // 🚀 核心修复：回到左侧时，如果是手机则回到 88，否则回到原本的 LABEL_WIDTH
-        scanX = window.innerWidth <= 600 ? 88 : LABEL_WIDTH; 
+        // 🚀 核心修复：回到左侧时，如果是手机则回到 80，否则回到原本的 LABEL_WIDTH
+        scanX = window.innerWidth <= 600 ? 80 : LABEL_WIDTH; 
       }
     }
     animationFrame = requestAnimationFrame(renderDualSweep);
