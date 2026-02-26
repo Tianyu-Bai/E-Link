@@ -1581,7 +1581,7 @@ body.light-mode .watermark-features strong { color: #2563eb; text-shadow: none; 
     <div class="intan-sidebar">
       <div class="intan-btn-group"><div class="intan-btn">Run</div><div class="intan-btn record">Record</div></div>
       <div class="intan-panel">
-        <div class="intan-panel-title">Hardware Ports</div>
+        <div class="intan-panel-title">SPI Ports</div>
         <div class="hw-ports-grid">
           <div class="hw-port-box active">
             <div class="hw-port-left"><span class="hw-port-label">A</span><div class="hw-port-connector"></div></div>
@@ -1608,9 +1608,9 @@ body.light-mode .watermark-features strong { color: #2563eb; text-shadow: none; 
       </div>
       <div class="intan-panel">
         <div class="intan-panel-title">System Status</div>
-        <div class="intan-setting-row" style="color: #27c93f; font-weight: bold;"><span>SPI Links</span><span>A, B Locked</span></div>
+        <div class="intan-setting-row" style="color: #27c93f; font-weight: bold;"><span>SPI Ports Status</span><span>A, B Detected</span></div>
         <div class="intan-setting-row" style="color: #777;"><span>Unused</span><span>C, D</span></div>
-        <div class="intan-setting-row"><span>Sampling</span><div class="intan-value-box" style="border:none;box-shadow:none;background:transparent;text-align:right;">30 kS/s</div></div>
+        <div class="intan-setting-row"><span>Sampling Rate</span><div class="intan-value-box" style="border:none;box-shadow:none;background:transparent;text-align:right;">30 kS/s</div></div>
       </div>
     </div>
   </div>
