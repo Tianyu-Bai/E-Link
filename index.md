@@ -1392,8 +1392,145 @@ body.light-mode .watermark-features strong { color: #2563eb; text-shadow: none; 
  </div>
 </div>
 
-
 ---
+
+<style>
+/* ===================== 256-Ch Spike 可视化容器 ===================== */
+.spike-visualizer-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 760px;
+  margin: 30px auto;
+  background: linear-gradient(145deg, rgba(15, 23, 42, 0.8), rgba(2, 6, 23, 0.9));
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(59, 130, 246, 0.1);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.spike-header-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 10px;
+}
+
+.spike-title-tech {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 14px;
+  font-weight: 700;
+  color: #93c5fd;
+  letter-spacing: 2px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.spike-title-tech::before {
+  content: '';
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background: #ef4444;
+  border-radius: 50%;
+  box-shadow: 0 0 10px #ef4444;
+  animation: rec-blink 1s infinite alternate;
+}
+
+@keyframes rec-blink { 0% { opacity: 0.4; } 100% { opacity: 1; } }
+
+.spike-badge-tech {
+  background: rgba(59, 130, 246, 0.2);
+  border: 1px solid rgba(96, 165, 250, 0.5);
+  color: #60a5fa;
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-weight: bold;
+}
+
+.spike-canvas-container {
+  position: relative;
+  width: 100%;
+  height: 220px;
+  background: radial-gradient(circle at center, rgba(30, 58, 138, 0.2) 0%, transparent 80%);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* 扫描线特效 */
+.spike-canvas-container::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(rgba(59, 130, 246, 0.05) 1px, transparent 1px);
+  background-size: 100% 4px;
+  pointer-events: none;
+  z-index: 2;
+}
+
+#spikeCanvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+  z-index: 1;
+}
+
+.spike-data-overlay {
+  position: absolute;
+  bottom: 10px;
+  right: 15px;
+  text-align: right;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.spike-data-overlay .val {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 24px;
+  font-weight: 800;
+  color: #fff;
+  text-shadow: 0 0 10px rgba(96, 165, 250, 0.8);
+  line-height: 1;
+}
+
+.spike-data-overlay .unit {
+  font-size: 10px;
+  color: #94a3b8;
+  letter-spacing: 1px;
+}
+
+/* 浅色模式适配 */
+body.light-mode .spike-visualizer-wrapper {
+  background: rgba(241, 245, 249, 0.9);
+  border-color: rgba(148, 163, 184, 0.4);
+  box-shadow: 0 10px 40px rgba(148, 163, 184, 0.2);
+}
+body.light-mode .spike-title-tech { color: #1e40af; }
+body.light-mode .spike-canvas-container { background: rgba(226, 232, 240, 0.5); }
+body.light-mode .spike-data-overlay .val { color: #1e293b; text-shadow: none; }
+</style>
+
+<div class="spike-visualizer-wrapper" data-aos="fade-up">
+  <div class="spike-header-bar">
+    <div class="spike-title-tech">LIVE NEURAL TRACE</div>
+    <div class="spike-badge-tech">256 CHANNELS</div>
+  </div>
+  
+  <div class="spike-canvas-container">
+    <canvas id="spikeCanvas"></canvas>
+    <div class="spike-data-overlay">
+      <div class="val">N=256</div>
+      <div class="unit">SORTED UNITS</div>
+    </div>
+  </div>
+</div>
 
 <span id="en-components"></span>
 ## 🧩 System Components
@@ -2638,4 +2775,128 @@ This project is open-source and available under the **MIT License**. Click the b
     });
 
   });
+  document.addEventListener("DOMContentLoaded", () => {
+  const canvas = document.getElementById('spikeCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  
+  // 响应式画布尺寸处理
+  let width, height;
+  function resizeCanvas() {
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    width = canvas.parentElement.clientWidth;
+    height = canvas.parentElement.clientHeight;
+    canvas.width = width * dpr;
+    canvas.height = height * dpr;
+    ctx.scale(dpr, dpr);
+  }
+  window.addEventListener('resize', resizeCanvas);
+  resizeCanvas();
+
+  const TOTAL_SPIKES = 256;
+  const POINTS_PER_SPIKE = 100;
+  const spikesData = [];
+
+  // 生成逼真的动作电位 (Biphasic Action Potential) 数学模型
+  function generateSpike() {
+    const points = [];
+    // 引入生理特征随机性：对齐偏移、振幅、细胞膜复极化宽度、基底噪声
+    const timeShift = (Math.random() - 0.5) * 0.15; 
+    const amplitude = 0.5 + Math.random() * 0.6;
+    const widthVar = 0.8 + Math.random() * 0.4;
+    
+    for (let i = 0; i < POINTS_PER_SPIKE; i++) {
+      let x = i / POINTS_PER_SPIKE;
+      let t = (x - 0.35 + timeShift) * 15; // 将主波峰定在 X 轴的 35% 处
+      
+      // 差分高斯函数模拟去极化和超极化
+      let y = Math.exp(-(t * t) / (widthVar * widthVar)) 
+            - 0.4 * Math.exp(-((t - 2.5) * (t - 2.5)) / (widthVar * widthVar * 2));
+            
+      y *= amplitude;
+      
+      // 添加极微小的环境噪声 (热噪声拟合)
+      y += (Math.random() - 0.5) * 0.03; 
+      points.push(y);
+    }
+    return points;
+  }
+
+  // 预计算 256 条曲线
+  for (let i = 0; i < TOTAL_SPIKES; i++) {
+    spikesData.push(generateSpike());
+  }
+
+  let progress = 0; // 控制从左到右画出的进度
+  let animationFrame;
+  let isLightMode = document.body.classList.contains('light-mode');
+
+  // 监听主题切换，改变 Spike 颜色
+  document.getElementById('theme-toggle')?.addEventListener('click', () => {
+    isLightMode = !isLightMode;
+  });
+
+  function renderSpikes() {
+    ctx.clearRect(0, 0, width, height);
+    
+    // 关键：重叠发光混合模式 (类似专业电生理软件的 Heatmap)
+    ctx.globalCompositeOperation = isLightMode ? 'multiply' : 'screen';
+
+    const centerY = height * 0.6; // 基线偏下，给向上的波峰留空间
+    const scaleY = height * 0.45; // 振幅缩放
+    
+    // 决定当前画到 X 轴的哪个进度 (0 到 1)
+    progress += 0.015; 
+    if (progress > 1.5) progress = 0; // 画完后停顿一下再重新扫描
+
+    const currentPoints = Math.min(POINTS_PER_SPIKE, Math.floor(progress * POINTS_PER_SPIKE));
+
+    spikesData.forEach((spike, index) => {
+      ctx.beginPath();
+      // 赋予 256 条线微小的颜色差异 (青蓝到紫的渐变)，重叠后极其高级
+      const hue = 210 + (index % 40) - 20; 
+      const alpha = isLightMode ? 0.08 : 0.12;
+      ctx.strokeStyle = `hsla(${hue}, 90%, 65%, ${alpha})`;
+      ctx.lineWidth = 1.2;
+      
+      for (let i = 0; i < currentPoints; i++) {
+        let px = (i / POINTS_PER_SPIKE) * width;
+        let py = centerY - (spike[i] * scaleY);
+        
+        if (i === 0) ctx.moveTo(px, py);
+        else ctx.lineTo(px, py);
+      }
+      ctx.stroke();
+    });
+
+    // 重置混合模式，画一根扫描光束针
+    ctx.globalCompositeOperation = 'source-over';
+    if (progress <= 1) {
+      const scanX = progress * width;
+      ctx.beginPath();
+      ctx.moveTo(scanX, 0);
+      ctx.lineTo(scanX, height);
+      ctx.strokeStyle = isLightMode ? 'rgba(37, 99, 235, 0.8)' : 'rgba(96, 165, 250, 0.8)';
+      ctx.lineWidth = 2;
+      ctx.shadowBlur = 10;
+      ctx.shadowColor = isLightMode ? '#2563eb' : '#60a5fa';
+      ctx.stroke();
+      ctx.shadowBlur = 0;
+    }
+
+    animationFrame = requestAnimationFrame(renderSpikes);
+  }
+
+  // 使用 Intersection Observer 优化性能，只有滑到当前区域才渲染
+  const observer = new IntersectionObserver((entries) => {
+    if (entries[0].isIntersecting) {
+      if (!animationFrame) renderSpikes();
+    } else {
+      cancelAnimationFrame(animationFrame);
+      animationFrame = null;
+    }
+  }, { threshold: 0.1 });
+
+  observer.observe(canvas.parentElement);
+});
 </script>
