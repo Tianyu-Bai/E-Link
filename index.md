@@ -3095,7 +3095,7 @@ function drawPane(ctx, channelsData, isLeftPane) {
     // 计算 Y 轴偏移，让色块始终居中对齐波形基准线
     const blockOffsetY = blockHeight / 2;
     
-    ctx.font = `bold ${fontSize}px "Segoe UI", sans-serif`; // 加粗更清晰
+   ctx.font = `${fontSize}px "Segoe UI", "Arial", sans-serif`;
     ctx.textBaseline = 'middle'; // 垂直对齐基准
     ctx.textAlign = 'center';    // 🚀 新增：水平居中对齐
 
