@@ -1392,89 +1392,112 @@ body.light-mode .watermark-features strong { color: #2563eb; text-shadow: none; 
  </div>
 </div>
 
----
 
+---
 <br>
-<h3 id="en-signal-demo" style="text-align: center; margin-top: 30px;">⚡ 256-Channel LFP Acquisition Capability</h3>
+<h3 id="en-signal-demo" style="text-align: center; margin-top: 30px;">⚡ Representative Spike Signal Acquisition (Simulation)</h3>
 <p style="text-align: center; color: #64748b; font-size: 0.95em; max-width: 600px; margin: 0 auto; margin-bottom: 20px;">
-  Visualizing the spatiotemporal dynamics of Local Field Potentials (LFP). E-Link maintains high signal fidelity and minimal crosstalk across the ultra-high-density µECoG array.
+  An interactive illustration demonstrating typical high-pass filtered action potentials (Spikes). This simulates the expected visual characteristics and signal-to-noise ratio when recording with the E-Link system.
 </p>
 
 <style>
-/* ===================== 256-Ch ECoG LFP 样式 ===================== */
-.ecog-visualizer-wrapper {
-  position: relative; width: 100%; max-width: 760px; margin: 0 auto 40px;
-  background: linear-gradient(145deg, rgba(15, 23, 42, 0.8), rgba(2, 6, 23, 0.9));
-  border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 16px; padding: 20px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(59, 130, 246, 0.1);
-  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-  box-sizing: border-box;
+/* ===================== Intan RHX 模拟器UI ===================== */
+.intan-simulator-wrapper {
+  width: 100%; max-width: 860px; margin: 40px auto;
+  background: #2b2b2b; border: 1px solid #1a1a1a; border-radius: 8px;
+  box-shadow: 0 15px 50px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+  overflow: hidden; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; user-select: none;
 }
-
-.ecog-header-bar {
-  display: flex; justify-content: space-between; align-items: center;
-  margin-bottom: 15px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding-bottom: 10px;
+.intan-title-bar {
+  background: linear-gradient(to bottom, #4a4a4a, #333333); padding: 6px 12px;
+  display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #111;
 }
-
-.ecog-title-tech {
-  font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 700;
-  color: #93c5fd; letter-spacing: 2px; display: flex; align-items: center; gap: 8px;
+.intan-title-text { color: #e0e0e0; font-size: 12px; font-weight: 600; display: flex; align-items: center; gap: 6px; letter-spacing: 0.5px; }
+.intan-window-controls span { display: inline-block; width: 12px; height: 12px; border-radius: 50%; margin-left: 6px; background: #555; }
+.intan-window-controls span.close { background: #ff5f56; } .intan-window-controls span.min { background: #ffbd2e; } .intan-window-controls span.max { background: #27c93f; }
+.intan-body { display: flex; height: 380px; background: #383838; }
+.intan-plot-area {
+  flex: 1; position: relative; background: #000000;
+  border-right: 2px solid #222; border-top: 2px solid #222; box-shadow: inset 0 0 10px rgba(0,0,0,0.8); overflow: hidden;
 }
-
-/* 🔵 数据流青色呼吸灯 */
-.ecog-title-tech::before {
-  content: ''; display: inline-block; width: 8px; height: 8px;
-  background: #00f2ff; border-radius: 50%; box-shadow: 0 0 10px #00f2ff;
-  animation: stream-pulse 2s infinite alternate ease-in-out;
-}
-@keyframes stream-pulse { 0% { opacity: 0.3; transform: scale(0.85); } 100% { opacity: 1; transform: scale(1.15); box-shadow: 0 0 15px #00f2ff; } }
-
-.ecog-badge-tech {
-  background: rgba(167, 139, 250, 0.15); border: 1px solid rgba(167, 139, 250, 0.4);
-  color: #c4b5fd; font-size: 11px; padding: 4px 10px; border-radius: 12px; font-weight: bold; letter-spacing: 0.5px;
-}
-
-.ecog-canvas-container {
-  position: relative; width: 100%; height: 220px;
-  background: radial-gradient(circle at center, rgba(30, 58, 138, 0.15) 0%, transparent 80%);
-  border-radius: 8px; overflow: hidden;
-}
-
-.ecog-canvas-container::before {
+.intan-plot-area::before {
   content: ''; position: absolute; inset: 0;
-  background-image: linear-gradient(rgba(59, 130, 246, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(59, 130, 246, 0.1) 1px, transparent 1px);
-  background-size: 20px 20px; z-index: 0; pointer-events: none;
+  background-image: 
+    linear-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.07) 1px, transparent 1px),
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 100px 100px, 100px 100px, 20px 20px, 20px 20px; background-position: center center; z-index: 0; pointer-events: none;
 }
-
-.ecog-canvas { width: 100%; height: 100%; display: block; z-index: 1; position: relative; }
-
-.ecog-data-overlay { position: absolute; bottom: 12px; right: 16px; text-align: right; z-index: 3; pointer-events: none; }
-.ecog-data-overlay .val { font-family: 'JetBrains Mono', monospace; font-size: 26px; font-weight: 800; color: #fff; text-shadow: 0 0 12px rgba(167, 139, 250, 0.8); line-height: 1; }
-.ecog-data-overlay .unit { font-size: 10px; color: #94a3b8; letter-spacing: 1px; margin-top: 4px;}
-
-/* 浅色模式 */
-body.light-mode .ecog-visualizer-wrapper { background: rgba(241, 245, 249, 0.9); border-color: rgba(148, 163, 184, 0.4); box-shadow: 0 10px 40px rgba(148, 163, 184, 0.2); }
-body.light-mode .ecog-title-tech { color: #1e40af; }
-body.light-mode .ecog-canvas-container { background: rgba(226, 232, 240, 0.5); }
-body.light-mode .ecog-data-overlay .val { color: #1e293b; text-shadow: none; }
+.intan-canvas { width: 100%; height: 100%; display: block; z-index: 1; position: relative; }
+.intan-axes-label { position: absolute; bottom: 10px; left: 10px; color: #888; font-family: 'JetBrains Mono', monospace; font-size: 10px; z-index: 2; }
+.intan-sidebar { width: 200px; background: #d4d0c8; padding: 15px 10px; display: flex; flex-direction: column; gap: 12px; box-shadow: inset 1px 0 0 rgba(255,255,255,0.5); }
+.intan-btn-group { display: flex; gap: 8px; }
+.intan-btn {
+  flex: 1; background: linear-gradient(to bottom, #f0f0f0, #dcdcdc); border: 1px solid #888; border-radius: 3px;
+  padding: 8px 0; font-size: 12px; font-weight: 600; color: #333; cursor: pointer; box-shadow: inset 1px 1px 0 #fff, 1px 1px 2px rgba(0,0,0,0.1); display: flex; justify-content: center; align-items: center; gap: 5px;
+}
+.intan-btn:active { background: #d0d0d0; box-shadow: inset 1px 1px 3px rgba(0,0,0,0.2); }
+.intan-btn.record::before { content: ''; display: inline-block; width: 8px; height: 8px; background: #ef4444; border-radius: 50%; box-shadow: 0 0 4px #ef4444; animation: rec-blink 1s infinite alternate; }
+@keyframes rec-blink { 0% { opacity: 0.4; } 100% { opacity: 1; } }
+.intan-panel { background: #f0f0f0; border: 1px solid #aaa; border-radius: 3px; padding: 8px; box-shadow: inset 1px 1px 2px #fff; }
+.intan-panel-title { font-size: 10px; color: #555; font-weight: bold; margin-bottom: 6px; text-transform: uppercase; border-bottom: 1px solid #ccc; padding-bottom: 2px; }
+.intan-setting-row { display: flex; justify-content: space-between; font-size: 11px; color: #111; margin-bottom: 4px; align-items: center; }
+.intan-value-box { background: #fff; border: 1px solid #999; padding: 1px 4px; font-family: 'JetBrains Mono', monospace; width: 65px; text-align: right; box-shadow: inset 1px 1px 2px rgba(0,0,0,0.1); }
+.intan-ports { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.intan-port { display: flex; align-items: center; gap: 4px; font-size: 10px; color: #333; }
+.port-led { width: 10px; height: 10px; border-radius: 50%; background: #27c93f; border: 1px solid #1a8a29; box-shadow: inset -1px -1px 2px rgba(0,0,0,0.3), 0 0 5px #27c93f; }
+@media (max-width: 600px) {
+  .intan-body { flex-direction: column; height: auto; }
+  .intan-plot-area { height: 280px; }
+  .intan-sidebar { width: 100%; flex-direction: row; flex-wrap: wrap; }
+  .intan-btn-group, .intan-panel { flex: 1; min-width: 140px; }
+}
 </style>
 
-<div class="ecog-visualizer-wrapper" data-aos="fade-up">
-  <div class="ecog-header-bar">
-    <div class="ecog-title-tech">HIGH-DENSITY ECoG STREAM</div>
-    <div class="ecog-badge-tech">256-CH µECoG ARRAY</div>
+<div class="intan-simulator-wrapper" data-aos="fade-up">
+  <div class="intan-title-bar">
+    <div class="intan-title-text">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12h4l3-9 5 18 3-9h5"/></svg>
+      Intan RHX Interface - Simulated Data Stream
+    </div>
+    <div class="intan-window-controls">
+      <span class="min"></span><span class="max"></span><span class="close"></span>
+    </div>
   </div>
   
-  <div class="ecog-canvas-container">
-    <canvas id="ecogCanvas-en" class="ecog-canvas"></canvas>
-    <div class="ecog-data-overlay">
-      <div class="val">256 CH</div>
-      <div class="unit">LOCAL FIELD POTENTIALS</div>
+  <div class="intan-body">
+    <div class="intan-plot-area">
+      <canvas class="intan-canvas"></canvas>
+      <div class="intan-axes-label">X: 10 ms/div &nbsp;&nbsp; Y: 50 µV/div &nbsp;&nbsp; CH: 1-16 (Rep.)</div>
+    </div>
+    
+    <div class="intan-sidebar">
+      <div class="intan-btn-group">
+        <div class="intan-btn" style="background: #e6e6e6; box-shadow: inset 0 0 5px rgba(0,0,0,0.2);">Run</div>
+        <div class="intan-btn record">Record</div>
+      </div>
+      <div class="intan-panel">
+        <div class="intan-panel-title">Connected Ports</div>
+        <div class="intan-ports">
+          <div class="intan-port"><div class="port-led"></div>Port A</div>
+          <div class="intan-port"><div class="port-led"></div>Port B</div>
+          <div class="intan-port"><div class="port-led"></div>Port C</div>
+          <div class="intan-port"><div class="port-led"></div>Port D</div>
+        </div>
+      </div>
+      <div class="intan-panel">
+        <div class="intan-panel-title">Filter Bandwidth</div>
+        <div class="intan-setting-row"><span>High-pass</span><div class="intan-value-box">300 Hz</div></div>
+        <div class="intan-setting-row"><span>Low-pass</span><div class="intan-value-box">7.5 kHz</div></div>
+        <div class="intan-setting-row"><span>DSP Notch</span><div class="intan-value-box">60 Hz</div></div>
+      </div>
+      <div class="intan-panel">
+        <div class="intan-panel-title">System Status</div>
+        <div class="intan-setting-row" style="color: #27c93f; font-weight: bold;"><span>SPI Status</span><span>Locked</span></div>
+        <div class="intan-setting-row"><span>Sampling</span><span style="font-family: 'JetBrains Mono';">30 kS/s</span></div>
+      </div>
     </div>
   </div>
 </div>
-
----
 
 <span id="en-components"></span>
 ## 🧩 System Components
@@ -2283,27 +2306,56 @@ This project is open-source and available under the **MIT License**. Click the b
 ---
 
 <br>
-<h3 id="cn-signal-demo" style="text-align: center; margin-top: 30px;">⚡ 256通道 LFP 采集演示</h3>
+<h3 id="cn-signal-demo" style="text-align: center; margin-top: 30px;">⚡ 代表性 Spike 信号采集示意</h3>
 <p style="text-align: center; color: #64748b; font-size: 0.95em; max-width: 600px; margin: 0 auto; margin-bottom: 20px;">
-  直观呈现局部场电位 (LFP) 的时空动态特征。在极高的通道密度下，易链 (E-Link) 依然能确保极低的串扰与高保真的皮层脑电信号。
+  本交互模块为模拟演示，用以直观呈现系统在进行高通滤波后，捕获单细胞级动作电位（Spikes）的典型波形特征与低底噪表现。
 </p>
 
-<div class="ecog-visualizer-wrapper" data-aos="fade-up">
-  <div class="ecog-header-bar">
-    <div class="ecog-title-tech">高密度皮层脑电数据流</div>
-    <div class="ecog-badge-tech">256通道微型阵列</div>
+<div class="intan-simulator-wrapper" data-aos="fade-up">
+  <div class="intan-title-bar">
+    <div class="intan-title-text">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12h4l3-9 5 18 3-9h5"/></svg>
+      Intan RHX Interface - Simulated Data Stream
+    </div>
+    <div class="intan-window-controls">
+      <span class="min"></span><span class="max"></span><span class="close"></span>
+    </div>
   </div>
   
-  <div class="ecog-canvas-container">
-    <canvas id="ecogCanvas-zh" class="ecog-canvas"></canvas>
-    <div class="ecog-data-overlay">
-      <div class="val">256 通道</div>
-      <div class="unit">局部场电位 (LFP)</div>
+  <div class="intan-body">
+    <div class="intan-plot-area">
+      <canvas class="intan-canvas"></canvas>
+      <div class="intan-axes-label">X: 10 ms/div &nbsp;&nbsp; Y: 50 µV/div &nbsp;&nbsp; CH: 1-16 (代表性通道)</div>
+    </div>
+    
+    <div class="intan-sidebar">
+      <div class="intan-btn-group">
+        <div class="intan-btn" style="background: #e6e6e6; box-shadow: inset 0 0 5px rgba(0,0,0,0.2);">Run</div>
+        <div class="intan-btn record">Record</div>
+      </div>
+      <div class="intan-panel">
+        <div class="intan-panel-title">已连接端口</div>
+        <div class="intan-ports">
+          <div class="intan-port"><div class="port-led"></div>Port A</div>
+          <div class="intan-port"><div class="port-led"></div>Port B</div>
+          <div class="intan-port"><div class="port-led"></div>Port C</div>
+          <div class="intan-port"><div class="port-led"></div>Port D</div>
+        </div>
+      </div>
+      <div class="intan-panel">
+        <div class="intan-panel-title">滤波带宽</div>
+        <div class="intan-setting-row"><span>High-pass</span><div class="intan-value-box">300 Hz</div></div>
+        <div class="intan-setting-row"><span>Low-pass</span><div class="intan-value-box">7.5 kHz</div></div>
+        <div class="intan-setting-row"><span>DSP Notch</span><div class="intan-value-box">60 Hz</div></div>
+      </div>
+      <div class="intan-panel">
+        <div class="intan-panel-title">系统状态</div>
+        <div class="intan-setting-row" style="color: #27c93f; font-weight: bold;"><span>SPI 状态</span><span>Locked</span></div>
+        <div class="intan-setting-row"><span>采样率</span><span style="font-family: 'JetBrains Mono';">30 kS/s</span></div>
+      </div>
     </div>
   </div>
 </div>
-
----
 
 <span id="cn-components"></span>
 
@@ -2712,6 +2764,131 @@ This project is open-source and available under the **MIT License**. Click the b
 
     models.forEach(model => modelObserver.observe(model));
 
+// 👇 插入开始：Intan 示波器动画引擎 👇
+    const intanCanvases = document.querySelectorAll('.intan-canvas');
+    if (intanCanvases.length > 0) {
+      intanCanvases.forEach(canvas => {
+        const ctx = canvas.getContext('2d', { alpha: false }); // 优化性能，背景不透明
+        let width, height;
+        
+        function resizeIntanCanvas() {
+          if(canvas.parentElement.clientWidth === 0) return;
+          const dpr = Math.min(window.devicePixelRatio || 1, 2);
+          width = canvas.parentElement.clientWidth;
+          height = canvas.parentElement.clientHeight;
+          canvas.width = width * dpr;
+          canvas.height = height * dpr;
+          ctx.scale(dpr, dpr);
+        }
+        window.addEventListener('resize', resizeIntanCanvas);
+        resizeIntanCanvas();
+        new ResizeObserver(resizeIntanCanvas).observe(canvas.parentElement);
+
+        const NUM_CHANNELS = 16; 
+        const channels = [];
+        for (let i = 0; i < NUM_CHANNELS; i++) {
+          channels.push({
+            baseY: 0, lastY: 0, isSpiking: false, spikeProgress: 0, spikeAmp: 0,
+            firingRate: 0.002 + Math.random() * 0.012 
+          });
+        }
+
+        let scanX = 0; 
+        const scanSpeed = 3; 
+        let animationFrame;
+
+        // 初始全黑背景
+        ctx.fillStyle = '#000000';
+        ctx.fillRect(0, 0, 9999, 9999);
+
+        // 细胞外动作电位波形函数
+        function getSpikeShape(t) {
+          const depol = Math.exp(-Math.pow((t - 0.3) * 12, 2)) * -1.0; 
+          const repol = Math.exp(-Math.pow((t - 0.6) * 8, 2)) * 0.3;
+          return depol + repol;
+        }
+
+        function renderSpikeSweep() {
+          const eraseWidth = 25;
+          ctx.fillStyle = '#000000';
+          if (scanX + eraseWidth > width) {
+            ctx.fillRect(scanX, 0, width - scanX, height);
+            ctx.fillRect(0, 0, eraseWidth - (width - scanX), height);
+          } else {
+            ctx.fillRect(scanX, 0, eraseWidth, height);
+          }
+
+          ctx.globalCompositeOperation = 'lighter';
+          ctx.strokeStyle = 'rgba(57, 255, 20, 0.85)'; 
+          ctx.lineWidth = 1.5;
+          ctx.lineCap = 'round';
+          ctx.lineJoin = 'round';
+
+          const gap = height / (NUM_CHANNELS + 1);
+          const maxAmplitude = gap * 0.8; 
+
+          ctx.beginPath();
+          for (let i = 0; i < NUM_CHANNELS; i++) {
+            const ch = channels[i];
+            ch.baseY = gap * (i + 1);
+            
+            // 极微小的白噪声
+            let signal = (Math.random() - 0.5) * 0.12; 
+
+            if (!ch.isSpiking && Math.random() < ch.firingRate) {
+              ch.isSpiking = true;
+              ch.spikeProgress = 0;
+              ch.spikeAmp = 0.7 + Math.random() * 0.5; 
+            }
+
+            if (ch.isSpiking) {
+              signal += getSpikeShape(ch.spikeProgress) * ch.spikeAmp;
+              ch.spikeProgress += 0.08; 
+              if (ch.spikeProgress >= 1) ch.isSpiking = false;
+            }
+
+            const currentY = ch.baseY + signal * maxAmplitude;
+
+            if (scanX === 0) {
+              ctx.moveTo(scanX, currentY);
+            } else {
+              ctx.moveTo(scanX - scanSpeed, ch.lastY);
+              ctx.lineTo(scanX, currentY);
+            }
+            ch.lastY = currentY;
+          }
+          ctx.stroke();
+          
+          ctx.beginPath();
+          ctx.moveTo(scanX, 0);
+          ctx.lineTo(scanX, height);
+          ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+          ctx.lineWidth = 1;
+          ctx.stroke();
+
+          ctx.globalCompositeOperation = 'source-over';
+
+          scanX += scanSpeed;
+          if (scanX >= width) {
+            scanX = 0;
+            for (let i = 0; i < NUM_CHANNELS; i++) channels[i].lastY = channels[i].baseY; 
+          }
+          animationFrame = requestAnimationFrame(renderSpikeSweep);
+        }
+
+        const observer = new IntersectionObserver((entries) => {
+          if (entries[0].isIntersecting && canvas.offsetParent !== null) {
+            if (!animationFrame) renderSpikeSweep();
+          } else {
+            if (animationFrame) cancelAnimationFrame(animationFrame);
+            animationFrame = null;
+          }
+        }, { threshold: 0.1 });
+        observer.observe(canvas.parentElement);
+      });
+    }
+    // 👆 插入结束 👆
+    
     // ===================== GIF 懒加载 =====================
   const gifObserver = new IntersectionObserver((entries, observer) => {
       entries.forEach(entry => {
@@ -2742,101 +2919,4 @@ This project is open-source and available under the **MIT License**. Click the b
     });
 
   });
-document.addEventListener("DOMContentLoaded", () => {
-  // 自动获取页面中所有的 ecog canvas (中英文共两个)
-  const canvases = document.querySelectorAll('.ecog-canvas');
-  if (canvases.length === 0) return;
-
-  canvases.forEach(canvas => {
-    const ctx = canvas.getContext('2d');
-    let width, height;
-
-    function resizeCanvas() {
-      // 防止 canvas 隐藏时获取尺寸为 0
-      if(canvas.parentElement.clientWidth === 0) return; 
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      width = canvas.parentElement.clientWidth;
-      height = canvas.parentElement.clientHeight;
-      canvas.width = width * dpr;
-      canvas.height = height * dpr;
-      ctx.scale(dpr, dpr);
-    }
-    window.addEventListener('resize', resizeCanvas);
-    
-    // 初始化调用一次，并使用 ResizeObserver 监听父容器变化 (完美兼容 display: none 切换)
-    resizeCanvas();
-    new ResizeObserver(resizeCanvas).observe(canvas.parentElement);
-
-    const NUM_CHANNELS = 256;
-    let time = 0;
-    let animationFrame;
-
-    // 预先生成 ECoG 阵列特征 (空间相位 & 振幅扰动)
-    const channelsParams = [];
-    for (let i = 0; i < NUM_CHANNELS; i++) {
-      channelsParams.push({
-        spatialPhase: i * 0.08, // 模拟相邻电极的相位延迟
-        ampMod: 0.8 + Math.random() * 0.4,
-        gammaPhase: Math.random() * Math.PI * 2 
-      });
-    }
-
-    function renderECoG() {
-      const isLightMode = document.body.classList.contains('light-mode');
-      
-      // 1. 制造磷光拖影背景
-      ctx.globalCompositeOperation = 'source-over';
-      ctx.fillStyle = isLightMode ? 'rgba(241, 245, 249, 0.35)' : 'rgba(10, 10, 15, 0.35)';
-      ctx.fillRect(0, 0, width, height);
-
-      // 2. 波峰重叠发光混合模式
-      ctx.globalCompositeOperation = isLightMode ? 'multiply' : 'screen';
-      
-      const centerY = height / 2;
-      const baseAmplitude = height * 0.22; 
-      time += 0.035; // 流动速度
-
-      for (let i = 0; i < NUM_CHANNELS; i++) {
-        ctx.beginPath();
-        // 赛博渐变色: 从紫(270) 到 青蓝(200)
-        const hue = 270 - (i % 70); 
-        const alpha = isLightMode ? 0.04 : 0.08; 
-        ctx.strokeStyle = `hsla(${hue}, 85%, 70%, ${alpha})`;
-        ctx.lineWidth = 1.5;
-
-        const p = channelsParams[i];
-
-        for (let x = 0; x <= width; x += 6) { 
-          const t = (x / width) * 4; 
-          
-          // LFP 频段混合 (Slow/Alpha + Beta + Gamma)
-          const slowWave = Math.sin(t * 1.5 - time + p.spatialPhase) * 1.2;
-          const medWave = Math.sin(t * 4.2 - time * 1.5 + p.spatialPhase * 1.2) * 0.4;
-          const fastWave = Math.sin(t * 12.0 - time * 3 + p.gammaPhase) * 0.15;
-          
-          const signal = (slowWave + medWave + fastWave) * p.ampMod;
-          const y = centerY + signal * baseAmplitude;
-
-          if (x === 0) ctx.moveTo(x, y);
-          else ctx.lineTo(x, y);
-        }
-        ctx.stroke();
-      }
-
-      animationFrame = requestAnimationFrame(renderECoG);
-    }
-
-    // 性能优化：只有在视口内、且当前语言显示时才渲染
-    const observer = new IntersectionObserver((entries) => {
-      if (entries[0].isIntersecting && canvas.offsetParent !== null) {
-        if (!animationFrame) renderECoG();
-      } else {
-        if (animationFrame) cancelAnimationFrame(animationFrame);
-        animationFrame = null;
-      }
-    }, { threshold: 0.1 });
-
-    observer.observe(canvas.parentElement);
-  });
-});
 </script>
