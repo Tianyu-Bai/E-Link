@@ -2893,9 +2893,11 @@ This project is open-source and available under the **MIT License**. Click the b
     }, { threshold: 0.1 });
 
     models.forEach(model => modelObserver.observe(model));
-
+    
+// 👇 插入开始：Intan 像素级覆盖式示波器引擎 (更真实、高连续性版) 👇
 const intanSimulators = document.querySelectorAll('.intan-simulator-wrapper');
 
+// 1. 保留原始颜色序列
 const intanColors = [
   '#e04a4a', '#d49b38', '#6b6b6b', '#3dc94d', '#3dc98b', '#3da1c9', '#3d61c9', '#573dc9',
   '#993dc9', '#c93d9e', '#c93d5a', '#d47238', '#b8c93d', '#70c93d', '#3dc9c7', '#3d94c9',
@@ -2908,167 +2910,185 @@ intanSimulators.forEach(sim => {
   const canvasR = sim.querySelector('.canvas-right');
   if (!canvasL || !canvasR) return;
 
+  // 强制关闭 alpha 通道，确保背景纯黑无蒙层
   const ctxL = canvasL.getContext('2d', { alpha: false });
   const ctxR = canvasR.getContext('2d', { alpha: false });
   let width, height;
   
-  // 视口显示 36 通道，模拟 128ch Port 的局部缩放视图
-  const NUM_CHANNELS = 36; 
-  const LABEL_WIDTH = 95; 
-  const SCAN_PERIOD = 2000; // 2.0秒视野
-
-  function resize() {
+  function resizeIntanCanvas() {
     if(canvasL.parentElement.clientWidth === 0) return;
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
     width = canvasL.parentElement.clientWidth;
     height = canvasL.parentElement.clientHeight;
-    [canvasL, canvasR].forEach(c => {
-      c.width = width * dpr; c.height = height * dpr;
-      c.getContext('2d').scale(dpr, dpr);
-      c.getContext('2d').fillStyle = '#000';
-      c.getContext('2d').fillRect(0,0, width, height);
+    
+    [canvasL, canvasR].forEach(canvas => {
+      canvas.width = width * dpr;
+      canvas.height = height * dpr;
+      const ctx = canvas.getContext('2d');
+      ctx.scale(dpr, dpr);
+      // 初始化全屏纯黑
+      ctx.fillStyle = '#000000';
+      ctx.fillRect(0, 0, width, height);
     });
   }
-  window.addEventListener('resize', resize);
-  resize();
+  window.addEventListener('resize', resizeIntanCanvas);
+  resizeIntanCanvas();
+  new ResizeObserver(resizeIntanCanvas).observe(canvasL.parentElement);
 
+  const NUM_CHANNELS = 24; // 💡 优化：通道数从 36 降至 24，让波形显示更清爽真实
+  const LABEL_WIDTH = 95; 
+  
+  // 2. 严格保留原始通道生成逻辑 (含坏道模拟)
   function generateChannels(prefix) {
     const arr = [];
     for (let i = 0; i < NUM_CHANNELS; i++) {
-      let isBad = (prefix === 'A' && i === 2) || (prefix === 'B' && i === 8);
+      let isBad = false;
+      let imp = (418 + Math.random() * 80).toFixed(0) + " kΩ"; 
       let cIdx = i % intanColors.length;
+      
+      // 模拟个别异常通道（完全保留原始判断条件）
+      if ((prefix === 'A' && i === 2) || (prefix === 'B' && i === 8)) {
+        isBad = true;
+        imp = (15 + Math.random() * 5).toFixed(1) + " MΩ";
+        cIdx = 2; // 灰色
+      }
+
+      let idStr = i.toString().padStart(3, '0');
       arr.push({
-        label: `${prefix}-${i.toString().padStart(3, '0')} ${isBad?'15.2 MΩ': (418 + Math.random() * 60).toFixed(0) + ' kΩ'}`,
-        color: isBad ? '#6b6b6b' : intanColors[cIdx],
+        label: `${prefix}-${idStr} ${imp}`,
+        color: intanColors[cIdx],
         isBad: isBad,
-        lastY: 0,
-        spikeQueue: [], 
-        // 正常通道: 1~15Hz 随机放电; 坏通道不放电
-        firingRate: isBad ? 0 : (1 + Math.random() * 14) / 60 
+        baseY: 0, 
+        lastY: 0, 
+        currentNoise: 0, // 💡 新增：用于存储上一帧噪声，生成连续的平滑曲线
+        isSpiking: false, 
+        spikeProgress: 0, 
+        spikeAmp: 0,
+        firingRate: isBad ? 0 : (0.001 + Math.random() * 0.006) // 稍微降低整体放电频率，更自然
       });
     }
     return arr;
   }
-
+  
   const channelsL = generateChannels('A');
   const channelsR = generateChannels('B');
 
-  // 生物仿真的 Spike 形态：去极化深槽 + 延迟复极化
-  function getSpikeValue(p) { 
-    return Math.sin(p * Math.PI * 2) * Math.exp(-p * 4.5); 
-  }
+  let scanX = LABEL_WIDTH; 
+  const scanSpeed = 1.2; // 保持原始扫描感
+  let animationFrame;
 
-  function drawPane(ctx, channels, isLeft, currentX, prevX, time, dt) {
-    const gap = height / (NUM_CHANNELS + 0.5);
-    const scale50uV = gap * 0.45; 
-    const eraseWidth = 12;
-
-    // 1. 局部扫描擦除
-    ctx.fillStyle = '#000';
-    ctx.fillRect(currentX, 0, eraseWidth, height);
-    if (currentX + eraseWidth > width) {
-        ctx.fillRect(LABEL_WIDTH, 0, (currentX + eraseWidth) - width, height);
+  function drawPane(ctx, channelsData, isLeftPane) {
+    // 扫描刷新逻辑：擦除当前位置前方的一小条区域
+    const eraseWidth = 25; 
+    ctx.fillStyle = '#000000';
+    
+    // 处理回绕时的擦除
+    if (scanX + eraseWidth > width) {
+      ctx.fillRect(scanX, 0, width - scanX, height);
+      ctx.fillRect(LABEL_WIDTH, 0, eraseWidth - (width - scanX), height);
+    } else {
+      ctx.fillRect(scanX, 0, eraseWidth, height);
     }
 
-    // 2. 核心信号计算与绘制
-    channels.forEach((ch, i) => {
+    const gap = height / (NUM_CHANNELS + 0.5);
+    const maxAmplitude = gap * 0.9; // 稍微增加波形的纵向占比
+
+    for (let i = 0; i < NUM_CHANNELS; i++) {
+      const ch = channelsData[i];
       ch.baseY = gap * (i + 0.5);
-      let signal = 0;
+      
+      // 💡 真实感核心：使用一阶低通滤波器生成连续背景噪声，取代生硬的纯随机跳变
+      ch.currentNoise = ch.currentNoise * 0.65 + (Math.random() - 0.5) * (ch.isBad ? 0.015 : 0.06);
+      let signal = ch.currentNoise; 
 
-      if (ch.isBad) {
-        // 🏥 坏通道特性：巨大的 60Hz 工频干扰 + 高频热噪声
-        const noise60Hz = Math.sin(time * Math.PI * 2 * (60 / 1000));
-        signal = noise60Hz * 0.4 + (Math.random() - 0.5) * 0.2;
-      } else {
-        // 🧠 好通道特性：生物底噪 + LFP低频慢波
-        const lfp = Math.sin(time * 0.001 + i) * 0.06 + Math.sin(time * 0.003 - i) * 0.03;
-        const thermalNoise = (Math.random() - 0.5) * 0.08;
-        signal = lfp + thermalNoise;
-
-        // 神经元放电触发
-        if (Math.random() < ch.firingRate) {
-          const amp = 1.8 + Math.random() * 3.0; // 幅值波动
-          ch.spikeQueue.push({ p: 0, a: amp });
-          // 空间耦合：向相邻的1~2个电极产生信号泄漏
-          if (i > 0) channels[i-1].spikeQueue.push({ p: 0, a: amp * 0.35 });
-          if (i < NUM_CHANNELS-1) channels[i+1].spikeQueue.push({ p: 0, a: amp * 0.25 });
-        }
+      if (!ch.isSpiking && Math.random() < ch.firingRate) {
+        ch.isSpiking = true; 
+        ch.spikeProgress = 0; 
+        ch.spikeAmp = 0.7 + Math.random() * 0.6; // 引入放电幅度随机性，使其错落有致
+      }
+      
+      if (ch.isSpiking) {
+        // 💡 真实感核心：更接近真实动作电位 (Spike) 的波形模拟：尖锐的去极化 + 微弱极化恢复尾部
+        let t = ch.spikeProgress;
+        let spikeShape = (Math.exp(-Math.pow((t - 0.25) * 15, 2)) * -1.0) + (Math.exp(-Math.pow((t - 0.5) * 10, 2)) * 0.3);
+        signal += spikeShape * ch.spikeAmp;
+        ch.spikeProgress += 0.12; // Spike 周期变短，让波形在视觉上更锋利
+        if (ch.spikeProgress >= 1) ch.isSpiking = false;
       }
 
-      // 叠加队列中的 Spike 脉冲
-      ch.spikeQueue = ch.spikeQueue.filter(s => {
-        signal += getSpikeValue(s.p) * s.a;
-        // 关键物理量：基于真实时间 dt 推进进度，让 Spike 变成锐利的“针尖”
-        s.p += dt * 0.04; 
-        return s.p < 1;
-      });
+      const currentY = ch.baseY + signal * maxAmplitude;
 
-      const currentY = ch.baseY + signal * scale50uV;
-
-      if (currentX > prevX) {
+      // 只有在非起始点时才画线，防止回绕连线
+      if (scanX > LABEL_WIDTH + scanSpeed) {
         ctx.beginPath();
-        ctx.strokeStyle = ch.color;
+        ctx.strokeStyle = ch.color; 
         ctx.lineWidth = 1.2;
-        ctx.moveTo(prevX, ch.lastY || currentY);
-        ctx.lineTo(currentX, currentY);
+        ctx.lineJoin = 'round'; // 💡 新增：保证曲线转折处极致圆滑连续
+        ctx.lineCap = 'round';
+        ctx.moveTo(scanX - scanSpeed, ch.lastY);
+        ctx.lineTo(scanX, currentY);
         ctx.stroke();
       }
       ch.lastY = currentY;
-    });
+    }
+    
+    // 扫描指示线（极淡的白线，模仿屏幕刷新感）
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.2)';
+    ctx.fillRect(scanX, 0, 1, height);
 
-    // 3. UI 固化层 (防遮挡)
-    ctx.fillStyle = '#000';
+    // 4. 重绘左侧标签区域 (保持置顶)
+    ctx.fillStyle = '#000000';
     ctx.fillRect(0, 0, LABEL_WIDTH, height);
+    
     ctx.font = '10px "Segoe UI", sans-serif';
-    channels.forEach((ch, i) => {
+    ctx.textBaseline = 'middle';
+    
+    for (let i = 0; i < NUM_CHANNELS; i++) {
+      const ch = channelsData[i];
       ctx.fillStyle = ch.color;
-      ctx.fillRect(0, ch.baseY - gap*0.22, LABEL_WIDTH-5, gap*0.45);
+      ctx.fillRect(0, ch.baseY - 5, LABEL_WIDTH - 5, 11);
       ctx.fillStyle = ch.isBad ? '#000' : '#fff';
-      ctx.fillText(ch.label, 4, ch.baseY + 3);
-    });
+      ctx.fillText(ch.label, 4, ch.baseY + 1);
+    }
 
-    if (isLeft) {
-      const sY = channels[3].baseY;
-      ctx.strokeStyle = '#fff'; ctx.lineWidth = 1;
+    // 5. 严格保留比例尺功能 (仅左屏)
+    if (isLeftPane) {
+      const scaleY = channelsData[3].baseY; 
+      const scaleX = LABEL_WIDTH + 60;
+      ctx.strokeStyle = '#fff';
+      ctx.lineWidth = 1;
       ctx.beginPath();
-      ctx.moveTo(LABEL_WIDTH+12, sY - scale50uV/2);
-      ctx.lineTo(LABEL_WIDTH+12, sY + scale50uV/2);
+      ctx.moveTo(scaleX, scaleY - 10); ctx.lineTo(scaleX, scaleY + 10);
       ctx.stroke();
       ctx.fillStyle = '#fff';
-      ctx.fillText("50 µV", LABEL_WIDTH+18, sY + 3);
+      ctx.fillText("50 µV", scaleX + 6, scaleY + 1);
     }
   }
 
-  let scanX = LABEL_WIDTH;
-  let lastScanX = LABEL_WIDTH;
-  let lastTime = performance.now();
+  function renderDualSweep() {
+    drawPane(ctxL, channelsL, true);
+    drawPane(ctxR, channelsR, false);
 
-  function render(time) {
-    const dt = time - lastTime;
-    lastTime = time;
-    
-    // 如果浏览器卡顿导致 dt 过大，限制最大步长防止飞线
-    const safeDt = Math.min(dt, 32); 
-    const step = ((width - LABEL_WIDTH) / SCAN_PERIOD) * safeDt;
-    
-    lastScanX = scanX;
-    scanX += step;
-    
-    let isWrap = false;
+    scanX += scanSpeed;
     if (scanX >= width) {
       scanX = LABEL_WIDTH;
-      isWrap = true;
     }
-
-    drawPane(ctxL, channelsL, true, scanX, isWrap ? LABEL_WIDTH : lastScanX, time, safeDt);
-    drawPane(ctxR, channelsR, false, scanX, isWrap ? LABEL_WIDTH : lastScanX, time, safeDt);
-
-    requestAnimationFrame(render);
+    animationFrame = requestAnimationFrame(renderDualSweep);
   }
-  requestAnimationFrame(render);
+
+  const observer = new IntersectionObserver((entries) => {
+    if (entries[0].isIntersecting && canvasL.offsetParent !== null) {
+      if (!animationFrame) renderDualSweep();
+    } else {
+      if (animationFrame) cancelAnimationFrame(animationFrame);
+      animationFrame = null;
+    }
+  }, { threshold: 0.1 });
+  observer.observe(sim);
 });
+// 👆 插入结束 👆
 
-
+    
     // ===================== GIF 懒加载 =====================
   const gifObserver = new IntersectionObserver((entries, observer) => {
       entries.forEach(entry => {
