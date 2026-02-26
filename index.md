@@ -341,19 +341,14 @@ kbd {
 
 /* ===================== 5. 模型全局基础样式 ===================== */
 .custom-model-viewer {
-  /* 修复：把 max-width: 100vw 改为 100%，消除横向溢出 */
   width: 100%; max-width: 100%; box-sizing: border-box; height: 460px;
   background: transparent; border-radius: 16px; border: 1px solid rgba(59,130,246,0.3);
   outline: none; overflow: hidden; 
   transform: translateZ(0); 
   backface-visibility: hidden; 
   touch-action: none;
-  /* ✅ 新增：强制独立合成层，防止滚动时与父容器重绘竞争导致闪烁 */
   will-change: transform;
   isolation: isolate;
-  contain: paint layout size; /* 对于已经设定了明确固定高度 460px 的 3D 模型，加上 size 是安全的 */
-  content-visibility: auto;
-  content-visibility: auto;
 }
 
 .custom-model-viewer:focus, .custom-model-viewer:active, .custom-model-viewer:focus-visible {
@@ -1422,9 +1417,6 @@ body.light-mode .watermark-features strong { color: #2563eb; text-shadow: none; 
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.1) inset;
   overflow: hidden; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; user-select: none;
   transform: translateZ(0); 
-  contain: paint layout; 
-  content-visibility: auto;
-  content-visibility: auto; /* 🚀 离开视口时浏览器会自动跳过它的渲染 */
 }
 .intan-title-bar {
   background: linear-gradient(to bottom, #4a4a4a, #333333); padding: 5px 12px;
