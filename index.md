@@ -1429,19 +1429,22 @@ body.light-mode .watermark-features strong { color: #2563eb; text-shadow: none; 
 .intan-body { display: flex; height: 420px; background: #000; }
 
 /* 双屏核心布局 */
-.intan-plots-wrapper { flex: 1; display: flex; border-top: 1px solid #222; }
+.intan-plots-wrapper { flex: 1; display: flex; border-top: 1px solid #222; min-height: 0; }
 .intan-plot-pane {
-  flex: 1; display: flex; flex-direction: column; position: relative;
+  flex: 1 1 0%; /* 🚀 核心修复：允许缩放，基准为0 */
+  display: flex; flex-direction: column; position: relative;
   background: #000000; border-right: 2px solid #333;
+  min-height: 0; /* 🚀 核心修复：防止内部 canvas 把父级撑破 */
 }
 
 /* 顶部时间轴 (0 - 2000 ms) */
 .intan-time-axis {
   height: 20px; display: flex; justify-content: space-between; align-items: flex-end;
-  padding: 0 10px 0 100px; /* 避开左侧通道标签区 */
+  padding: 0 10px 0 100px; 
   border-bottom: 1px solid #444; color: #aaa; font-family: 'JetBrains Mono', monospace; font-size: 10px;
   background: #000; z-index: 10;
-  flex-shrink: 0; /* 🚀 新增：严禁被挤压 */
+  /* 🚀 核心修复：防止顶部被压缩 */
+  flex-shrink: 0; 
 }
 .intan-time-axis span { position: relative; }
 .intan-time-axis span::after {
@@ -1451,17 +1454,22 @@ body.light-mode .watermark-features strong { color: #2563eb; text-shadow: none; 
 
 /* 绘图区背景：仅保留垂直对齐线 */
 .intan-canvas-container {
-  flex: 1; position: relative; overflow: hidden;
-  background: #000000; /* 直接上纯黑色 */
-  min-height: 0; /* 🚀 新增：打破 Flexbox 默认的 min-height: auto，强制其绝对服从外层高度，这是修复越界的核心！ */
+ /* 🚀 核心修复：打破 Flexbox 撑破机制 */
+  flex: 1 1 0%; /* 让它能伸能缩，但基准是 0 */
+  position: relative; 
+  overflow: hidden;
+  background: #000000; /* 纯黑背景 */
+  min-height: 0; 
+  display: block; 
 }
 .intan-canvas { width: 100%; height: 100%; display: block; }
 
 /* 底部状态栏 */
 .intan-pane-footer {
-  height: 22px; background: #e0e0e0; display: flex; justify-content: space-between; align-items: center;
+ height: 22px; background: #e0e0e0; display: flex; justify-content: space-between; align-items: center;
   padding: 0 8px; font-size: 11px; color: #333; font-weight: 500; border-top: 1px solid #111;
-  flex-shrink: 0; /* 🚀 新增：严禁被挤压 */
+  /* 🚀 核心修复：防止底部被压缩挤出屏幕 */
+  flex-shrink: 0; 
 }
 .intan-footer-tools { display: flex; align-items: center; gap: 8px; color: #555; }
 .intan-footer-tools input[type="checkbox"] { margin: 0; }
@@ -1490,6 +1498,8 @@ body.light-mode .watermark-features strong { color: #2563eb; text-shadow: none; 
   .intan-sidebar { width: 100%; flex-direction: row; flex-wrap: wrap; }
   .intan-btn-group, .intan-panel { flex: 1; min-width: 120px; }
 }
+
+  
 /* ================= 新增：Intan 物理硬件前面板复刻 ================= */
 .hw-ports-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 2px; }
 .hw-port-box {
@@ -2996,21 +3006,27 @@ intanSimulators.forEach(sim => {
   const scanSpeed = 1.2; // 保持原始扫描感
   let animationFrame;
 
-  function drawPane(ctx, channelsData, isLeftPane) {
+function drawPane(ctx, channelsData, isLeftPane) {
+    // 🚀 1. 新增：动态判断手机端，并设定专属尺寸
+    const isMobile = window.innerWidth <= 600;
+    
+    // 手机端彩色框宽度设为 75（原本是 95），腾出 20px 给波形
+    const currentLabelWidth = isMobile ? 75 : LABEL_WIDTH; 
+    
     // 扫描刷新逻辑：擦除当前位置前方的一小条区域
     const eraseWidth = 2; 
     ctx.fillStyle = '#000000';
     
-    // 处理回绕时的擦除
+    // 处理回绕时的擦除 (注意这里改用 currentLabelWidth)
     if (scanX + eraseWidth > width) {
       ctx.fillRect(scanX, 0, width - scanX, height);
-      ctx.fillRect(LABEL_WIDTH, 0, eraseWidth - (width - scanX), height);
+      ctx.fillRect(currentLabelWidth, 0, eraseWidth - (width - scanX), height);
     } else {
       ctx.fillRect(scanX, 0, eraseWidth, height);
     }
 
     const gap = height / (NUM_CHANNELS + 0.5);
-    const maxAmplitude = gap * 0.9; // 稍微增加波形的纵向占比
+    const maxAmplitude = gap * 0.9; 
 
     for (let i = 0; i < NUM_CHANNELS; i++) {
       const ch = channelsData[i];
@@ -3020,33 +3036,21 @@ intanSimulators.forEach(sim => {
 
       // 🚀 终极物理特征分离逻辑：
       if (ch.isBad) {
-        // 【坏通道：高阻抗特征模拟】
-        ch.isSpiking = false; // 绝对没有 Spike
-        
-        // 特征 1: 引入经典的 60Hz (或 50Hz) 工频干扰 (Power Line Noise)
-        // 屏幕宽度代表 2000ms (2秒)，所以 x坐标比例 * 2.0 就是当前时间(秒)
+        ch.isSpiking = false; 
         const time_sec = scanX / width * 2.0; 
         const powerLineInterference = Math.sin(time_sec * 60 * Math.PI * 2) * 0.15; 
-        
-        // 特征 2: 引入较大的热噪声 (Thermal Noise)，高阻抗带来高噪声
         ch.currentNoise = ch.currentNoise * 0.3 + (Math.random() - 0.5) * 0.25; 
-        
-        // 最终坏通道的信号 = 工频干扰 + 明显的底噪
         signal = powerLineInterference + ch.currentNoise;
-
       } else {
-        // 【正常通道：健康脑电底噪】
         ch.currentNoise = ch.currentNoise * 0.65 + (Math.random() - 0.5) * 0.06;
         signal = ch.currentNoise; 
         
-        // 触发 Spike 放电
         if (!ch.isSpiking && Math.random() < ch.firingRate) {
           ch.isSpiking = true; 
           ch.spikeProgress = 0; 
           ch.spikeAmp = 0.7 + Math.random() * 0.6; 
         }
-        
-        // 渲染 Spike 波形
+
         if (ch.isSpiking) {
           let t = ch.spikeProgress;
           let spikeShape = (Math.exp(-Math.pow((t - 0.25) * 15, 2)) * -1.0) + (Math.exp(-Math.pow((t - 0.5) * 10, 2)) * 0.3);
@@ -3058,8 +3062,8 @@ intanSimulators.forEach(sim => {
 
       const currentY = ch.baseY + signal * maxAmplitude;
 
-      // 只有在非起始点时才画线，防止回绕连线
-      if (scanX > LABEL_WIDTH + scanSpeed) {
+      // 只有在非起始点时才画线 (注意这里改用 currentLabelWidth)
+      if (scanX > currentLabelWidth + scanSpeed) {
         ctx.beginPath();
         ctx.strokeStyle = ch.color; 
         ctx.lineWidth = 1.2;
@@ -3071,34 +3075,37 @@ intanSimulators.forEach(sim => {
       }
       ch.lastY = currentY;
     }
-    
-    // 扫描指示线（极淡的白线，模仿屏幕刷新感）
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.2)';
-    ctx.fillRect(scanX, 0, 1, height);
 
-    // 4. 重绘左侧标签区域 (保持置顶)
+    // 重绘左侧标签区域 (注意这里改用 currentLabelWidth)
     ctx.fillStyle = '#000000';
-    ctx.fillRect(0, 0, LABEL_WIDTH, height);
+    ctx.fillRect(0, 0, currentLabelWidth, height);
     
-    // 🚀 新增：判断如果是手机端（屏幕宽度<=600），就把字体缩小到 8px，否则保持 10px
-    const isMobile = window.innerWidth <= 600;
-    const fontSize = isMobile ? 8 : 10;
+    // 🚀 2. 字体极限压缩：手机端改到 7.5px (为了塞进更窄的框)
+    const fontSize = isMobile ? 7.5 : 10;
+    // 🚀 3. 彩色框高度压缩：手机端色块高度变矮 (8px)，电脑端保持 11px
+    const blockHeight = isMobile ? 8 : 11;
+    // 计算 Y 轴偏移，让色块始终居中对齐波形基准线
+    const blockOffsetY = blockHeight / 2;
+    
     ctx.font = `${fontSize}px "Segoe UI", sans-serif`;
     ctx.textBaseline = 'middle';
     
     for (let i = 0; i < NUM_CHANNELS; i++) {
       const ch = channelsData[i];
       ctx.fillStyle = ch.color;
-      ctx.fillRect(0, ch.baseY - 5, LABEL_WIDTH - 5, 11);
+      // 画彩色背景框 (宽度减5留出右侧黑边，高度动态改变)
+      ctx.fillRect(0, ch.baseY - blockOffsetY, currentLabelWidth - 3, blockHeight);
+      
       ctx.fillStyle = ch.isBad ? '#000' : '#fff';
-      // 🚀 手机端稍微把文字往左靠一点点 (从 4 改为 2)，腾出更多空间给阻抗值
-      ctx.fillText(ch.label, isMobile ? 2 : 4, ch.baseY + 1);
+      // 🚀 手机端文字紧贴左边缘 (x=1)，保证阻抗值能全部显示
+      ctx.fillText(ch.label, isMobile ? 1 : 4, ch.baseY + (isMobile ? 0.5 : 1));
     }
 
-    // 5. 严格保留比例尺功能 (仅左屏)
+    // 严格保留比例尺功能 (仅左屏)
     if (isLeftPane) {
       const scaleY = channelsData[3].baseY; 
-      const scaleX = LABEL_WIDTH + 60;
+      // 比例尺也要跟着左侧标签的宽度走
+      const scaleX = currentLabelWidth + (isMobile ? 30 : 60);
       ctx.strokeStyle = '#fff';
       ctx.lineWidth = 1;
       ctx.beginPath();
@@ -3109,18 +3116,17 @@ intanSimulators.forEach(sim => {
     }
   }
 
-  function renderDualSweep() {
-    // 🚀 核心修复：如果页面正在滚动，直接跳过 Canvas 绘制，把算力全部让给 Lenis 平滑滚动！
+ function renderDualSweep() {
     if (!window.isPageScrolling) {
       drawPane(ctxL, channelsL, true);
       drawPane(ctxR, channelsR, false);
 
       scanX += scanSpeed;
       if (scanX >= width) {
-        scanX = LABEL_WIDTH;
+        // 🚀 让扫描线回绕时，也能识别手机端变窄的宽度
+        scanX = window.innerWidth <= 600 ? 75 : LABEL_WIDTH; 
       }
     }
-    // 动画帧继续循环，但滚动时不执行繁重的 drawPane
     animationFrame = requestAnimationFrame(renderDualSweep);
   }
 
