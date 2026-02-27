@@ -2977,8 +2977,8 @@ intanSimulators.forEach(sim => {
     const arr = [];
     for (let i = 0; i < NUM_CHANNELS; i++) {
       let isBad = false;
-      // 1. 正常 ECoG 通道阻抗设定为 366-466 kΩ
-      let imp = (366 + Math.random() * 100).toFixed(0) + " kΩ";
+      // 1. 正常 ECoG 通道阻抗设定为 316-416 kΩ
+      let imp = (316 + Math.random() * 100).toFixed(0) + " kΩ";
       
       // 2. 判定坏通道
       if ((prefix === 'A' && i === 2) || (prefix === 'B' && i === 8)) {
