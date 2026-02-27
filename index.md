@@ -1608,7 +1608,7 @@ body.light-mode .watermark-features strong { color: #2563eb; text-shadow: none; 
       </div>
       <div class="intan-panel">
         <div class="intan-panel-title">System Status</div>
-        <div class="intan-setting-row" style="color: #27c93f; font-weight: bold;"><span>SPI Ports Status</span><span>A, B Detected</span></div>
+        <div class="intan-setting-row" style="color: #27c93f;"><span>Ports Status</span><span> 2 Detected</span></div>
         <div class="intan-setting-row" style="color: #777;"><span>Unused</span><span>C, D</span></div>
         <div class="intan-setting-row"><span>Sampling Rate</span><div class="intan-value-box" style="border:none;box-shadow:none;background:transparent;text-align:right;">30 kS/s</div></div>
       </div>
