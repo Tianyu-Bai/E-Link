@@ -1531,6 +1531,33 @@ body.light-mode .watermark-features strong { color: #2563eb; text-shadow: none; 
 }
 /* C和D端口整体稍微变暗，表示未连接 */
 .hw-port-box.inactive { opacity: 0.45; filter: grayscale(80%); }
+  
+/* --- SPI Boot-up 动画专属样式 --- */
+.hw-led.amber-blink {
+  background: #f59e0b; 
+  border-color: #b45309;
+  box-shadow: 0 0 8px #f59e0b;
+  animation: intan-led-flash 0.15s infinite alternate;
+}
+@keyframes intan-led-flash {
+  0% { opacity: 0.3; box-shadow: none; }
+  100% { opacity: 1; box-shadow: 0 0 8px #f59e0b; }
+}
+
+/* 端口锁定时的瞬间反光特效 */
+@keyframes port-lock-flash {
+  0% { background: #27c93f; }
+  100% { background: #fff; }
+}
+.hw-port-box.flash-lock {
+  animation: port-lock-flash 0.4s ease-out;
+}
+
+.spi-status-text {
+  font-family: 'JetBrains Mono', monospace; /* 换成等宽字体，更有终端感 */
+  transition: color 0.3s;
+  letter-spacing: 0.5px;
+}
 </style>
 
 <div class="intan-simulator-wrapper" data-aos="fade-up">
@@ -1581,15 +1608,15 @@ body.light-mode .watermark-features strong { color: #2563eb; text-shadow: none; 
     <div class="intan-sidebar">
       <div class="intan-btn-group"><div class="intan-btn">Run</div><div class="intan-btn record">Record</div></div>
       <div class="intan-panel">
-        <div class="intan-panel-title">SPI Ports</div>
-        <div class="hw-ports-grid">
-          <div class="hw-port-box active">
+        <div class="intan-panel-title">Hardware Ports</div>
+        <div class="hw-ports-grid" id="spi-port-grid">
+          <div class="hw-port-box inactive" id="port-A">
             <div class="hw-port-left"><span class="hw-port-label">A</span><div class="hw-port-connector"></div></div>
-            <div class="hw-port-leds"><div class="hw-led"></div><div class="hw-led"></div><div class="hw-led green"></div></div>
+            <div class="hw-port-leds"><div class="hw-led"></div><div class="hw-led"></div><div class="hw-led target-led"></div></div>
           </div>
-          <div class="hw-port-box active">
+          <div class="hw-port-box inactive" id="port-B">
             <div class="hw-port-left"><span class="hw-port-label">B</span><div class="hw-port-connector"></div></div>
-            <div class="hw-port-leds"><div class="hw-led"></div><div class="hw-led"></div><div class="hw-led green"></div></div>
+            <div class="hw-port-leds"><div class="hw-led"></div><div class="hw-led"></div><div class="hw-led target-led"></div></div>
           </div>
           <div class="hw-port-box inactive">
             <div class="hw-port-left"><span class="hw-port-label">C</span><div class="hw-port-connector"></div></div>
@@ -1608,9 +1635,11 @@ body.light-mode .watermark-features strong { color: #2563eb; text-shadow: none; 
       </div>
       <div class="intan-panel">
         <div class="intan-panel-title">System Status</div>
-        <div class="intan-setting-row" style="color: #27c93f;"><span>Ports Status</span><span> 2 Detected</span></div>
+        <div class="intan-setting-row spi-status-row" style="color: #64748b; font-weight: bold;">
+          <span>SPI Links</span><span class="spi-status-text">OFFLINE</span>
+        </div>
         <div class="intan-setting-row" style="color: #777;"><span>Unused</span><span>C, D</span></div>
-        <div class="intan-setting-row"><span>Sampling Rate</span><div class="intan-value-box" style="border:none;box-shadow:none;background:transparent;text-align:right;">30 kS/s</div></div>
+        <div class="intan-setting-row"><span>Sampling</span><div class="intan-value-box" style="border:none;box-shadow:none;background:transparent;text-align:right;">30 kS/s</div></div>
       </div>
     </div>
   </div>
@@ -2476,16 +2505,16 @@ This project is open-source and available under the **MIT License**. Click the b
     
     <div class="intan-sidebar">
       <div class="intan-btn-group"><div class="intan-btn">Run</div><div class="intan-btn record">Record</div></div>
-     <div class="intan-panel">
+    <div class="intan-panel">
         <div class="intan-panel-title">Hardware Ports</div>
-        <div class="hw-ports-grid">
-          <div class="hw-port-box active">
+        <div class="hw-ports-grid" id="spi-port-grid">
+          <div class="hw-port-box inactive" id="port-A">
             <div class="hw-port-left"><span class="hw-port-label">A</span><div class="hw-port-connector"></div></div>
-            <div class="hw-port-leds"><div class="hw-led"></div><div class="hw-led"></div><div class="hw-led green"></div></div>
+            <div class="hw-port-leds"><div class="hw-led"></div><div class="hw-led"></div><div class="hw-led target-led"></div></div>
           </div>
-          <div class="hw-port-box active">
+          <div class="hw-port-box inactive" id="port-B">
             <div class="hw-port-left"><span class="hw-port-label">B</span><div class="hw-port-connector"></div></div>
-            <div class="hw-port-leds"><div class="hw-led"></div><div class="hw-led"></div><div class="hw-led green"></div></div>
+            <div class="hw-port-leds"><div class="hw-led"></div><div class="hw-led"></div><div class="hw-led target-led"></div></div>
           </div>
           <div class="hw-port-box inactive">
             <div class="hw-port-left"><span class="hw-port-label">C</span><div class="hw-port-connector"></div></div>
@@ -2504,7 +2533,9 @@ This project is open-source and available under the **MIT License**. Click the b
       </div>
       <div class="intan-panel">
         <div class="intan-panel-title">System Status</div>
-        <div class="intan-setting-row" style="color: #27c93f; font-weight: bold;"><span>SPI Links</span><span>A, B Locked</span></div>
+        <div class="intan-setting-row spi-status-row" style="color: #64748b; font-weight: bold;">
+          <span>SPI Links</span><span class="spi-status-text">OFFLINE</span>
+        </div>
         <div class="intan-setting-row" style="color: #777;"><span>Unused</span><span>C, D</span></div>
         <div class="intan-setting-row"><span>Sampling</span><div class="intan-value-box" style="border:none;box-shadow:none;background:transparent;text-align:right;">30 kS/s</div></div>
       </div>
@@ -2714,10 +2745,11 @@ This project is open-source and available under the **MIT License**. Click the b
 </div>
 
 </div> 
+
 <script>
   document.addEventListener("DOMContentLoaded", () => {
 
-    // ===================== E-Link 动态数据面板 =====================
+ // ===================== E-Link 动态数据面板 =====================
       const dashboardObserver = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         const card = entry.target;
@@ -3173,10 +3205,67 @@ function drawPane(ctx, channelsData, isLeftPane) {
     animationFrame = requestAnimationFrame(renderDualSweep);
   }
 
+  // --- SPI 硬件上电握手与波形触发逻辑 ---
+  let isBooted = false; // 记录当前面板是否已经完成握手
+
+  function runSPIBootSequence(simulatorNode, callback) {
+    const portA = simulatorNode.querySelector('#port-A');
+    const portB = simulatorNode.querySelector('#port-B');
+    if(!portA || !portB) { callback(); return; }
+
+    const ledA = portA.querySelector('.target-led');
+    const ledB = portB.querySelector('.target-led');
+    const statusRow = simulatorNode.querySelector('.spi-status-row');
+    const statusText = simulatorNode.querySelector('.spi-status-text');
+
+    // 步骤 1: 唤醒，扫描 A 端口
+    setTimeout(() => {
+      if(statusRow) statusRow.style.color = '#f59e0b';
+      if(statusText) statusText.innerText = 'SCANNING...';
+      portA.classList.remove('inactive');
+      ledA.classList.add('amber-blink');
+    }, 300);
+
+    // 步骤 2: A 端口锁定，开始扫描 B 端口
+    setTimeout(() => {
+      ledA.classList.remove('amber-blink');
+      ledA.classList.add('green');
+      portA.classList.add('flash-lock');
+
+      portB.classList.remove('inactive');
+      ledB.classList.add('amber-blink');
+      if(statusText) statusText.innerText = 'LOCKING B...';
+    }, 1100);
+
+    // 步骤 3: B 端口锁定，全系统就绪，释放数据流
+    setTimeout(() => {
+      ledB.classList.remove('amber-blink');
+      ledB.classList.add('green');
+      portB.classList.add('flash-lock');
+
+      if(statusRow) statusRow.style.color = '#27c93f';
+      if(statusText) statusText.innerText = 'A, B LOCKED';
+
+      // 稍微延迟 200ms 让用户看清锁定状态，然后执行回调(启动波形)
+      setTimeout(callback, 200);
+    }, 1900); 
+  }
+
   const observer = new IntersectionObserver((entries) => {
     if (entries[0].isIntersecting && canvasL.offsetParent !== null) {
-      if (!animationFrame) renderDualSweep();
+      if (!isBooted) {
+         // 如果还没上电，执行硬件握手动画，完成后再启动波形渲染
+         runSPIBootSequence(sim, () => {
+           isBooted = true;
+           // 👇 仅当元素仍在视口内时，才真正启动波形
+           if (sim.dataset.inView === "true" && !animationFrame) renderDualSweep();
+         });
+      } else {
+         if (!animationFrame) renderDualSweep();
+      }
+      sim.dataset.inView = "true"; // 记录在视口内
     } else {
+      sim.dataset.inView = "false"; // 记录离开视口
       if (animationFrame) cancelAnimationFrame(animationFrame);
       animationFrame = null;
     }
@@ -3184,7 +3273,6 @@ function drawPane(ctx, channelsData, isLeftPane) {
   observer.observe(sim);
 });
 // 👆 插入结束 👆
-
     
     // ===================== GIF 懒加载 =====================
   const gifObserver = new IntersectionObserver((entries, observer) => {
