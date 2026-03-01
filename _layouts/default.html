@@ -581,136 +581,199 @@
     const rpgClose = document.querySelector('.rpg-close');
 
     // ✅ 2. 安全地初始化鼠标和容器位置变量
-    let mouseX = window.innerWidth / 2, mouseY = 100, ticking = false;
+    let mouseX = window.innerWidth / 2, mouseY = window.innerHeight / 2, ticking = false;
     let containerRect = container ? container.getBoundingClientRect() : null;
     window.addEventListener('resize', () => { if(container) containerRect = container.getBoundingClientRect(); });
-   
-   // ===================== 顶尖企业级：景深神经尘埃引擎 (Neuro-Dust Bokeh) =====================
-  function initNeuroDust() {
-    const canvas = document.getElementById('neuro-dust-canvas');
-    if(!canvas) return;
-    const ctx = canvas.getContext('2d', { alpha: true });
-    let width, height;
-    
-    function resize() {
-      width = window.innerWidth; height = window.innerHeight;
-      const dpr = Math.min(window.devicePixelRatio || 1, 2); 
-      canvas.width = width * dpr; canvas.height = height * dpr;
-      canvas.style.width = `${width}px`; canvas.style.height = `${height}px`;
-      ctx.scale(dpr, dpr); 
-    }
-    window.addEventListener('resize', resize);
-    resize();
 
-    const particles = [];
-    const count = window.innerWidth > 768 ? 65 : 30; // 电脑端 65 颗，手机端 30 颗
-    
-     for(let i = 0; i < count; i++) {
-      const z = Math.random(); 
-      particles.push({
-        x: Math.random() * width,
-        y: Math.random() * height,
-        vx: (Math.random() - 0.5) * 0.15 * (1 - z + 0.3), // 速度降到 0.15
-        vy: (Math.random() - 0.5) * 0.15 * (1 - z + 0.3), // 速度降到 0.15
-        baseSize: (1 - z) * 3 + 0.8, // 实体核心大小
-        blurRadius: z * 8 + 3,       // 离得越远，发光散布(Bokeh)越大
-        alpha: (1 - z) * 0.6 + 0.2,  // 离得越近越亮
-        phase: Math.random() * Math.PI * 2 // 呼吸频率基数
-      });
-    }
-
-    let raf;
-    function draw() {
-      if (document.hidden || document.body.classList.contains('modal-active')) {
-        raf = requestAnimationFrame(draw);
-        return; // 弹窗开启或切走网页时暂停渲染，极致省性能
+    // ===================== 🌟 顶尖大厂级：交互式神经突触网络 (Neural Plexus) =====================
+    function initNeuralWeb() {
+      const canvas = document.getElementById('neuro-dust-canvas');
+      if(!canvas) return;
+      const ctx = canvas.getContext('2d', { alpha: true });
+      let width, height;
+      
+      function resize() {
+        width = window.innerWidth; height = window.innerHeight;
+        const dpr = Math.min(window.devicePixelRatio || 1, 2); 
+        canvas.width = width * dpr; canvas.height = height * dpr;
+        canvas.style.width = `${width}px`; canvas.style.height = `${height}px`;
+        ctx.scale(dpr, dpr); 
       }
+      window.addEventListener('resize', resize);
+      resize();
+
+      const particles = [];
+      // 增加神经元节点数量，让网络更丰满 (根据设备智能调整)
+      const count = window.innerWidth > 768 ? 90 : 45; 
+      const maxDistance = 150; // 突触相连的最大距离
       
-      ctx.clearRect(0, 0, width, height);
-      
-      // 动态读取深浅色模式的配色
-      const isLight = document.body.classList.contains('light-mode');
-      const coreColor = isLight ? '13, 148, 136' : '34, 211, 238'; // 亮青色
-      const glowColor = isLight ? '20, 184, 166' : '6, 182, 212';  // 深青色光晕
-
-      particles.forEach(p => {
-        p.x += p.vx;
-        p.y += p.vy;
-        p.phase += 0.015; // 呼吸自增
-
-        // 越界无缝穿梭
-        if (p.x < -30) p.x = width + 30;
-        if (p.x > width + 30) p.x = -30;
-        if (p.y < -30) p.y = height + 30;
-        if (p.y > height + 30) p.y = -30;
-
-        // 🌟 交互魔法：鼠标物理排斥（利用你之前定义的 mouseX, mouseY）
-        const dx = mouseX - p.x;
-        const dy = mouseY - p.y;
-        const dist = Math.sqrt(dx*dx + dy*dy);
-        if (dist < 180) {
-          p.x -= (dx / dist) * 0.8;
-          p.y -= (dy / dist) * 0.8;
-        }
-
-        // 🌟 视觉魔法：利用原生径向渐变，渲染单反镜头级的 Bokeh (散景) 模糊
-        const currentAlpha = p.alpha + Math.sin(p.phase) * 0.2; // 呼吸亮度
-        const currentRadius = p.baseSize + p.blurRadius;
-
-        const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, currentRadius);
-        grad.addColorStop(0, `rgba(${coreColor}, ${Math.max(0, currentAlpha)})`);
-        grad.addColorStop(0.2, `rgba(${glowColor}, ${Math.max(0, currentAlpha * 0.7)})`);
-        grad.addColorStop(1, `rgba(${glowColor}, 0)`);
-
-        ctx.beginPath();
-        ctx.fillStyle = grad;
-        ctx.arc(p.x, p.y, currentRadius, 0, Math.PI * 2);
-        ctx.fill();
-      });
-      raf = requestAnimationFrame(draw);
-    }
-    draw();
-  }
-  initNeuroDust();
- 
- // 0. 🔥 防御性初始化 Lenis 平滑滚动（CDN 加载失败不会炸掉整个页面）
-      let lenis = null;
-      if (typeof Lenis !== 'undefined') {
-        lenis = new Lenis({
-          duration: 1.2,
-          easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-          direction: 'vertical', gestureDirection: 'vertical',
-          smooth: true, mouseMultiplier: 1, smoothTouch: false, touchMultiplier: 2,
+      for(let i = 0; i < count; i++) {
+        particles.push({
+          x: Math.random() * width,
+          y: Math.random() * height,
+          vx: (Math.random() - 0.5) * 0.6, // 极其缓慢的有机游走
+          vy: (Math.random() - 0.5) * 0.6,
+          radius: Math.random() * 2 + 1,   // 节点核心大小
         });
-        function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
-        requestAnimationFrame(raf);
-      } else {
-        console.warn('[E-Link] Lenis not loaded, smooth scroll disabled');
       }
 
-      // 图片懒加载
-      const images = document.querySelectorAll('#main_content img');
-      images.forEach((img, index) => {
-          if (index < 2) { img.setAttribute('loading', 'eager'); img.setAttribute('fetchpriority', 'high'); } 
-          else { if(!img.getAttribute('loading')) img.setAttribute('loading', 'lazy'); }
-  });
+      function draw() {
+        if (document.hidden || document.body.classList.contains('modal-active')) {
+          requestAnimationFrame(draw); return; // 弹窗开启时瞬间休眠，极致省性能
+        }
+        
+        ctx.clearRect(0, 0, width, height);
+        const isLight = document.body.classList.contains('light-mode');
+        // Blackrock 风格的高级青蓝色
+        const nodeColor = isLight ? '13, 148, 136' : '96, 165, 250'; 
+        const lineColor = isLight ? '20, 184, 166' : '59, 130, 246';
 
-  const textsEN = ["Welcome to this webpage!", "Thanks for visiting us!", "Stay tuned!"];
-  const textsZH = ["欢迎访问本网页！", "感谢您的关注！", "欢迎常来访问！"];
-  let texts = textsEN; 
-  
-  let textIdx = 0, charIdx = 0, isDeleting = false;
-  function type() {
-    const currentText = texts[textIdx];
-    const display = isDeleting ? currentText.substring(0, charIdx--) : currentText.substring(0, charIdx++);
-    document.getElementById('typewriter-text').textContent = display;
-    let speed = isDeleting ? 50 : 100;
-    if (!isDeleting && charIdx === currentText.length + 1) { isDeleting = true; speed = 2000; } 
-    else if (isDeleting && charIdx === 0) { isDeleting = false; textIdx = (textIdx + 1) % texts.length; speed = 500; }
-    setTimeout(type, speed);
-  }
+        // 1. 更新位置与绘制网络连线
+        for(let i = 0; i < count; i++) {
+          const p1 = particles[i];
+          p1.x += p1.vx; p1.y += p1.vy;
 
+          // 边缘无缝穿梭
+          if (p1.x < -50) p1.x = width + 50; if (p1.x > width + 50) p1.x = -50;
+          if (p1.y < -50) p1.y = height + 50; if (p1.y > height + 50) p1.y = -50;
+
+          // 画线：神经元之间的距离检测
+          for(let j = i + 1; j < count; j++) {
+            const p2 = particles[j];
+            const dx = p1.x - p2.x; const dy = p1.y - p2.y;
+            const dist = Math.sqrt(dx*dx + dy*dy);
+
+            if(dist < maxDistance) {
+              ctx.beginPath();
+              // 距离越近，线条越不透明
+              ctx.strokeStyle = `rgba(${lineColor}, ${0.4 * (1 - dist/maxDistance)})`;
+              ctx.lineWidth = 1;
+              ctx.moveTo(p1.x, p1.y);
+              ctx.lineTo(p2.x, p2.y);
+              ctx.stroke();
+            }
+          }
+
+          // 🌟 核心魔法：鼠标交互，神经元向鼠标伸出突触并被吸引
+          const mdx = mouseX - p1.x; const mdy = mouseY - p1.y;
+          const mDist = Math.sqrt(mdx*mdx + mdy*mdy);
+          if (mDist < 200) {
+            ctx.beginPath();
+            ctx.strokeStyle = `rgba(${lineColor}, ${0.6 * (1 - mDist/200)})`;
+            ctx.lineWidth = 1.5;
+            ctx.moveTo(p1.x, p1.y);
+            ctx.lineTo(mouseX, mouseY);
+            ctx.stroke();
+            
+            // 物理引力：节点被鼠标轻微吸引拉扯
+            p1.x += (mdx / mDist) * 0.5;
+            p1.y += (mdy / mDist) * 0.5;
+          }
+
+          // 画点：绘制神经元核心节点
+          ctx.beginPath();
+          ctx.fillStyle = `rgba(${nodeColor}, 0.8)`;
+          ctx.shadowBlur = 10;
+          ctx.shadowColor = `rgba(${nodeColor}, 1)`;
+          ctx.arc(p1.x, p1.y, p1.radius, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.shadowBlur = 0; // 重置阴影，防止全局卡顿
+        }
+        requestAnimationFrame(draw);
+      }
+      draw();
+    }
+    initNeuralWeb(); // 启动神经网
+
+
+    // ===================== 🚀 极简 3D 模型渲染器 (彻底修复滑动白屏 Bug) =====================
+    const models = Array.from(document.querySelectorAll('model-viewer'));
+    if (models.length) {
+        const modelObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                const viewer = entry.target;
+                if (entry.isIntersecting) {
+                    // 进入视口：如果是手动加载模式且没加载过，则触发加载
+                    if (viewer.getAttribute('reveal') === 'manual' && viewer.dataset.loaded !== "true") {
+                        viewer.dataset.loaded = "true";
+                        viewer.dismissPoster();
+                    }
+                    try { viewer.play(); } catch(e) {}
+                    
+                    // 显示手势 HUD
+                    if (viewer.dataset.overlayDisabled !== "true") {
+                        clearTimeout(viewer.hudTimer);
+                        viewer.hudTimer = setTimeout(() => {
+                            viewer.querySelectorAll('.gesture-overlay').forEach(el => el.classList.add('gesture-active'));
+                        }, 500);
+                    }
+                } else {
+                    // 离开视口：仅暂停动画，绝不销毁 src (彻底修复白屏 Bug)
+                    viewer.pause();
+                    viewer.querySelectorAll('.gesture-overlay').forEach(el => el.classList.remove('gesture-active'));
+                }
+            });
+        }, { threshold: 0.1 });
+
+        models.forEach(viewer => {
+            modelObserver.observe(viewer);
+            // 用户点击后加载模型
+            viewer.addEventListener('click', () => {
+                if (viewer.dataset.loaded !== "true") {
+                    viewer.dataset.loaded = "true";
+                    viewer.dismissPoster();
+                }
+            });
+            // 用户开始操作模型后，永久隐藏提示
+            const handleCameraChange = (event) => {
+                if (event.detail.source === 'user-interaction' && viewer.dataset.overlayDisabled !== "true") {
+                    viewer.querySelectorAll('.gesture-overlay, .gesture-hud').forEach(el => {
+                        el.classList.add('gesture-hidden');
+                    });
+                    viewer.dataset.overlayDisabled = "true";
+                    viewer.removeEventListener('camera-change', handleCameraChange);
+                }
+            };
+            viewer.addEventListener('camera-change', handleCameraChange);
+        });
+    }
+
+    // ===================== 0. Lenis 平滑滚动 =====================
+    let lenis = null;
+    if (typeof Lenis !== 'undefined') {
+      lenis = new Lenis({
+        duration: 1.2,
+        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        direction: 'vertical', gestureDirection: 'vertical',
+        smooth: true, mouseMultiplier: 1, smoothTouch: false, touchMultiplier: 2,
+      });
+      function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
+      requestAnimationFrame(raf);
+    }
+
+    // ===================== 其余功能：懒加载、打字机、机器人互动等 =====================
+    const images = document.querySelectorAll('#main_content img');
+    images.forEach((img, index) => {
+        if (index < 2) { img.setAttribute('loading', 'eager'); img.setAttribute('fetchpriority', 'high'); } 
+        else { if(!img.getAttribute('loading')) img.setAttribute('loading', 'lazy'); }
+    });
+
+    const textsEN = ["Welcome to this webpage!", "Thanks for visiting us!", "Stay tuned!"];
+    const textsZH = ["欢迎访问本网页！", "感谢您的关注！", "欢迎常来访问！"];
+    let texts = textsEN; 
+    let textIdx = 0, charIdx = 0, isDeleting = false;
+    
+    function type() {
+      const currentText = texts[textIdx];
+      const display = isDeleting ? currentText.substring(0, charIdx--) : currentText.substring(0, charIdx++);
+      document.getElementById('typewriter-text').textContent = display;
+      let speed = isDeleting ? 50 : 100;
+      if (!isDeleting && charIdx === currentText.length + 1) { isDeleting = true; speed = 2000; } 
+      else if (isDeleting && charIdx === 0) { isDeleting = false; textIdx = (textIdx + 1) % texts.length; speed = 500; }
+      setTimeout(type, speed);
+    }
     type();
+
     let typeTimer = null;
  
     // --- 🔥 弹窗逻辑 ---
@@ -720,7 +783,7 @@
     const modalLangCheckbox = document.getElementById('modal-lang-toggle-checkbox');
     let modalIsZh = false; 
  
-    setTimeout(() => { welcomeModal.classList.add('show'); document.body.classList.add('modal-active'); }, 10); // 稍微延时让背景加载完再弹，更顺滑
+    setTimeout(() => { welcomeModal.classList.add('show'); document.body.classList.add('modal-active'); }, 10);
  
     let idleInterval; let tipIndex = 0;
     function startIdleTips() {
@@ -733,10 +796,9 @@
  
     function closeModal() {
       welcomeModal.classList.remove('show');
-      document.body.classList.remove('modal-active'); // 释放滚动锁
+      document.body.classList.remove('modal-active'); 
       if (modalIsZh && currentLang !== 'zh') langToggle.click(); 
       else if (!modalIsZh && currentLang === 'zh') langToggle.click();
-      
       setTimeout(() => {
           botContainer.classList.add('attention-jump'); 
           startIdleTips();
@@ -767,15 +829,10 @@
     const langToggle = document.getElementById('lang-toggle');
     let isLight = false;
         
-   // ✅ 替换为干净的主题切换逻辑
     themeToggle.addEventListener('click', () => {
       isLight = !isLight;
       document.body.classList.toggle('light-mode');
-      if (isLight) {
-        themeToggle.textContent = "🌙"; 
-      } else {
-        themeToggle.textContent = "☀️"; 
-      }
+      if (isLight) { themeToggle.textContent = "🌙"; } else { themeToggle.textContent = "☀️"; }
     });
  
     langToggle.addEventListener('click', () => {
@@ -795,7 +852,7 @@
       if (!rpgDialogue.classList.contains('active') && idleInterval) startIdleTips();
     });
 
-    // 鼠标引擎 (防抖动)
+    // 鼠标引擎 (防抖动，处理所有鼠标跟随特效)
     window.addEventListener('mousemove', (e) => {
         if (window.innerWidth <= 768 || document.body.classList.contains('modal-active')) return; 
         mouseX = e.clientX; mouseY = e.clientY;
@@ -825,7 +882,7 @@
         }
     });
 
-    // lenis 接管原生 scroll 逻辑 (防疯狂滑动)
+    // 顶部进度条与机器人的固定模式
     let scrollTimeout;
     window.addEventListener('scroll', () => {
         if(scrollTimeout) cancelAnimationFrame(scrollTimeout);
@@ -854,12 +911,12 @@
 
     window.openVideoModal = function() {
         videoModal.classList.add('show');
-        document.body.classList.add('modal-active'); // 接管锁定
+        document.body.classList.add('modal-active'); 
     }
     window.closeVideoModal = function() {
         videoModal.classList.remove('show');
-        document.body.classList.remove('modal-active'); // 释放锁定
-        guardianVideo.pause(); 
+        document.body.classList.remove('modal-active');
+        if(guardianVideo) guardianVideo.pause(); 
     }
     videoModal.addEventListener('click', (e) => { if(e.target === videoModal) closeVideoModal(); });
 
@@ -920,20 +977,8 @@
         if(rpgDialogue.classList.contains('active')) closeDialogue(); else openDialogue();
       });
     }
-   // 阻止对话框内部的点击事件冒泡到机器人身上（防止误触关闭）
-    if(rpgDialogue) {
-      rpgDialogue.addEventListener('click', (e) => {
-        e.stopPropagation(); 
-      });
-    }
-    
-    // 给右上角的 × 单独绑定关闭事件
-    if(rpgClose) {
-      rpgClose.addEventListener('click', (e) => {
-        e.stopPropagation();
-        closeDialogue();
-      });
-    }
+    if(rpgDialogue) { rpgDialogue.addEventListener('click', (e) => { e.stopPropagation(); }); }
+    if(rpgClose) { rpgClose.addEventListener('click', (e) => { e.stopPropagation(); closeDialogue(); }); }
  
     setTimeout(() => botSay(currentLang === 'en' ? "Click me for guide!" : "点击我答疑解惑", 60000), 1000);
  
@@ -950,7 +995,6 @@
         e.preventDefault(); 
         const url = this.href;
         
-        // 播放水波纹动画
         badges.forEach((sib, idx) => {
             const img = sib.querySelector('img');
             img.style.animationDelay = `${Math.abs(idx - [...badges].indexOf(this)) * 0.06}s`;
@@ -958,28 +1002,18 @@
         });
         
         setTimeout(() => {
-            // 安全判定：检查是否为本页面的锚点链接（包含 #）
             if (url.includes('#')) {
                 const targetId = url.substring(url.indexOf('#'));
                 try {
                     const targetElement = document.querySelector(targetId);
                     if (targetElement) {
-                        // 如果找到了锚点元素，执行丝滑滚动并退出
                         targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
                         return; 
                     }
-                } catch (error) {
-                    // 忽略 querySelector 解析非标准 ID 时的报错
-                }
+                } catch (error) {}
             }
-            
-            // 如果不是锚点，或者没找到对应的 ID，直接跳转原始链接
-            // 如果你在 HTML 里写了 target="_blank"，这里也会完美兼容打开新标签页
-            if (this.target === '_blank') {
-                window.open(url, '_blank');
-            } else {
-                window.location.href = url;
-            }
+            if (this.target === '_blank') { window.open(url, '_blank'); } 
+            else { window.location.href = url; }
         }, 500);
       });
      });
@@ -993,13 +1027,12 @@
   });
 </script>
    
- <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 <script>
-  // 初始化 AOS 动画，设置动画时长和缓动效果
   AOS.init({
-    duration: 1000, // 动画持续 1 秒（1000毫秒），显得沉稳高级
-    easing: 'ease-out-cubic', // 类似苹果的丝滑减速效果
-    once: true // 设为 true 表示向下滚动出现后，往回滚不会消失
+    duration: 1000, 
+    easing: 'ease-out-cubic', 
+    once: true 
   });
 </script>
 
