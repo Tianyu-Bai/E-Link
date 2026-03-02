@@ -585,8 +585,7 @@
     let containerRect = container ? container.getBoundingClientRect() : null;
     window.addEventListener('resize', () => { if(container) containerRect = container.getBoundingClientRect(); });
 
-    // ===================== 🌟 顶尖大厂级：交互式神经突触网络 (Neural Plexus) =====================
- // ===================== 🌟 顶尖大厂级：仿生神经突触网络 (Neural Plexus) =====================
+  // ===================== 🌟 仿生神经突触网络 (Neural Plexus) =====================
     function initNeuralWeb() {
       const canvas = document.getElementById('neuro-dust-canvas');
       if(!canvas) return;
@@ -604,56 +603,53 @@
       resize();
 
       const particles = [];
-      const signals = []; // ⚡ 新增：神经电信号 (动作电位) 队列
+      const signals = []; // ⚡ 神经电信号队列
+      
       // 移动端适当减少节点保证流畅度
       const count = window.innerWidth > 768 ? 70 : 35; 
-      const maxDistance = 180; // 稍稍放大突触连接距离，让网络更错综复杂
+      const maxDistance = 180; 
       
       // 初始化神经元细胞体
       for(let i = 0; i < count; i++) {
         particles.push({
           x: Math.random() * width,
           y: Math.random() * height,
-          vx: (Math.random() - 0.5) * 0.3, // 基础漂浮速度
+          vx: (Math.random() - 0.5) * 0.3,
           vy: (Math.random() - 0.5) * 0.3,
-          radius: Math.random() * 2 + 1.5, // 细胞核大小
-          phase: Math.random() * Math.PI * 2, // 呼吸相角
-          breathSpeed: Math.random() * 0.02 + 0.01, // 呼吸频率
-          connections: [] // 记录邻居节点，用于发射电信号
+          radius: Math.random() * 2 + 1.5, 
+          phase: Math.random() * Math.PI * 2, 
+          breathSpeed: Math.random() * 0.02 + 0.01, 
+          connections: [] 
         });
       }
 
       function draw() {
         if (document.hidden || document.body.classList.contains('modal-active')) {
-          requestAnimationFrame(draw); return; // 弹窗开启时瞬间休眠，极致省性能
+          requestAnimationFrame(draw); return; 
         }
         
         ctx.clearRect(0, 0, width, height);
         const isLight = document.body.classList.contains('light-mode');
         
-        // 🎨 采用偏向生物电学的高级配色
         const nodeColor = isLight ? '13, 148, 136' : '96, 165, 250'; 
         const lineColor = isLight ? '20, 184, 166' : '59, 130, 246';
-        const signalColor = isLight ? '245, 158, 11' : '0, 242, 255'; // 电脉冲高光色 (青蓝色 / 琥珀色)
+        const signalColor = isLight ? '245, 158, 11' : '0, 242, 255'; 
 
         // 1. 更新位置 (引入有机呼吸算法)
         particles.forEach(p => {
-          // 基础缓慢漂浮
           p.x += p.vx; p.y += p.vy;
-          p.phase += p.breathSpeed; // 更新呼吸相角
+          p.phase += p.breathSpeed; 
 
-          // 边缘无缝穿梭缓冲
           if (p.x < -100) p.x = width + 100; if (p.x > width + 100) p.x = -100;
           if (p.y < -100) p.y = height + 100; if (p.y > height + 100) p.y = -100;
           
-          p.connections = []; // 每一帧清空连接状态
+          p.connections = []; 
         });
 
-        // 2. 绘制神经突触连线 & 建立拓扑网络
+        // 2. 绘制神经突触连线
         ctx.lineCap = 'round';
         for(let i = 0; i < count; i++) {
           const p1 = particles[i];
-          // 计算实际渲染坐标 (叠加正弦呼吸偏移)
           const r1x = p1.x + Math.sin(p1.phase) * 12; 
           const r1y = p1.y + Math.cos(p1.phase * 0.8) * 12;
 
@@ -666,11 +662,10 @@
             const dist = Math.sqrt(dx*dx + dy*dy);
 
             if(dist < maxDistance) {
-              p1.connections.push(p2); // 互相记录为邻居
+              p1.connections.push(p2); 
               p2.connections.push(p1);
 
               ctx.beginPath();
-              // 距离越近，线条越粗越不透明，模拟真实的生物组织厚度
               const intensity = 1 - dist/maxDistance;
               ctx.strokeStyle = `rgba(${lineColor}, ${0.35 * intensity})`;
               ctx.lineWidth = 1.5 * intensity + 0.5;
@@ -691,53 +686,82 @@
             ctx.lineTo(mouseX, mouseY);
             ctx.stroke();
             
-            // 被鼠标极其轻微地磁性吸引
             p1.x += (mdx / mDist) * 0.4;
             p1.y += (mdy / mDist) * 0.4;
           }
         }
 
-        // 3. ⚡ 随机激发 Action Potentials (动作电位)
-        // 调整随机数可以控制放电的频繁程度
-        if (Math.random() < 0.12) { 
+        // 3. ⚡ 突发性高频电信号 (Spike Trains - “突突突”效果)
+        // 稍微降低单次触发概率，但每次触发一组脉冲
+        if (Math.random() < 0.06) { 
           const startNode = particles[Math.floor(Math.random() * particles.length)];
           if (startNode.connections.length > 0) {
-            // 随机挑选一个相连的邻居作为终点
             const endNode = startNode.connections[Math.floor(Math.random() * startNode.connections.length)];
-            signals.push({
-              start: startNode, end: endNode,
-              progress: 0, 
-              speed: Math.random() * 0.015 + 0.015 // 脉冲传输速度
-            });
+            
+            // 每次随机生成 2~4 发连续脉冲
+            const burstCount = Math.floor(Math.random() * 3) + 2; 
+            // 速度大幅提升！电光石火的感觉
+            const baseSpeed = Math.random() * 0.03 + 0.05; 
+            
+            for(let b = 0; b < burstCount; b++) {
+              signals.push({
+                start: startNode, end: endNode,
+                // 用负数 progress 拉开每一发的间距，形成“排队枪毙”的效果
+                progress: -b * 0.15, 
+                speed: baseSpeed,
+                tailLength: 0.1 // 光束的长度占比
+              });
+            }
           }
         }
 
-        // 4. ⚡ 渲染流动的神经电信号
+        // 4. ⚡ 渲染高速流动的电流 (带拖尾的光梭)
         for (let i = signals.length - 1; i >= 0; i--) {
           const sig = signals[i];
           sig.progress += sig.speed;
           
-          if (sig.progress >= 1) {
-            signals.splice(i, 1); // 抵达目标后突触信号消失
+          // 当尾巴也完全到达终点时，销毁该信号
+          if (sig.progress >= 1 + sig.tailLength) {
+            signals.splice(i, 1); 
             continue;
           }
 
-          // 获取实时的动态起止点
-          const sx = sig.start.x + Math.sin(sig.start.phase) * 12;
-          const sy = sig.start.y + Math.cos(sig.start.phase * 0.8) * 12;
-          const ex = sig.end.x + Math.sin(sig.end.phase) * 12;
-          const ey = sig.end.y + Math.cos(sig.end.phase * 0.8) * 12;
+          // 只有当进度 > 0 时才开始渲染（处理延迟出发的脉冲）
+          if (sig.progress > 0) {
+            const sx = sig.start.x + Math.sin(sig.start.phase) * 12;
+            const sy = sig.start.y + Math.cos(sig.start.phase * 0.8) * 12;
+            const ex = sig.end.x + Math.sin(sig.end.phase) * 12;
+            const ey = sig.end.y + Math.cos(sig.end.phase * 0.8) * 12;
 
-          const currX = sx + (ex - sx) * sig.progress;
-          const currY = sy + (ey - sy) * sig.progress;
+            // 限制头部不超过 1 (到达目标点)
+            const headP = Math.min(1, sig.progress);
+            const headX = sx + (ex - sx) * headP;
+            const headY = sy + (ey - sy) * headP;
 
-          ctx.beginPath();
-          ctx.fillStyle = `rgba(${signalColor}, 1)`;
-          ctx.shadowBlur = 15;
-          ctx.shadowColor = `rgba(${signalColor}, 1)`;
-          ctx.arc(currX, currY, 1.8, 0, Math.PI * 2);
-          ctx.fill();
-          ctx.shadowBlur = 0; // 重置阴影，非常重要，防止性能崩塌
+            // 限制尾部不小于 0 (刚从起点出发)
+            const tailP = Math.max(0, sig.progress - sig.tailLength);
+            const tailX = sx + (ex - sx) * tailP;
+            const tailY = sy + (ey - sy) * tailP;
+
+            // 画主光束拖尾
+            ctx.beginPath();
+            ctx.strokeStyle = `rgba(${signalColor}, 1)`;
+            ctx.lineWidth = 2.5; // 电流稍微粗一点
+            ctx.shadowBlur = 12;
+            ctx.shadowColor = `rgba(${signalColor}, 1)`;
+            ctx.moveTo(tailX, tailY);
+            ctx.lineTo(headX, headY);
+            ctx.stroke();
+            ctx.shadowBlur = 0; 
+
+            // 在电流头部加一个纯白的“爆闪高光点”，极大增强能量感
+            if (headP < 1) {
+              ctx.beginPath();
+              ctx.fillStyle = '#ffffff'; 
+              ctx.arc(headX, headY, 1.5, 0, Math.PI * 2);
+              ctx.fill();
+            }
+          }
         }
 
         // 5. 🦠 渲染多层神经细胞体 (Soma)
@@ -745,13 +769,13 @@
           const rx = p.x + Math.sin(p.phase) * 12;
           const ry = p.y + Math.cos(p.phase * 0.8) * 12;
 
-          // 第一层：半透明的细胞质光晕 (Cytoplasm halo)
+          // 细胞质光晕
           ctx.beginPath();
           ctx.fillStyle = `rgba(${nodeColor}, 0.15)`;
           ctx.arc(rx, ry, p.radius * 3.5, 0, Math.PI * 2);
           ctx.fill();
 
-          // 第二层：发光的细胞核核心 (Nucleus)
+          // 发光细胞核
           ctx.beginPath();
           ctx.fillStyle = `rgba(${nodeColor}, 0.9)`;
           ctx.shadowBlur = 10;
