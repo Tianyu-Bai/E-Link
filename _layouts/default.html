@@ -586,10 +586,11 @@
     window.addEventListener('resize', () => { if(container) containerRect = container.getBoundingClientRect(); });
 
 // ===================== 🌟 仿生神经突触网络 (Neural Plexus) ====================
+ 
     function initNeuralWeb() {
       const canvas = document.getElementById('neuro-dust-canvas');
       if(!canvas) return;
-      const ctx = canvas.getContext('2d', { alpha: true });
+      const ctx = canvas.getContext('2d', { alpha: false }); // 关闭 alpha 通道可大幅提升底层性能
       let width, height;
       
       function resize() {
@@ -603,23 +604,44 @@
       resize();
 
       const particles = [];
-      const signals = []; // ⚡ 极速流光队列
-      const ripples = []; // 🎆 烟花爆炸波纹队列 (新增)
+      const signals = []; 
       
-      // 移动端适当减少节点保证流畅度
-      const count = window.innerWidth > 768 ? 70 : 35; 
-      const maxDistance = 180; 
+      // 进一步精简节点数量，靠“光晕”和“动态”撑起高级感，绝对不卡
+      const count = window.innerWidth > 768 ? 45 : 25; 
+      const maxDistance = 220; 
       
-      // 初始化神经元
+      // 预渲染光晕，极大降低 CPU 负担
+      function createNodeTexture(colorStr, radius) {
+        const offCanvas = document.createElement('canvas');
+        offCanvas.width = radius * 4; offCanvas.height = radius * 4;
+        const octx = offCanvas.getContext('2d');
+        const grad = octx.createRadialGradient(radius*2, radius*2, 0, radius*2, radius*2, radius*2);
+        grad.addColorStop(0, `rgba(255, 255, 255, 0.9)`); // 炽白核心
+        grad.addColorStop(0.2, `rgba(${colorStr}, 0.6)`);
+        grad.addColorStop(1, `rgba(${colorStr}, 0)`);     // 边缘完全融于黑暗
+        octx.fillStyle = grad;
+        octx.fillRect(0, 0, radius * 4, radius * 4);
+        return offCanvas;
+      }
+
+      const isLight = document.body.classList.contains('light-mode');
+      const baseColor = isLight ? '13, 148, 136' : '30, 100, 255'; // 更深邃的深海蓝
+      const fireColor = isLight ? '234, 88, 12' : '255, 60, 0';    // 极高亮度的橙红
+      
+      // 预生成不同大小的光晕贴图
+      const textures = [
+        createNodeTexture(baseColor, 2),
+        createNodeTexture(baseColor, 3.5),
+        createNodeTexture(baseColor, 5)
+      ];
+
       for(let i = 0; i < count; i++) {
         particles.push({
           x: Math.random() * width,
           y: Math.random() * height,
-          vx: (Math.random() - 0.5) * 0.3,
-          vy: (Math.random() - 0.5) * 0.3,
-          radius: Math.random() * 2 + 1.5, 
-          phase: Math.random() * Math.PI * 2, 
-          breathSpeed: Math.random() * 0.02 + 0.01, 
+          vx: (Math.random() - 0.5) * 0.15, // 运动更加极其缓慢、克制
+          vy: (Math.random() - 0.5) * 0.15,
+          tex: textures[Math.floor(Math.random() * textures.length)], // 随机分配景深大小
           connections: [] 
         });
       }
@@ -629,39 +651,28 @@
           requestAnimationFrame(draw); return; 
         }
         
-        ctx.clearRect(0, 0, width, height);
-        const isLight = document.body.classList.contains('light-mode');
-        
-        // 背景骨架颜色
-        const nodeColor = isLight ? '13, 148, 136' : '96, 165, 250'; 
-        const lineColor = isLight ? '20, 184, 166' : '59, 130, 246';
-        
-        // 💥 高能荧光橙红 (保证 Spike Firing 的火热质感)
-        const signalColor = isLight ? '234, 88, 12' : '255, 87, 34'; 
+        // 用带有极低透明度的深色覆盖，制造出极其平滑的动态残影 (Motion Blur)
+        ctx.globalCompositeOperation = 'source-over';
+        ctx.fillStyle = isLight ? 'rgba(248, 250, 252, 0.3)' : 'rgba(3, 6, 14, 0.3)';
+        ctx.fillRect(0, 0, width, height);
 
-        // 1. 更新位置 (呼吸算法)
+        // 🌟 开启顶尖光学混合模式！光相交的地方会爆亮
+        ctx.globalCompositeOperation = isLight ? 'multiply' : 'lighter';
+
+        // 1. 极简网络骨架
         particles.forEach(p => {
           p.x += p.vx; p.y += p.vy;
-          p.phase += p.breathSpeed; 
-
           if (p.x < -100) p.x = width + 100; if (p.x > width + 100) p.x = -100;
           if (p.y < -100) p.y = height + 100; if (p.y > height + 100) p.y = -100;
           p.connections = []; 
         });
 
-        // 2. 绘制静态背景网
         ctx.lineCap = 'round';
         for(let i = 0; i < count; i++) {
           const p1 = particles[i];
-          const r1x = p1.x + Math.sin(p1.phase) * 12; 
-          const r1y = p1.y + Math.cos(p1.phase * 0.8) * 12;
-
           for(let j = i + 1; j < count; j++) {
             const p2 = particles[j];
-            const r2x = p2.x + Math.sin(p2.phase) * 12;
-            const r2y = p2.y + Math.cos(p2.phase * 0.8) * 12;
-
-            const dx = r1x - r2x; const dy = r1y - r2y;
+            const dx = p1.x - p2.x; const dy = p1.y - p2.y;
             const dist = Math.sqrt(dx*dx + dy*dy);
 
             if(dist < maxDistance) {
@@ -669,64 +680,41 @@
               p2.connections.push(p1);
 
               ctx.beginPath();
-              const intensity = 1 - dist/maxDistance;
-              ctx.strokeStyle = `rgba(${lineColor}, ${0.35 * intensity})`;
-              ctx.lineWidth = 1.5 * intensity + 0.5;
-              ctx.moveTo(r1x, r1y);
-              ctx.lineTo(r2x, r2y);
+              // 使用极细、极弱的线条，重点突出光晕而非线条本身
+              const intensity = Math.pow(1 - dist/maxDistance, 2); // 二次方衰减，让远处的线消失得更自然
+              ctx.strokeStyle = `rgba(${baseColor}, ${0.15 * intensity})`;
+              ctx.lineWidth = 1;
+              ctx.moveTo(p1.x, p1.y);
+              ctx.lineTo(p2.x, p2.y);
               ctx.stroke();
+            }
+          }
+
+          // 画预渲染的发光细胞体 (极大降低 CPU 消耗，彻底解决卡顿)
+          const imgW = p1.tex.width;
+          ctx.drawImage(p1.tex, p1.x - imgW/2, p1.y - imgW/2);
+        }
+
+        // 2. ⚡ 随机激发高频动作电位 (Spike Firing)
+        if (Math.random() < 0.05) { 
+          const startNode = particles[Math.floor(Math.random() * particles.length)];
+          if (startNode.connections.length > 0) {
+            
+            // 每次沿着神经束发射 1~2 股极速电流
+            const burstCount = Math.floor(Math.random() * 2) + 1; 
+            for(let b = 0; b < burstCount; b++) {
+              const endNode = startNode.connections[Math.floor(Math.random() * startNode.connections.length)];
+              signals.push({
+                start: startNode, end: endNode,
+                progress: 0, 
+                speed: Math.random() * 0.04 + 0.06, // 极速电光
+                tailLength: 0.25 // 拖尾比例
+              });
             }
           }
         }
 
-        // 3. 🎆 触发真正的 Spike Firing (烟花爆燃)
-        if (Math.random() < 0.04) { // 控制全屏爆发频率
-          const startNode = particles[Math.floor(Math.random() * particles.length)];
-          if (startNode.connections.length > 0) {
-            
-            const sx = startNode.x + Math.sin(startNode.phase) * 12;
-            const sy = startNode.y + Math.cos(startNode.phase * 0.8) * 12;
-
-            // 👉 动作一：向外炸开冲击波 (烟花核心)
-            ripples.push({
-              x: sx, y: sy,
-              radius: startNode.radius * 2,
-              alpha: 1,
-              speed: Math.random() * 2 + 2 // 爆炸扩散速度
-            });
-
-            // 👉 动作二：向所有相连节点瞬间劈出单道极速激光 (不再切断成竹节虫)
-            startNode.connections.forEach(endNode => {
-              signals.push({
-                start: startNode, end: endNode,
-                progress: 0, 
-                speed: Math.random() * 0.05 + 0.06, // 极速传输
-                tailLength: 0.8 // 极长的一体化光束拖尾
-              });
-            });
-          }
-        }
-
-        // 4. 渲染烟花爆炸波纹 (Ripple)
-        for (let i = ripples.length - 1; i >= 0; i--) {
-          const r = ripples[i];
-          r.radius += r.speed;
-          r.alpha -= 0.03; // 快速消散
-          if (r.alpha <= 0) {
-            ripples.splice(i, 1);
-          } else {
-            ctx.beginPath();
-            ctx.strokeStyle = `rgba(${signalColor}, ${r.alpha})`;
-            ctx.lineWidth = 2;
-            ctx.shadowBlur = 10;
-            ctx.shadowColor = `rgba(${signalColor}, ${r.alpha})`;
-            ctx.arc(r.x, r.y, r.radius, 0, Math.PI * 2);
-            ctx.stroke();
-            ctx.shadowBlur = 0;
-          }
-        }
-
-        // 5. 渲染单发极速流光 (不再是断断续续的线段)
+        // 3. ⚡ 渲染极速流光 (Comet / 光梭)
         for (let i = signals.length - 1; i >= 0; i--) {
           const sig = signals[i];
           sig.progress += sig.speed;
@@ -736,58 +724,40 @@
             continue;
           }
 
-          if (sig.progress > 0) {
-            const sx = sig.start.x + Math.sin(sig.start.phase) * 12;
-            const sy = sig.start.y + Math.cos(sig.start.phase * 0.8) * 12;
-            const ex = sig.end.x + Math.sin(sig.end.phase) * 12;
-            const ey = sig.end.y + Math.cos(sig.end.phase * 0.8) * 12;
+          const sx = sig.start.x; const sy = sig.start.y;
+          const ex = sig.end.x; const ey = sig.end.y;
 
-            const headP = Math.min(1, sig.progress);
-            const tailP = Math.max(0, sig.progress - sig.tailLength);
+          const headP = Math.min(1, sig.progress);
+          const tailP = Math.max(0, sig.progress - sig.tailLength);
 
-            const headX = sx + (ex - sx) * headP;
-            const headY = sy + (ey - sy) * headP;
-            const tailX = sx + (ex - sx) * tailP;
-            const tailY = sy + (ey - sy) * tailP;
+          const headX = sx + (ex - sx) * headP;
+          const headY = sy + (ey - sy) * headP;
+          const tailX = sx + (ex - sx) * tailP;
+          const tailY = sy + (ey - sy) * tailP;
 
-            // 绘制完整的一根长光束，彻底解决竹节虫问题
-            ctx.beginPath();
-            ctx.strokeStyle = `rgba(${signalColor}, ${1 - (sig.progress - 1)})`; // 越到末尾越暗淡
-            ctx.lineWidth = 2.5; 
-            ctx.shadowBlur = 15; 
-            ctx.shadowColor = `rgba(${signalColor}, 1)`;
-            ctx.moveTo(tailX, tailY);
-            ctx.lineTo(headX, headY);
-            ctx.stroke();
-            ctx.shadowBlur = 0; 
+          // 使用线性渐变画出完美的“彗星拖尾”
+          const lineGrad = ctx.createLinearGradient(tailX, tailY, headX, headY);
+          lineGrad.addColorStop(0, `rgba(${fireColor}, 0)`);
+          lineGrad.addColorStop(0.8, `rgba(${fireColor}, 0.8)`);
+          lineGrad.addColorStop(1, `rgba(255, 255, 255, 1)`); // 弹头纯白高光
 
-            // 电流头部的白炽高光点，像子弹一样
-            if (headP < 1) {
-              ctx.beginPath();
-              ctx.fillStyle = '#ffffff'; 
-              ctx.arc(headX, headY, 2, 0, Math.PI * 2);
-              ctx.fill();
-            }
-          }
+          ctx.beginPath();
+          ctx.strokeStyle = lineGrad;
+          ctx.lineWidth = 2.5; 
+          ctx.moveTo(tailX, tailY);
+          ctx.lineTo(headX, headY);
+          ctx.stroke();
         }
 
-        // 6. 渲染多层神经细胞体 (Soma)
+        // 🌟 鼠标极其微弱的视差推移 (抛弃俗套的引力吸附，改为高级的排斥视差)
         particles.forEach(p => {
-          const rx = p.x + Math.sin(p.phase) * 12;
-          const ry = p.y + Math.cos(p.phase * 0.8) * 12;
-
-          ctx.beginPath();
-          ctx.fillStyle = `rgba(${nodeColor}, 0.15)`;
-          ctx.arc(rx, ry, p.radius * 3.5, 0, Math.PI * 2);
-          ctx.fill();
-
-          ctx.beginPath();
-          ctx.fillStyle = `rgba(${nodeColor}, 0.9)`;
-          ctx.shadowBlur = 10;
-          ctx.shadowColor = `rgba(${nodeColor}, 0.8)`;
-          ctx.arc(rx, ry, p.radius, 0, Math.PI * 2);
-          ctx.fill();
-          ctx.shadowBlur = 0; 
+            const mdx = mouseX - p.x; const mdy = mouseY - p.y;
+            const mDist = Math.sqrt(mdx*mdx + mdy*mdy);
+            if (mDist < 150) {
+                // 鼠标靠近时，节点产生水波一样的轻微排斥荡漾，非常有质感
+                p.x -= (mdx / mDist) * 0.5;
+                p.y -= (mdy / mDist) * 0.5;
+            }
         });
 
         requestAnimationFrame(draw);
