@@ -104,8 +104,6 @@
   body.light-mode #neuro-ambient-bg::before { opacity: 0.15; }
   
   /* --- 🚀 内容玻璃容器 --- */
-  .layout-wrapper { position: relative; max-width: 860px; margin: 100px auto 60px; z-index: 10; perspective: 1000px; }
-  .container { position: relative; padding: 60px 80px; background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(20px) saturate(180%); -webkit-backdrop-filter: blur(20px) saturate(180%); border-radius: 20px; box-shadow: 0 20px 50px rgba(59, 130, 246, 0.15); border: 1px solid rgba(255, 255, 255, 0.1); border-top: 4px solid #3b82f6; opacity: 0; animation: fadeUp 0.6s ease-out 0.2s forwards; z-index: 1; transform-style: preserve-3d; transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);  will-change: backdrop-filter; contain: layout style; overflow: hidden; }
   .container::before { content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: radial-gradient(800px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255, 255, 255, 0.07), transparent 40%); z-index: -1; pointer-events: none; opacity: 0; transition: opacity 0.5s; }
   .container:hover { border-color: rgba(96, 165, 250, 0.4); box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6), 0 0 30px rgba(59, 130, 246, 0.15); transform: translateY(-2px); }
   .container:hover::before { opacity: 1; }
@@ -625,10 +623,20 @@
         });
       }
 
-      function draw() {
-        if (document.hidden || document.body.classList.contains('modal-active')) {
-          requestAnimationFrame(draw); return; 
-        }
+      let animRunning = true;
+function draw() {
+  if (!animRunning) return; // 直接停止，不再注册下一帧
+  if (document.hidden) { requestAnimationFrame(draw); return; }
+  // ... 绘制逻辑
+  requestAnimationFrame(draw);
+}
+
+// 弹窗打开时：
+animRunning = false;
+
+// 弹窗关闭时：
+animRunning = true;
+draw();
         
         ctx.clearRect(0, 0, width, height);
         const isLight = document.body.classList.contains('light-mode');
@@ -749,7 +757,22 @@
             ctx.beginPath();
             ctx.strokeStyle = lineGrad; // 赋予渐变色
             ctx.lineWidth = 2.5; 
-            ctx.shadowBlur = 15; // 保留泛光，让光束看起来有能量感
+            particles.forEach(p => {
+  const rx = p.x + Math.sin(p.phase) * 12;
+  const ry = p.y + Math.cos(p.phase * 0.8) * 12;
+  
+  // 外晕（大、透明）
+  ctx.beginPath();
+  ctx.fillStyle = `rgba(${nodeColor}, 0.12)`;
+  ctx.arc(rx, ry, p.radius * 4, 0, Math.PI * 2);
+  ctx.fill();
+  
+  // 内核（小、不透明）—— 无 shadowBlur
+  ctx.beginPath();
+  ctx.fillStyle = `rgba(${nodeColor}, 0.95)`;
+  ctx.arc(rx, ry, p.radius, 0, Math.PI * 2);
+  ctx.fill();
+});
             ctx.shadowColor = `rgba(${signalColor}, 1)`;
             ctx.moveTo(tailX, tailY);
             ctx.lineTo(headX, headY);
@@ -767,23 +790,22 @@
         }
 
         // 5. 🦠 渲染多层神经细胞体 (Soma)
-        particles.forEach(p => {
-          const rx = p.x + Math.sin(p.phase) * 12;
-          const ry = p.y + Math.cos(p.phase * 0.8) * 12;
-
-          ctx.beginPath();
-          ctx.fillStyle = `rgba(${nodeColor}, 0.15)`;
-          ctx.arc(rx, ry, p.radius * 3.5, 0, Math.PI * 2);
-          ctx.fill();
-
-          ctx.beginPath();
-          ctx.fillStyle = `rgba(${nodeColor}, 0.9)`;
-          ctx.shadowBlur = 10;
-          ctx.shadowColor = `rgba(${nodeColor}, 0.8)`;
-          ctx.arc(rx, ry, p.radius, 0, Math.PI * 2);
-          ctx.fill();
-          ctx.shadowBlur = 0; 
-        });
+          particles.forEach(p => {
+  const rx = p.x + Math.sin(p.phase) * 12;
+  const ry = p.y + Math.cos(p.phase * 0.8) * 12;
+  
+  // 外晕（大、透明）
+  ctx.beginPath();
+  ctx.fillStyle = `rgba(${nodeColor}, 0.12)`;
+  ctx.arc(rx, ry, p.radius * 4, 0, Math.PI * 2);
+  ctx.fill();
+  
+  // 内核（小、不透明）—— 无 shadowBlur
+  ctx.beginPath();
+  ctx.fillStyle = `rgba(${nodeColor}, 0.95)`;
+  ctx.arc(rx, ry, p.radius, 0, Math.PI * 2);
+  ctx.fill();
+});
 
         requestAnimationFrame(draw);
       }
@@ -965,9 +987,9 @@
                 if(cursorDot) cursorDot.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0) translate(-50%, -50%)`;
                 if(cursorOutline) cursorOutline.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0) translate(-50%, -50%)`;
                 if (container) {
-                    const rx = (window.innerWidth / 2 - mouseX) / 50; 
+               
                     const ry = (window.innerHeight / 2 - mouseY) / 50;
-                    container.style.transform = `rotateY(${rx * -1}deg) rotateX(${ry}deg)`;
+                  
                     if(containerRect) {
                         container.style.setProperty("--mouse-x", `${mouseX - containerRect.left}px`);
                         container.style.setProperty("--mouse-y", `${mouseY - containerRect.top}px`);
