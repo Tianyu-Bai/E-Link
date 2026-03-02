@@ -585,8 +585,7 @@
     let containerRect = container ? container.getBoundingClientRect() : null;
     window.addEventListener('resize', () => { if(container) containerRect = container.getBoundingClientRect(); });
 
-  // ===================== 🌟 仿生神经突触网络 (Neural Plexus) =====================
-   // ===================== ⚡ 硬核生物电学版：高频动作电位突触网络 =====================
+// ===================== 🌟 顶尖大厂级：仿生神经突触网络 (Neural Plexus) =====================
     function initNeuralWeb() {
       const canvas = document.getElementById('neuro-dust-canvas');
       if(!canvas) return;
@@ -604,24 +603,22 @@
       resize();
 
       const particles = [];
-      const signals = []; // 神经电信号队列
+      const signals = []; // ⚡ 神经电信号队列
       
-      // 节点数量
-      const count = window.innerWidth > 768 ? 60 : 30; 
-      const maxDistance = 200; 
+      // 移动端适当减少节点保证流畅度
+      const count = window.innerWidth > 768 ? 70 : 35; 
+      const maxDistance = 180; 
       
-      // 初始化节点：区分“巨型细胞体(Soma)”和“普通树突/轴突节点”
+      // 初始化神经元细胞体
       for(let i = 0; i < count; i++) {
-        // 前 15% 的节点作为大型主细胞体 (Soma)
-        const isSoma = i < count * 0.15; 
         particles.push({
           x: Math.random() * width,
           y: Math.random() * height,
-          vx: (Math.random() - 0.5) * 0.2,
-          vy: (Math.random() - 0.5) * 0.2,
-          radius: isSoma ? Math.random() * 3 + 4 : Math.random() * 1.5 + 1, // Soma 更大
-          isSoma: isSoma,
-          energy: 0, // 累积能量，到达阈值后爆发
+          vx: (Math.random() - 0.5) * 0.3,
+          vy: (Math.random() - 0.5) * 0.3,
+          radius: Math.random() * 2 + 1.5, 
+          phase: Math.random() * Math.PI * 2, 
+          breathSpeed: Math.random() * 0.02 + 0.01, 
           connections: [] 
         });
       }
@@ -634,30 +631,37 @@
         ctx.clearRect(0, 0, width, height);
         const isLight = document.body.classList.contains('light-mode');
         
+        // 节点和连线保持深邃的青蓝色系，作为背景基调
         const nodeColor = isLight ? '13, 148, 136' : '96, 165, 250'; 
         const lineColor = isLight ? '20, 184, 166' : '59, 130, 246';
-        const fastSignalColor = isLight ? '239, 68, 68' : '0, 242, 255'; // 轴突极速电流颜色 (红/青)
-        const slowSignalColor = isLight ? '16, 185, 129' : '147, 197, 253'; // 树突汇聚电流颜色
+        
+        // 🔴 核心改动 1：将电信号颜色改为高能激光红 (深色模式亮红，浅色模式深红)
+        const signalColor = isLight ? '220, 38, 38' : '255, 60, 60'; 
 
-        // 1. 节点移动与连接计算
+        // 1. 更新位置 (引入有机呼吸算法)
         particles.forEach(p => {
           p.x += p.vx; p.y += p.vy;
+          p.phase += p.breathSpeed; 
+
           if (p.x < -100) p.x = width + 100; if (p.x > width + 100) p.x = -100;
           if (p.y < -100) p.y = height + 100; if (p.y > height + 100) p.y = -100;
-          p.connections = []; 
           
-          // 能量衰减
-          if(p.energy > 0) p.energy -= 0.05; 
+          p.connections = []; 
         });
 
-        // 2. 绘制静态拓扑结构 (静态树突和轴突骨架)
+        // 2. 绘制神经突触连线
         ctx.lineCap = 'round';
         for(let i = 0; i < count; i++) {
           const p1 = particles[i];
+          const r1x = p1.x + Math.sin(p1.phase) * 12; 
+          const r1y = p1.y + Math.cos(p1.phase * 0.8) * 12;
 
           for(let j = i + 1; j < count; j++) {
             const p2 = particles[j];
-            const dx = p1.x - p2.x; const dy = p1.y - p2.y;
+            const r2x = p2.x + Math.sin(p2.phase) * 12;
+            const r2y = p2.y + Math.cos(p2.phase * 0.8) * 12;
+
+            const dx = r1x - r2x; const dy = r1y - r2y;
             const dist = Math.sqrt(dx*dx + dy*dy);
 
             if(dist < maxDistance) {
@@ -665,125 +669,113 @@
               p2.connections.push(p1);
 
               ctx.beginPath();
-              // 如果两个都是大节点，连线更粗，代表主轴突通道
-              const isMainTrunk = p1.isSoma && p2.isSoma;
               const intensity = 1 - dist/maxDistance;
-              ctx.strokeStyle = `rgba(${lineColor}, ${isMainTrunk ? 0.4 * intensity : 0.15 * intensity})`;
-              ctx.lineWidth = isMainTrunk ? 2 : 0.8;
-              ctx.moveTo(p1.x, p1.y);
-              ctx.lineTo(p2.x, p2.y);
+              ctx.strokeStyle = `rgba(${lineColor}, ${0.35 * intensity})`;
+              ctx.lineWidth = 1.5 * intensity + 0.5;
+              ctx.moveTo(r1x, r1y);
+              ctx.lineTo(r2x, r2y);
               ctx.stroke();
+            }
+          }
+
+          // 🌟 鼠标交互：神经元向鼠标方向伸出突触
+          const mdx = mouseX - r1x; const mdy = mouseY - r1y;
+          const mDist = Math.sqrt(mdx*mdx + mdy*mdy);
+          if (mDist < 220) {
+            ctx.beginPath();
+            ctx.strokeStyle = `rgba(${lineColor}, ${0.5 * (1 - mDist/220)})`;
+            ctx.lineWidth = 1;
+            ctx.moveTo(r1x, r1y);
+            ctx.lineTo(mouseX, mouseY);
+            ctx.stroke();
+            
+            p1.x += (mdx / mDist) * 0.4;
+            p1.y += (mdy / mDist) * 0.4;
+          }
+        }
+
+        // 3. ⚡ 突发性高频电信号 (Spike Trains - “突突突”效果)
+        if (Math.random() < 0.06) { 
+          const startNode = particles[Math.floor(Math.random() * particles.length)];
+          if (startNode.connections.length > 0) {
+            const endNode = startNode.connections[Math.floor(Math.random() * startNode.connections.length)];
+            
+            const burstCount = Math.floor(Math.random() * 3) + 2; 
+            
+            // 🔴 核心改动 2：将基础速度翻倍，做出电光石火的极速射击感
+            const baseSpeed = Math.random() * 0.05 + 0.08; 
+            
+            for(let b = 0; b < burstCount; b++) {
+              signals.push({
+                start: startNode, end: endNode,
+                progress: -b * 0.15, 
+                speed: baseSpeed,
+                tailLength: 0.12 // 尾巴稍微拉长一点，速度快的时候拖影更好看
+              });
             }
           }
         }
 
-        // 3. ⚡ 电理逻辑：输入(x) -> 激发 -> 输出(y)
-        particles.forEach(p => {
-          if (p.connections.length === 0) return;
-
-          // 树突随机向 Soma 输入缓慢的微电荷 (模拟 x1, x2... xn 输入)
-          if (!p.isSoma && Math.random() < 0.05) {
-            const target = p.connections[Math.floor(Math.random() * p.connections.length)];
-            signals.push({
-              start: p, end: target, progress: 0,
-              speed: 0.02, // 较慢的树突输入
-              type: 'slow', length: 0.05
-            });
-            // 如果目标是 Soma，给它积攒能量
-            if (target.isSoma) target.energy += 0.5;
-          }
-
-          // Soma 能量满载，触发动作电位爆发 (模拟沿着 Myelinated axon 极速传输)
-          if (p.isSoma && p.energy > 1) {
-            p.energy = 0; // 重置能量
-            
-            // 爆发闪光特效
-            ctx.beginPath();
-            ctx.fillStyle = '#ffffff';
-            ctx.shadowBlur = 20;
-            ctx.shadowColor = `rgba(${fastSignalColor}, 1)`;
-            ctx.arc(p.x, p.y, p.radius * 2.5, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.shadowBlur = 0;
-
-            // 沿着所有粗壮的连接打出极速连发电流！(突突突效果)
-            p.connections.forEach(target => {
-              const burstCount = Math.floor(Math.random() * 3) + 2; // 2-4发脉冲
-              for(let b = 0; b < burstCount; b++) {
-                signals.push({
-                  start: p, end: target, 
-                  progress: -b * 0.1, // 脉冲间隔
-                  speed: 0.15, // 极度狂暴的速度！(一瞬间划过)
-                  type: 'fast', length: 0.2 // 长拖尾
-                });
-              }
-            });
-          }
-        });
-
-        // 4. ⚡ 渲染飞梭的电流 (光束拖尾)
+        // 4. ⚡ 渲染高速流动的电流 (带拖尾的光梭)
         for (let i = signals.length - 1; i >= 0; i--) {
           const sig = signals[i];
           sig.progress += sig.speed;
           
-          if (sig.progress >= 1 + sig.length) {
+          if (sig.progress >= 1 + sig.tailLength) {
             signals.splice(i, 1); 
             continue;
           }
 
           if (sig.progress > 0) {
-            const sx = sig.start.x; const sy = sig.start.y;
-            const ex = sig.end.x; const ey = sig.end.y;
+            const sx = sig.start.x + Math.sin(sig.start.phase) * 12;
+            const sy = sig.start.y + Math.cos(sig.start.phase * 0.8) * 12;
+            const ex = sig.end.x + Math.sin(sig.end.phase) * 12;
+            const ey = sig.end.y + Math.cos(sig.end.phase * 0.8) * 12;
 
             const headP = Math.min(1, sig.progress);
             const headX = sx + (ex - sx) * headP;
             const headY = sy + (ey - sy) * headP;
 
-            const tailP = Math.max(0, sig.progress - sig.length);
+            const tailP = Math.max(0, sig.progress - sig.tailLength);
             const tailX = sx + (ex - sx) * tailP;
             const tailY = sy + (ey - sy) * tailP;
 
+            // 画主光束拖尾 (红色光束)
             ctx.beginPath();
-            if (sig.type === 'fast') {
-              // 极速轴突脉冲：粗壮、高亮、带光晕
-              ctx.strokeStyle = `rgba(${fastSignalColor}, 1)`;
-              ctx.lineWidth = 3;
-              ctx.shadowBlur = 15;
-              ctx.shadowColor = `rgba(${fastSignalColor}, 1)`;
-            } else {
-              // 缓慢树突脉冲：细小、微弱
-              ctx.strokeStyle = `rgba(${slowSignalColor}, 0.8)`;
-              ctx.lineWidth = 1.5;
-              ctx.shadowBlur = 5;
-              ctx.shadowColor = `rgba(${slowSignalColor}, 0.5)`;
-            }
-            
+            ctx.strokeStyle = `rgba(${signalColor}, 1)`;
+            ctx.lineWidth = 2.5; 
+            ctx.shadowBlur = 15; // 增加红光的泛光
+            ctx.shadowColor = `rgba(${signalColor}, 1)`;
             ctx.moveTo(tailX, tailY);
             ctx.lineTo(headX, headY);
             ctx.stroke();
             ctx.shadowBlur = 0; 
 
-            // 头部高能白光爆闪点
-            if (headP < 1 && sig.type === 'fast') {
+            // 电流头部的爆闪高光点
+            if (headP < 1) {
               ctx.beginPath();
               ctx.fillStyle = '#ffffff'; 
-              ctx.arc(headX, headY, 2, 0, Math.PI * 2);
+              ctx.arc(headX, headY, 1.8, 0, Math.PI * 2);
               ctx.fill();
             }
           }
         }
 
-        // 5. 🦠 渲染细胞体
+        // 5. 🦠 渲染多层神经细胞体 (Soma)
         particles.forEach(p => {
+          const rx = p.x + Math.sin(p.phase) * 12;
+          const ry = p.y + Math.cos(p.phase * 0.8) * 12;
+
           ctx.beginPath();
-          // Soma 节点渲染得更有细胞体质感，且跟随能量发光
-          const glow = p.isSoma ? (p.energy * 0.5) : 0;
-          ctx.fillStyle = `rgba(${nodeColor}, ${0.8 + glow})`;
-          if (p.isSoma) {
-            ctx.shadowBlur = 10 + glow * 10;
-            ctx.shadowColor = `rgba(${fastSignalColor}, 0.8)`;
-          }
-          ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(${nodeColor}, 0.15)`;
+          ctx.arc(rx, ry, p.radius * 3.5, 0, Math.PI * 2);
+          ctx.fill();
+
+          ctx.beginPath();
+          ctx.fillStyle = `rgba(${nodeColor}, 0.9)`;
+          ctx.shadowBlur = 10;
+          ctx.shadowColor = `rgba(${nodeColor}, 0.8)`;
+          ctx.arc(rx, ry, p.radius, 0, Math.PI * 2);
           ctx.fill();
           ctx.shadowBlur = 0; 
         });
@@ -792,7 +784,7 @@
       }
       draw();
     }
-    initNeuralWeb();
+    initNeuralWeb(); // 启动神经网
 
     // ===================== 🚀 极简 3D 模型渲染器 (彻底修复滑动白屏 Bug) =====================
     const models = Array.from(document.querySelectorAll('model-viewer'));
