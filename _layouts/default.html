@@ -586,6 +586,7 @@
     window.addEventListener('resize', () => { if(container) containerRect = container.getBoundingClientRect(); });
 
     // ===================== 🌟 顶尖大厂级：交互式神经突触网络 (Neural Plexus) =====================
+ // ===================== 🌟 顶尖大厂级：仿生神经突触网络 (Neural Plexus) =====================
     function initNeuralWeb() {
       const canvas = document.getElementById('neuro-dust-canvas');
       if(!canvas) return;
@@ -603,17 +604,22 @@
       resize();
 
       const particles = [];
-      // 增加神经元节点数量，让网络更丰满 (根据设备智能调整)
-      const count = window.innerWidth > 768 ? 90 : 45; 
-      const maxDistance = 150; // 突触相连的最大距离
+      const signals = []; // ⚡ 新增：神经电信号 (动作电位) 队列
+      // 移动端适当减少节点保证流畅度
+      const count = window.innerWidth > 768 ? 70 : 35; 
+      const maxDistance = 180; // 稍稍放大突触连接距离，让网络更错综复杂
       
+      // 初始化神经元细胞体
       for(let i = 0; i < count; i++) {
         particles.push({
           x: Math.random() * width,
           y: Math.random() * height,
-          vx: (Math.random() - 0.5) * 0.6, // 极其缓慢的有机游走
-          vy: (Math.random() - 0.5) * 0.6,
-          radius: Math.random() * 2 + 1,   // 节点核心大小
+          vx: (Math.random() - 0.5) * 0.3, // 基础漂浮速度
+          vy: (Math.random() - 0.5) * 0.3,
+          radius: Math.random() * 2 + 1.5, // 细胞核大小
+          phase: Math.random() * Math.PI * 2, // 呼吸相角
+          breathSpeed: Math.random() * 0.02 + 0.01, // 呼吸频率
+          connections: [] // 记录邻居节点，用于发射电信号
         });
       }
 
@@ -624,61 +630,137 @@
         
         ctx.clearRect(0, 0, width, height);
         const isLight = document.body.classList.contains('light-mode');
-        // Blackrock 风格的高级青蓝色
+        
+        // 🎨 采用偏向生物电学的高级配色
         const nodeColor = isLight ? '13, 148, 136' : '96, 165, 250'; 
         const lineColor = isLight ? '20, 184, 166' : '59, 130, 246';
+        const signalColor = isLight ? '245, 158, 11' : '0, 242, 255'; // 电脉冲高光色 (青蓝色 / 琥珀色)
 
-        // 1. 更新位置与绘制网络连线
+        // 1. 更新位置 (引入有机呼吸算法)
+        particles.forEach(p => {
+          // 基础缓慢漂浮
+          p.x += p.vx; p.y += p.vy;
+          p.phase += p.breathSpeed; // 更新呼吸相角
+
+          // 边缘无缝穿梭缓冲
+          if (p.x < -100) p.x = width + 100; if (p.x > width + 100) p.x = -100;
+          if (p.y < -100) p.y = height + 100; if (p.y > height + 100) p.y = -100;
+          
+          p.connections = []; // 每一帧清空连接状态
+        });
+
+        // 2. 绘制神经突触连线 & 建立拓扑网络
+        ctx.lineCap = 'round';
         for(let i = 0; i < count; i++) {
           const p1 = particles[i];
-          p1.x += p1.vx; p1.y += p1.vy;
+          // 计算实际渲染坐标 (叠加正弦呼吸偏移)
+          const r1x = p1.x + Math.sin(p1.phase) * 12; 
+          const r1y = p1.y + Math.cos(p1.phase * 0.8) * 12;
 
-          // 边缘无缝穿梭
-          if (p1.x < -50) p1.x = width + 50; if (p1.x > width + 50) p1.x = -50;
-          if (p1.y < -50) p1.y = height + 50; if (p1.y > height + 50) p1.y = -50;
-
-          // 画线：神经元之间的距离检测
           for(let j = i + 1; j < count; j++) {
             const p2 = particles[j];
-            const dx = p1.x - p2.x; const dy = p1.y - p2.y;
+            const r2x = p2.x + Math.sin(p2.phase) * 12;
+            const r2y = p2.y + Math.cos(p2.phase * 0.8) * 12;
+
+            const dx = r1x - r2x; const dy = r1y - r2y;
             const dist = Math.sqrt(dx*dx + dy*dy);
 
             if(dist < maxDistance) {
+              p1.connections.push(p2); // 互相记录为邻居
+              p2.connections.push(p1);
+
               ctx.beginPath();
-              // 距离越近，线条越不透明
-              ctx.strokeStyle = `rgba(${lineColor}, ${0.4 * (1 - dist/maxDistance)})`;
-              ctx.lineWidth = 1;
-              ctx.moveTo(p1.x, p1.y);
-              ctx.lineTo(p2.x, p2.y);
+              // 距离越近，线条越粗越不透明，模拟真实的生物组织厚度
+              const intensity = 1 - dist/maxDistance;
+              ctx.strokeStyle = `rgba(${lineColor}, ${0.35 * intensity})`;
+              ctx.lineWidth = 1.5 * intensity + 0.5;
+              ctx.moveTo(r1x, r1y);
+              ctx.lineTo(r2x, r2y);
               ctx.stroke();
             }
           }
 
-          // 🌟 核心魔法：鼠标交互，神经元向鼠标伸出突触并被吸引
-          const mdx = mouseX - p1.x; const mdy = mouseY - p1.y;
+          // 🌟 鼠标交互：神经元向鼠标方向伸出突触
+          const mdx = mouseX - r1x; const mdy = mouseY - r1y;
           const mDist = Math.sqrt(mdx*mdx + mdy*mdy);
-          if (mDist < 200) {
+          if (mDist < 220) {
             ctx.beginPath();
-            ctx.strokeStyle = `rgba(${lineColor}, ${0.6 * (1 - mDist/200)})`;
-            ctx.lineWidth = 1.5;
-            ctx.moveTo(p1.x, p1.y);
+            ctx.strokeStyle = `rgba(${lineColor}, ${0.5 * (1 - mDist/220)})`;
+            ctx.lineWidth = 1;
+            ctx.moveTo(r1x, r1y);
             ctx.lineTo(mouseX, mouseY);
             ctx.stroke();
             
-            // 物理引力：节点被鼠标轻微吸引拉扯
-            p1.x += (mdx / mDist) * 0.5;
-            p1.y += (mdy / mDist) * 0.5;
+            // 被鼠标极其轻微地磁性吸引
+            p1.x += (mdx / mDist) * 0.4;
+            p1.y += (mdy / mDist) * 0.4;
+          }
+        }
+
+        // 3. ⚡ 随机激发 Action Potentials (动作电位)
+        // 调整随机数可以控制放电的频繁程度
+        if (Math.random() < 0.12) { 
+          const startNode = particles[Math.floor(Math.random() * particles.length)];
+          if (startNode.connections.length > 0) {
+            // 随机挑选一个相连的邻居作为终点
+            const endNode = startNode.connections[Math.floor(Math.random() * startNode.connections.length)];
+            signals.push({
+              start: startNode, end: endNode,
+              progress: 0, 
+              speed: Math.random() * 0.015 + 0.015 // 脉冲传输速度
+            });
+          }
+        }
+
+        // 4. ⚡ 渲染流动的神经电信号
+        for (let i = signals.length - 1; i >= 0; i--) {
+          const sig = signals[i];
+          sig.progress += sig.speed;
+          
+          if (sig.progress >= 1) {
+            signals.splice(i, 1); // 抵达目标后突触信号消失
+            continue;
           }
 
-          // 画点：绘制神经元核心节点
+          // 获取实时的动态起止点
+          const sx = sig.start.x + Math.sin(sig.start.phase) * 12;
+          const sy = sig.start.y + Math.cos(sig.start.phase * 0.8) * 12;
+          const ex = sig.end.x + Math.sin(sig.end.phase) * 12;
+          const ey = sig.end.y + Math.cos(sig.end.phase * 0.8) * 12;
+
+          const currX = sx + (ex - sx) * sig.progress;
+          const currY = sy + (ey - sy) * sig.progress;
+
           ctx.beginPath();
-          ctx.fillStyle = `rgba(${nodeColor}, 0.8)`;
-          ctx.shadowBlur = 10;
-          ctx.shadowColor = `rgba(${nodeColor}, 1)`;
-          ctx.arc(p1.x, p1.y, p1.radius, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(${signalColor}, 1)`;
+          ctx.shadowBlur = 15;
+          ctx.shadowColor = `rgba(${signalColor}, 1)`;
+          ctx.arc(currX, currY, 1.8, 0, Math.PI * 2);
           ctx.fill();
-          ctx.shadowBlur = 0; // 重置阴影，防止全局卡顿
+          ctx.shadowBlur = 0; // 重置阴影，非常重要，防止性能崩塌
         }
+
+        // 5. 🦠 渲染多层神经细胞体 (Soma)
+        particles.forEach(p => {
+          const rx = p.x + Math.sin(p.phase) * 12;
+          const ry = p.y + Math.cos(p.phase * 0.8) * 12;
+
+          // 第一层：半透明的细胞质光晕 (Cytoplasm halo)
+          ctx.beginPath();
+          ctx.fillStyle = `rgba(${nodeColor}, 0.15)`;
+          ctx.arc(rx, ry, p.radius * 3.5, 0, Math.PI * 2);
+          ctx.fill();
+
+          // 第二层：发光的细胞核核心 (Nucleus)
+          ctx.beginPath();
+          ctx.fillStyle = `rgba(${nodeColor}, 0.9)`;
+          ctx.shadowBlur = 10;
+          ctx.shadowColor = `rgba(${nodeColor}, 0.8)`;
+          ctx.arc(rx, ry, p.radius, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.shadowBlur = 0; 
+        });
+
         requestAnimationFrame(draw);
       }
       draw();
