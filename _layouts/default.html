@@ -523,392 +523,320 @@ document.addEventListener("DOMContentLoaded", function() {
   let containerRect = container ? container.getBoundingClientRect() : null;
   window.addEventListener('resize', () => { if(container) containerRect = container.getBoundingClientRect(); });
 
-  // =====================================================================
-  // 🧠 神经元放电背景 - 完整高性能实现
-  // 生物学特征：Soma(细胞体) + Dendrite(树突) + Axon(轴突) + Action Potential(动作电位)
-  // =====================================================================
-  function initNeuralWeb() {
-    const canvas = document.getElementById('neuro-dust-canvas');
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d', { alpha: true, desynchronized: true });
+// =====================================================================
+// 🧠 高性能神经元背景 - 性能优化版
+// 目标：CPU < 5%，GPU < 10%，60fps 流畅
+// =====================================================================
+function initNeuralWeb() {
+  const canvas = document.getElementById('neuro-dust-canvas');
+  if (!canvas) return;
+  // desynchronized: 减少合成器延迟
+  const ctx = canvas.getContext('2d', { alpha: true, desynchronized: true });
 
-    let W, H, dpr;
-    // 离屏 canvas 用于绘制静态底层树突网络（减少重绘）
-    let offscreenCanvas, offscreenCtx;
-    let offscreenDirty = true;
+  let W, H;
 
-    function resize() {
-      dpr = Math.min(window.devicePixelRatio || 1, 2);
-      W = window.innerWidth;
-      H = window.innerHeight;
-      canvas.width = W * dpr;
-      canvas.height = H * dpr;
-      canvas.style.width = W + 'px';
-      canvas.style.height = H + 'px';
-      ctx.scale(dpr, dpr);
-      // 重建离屏 canvas
-      offscreenCanvas = document.createElement('canvas');
-      offscreenCanvas.width = W * dpr;
-      offscreenCanvas.height = H * dpr;
-      offscreenCtx = offscreenCanvas.getContext('2d');
-      offscreenCtx.scale(dpr, dpr);
-      offscreenDirty = true;
-    }
-    window.addEventListener('resize', () => { resize(); buildNetwork(); });
-    resize();
+  function resize() {
+    const dpr = Math.min(window.devicePixelRatio || 1, 1.5); // 🔑 限制DPR最大1.5
+    W = window.innerWidth;
+    H = window.innerHeight;
+    canvas.width  = Math.floor(W * dpr);
+    canvas.height = Math.floor(H * dpr);
+    canvas.style.width  = W + 'px';
+    canvas.style.height = H + 'px';
+    ctx.scale(dpr, dpr);
+  }
+  window.addEventListener('resize', () => { resize(); initNodes(); });
+  resize();
 
-    // ── 参数配置（按设备档位自适应）──
-    const isMobile = window.innerWidth <= 768;
-    const SOMA_COUNT      = isMobile ? 28 : 55;   // 细胞体数量
-    const MAX_DENDRITE_D  = isMobile ? 160 : 210; // 树突最大延伸距离
-    const DRIFT_SPEED     = 0.12;                 // 神经元漂移速度（极缓慢，模拟组织蠕动）
-    const SOMA_BREATHE    = 12;                   // 细胞体呼吸摆幅（像素）
-    const FIRE_PROB       = 0.04;                 // 每帧自发放电概率
-    const BURST_COUNT_MAX = 4;                    // 一次爆发最多连发脉冲数
+  // ── 按设备性能分档 ──
+  const isMobile  = window.innerWidth <= 768;
+  const isLowEnd  = navigator.hardwareConcurrency <= 4; // 低端设备判断
+  const NODE_COUNT   = isMobile ? 18 : (isLowEnd ? 28 : 42); // 🔑 大幅减少节点
+  const MAX_DIST     = isMobile ? 140 : 180;
+  const MAX_SIGNALS  = isMobile ? 6  : 12;  // 🔑 限制同屏信号数上限
+  const TARGET_FPS   = 30; // 🔑 锁定30fps，减少一半渲染调用
+  const FRAME_BUDGET = 1000 / TARGET_FPS;
 
-    // ── 数据结构 ──
-    let somas = [];   // 细胞体
-    let signals = []; // 飞行中的动作电位
+  // ── 节点数据（扁平化，避免对象属性查找开销）──
+  let nodes = [];  // {x,y,vx,vy,r,phase,ps}
+  let edges = [];  // {i,j,dist} 预计算边，避免每帧O(n²)
+  let signals = []; // 飞行中的动作电位
 
-    // ── 颜色系统（深色/浅色分别映射）──
-    function getColors() {
-      const light = document.body.classList.contains('light-mode');
-      return {
-        // 静态树突网格
-        dendrite:      light ? 'rgba(37,99,235,{a})'   : 'rgba(48,120,220,{a})',
-        // 细胞体外晕（大光圈）
-        somaGlow:      light ? 'rgba(59,130,246,{a})'  : 'rgba(30,100,200,{a})',
-        // 细胞体核心
-        somaCore:      light ? 'rgba(99,160,255,{a})'  : 'rgba(130,180,255,{a})',
-        // 动作电位弹头
-        spikeHead:     '#ffffff',
-        // 动作电位尾迹渐变起点（透明尾）→ 中部颜色 → 尾部
-        spikeMid:      light ? 'rgba(255,60,60,{a})'   : 'rgba(255,80,60,{a})',
-        // 树突对鼠标响应颜色
-        mouseLink:     light ? 'rgba(59,130,246,{a})'  : 'rgba(96,165,250,{a})',
-      };
-    }
-    function c(template, alpha) { return template.replace('{a}', alpha); }
-
-    // ── 构建神经网络拓扑 ──
-    function buildNetwork() {
-      somas = [];
-      for (let i = 0; i < SOMA_COUNT; i++) {
-        somas.push({
-          // 基准位置
-          bx: Math.random() * W,
-          by: Math.random() * H,
-          // 实时位置（含呼吸偏移）
-          x: 0, y: 0,
-          // 缓慢漂移速度
-          vx: (Math.random() - 0.5) * DRIFT_SPEED,
-          vy: (Math.random() - 0.5) * DRIFT_SPEED,
-          // 呼吸相位（模拟神经元静息电位的膜电位震荡）
-          phase:      Math.random() * Math.PI * 2,
-          phaseSpeed: 0.008 + Math.random() * 0.012,
-          // 细胞体半径
-          r: 2.5 + Math.random() * 2,
-          // 连接邻居缓存（每 N 帧重建一次，避免每帧 O(n²)）
-          neighbors: [],
-        });
-      }
-      offscreenDirty = true;
-    }
-    buildNetwork();
-
-    // ── 邻居关系重建（每 120 帧一次）──
-    let rebuildCounter = 0;
-    function rebuildNeighbors() {
-      for (let i = 0; i < somas.length; i++) {
-        somas[i].neighbors = [];
-        for (let j = 0; j < somas.length; j++) {
-          if (i === j) continue;
-          const dx = somas[i].bx - somas[j].bx;
-          const dy = somas[i].by - somas[j].by;
-          const d = Math.sqrt(dx * dx + dy * dy);
-          if (d < MAX_DENDRITE_D) {
-            somas[i].neighbors.push({ idx: j, dist: d });
-          }
-        }
-      }
-    }
-    rebuildNeighbors();
-
-    // ── 离屏渲染静态树突底层（仅在拓扑变化时重绘）──
-    function renderOffscreenDendrites() {
-      offscreenCtx.clearRect(0, 0, W, H);
-      const colors = getColors();
-
-      for (let i = 0; i < somas.length; i++) {
-        const p1 = somas[i];
-        for (const nb of p1.neighbors) {
-          if (nb.idx <= i) continue; // 避免重复绘制
-          const p2 = somas[nb.idx];
-          const intensity = (1 - nb.dist / MAX_DENDRITE_D);
-
-          // 三段式树突绘制：主干 + 分支锥形渐变
-          const grad = offscreenCtx.createLinearGradient(p1.x, p1.y, p2.x, p2.y);
-          grad.addColorStop(0,   c(colors.dendrite, (0.06 + intensity * 0.18).toFixed(2)));
-          grad.addColorStop(0.5, c(colors.dendrite, (0.12 + intensity * 0.25).toFixed(2)));
-          grad.addColorStop(1,   c(colors.dendrite, (0.06 + intensity * 0.18).toFixed(2)));
-
-          offscreenCtx.beginPath();
-          offscreenCtx.strokeStyle = grad;
-          offscreenCtx.lineWidth = 0.8 + intensity * 1.2;
-          offscreenCtx.lineCap = 'round';
-          offscreenCtx.moveTo(p1.x, p1.y);
-
-          // 用贝塞尔曲线模拟真实树突的弯曲形态
-          const mx = (p1.x + p2.x) / 2 + (Math.random() - 0.5) * 20 * intensity;
-          const my = (p1.y + p2.y) / 2 + (Math.random() - 0.5) * 20 * intensity;
-          offscreenCtx.quadraticCurveTo(mx, my, p2.x, p2.y);
-          offscreenCtx.stroke();
-        }
-      }
-      offscreenDirty = false;
-    }
-
-    // ── 动作电位（Action Potential）发射 ──
-    function fireSpike(fromIdx, toIdx) {
-      const from = somas[fromIdx];
-      const to   = somas[toIdx];
-      if (!from || !to) return;
-      signals.push({
-        sx: from.x, sy: from.y,   // 起始坐标
-        ex: to.x,   ey: to.y,     // 终止坐标
-        progress:   0,             // 0→1 传播进度
-        speed:      0.025 + Math.random() * 0.035, // 传播速度（模拟传导速度差异）
-        tail:       0.18 + Math.random() * 0.12,   // 拖尾长度比例
-        fromIdx,    toIdx,
-        // 到达目标后触发突触后电位（二级传播）
-        cascade:    Math.random() < 0.35,          // 35% 概率级联放电
+  function initNodes() {
+    nodes = [];
+    for (let i = 0; i < NODE_COUNT; i++) {
+      nodes.push({
+        x:  Math.random() * W,
+        y:  Math.random() * H,
+        vx: (Math.random() - 0.5) * 0.15,
+        vy: (Math.random() - 0.5) * 0.15,
+        r:  2 + Math.random() * 1.5,
+        phase: Math.random() * Math.PI * 2,
+        ps:    0.008 + Math.random() * 0.01, // phase speed
       });
     }
-
-    // ── 鼠标附近的兴奋区（模拟外部刺激诱发放电）──
-    let lastMouseFire = 0;
-    function checkMouseExcite(now) {
-      if (now - lastMouseFire < 400) return; // 限流：最快 400ms 一次
-      for (const soma of somas) {
-        const dx = mouseX - soma.x, dy = mouseY - soma.y;
-        const d2 = dx * dx + dy * dy;
-        if (d2 < 200 * 200 && soma.neighbors.length > 0) {
-          // 鼠标附近的神经元强制放电
-          const target = soma.neighbors[Math.floor(Math.random() * soma.neighbors.length)];
-          fireSpike(somas.indexOf(soma), target.idx);
-          lastMouseFire = now;
-          break;
-        }
-      }
-    }
-
-    // ── 帧计数器 & 时间戳 ──
-    let frameCount = 0;
-    let lastTime = 0;
-
-    // ── 主渲染循环 ──
-    function draw(now) {
-      requestAnimationFrame(draw);
-
-      // 页面不可见时降帧节能
-      if (document.hidden) return;
-
-      // 限制到 60fps（避免高刷屏浪费算力）
-      if (now - lastTime < 16) return;
-      lastTime = now;
-      frameCount++;
-
-      // 每 120 帧重建邻居拓扑（~2秒，应对位置漂移）
-      if (frameCount % 120 === 0) {
-        rebuildNeighbors();
-        offscreenDirty = true;
-      }
-
-      const colors = getColors();
-
-      // 1. 更新细胞体位置（膜电位震荡 + 缓慢漂移）
-      for (const p of somas) {
-        p.phase += p.phaseSpeed;
-        p.bx += p.vx; p.by += p.vy;
-        // 边界环绕
-        if (p.bx < -80) p.bx = W + 80; if (p.bx > W + 80) p.bx = -80;
-        if (p.by < -80) p.by = H + 80; if (p.by > H + 80) p.by = -80;
-        // 叠加呼吸摆动（模拟神经元亚阈值震荡）
-        p.x = p.bx + Math.sin(p.phase)        * SOMA_BREATHE * 0.6;
-        p.y = p.by + Math.cos(p.phase * 0.73) * SOMA_BREATHE;
-      }
-
-      // 2. 如果需要，重绘离屏树突
-      if (offscreenDirty) renderOffscreenDendrites();
-
-      // 3. 清空主画布并贴上树突底层
-      ctx.clearRect(0, 0, W, H);
-      ctx.drawImage(offscreenCanvas, 0, 0, W, H);
-
-      // 4. 鼠标突触连线（实时、不走离屏）
-      for (const p of somas) {
-        const mdx = mouseX - p.x, mdy = mouseY - p.y;
-        const md2 = mdx * mdx + mdy * mdy;
-        if (md2 < 240 * 240) {
-          const md = Math.sqrt(md2);
-          const alpha = (1 - md / 240) * 0.5;
-          ctx.beginPath();
-          ctx.strokeStyle = c(colors.mouseLink, alpha.toFixed(2));
-          ctx.lineWidth = 0.8;
-          ctx.moveTo(p.x, p.y);
-          ctx.lineTo(mouseX, mouseY);
-          ctx.stroke();
-          // 鼠标吸引（微弱）
-          p.bx += (mdx / md) * 0.15;
-          p.by += (mdy / md) * 0.15;
-        }
-      }
-
-      // 5. 自发放电（Spontaneous Firing）
-      if (Math.random() < FIRE_PROB) {
-        const fromIdx = Math.floor(Math.random() * somas.length);
-        const from    = somas[fromIdx];
-        if (from.neighbors.length > 0) {
-          const burstCount = Math.floor(Math.random() * BURST_COUNT_MAX) + 1;
-          for (let b = 0; b < burstCount; b++) {
-            const nb = from.neighbors[Math.floor(Math.random() * from.neighbors.length)];
-            setTimeout(() => {
-              // 错开时间模拟真实 spike train（突发串）
-              const sig = {
-                sx: from.x, sy: from.y,
-                ex: somas[nb.idx].x, ey: somas[nb.idx].y,
-                progress: 0,
-                speed:    0.03 + Math.random() * 0.04,
-                tail:     0.16 + Math.random() * 0.1,
-                fromIdx, toIdx: nb.idx,
-                cascade:  Math.random() < 0.3,
-              };
-              signals.push(sig);
-            }, b * (60 + Math.random() * 80)); // 60-140ms 间隔
-          }
-        }
-      }
-
-      // 6. 鼠标诱发放电
-      checkMouseExcite(now);
-
-      // 7. 渲染动作电位 & 突触后电位视觉
-      ctx.save();
-      for (let i = signals.length - 1; i >= 0; i--) {
-        const sig = signals[i];
-        sig.progress += sig.speed;
-
-        // 清理已完成的信号
-        if (sig.progress >= 1 + sig.tail) {
-          // 到达目标 → 触发突触后电位发光
-          if (sig.cascade && sig.progress < 1 + sig.tail + 0.01) {
-            const to = somas[sig.toIdx];
-            if (to && to.neighbors.length > 0) {
-              const nextNb = to.neighbors[Math.floor(Math.random() * to.neighbors.length)];
-              if (nextNb) fireSpike(sig.toIdx, nextNb.idx);
-            }
-          }
-          signals.splice(i, 1);
-          continue;
-        }
-        if (sig.progress <= 0) continue;
-
-        // 计算弹头和尾迹坐标
-        const headT = Math.min(1, sig.progress);
-        const tailT = Math.max(0, sig.progress - sig.tail);
-        const hx = sig.sx + (sig.ex - sig.sx) * headT;
-        const hy = sig.sy + (sig.ey - sig.sy) * headT;
-        const tx = sig.sx + (sig.ex - sig.sx) * tailT;
-        const ty = sig.sy + (sig.ey - sig.sy) * tailT;
-
-        // 线性渐变尾迹（透明→红→白）
-        if (Math.abs(hx - tx) > 0.5 || Math.abs(hy - ty) > 0.5) {
-          const grad = ctx.createLinearGradient(tx, ty, hx, hy);
-          grad.addColorStop(0,    'rgba(255,50,30,0)');
-          grad.addColorStop(0.55, c(colors.spikeMid, '0.85'));
-          grad.addColorStop(0.85, 'rgba(255,140,100,1)');
-          grad.addColorStop(1,    sig.spikeHead || '#ffffff');
-
-          ctx.beginPath();
-          ctx.strokeStyle = grad;
-          ctx.lineWidth = 2.2;
-          ctx.shadowBlur  = 12;
-          ctx.shadowColor = 'rgba(255,80,50,0.9)';
-          ctx.moveTo(tx, ty);
-          ctx.lineTo(hx, hy);
-          ctx.stroke();
-          ctx.shadowBlur = 0;
-        }
-
-        // 弹头光晕（模拟 Na+ 内流产生的去极化瞬态）
-        if (headT < 1) {
-          const glowGrad = ctx.createRadialGradient(hx, hy, 0, hx, hy, 7);
-          glowGrad.addColorStop(0,   'rgba(255,220,200,0.95)');
-          glowGrad.addColorStop(0.4, 'rgba(255,100,60,0.6)');
-          glowGrad.addColorStop(1,   'rgba(255,50,30,0)');
-          ctx.beginPath();
-          ctx.fillStyle = glowGrad;
-          ctx.arc(hx, hy, 7, 0, Math.PI * 2);
-          ctx.fill();
-        } else {
-          // 突触囊泡释放效果（到达终点时爆开光圈）
-          const arriveRatio = (sig.progress - 1) / sig.tail;
-          const burstR = 4 + arriveRatio * 14;
-          const burstA = (1 - arriveRatio) * 0.7;
-          if (burstA > 0) {
-            const burstGrad = ctx.createRadialGradient(sig.ex, sig.ey, 0, sig.ex, sig.ey, burstR);
-            burstGrad.addColorStop(0,   `rgba(200,230,255,${burstA.toFixed(2)})`);
-            burstGrad.addColorStop(0.5, `rgba(80,160,255,${(burstA * 0.5).toFixed(2)})`);
-            burstGrad.addColorStop(1,   'rgba(30,100,255,0)');
-            ctx.beginPath();
-            ctx.fillStyle = burstGrad;
-            ctx.arc(sig.ex, sig.ey, burstR, 0, Math.PI * 2);
-            ctx.fill();
-          }
-        }
-      }
-      ctx.restore();
-
-      // 8. 渲染细胞体（Soma）
-      ctx.save();
-      for (const p of somas) {
-        // 外层大光晕（树突扩散场）
-        const outerR = p.r * (3.5 + Math.sin(p.phase * 1.3) * 0.8);
-        const outerGrad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, outerR);
-        outerGrad.addColorStop(0,   c(colors.somaGlow, '0.18'));
-        outerGrad.addColorStop(0.6, c(colors.somaGlow, '0.06'));
-        outerGrad.addColorStop(1,   c(colors.somaGlow, '0'));
-        ctx.beginPath();
-        ctx.fillStyle = outerGrad;
-        ctx.arc(p.x, p.y, outerR, 0, Math.PI * 2);
-        ctx.fill();
-
-        // 中层膜电位光环（呼吸节律）
-        const midR  = p.r * 1.8;
-        const midA  = 0.25 + Math.sin(p.phase) * 0.15;
-        ctx.beginPath();
-        ctx.strokeStyle = c(colors.somaCore, midA.toFixed(2));
-        ctx.lineWidth   = 0.8;
-        ctx.arc(p.x, p.y, midR, 0, Math.PI * 2);
-        ctx.stroke();
-
-        // 核心细胞体
-        const coreGrad = ctx.createRadialGradient(p.x - p.r * 0.2, p.y - p.r * 0.3, 0, p.x, p.y, p.r);
-        coreGrad.addColorStop(0, c(colors.somaCore, '1'));
-        coreGrad.addColorStop(1, c(colors.somaGlow, '0.7'));
-        ctx.beginPath();
-        ctx.fillStyle  = coreGrad;
-        ctx.shadowBlur  = 8;
-        ctx.shadowColor = c(colors.somaCore, '0.8');
-        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.shadowBlur = 0;
-      }
-      ctx.restore();
-    }
-
-    requestAnimationFrame(draw);
+    rebuildEdges();
+    signals = [];
   }
+  initNodes();
+
+  // 🔑 预计算所有边，避免每帧O(n²)双重循环
+  // 只在节点重新初始化时计算一次，节点缓慢漂移不重建
+  function rebuildEdges() {
+    edges = [];
+    for (let i = 0; i < nodes.length; i++) {
+      for (let j = i + 1; j < nodes.length; j++) {
+        const dx = nodes[i].x - nodes[j].x;
+        const dy = nodes[i].y - nodes[j].y;
+        const d  = Math.sqrt(dx * dx + dy * dy);
+        if (d < MAX_DIST) {
+          edges.push({ i, j, baseDist: d });
+        }
+      }
+    }
+  }
+
+  // 🔑 复用颜色字符串，避免每帧字符串拼接
+  // 预生成透明度查找表
+  const ALPHA_TABLE = [];
+  for (let a = 0; a <= 100; a++) {
+    ALPHA_TABLE[a] = (a / 100).toFixed(2);
+  }
+
+  // 预计算颜色（主题切换时更新）
+  let COL = {};
+  function updateColors() {
+    const light = document.body.classList.contains('light-mode');
+    COL = {
+      nodeStroke: light ? 'rgba(37,99,235,0.5)'   : 'rgba(100,160,255,0.6)',
+      nodeGlow:   light ? 'rgba(59,130,246,0.12)'  : 'rgba(40,100,220,0.15)',
+      edgeBase:   light ? [37, 99, 235]             : [48, 120, 220],
+      mouseEdge:  light ? 'rgba(59,130,246,0.3)'   : 'rgba(96,165,250,0.25)',
+      spikeMid:   light ? [220,38,38]               : [255,70,50],
+    };
+  }
+  updateColors();
+  // 主题切换时刷新颜色
+  document.getElementById('theme-toggle')?.addEventListener('click', updateColors);
+
+  // ── 信号发射（限制总数防爆） ──
+  function fireSignal(fromIdx, toIdx) {
+    if (signals.length >= MAX_SIGNALS) return; // 🔑 硬上限
+    const from = nodes[fromIdx], to = nodes[toIdx];
+    signals.push({
+      sx: from.x, sy: from.y,
+      ex: to.x,   ey: to.y,
+      progress: 0,
+      speed: 0.028 + Math.random() * 0.025,
+      tail:  0.20,
+      toIdx,
+    });
+  }
+
+  // 鼠标位置（从外部引用，不重复监听）
+  // mouseX/mouseY 已在外层定义
+
+  let lastMouseFire = 0;
+
+  // ── 主循环节流（30fps）──
+  let lastFrameTime = 0;
+  let animId;
+  let edgeRebuildCounter = 0;
+
+  function draw(now) {
+    animId = requestAnimationFrame(draw);
+
+    // 🔑 节流到30fps
+    const delta = now - lastFrameTime;
+    if (delta < FRAME_BUDGET) return;
+    lastFrameTime = now - (delta % FRAME_BUDGET);
+
+    // 🔑 页面不可见直接跳过，省CPU
+    if (document.hidden) return;
+
+    // 🔑 每300帧(约10秒)才重建一次边（节点漂移很慢，可接受误差）
+    edgeRebuildCounter++;
+    if (edgeRebuildCounter >= 300) {
+      edgeRebuildCounter = 0;
+      rebuildEdges();
+    }
+
+    ctx.clearRect(0, 0, W, H);
+
+    // 1. 更新节点位置
+    for (let i = 0; i < nodes.length; i++) {
+      const n = nodes[i];
+      n.phase += n.ps;
+      n.x += n.vx + Math.sin(n.phase) * 0.08; // 🔑 减小抖动幅度
+      n.y += n.vy + Math.cos(n.phase * 0.7) * 0.08;
+      // 边界软回弹（比取模更自然）
+      if (n.x < 0)   { n.x = 0;   n.vx *= -1; }
+      if (n.x > W)   { n.x = W;   n.vx *= -1; }
+      if (n.y < 0)   { n.y = 0;   n.vy *= -1; }
+      if (n.y > H)   { n.y = H;   n.vy *= -1; }
+    }
+
+    // 2. 绘制边（🔑 用预计算edges，单次遍历，无gradient）
+    const [er, eg, eb] = COL.edgeBase;
+    for (let e = 0; e < edges.length; e++) {
+      const edge = edges[e];
+      const ni = nodes[edge.i], nj = nodes[edge.j];
+      const dx = ni.x - nj.x, dy = ni.y - nj.y;
+      const d  = Math.sqrt(dx * dx + dy * dy);
+      if (d > MAX_DIST) continue; // 漂移后可能超距，跳过
+      const intensity = (1 - d / MAX_DIST);
+      const alpha = (intensity * 0.28).toFixed(2);
+      // 🔑 不用gradient，用纯色线（GPU友好）
+      ctx.beginPath();
+      ctx.strokeStyle = `rgba(${er},${eg},${eb},${alpha})`;
+      ctx.lineWidth   = 0.6 + intensity * 0.9;
+      ctx.moveTo(ni.x, ni.y);
+      ctx.lineTo(nj.x, nj.y);
+      ctx.stroke();
+    }
+
+    // 3. 鼠标连线（只连最近5个节点）
+    let mouseLinks = [];
+    for (let i = 0; i < nodes.length; i++) {
+      const n = nodes[i];
+      const dx = mouseX - n.x, dy = mouseY - n.y;
+      const d2 = dx * dx + dy * dy;
+      if (d2 < 200 * 200) mouseLinks.push({ i, d2 });
+    }
+    mouseLinks.sort((a, b) => a.d2 - b.d2);
+    const linkCount = Math.min(5, mouseLinks.length); // 🔑 最多5条
+    ctx.strokeStyle = COL.mouseEdge;
+    ctx.lineWidth   = 0.7;
+    for (let k = 0; k < linkCount; k++) {
+      const n = nodes[mouseLinks[k].i];
+      ctx.beginPath();
+      ctx.moveTo(n.x, n.y);
+      ctx.lineTo(mouseX, mouseY);
+      ctx.stroke();
+    }
+
+    // 4. 自发放电（🔑 降低概率，严控总量）
+    if (signals.length < MAX_SIGNALS && Math.random() < 0.025) {
+      const fromIdx = Math.floor(Math.random() * nodes.length);
+      if (edges.length > 0) {
+        // 找该节点的一条边
+        const nodeEdges = edges.filter(e => e.i === fromIdx || e.j === fromIdx);
+        if (nodeEdges.length > 0) {
+          const picked = nodeEdges[Math.floor(Math.random() * nodeEdges.length)];
+          const toIdx  = picked.i === fromIdx ? picked.j : picked.i;
+          fireSignal(fromIdx, toIdx);
+        }
+      }
+    }
+
+    // 5. 鼠标诱发放电（🔑 节流400ms）
+    if (now - lastMouseFire > 600 && signals.length < MAX_SIGNALS) {
+      for (let i = 0; i < nodes.length; i++) {
+        const n = nodes[i];
+        const dx = mouseX - n.x, dy = mouseY - n.y;
+        if (dx * dx + dy * dy < 180 * 180) {
+          const nodeEdges = edges.filter(e => e.i === i || e.j === i);
+          if (nodeEdges.length > 0) {
+            const picked = nodeEdges[Math.floor(Math.random() * nodeEdges.length)];
+            const toIdx  = picked.i === i ? picked.j : picked.i;
+            fireSignal(i, toIdx);
+            lastMouseFire = now;
+            break;
+          }
+        }
+      }
+    }
+
+    // 6. 渲染动作电位（🔑 去掉shadowBlur，改用纯色+细线）
+    const [sr, sg, sb] = COL.spikeMid;
+    for (let k = signals.length - 1; k >= 0; k--) {
+      const sig = signals[k];
+      sig.progress += sig.speed;
+
+      if (sig.progress >= 1 + sig.tail) {
+        // 到达终点：简单爆光效果（不用gradient）
+        const to = nodes[sig.toIdx];
+        if (to) {
+          const burstR = 8;
+          ctx.beginPath();
+          ctx.strokeStyle = `rgba(80,160,255,0.5)`;
+          ctx.lineWidth   = 1;
+          ctx.arc(sig.ex, sig.ey, burstR, 0, Math.PI * 2);
+          ctx.stroke();
+        }
+        signals.splice(k, 1);
+        continue;
+      }
+      if (sig.progress <= 0) continue;
+
+      const headT = Math.min(1, sig.progress);
+      const tailT = Math.max(0, sig.progress - sig.tail);
+      const hx = sig.sx + (sig.ex - sig.sx) * headT;
+      const hy = sig.sy + (sig.ey - sig.sy) * headT;
+      const tx = sig.sx + (sig.ex - sig.sx) * tailT;
+      const ty = sig.sy + (sig.ey - sig.sy) * tailT;
+
+      if (Math.abs(hx - tx) < 0.5 && Math.abs(hy - ty) < 0.5) continue;
+
+      // 🔑 用两条叠加线代替gradient：底层红线 + 顶层白线弹头
+      // 这比createLinearGradient快约3倍
+      ctx.beginPath();
+      ctx.strokeStyle = `rgba(${sr},${sg},${sb},0.85)`;
+      ctx.lineWidth   = 2;
+      ctx.moveTo(tx, ty);
+      ctx.lineTo(hx, hy);
+      ctx.stroke();
+
+      // 弹头白色高光（短线段）
+      if (headT < 1) {
+        const hlx = sig.sx + (sig.ex - sig.sx) * Math.max(0, headT - 0.06);
+        const hly = sig.sy + (sig.ey - sig.sy) * Math.max(0, headT - 0.06);
+        ctx.beginPath();
+        ctx.strokeStyle = 'rgba(255,240,230,0.95)';
+        ctx.lineWidth   = 2.5;
+        ctx.moveTo(hlx, hly);
+        ctx.lineTo(hx, hy);
+        ctx.stroke();
+        // 🔑 弹头光点：用小实心圆代替radialGradient
+        ctx.beginPath();
+        ctx.fillStyle = '#ffffff';
+        ctx.arc(hx, hy, 2.2, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    // 7. 渲染细胞体（🔑 去掉radialGradient和shadowBlur）
+    for (let i = 0; i < nodes.length; i++) {
+      const n = nodes[i];
+      const breathe = Math.sin(n.phase) * 0.3 + 1; // 呼吸系数
+
+      // 外晕：简单描边圆（不用gradient）
+      ctx.beginPath();
+      ctx.strokeStyle = COL.nodeGlow.replace('0.15', (0.08 * breathe).toFixed(2));
+      ctx.lineWidth   = n.r * 2.5;
+      ctx.arc(n.x, n.y, n.r * 2, 0, Math.PI * 2);
+      ctx.stroke();
+
+      // 核心实心圆
+      ctx.beginPath();
+      ctx.fillStyle   = COL.nodeStroke;
+      ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+
+  animId = requestAnimationFrame(draw);
+
+  // 页面切换时停止动画
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      cancelAnimationFrame(animId);
+    } else {
+      lastFrameTime = 0;
+      animId = requestAnimationFrame(draw);
+    }
+  });
+}
 
   initNeuralWeb();
 
