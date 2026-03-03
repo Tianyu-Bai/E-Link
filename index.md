@@ -1183,14 +1183,14 @@ document.addEventListener("DOMContentLoaded", function() {
   
   <div class="species-glass-box">
   <svg class="connection-lines" viewBox="0 0 600 380" preserveAspectRatio="none" style="z-index: 1;">
-  <path class="base-line" d="M300,141 L135,225" stroke="rgba(255,255,255,0.1)" fill="none" /> 
-  <path class="base-line" d="M300,141 L300,255" stroke="rgba(255,255,255,0.1)" fill="none" /> 
-  <path class="base-line" d="M300,141 L465,225" stroke="rgba(255,255,255,0.1)" fill="none" /> 
-  
-  <path class="pulse-line line-to-mouse" d="M300,141 L135,225" />
-  <path class="pulse-line line-to-rat" d="M300,141 L300,255" />
-  <path class="pulse-line line-to-monkey" d="M300,141 L465,225" />
-</svg>
+    <path class="base-line" d="M300,141 L100,225" stroke="rgba(255,255,255,0.1)" fill="none" /> 
+    <path class="base-line" d="M300,141 L300,255" stroke="rgba(255,255,255,0.1)" fill="none" /> 
+    <path class="base-line" d="M300,141 L500,225" stroke="rgba(255,255,255,0.1)" fill="none" /> 
+    
+    <path class="pulse-line line-to-mouse" d="M300,141 L100,225" />
+    <path class="pulse-line line-to-rat" d="M300,141 L300,255" />
+    <path class="pulse-line line-to-monkey" d="M300,141 L500,225" />
+  </svg>
 
  <div class="node center-node">
       <div class="hex-border">
@@ -2368,14 +2368,14 @@ This project is open-source and available under the **MIT License**. Click the b
   
   <div class="species-glass-box">
   <svg class="connection-lines" viewBox="0 0 600 380" preserveAspectRatio="none" style="z-index: 1;">
-  <path class="base-line" d="M300,141 L135,225" stroke="rgba(255,255,255,0.1)" fill="none" /> 
-  <path class="base-line" d="M300,141 L300,255" stroke="rgba(255,255,255,0.1)" fill="none" /> 
-  <path class="base-line" d="M300,141 L465,225" stroke="rgba(255,255,255,0.1)" fill="none" /> 
-  
-  <path class="pulse-line line-to-mouse" d="M300,141 L135,225" />
-  <path class="pulse-line line-to-rat" d="M300,141 L300,255" />
-  <path class="pulse-line line-to-monkey" d="M300,141 L465,225" />
-</svg>
+    <path class="base-line" d="M300,141 L100,225" stroke="rgba(255,255,255,0.1)" fill="none" /> 
+    <path class="base-line" d="M300,141 L300,255" stroke="rgba(255,255,255,0.1)" fill="none" /> 
+    <path class="base-line" d="M300,141 L500,225" stroke="rgba(255,255,255,0.1)" fill="none" /> 
+    
+    <path class="pulse-line line-to-mouse" d="M300,141 L100,225" />
+    <path class="pulse-line line-to-rat" d="M300,141 L300,255" />
+    <path class="pulse-line line-to-monkey" d="M300,141 L500,225" />
+  </svg>
 
     <div class="node center-node">
       <div class="hex-border">
