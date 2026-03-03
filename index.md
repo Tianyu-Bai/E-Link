@@ -1334,8 +1334,17 @@ document.addEventListener("DOMContentLoaded", function() {
 .node-desc { margin-top: 4px; color: #94a3b8; font-size: 11px; text-align: center; line-height: 1.4; font-family: sans-serif; }
 
 @media (max-width: 600px) {
-  /* 🚀 手机端专属提裤子：底部内边距收紧至 15px，总高度压缩至 330px，消除多余留白 */
-  .species-glass-box { padding: 30px 5px 15px 5px; min-height: 330px; } 
+  /* 🚀 手机端布局校准：裤子往下挪（增加底部 padding），整体更协调 */
+  .species-glass-box { 
+    padding: 25px 5px 30px 5px; /* 👈 底部 padding 从 15px 恢复到 30px，增加留白 */
+    min-height: 350px;           /* 👈 高度微调，防止压缩 */
+  } 
+  
+  /* 🚀 E-Link 文字上调：减小与上方图标的间距 */
+  .center-node .node-text { 
+    margin-top: 2px !important;  /* 👈 从 10px 降到 2px，实现“文字上调” */
+    font-size: 13px; 
+  }
   
   .icon-circle { width: 45px; height: 45px; }
   .icon-circle span { font-size: 24px !important; }
@@ -1343,7 +1352,12 @@ document.addEventListener("DOMContentLoaded", function() {
   .node-desc { font-size: 9px; }
   .connection-lines { opacity: 0.8; }
   .pulse-line { stroke-width: 2; }
+  
+  /* 🚀 补偿：让三个动物节点的文字离圆圈更近一点，整体往框中心缩 */
+  .animal-nodes { margin-top: 50px; } 
+  .rat-node-adjust { transform: translateY(25px) translateZ(0); }
 }
+
 </style>
 
 <style> 
