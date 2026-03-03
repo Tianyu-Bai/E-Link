@@ -705,133 +705,41 @@ if (localStorage.getItem('elink_visited') === 'true') {
     }, 10);
   }
  
- // ── 粒子引擎 (色彩回正版：高饱和度 + 霓虹光效 + FPS 节流) ──────────────────────────────────
-function initNeuralWeb() {
-  const canvas = document.getElementById('neuro-dust-canvas');
-  if (!canvas) return;
-  const ctx = canvas.getContext('2d', { alpha: true, desynchronized: true });
+ // ─RAF 调度器 (带 FPS 锁定 & 移动端智能识别) ─────
 
-  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || window.innerWidth < 768;
-  let width, height, dpr;
+const rafScheduler = {  tasks: new Map(), isRunning: false, lastFrameTime: 0,  
 
-  function applyResize() {
-    // 限制最高采样，但不再压低到 1.0，给 PC 留一点清晰度
-    dpr = isMobile ? 1.0 : Math.min(window.devicePixelRatio || 1, 1.5);
-    width = window.innerWidth; height = window.innerHeight;
-    canvas.width = Math.floor(width * dpr); canvas.height = Math.floor(height * dpr);
-    canvas.style.width = `${width}px`; canvas.style.height = `${height}px`;
-    ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.scale(dpr, dpr);
-  }
-  applyResize();
-  window.addEventListener('resize', applyResize, { passive: true });
+  // 🎯 智能检测：手机端直接砍到 30FPS (省电/降温)，PC 端维持 45FPS (平衡)
 
-  const count = isMobile ? 60 : 130; 
-  const maxDistance = 160;
-  const particles = [];
-  const signals = [];
-  const TOP_ZONE = 85; 
-  const BOTTOM_ZONE = 130;
-
-  for (let i = 0; i < count; i++) {
-    let minR = isMobile ? 1.2 : 1.5;
-    let maxR = isMobile ? 5.0 : 8.5;
-    let baseR = minR + Math.pow(Math.random(), 2) * (maxR - minR); 
-    
-    // 初始化左右分布逻辑保持不变...
-    let startX = !isMobile ? (Math.random() < 0.5 ? Math.random() * ((width-860)/2 * 0.8) : width - Math.random() * ((width-860)/2 * 0.8)) : Math.random() * width;
-    let startY = isMobile ? (i < count * 0.6 ? Math.random() * TOP_ZONE : height - Math.random() * BOTTOM_ZONE) : Math.random() * height;
-
-    particles.push({
-      id: i, x: startX, y: startY,
-      vx: (Math.random() - 0.5) * 0.02, vy: (Math.random() - 0.5) * 0.02,
-      baseRadius: baseR, charge: 0, refractory: 0, 
-      pulse: Math.random() * Math.PI * 2, pulseSpeed: 0.015 + Math.random() * 0.015,
-      neighbors: [] 
-    });
-  }
-
-  const px = new Float32Array(count);
-  const py = new Float32Array(count);
-
-  rafScheduler.add('particles', () => {
-    ctx.clearRect(0, 0, width, height);
-    const isLight = document.body.classList.contains('light-mode');
-    
-    // 🚀 **色彩回正 A：提升色彩饱和度**
-    // 使用更纯正的神经元电蓝色
-    const sigColor = isLight ? '37, 99, 235' : '0, 242, 255'; 
-    const nR = isLight ? 30 : 0, nG = isLight ? 78 : 242, nB = isLight ? 216 : 255;
-
-    // --- 物理逻辑略 (保持上一版的左右避障) ---
-    for (let i = 0; i < count; i++) {
-      const p = particles[i]; p.neighbors = []; if (p.refractory > 0) p.refractory--;
-      if (!isMobile) {
-        const leftWall = (width-880)/2, rightWall = (width+880)/2;
-        if (p.x > leftWall && p.x < rightWall) { p.x < width/2 ? p.vx -= 0.012 : p.vx += 0.012; }
+  targetFPS: (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || window.innerWidth < 768) ? 30 : 45, 
+  add(key, fn) {   this.tasks.set(key, fn);   if (!this.isRunning) this.start();},
+  remove(key) { this.tasks.delete(key); },  
+  start() {
+    this.isRunning = true;
+    const loop = (currentTime) => {
+      if (this.tasks.size === 0) { 
+        this.isRunning = false; 
+        return; 
       }
-      for (let j = i + 1; j < count; j++) {
-        const p2 = particles[j]; const dx = p2.x - p.x, dy = p2.y - p.y; const distSq = dx*dx + dy*dy;
-        if (distSq < 160*160) {
-          const dist = Math.sqrt(distSq); p.neighbors.push(j); p2.neighbors.push(i);
-          if (dist > 30) { const pull = (p.baseRadius * p2.baseRadius) * 0.000015 / dist; p.vx += dx * pull; p.vy += dy * pull; p2.vx -= dx * pull; p2.vy -= dy * pull; }
-          // 电流触发
-          if (dist < 70 && p.refractory <= 0 && Math.random() < 0.01) {
-            p.charge = 1; p2.charge = 1; p.refractory = 200;
-            signals.push({ si: i, ei: j, progress: 0, speed: 0.02 + Math.random()*0.02, tail: 0.6, history: [i], hops: isMobile ? 4 : 10 });
-          }
-        }
-      }
-      p.vx *= 0.88; p.vy *= 0.88; p.x += p.vx; p.y += p.vy;
-      px[i] = p.x + Math.sin(p.pulse) * 4; py[i] = p.y + Math.cos(p.pulse * 0.8) * 4;
-    }
+   
+      // 动态计算间隔时间，确保帧率调整能即时生效
+      const fpsInterval = 1000 / this.targetFPS;
+      const deltaTime = currentTime - this.lastFrameTime;      
 
-    // --- 🚀 **渲染回正 B：找回霓虹感** ---
-    
-    // 1. 连线：增加透明度梯度
-    for (let i = 0; i < count; i++) {
-      particles[i].neighbors.forEach(ni => {
-        if (ni > i) {
-          const intensity = Math.pow(1 - Math.sqrt((px[i]-px[ni])**2 + (py[i]-py[ni])**2)/160, 2) * 0.15;
-          ctx.beginPath(); ctx.strokeStyle = `rgba(59,130,246,${intensity})`;
-          ctx.lineWidth = 0.6; ctx.moveTo(px[i], py[i]); ctx.lineTo(px[ni], py[ni]); ctx.stroke();
-        }
+      // 🚀 核心：如果时间差未达到目标帧率间隔，则跳过本次物理计算与绘图
+
+      if (deltaTime < fpsInterval) {
+        requestAnimationFrame(loop);
+        return;
+      }
+        // 记录当前帧时间戳（减去微小的误差余数，防止长时间运行后的帧漂移）
+
+      this.lastFrameTime = currentTime - (deltaTime % fpsInterval);
+      this.tasks.forEach(fn => { 
+        try { fn(currentTime); } catch (e) { console.error(e); } 
+
       });
-    }
-
-    // 2. 信号：启用轻量化 shadowBlur (仅给电流线，不给全场，大幅降温)
-    for (let i = signals.length - 1; i >= 0; i--) {
-      const s = signals[i]; s.progress += s.speed;
-      if (s.progress > 1) { /* 跳跃逻辑保持... */ signals.splice(i,1); continue; }
-      const hx = px[s.si] + (px[s.ei]-px[s.si])*s.progress, hy = py[s.si] + (py[s.ei]-py[s.si])*s.progress;
-      const tx = px[s.si] + (px[s.ei]-px[s.si])*Math.max(0, s.progress-s.tail), ty = py[s.si] + (py[s.ei]-py[s.si])*Math.max(0, s.progress-s.tail);
-
-      ctx.beginPath();
-      ctx.shadowBlur = isMobile ? 0 : 8; // 手机端关闭阴影保证不烫，PC端开启霓虹
-      ctx.shadowColor = `rgba(${sigColor}, 0.8)`;
-      const g = ctx.createLinearGradient(tx, ty, hx, hy);
-      g.addColorStop(0, `rgba(${sigColor}, 0)`);
-      g.addColorStop(1, `rgba(${sigColor}, 1)`); // 提升到全速不透明
-      ctx.strokeStyle = g; ctx.lineWidth = 2.2; ctx.lineCap = 'round';
-      ctx.moveTo(tx, ty); ctx.lineTo(hx, hy); ctx.stroke();
-      ctx.shadowBlur = 0; // 必须及时重置，否则后续绘图会极卡
-    }
-
-    // 3. 胞体：增加核心亮度和光晕深度
-    for (let i = 0; i < count; i++) {
-      const p = particles[i]; p.pulse += p.pulseSpeed;
-      const r = p.baseRadius * (Math.sin(p.pulse) * 0.15 + 1);
-      const halo = ctx.createRadialGradient(px[i], py[i], 0, px[i], py[i], r * 4.5);
-      // 增加光晕的不透明度
-      halo.addColorStop(0, `rgba(${nR},${nG},${nB},${0.2 + p.charge * 0.3})`);
-      halo.addColorStop(1, 'rgba(0,0,0,0)');
-      ctx.fillStyle = halo; ctx.beginPath(); ctx.arc(px[i], py[i], r * 4.5, 0, Math.PI * 2); ctx.fill();
-      // 核心改为纯白发光
-      ctx.fillStyle = `rgba(255, 255, 255, ${0.8 + p.charge * 0.2})`;
-      ctx.beginPath(); ctx.arc(px[i], py[i], r * 0.6, 0, Math.PI * 2); ctx.fill();
-      if (p.charge > 0) p.charge *= 0.94;
-    }
-  });
-}
+     
   // ── 光标引擎 ─────────────────────────────────────────────────
   const cursorDot = document.querySelector('.cursor-dot');
   const cursorOutline = document.querySelector('.cursor-outline');
