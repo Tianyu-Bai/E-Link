@@ -92,7 +92,7 @@ body.js-cursor-enabled { cursor: none; }
   #neuro-dust-canvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -5; pointer-events: none; transform: translateZ(0); will-change: contents; }
   
  /* ☀️ 浅色模式完美覆盖 */
-  body.light-mode #neuro-ambient-bg { background: #f8fafc; }
+  body.light-mode #neuro-ambient-bg { background: #f1f5f9 !important; background-image: radial-gradient(#cbd5e1 1px, transparent 1px) !important; background-size: 30px 30px !important; /* 模拟工程绘图纸 */}
   body.light-mode .aurora-1 { background: radial-gradient(circle, rgba(59, 130, 246, 0.25), transparent 70%); }
   body.light-mode .aurora-2 { background: radial-gradient(circle, rgba(147, 197, 253, 0.35), transparent 70%); }
   body.light-mode .aurora-3 { background: radial-gradient(circle, rgba(167, 139, 250, 0.15), transparent 70%); }
@@ -1045,29 +1045,45 @@ const rafScheduler = {
         ctx.setLineDash([]); ctx.shadowBlur = 0;
       }
 
-      // 5. 大胞体渲染 (明亮核心 + 生物光晕)
-      for (let i = 0; i < count; i++) {
-        const p = particles[i]; p.pulse += p.pulseSpeed;
-        const breathing = Math.sin(p.pulse) * 0.2 + 1;
-        const r = p.baseRadius * breathing;
+      // --- 5. 大胞体渲染 (浅色模式下去掉模糊，增加锐度) ---
+for (let i = 0; i < count; i++) {
+    const p = particles[i];
+    p.pulse += p.pulseSpeed;
+    const breathing = Math.sin(p.pulse) * 0.2 + 1;
+    const r = p.baseRadius * breathing;
+
+    if (isLight) {
+        // ☀️ 浅色模式：去掉模糊光晕 (Halo)，改用清晰的描边或实色
+        ctx.shadowBlur = 0; // 强制关闭阴影，解决“糊”的问题
         
+        // 绘制一个带微弱透明度的深蓝色核心
+        ctx.fillStyle = `rgba(37, 99, 235, ${0.4 + p.charge * 0.4})`;
+        ctx.beginPath();
+        ctx.arc(px[i], py[i], r * 1.2, 0, Math.PI * 2);
+        ctx.fill();
+
+        // 增加一个极细的深色描边，让节点在白色背景上立起来
+        ctx.strokeStyle = `rgba(30, 58, 138, 0.6)`;
+        ctx.lineWidth = 0.5;
+        ctx.stroke();
+    } else {
+        // 🌙 深色模式：保留原来的全息光晕逻辑
         const halo = ctx.createRadialGradient(px[i], py[i], 0, px[i], py[i], r * 4.5);
         halo.addColorStop(0, `rgba(${nR},${nG},${nB},${0.12 + p.charge * 0.3})`);
         halo.addColorStop(1, 'rgba(0,0,0,0)');
-        ctx.fillStyle = halo; ctx.beginPath(); ctx.arc(px[i], py[i], r * 4.5, 0, Math.PI * 2); ctx.fill();
-        
-        // 💡 修改这里：定义细胞核的颜色 (这里使用的是【突触金】的配色)
-        // 如果是暗色模式用高亮金，亮色模式用深一点的橘色保证对比度
-        const cR = isLight ? 230 : 255; 
-        const cG = isLight ? 120 : 215; 
-        const cB = isLight ? 20  : 100; 
+        ctx.fillStyle = halo; 
+        ctx.beginPath(); 
+        ctx.arc(px[i], py[i], r * 4.5, 0, Math.PI * 2); 
+        ctx.fill();
 
-       // 🚀 高级分级配色：不再统一用 255, 255, 255，而是使用粒子自己的属性
         ctx.fillStyle = `rgba(${p.cR}, ${p.cG}, ${p.cB}, ${0.7 + p.charge * 0.3})`;
-        ctx.beginPath(); ctx.arc(px[i], py[i], r * 0.6, 0, Math.PI * 2); ctx.fill();
-        
-        if (p.charge > 0) p.charge *= 0.9;
-      }
+        ctx.beginPath(); 
+        ctx.arc(px[i], py[i], r * 0.6, 0, Math.PI * 2); 
+        ctx.fill();
+    }
+
+    if (p.charge > 0) p.charge *= 0.9;
+}
     });
   }
 
