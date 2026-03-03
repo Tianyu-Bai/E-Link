@@ -342,7 +342,16 @@ kbd {
 /* ===================== 5. 模型全局基础样式 ===================== */
 .custom-model-viewer {
   width: 100%; max-width: 100%; box-sizing: border-box; height: 460px;
-  background: transparent; border-radius: 16px; border: 1px solid rgba(59,130,246,0.3);
+  
+  /* 🚀 核心修改：真正的毛玻璃背景 */
+  background: rgba(15, 23, 42, 0.45); 
+  backdrop-filter: blur(12px); 
+  -webkit-backdrop-filter: blur(12px);
+  
+  border-radius: 16px; border: 1px solid rgba(59,130,246,0.3);
+  /* 增加微弱的纯白内发光，模拟玻璃切边边缘 */
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5), inset 0 0 15px rgba(255,255,255,0.05); 
+  
   outline: none; overflow: hidden; 
   transform: translateZ(0); 
   backface-visibility: hidden; 
