@@ -278,6 +278,53 @@
   body.light-mode .watermark-features strong { color: #2563eb; text-shadow: none; }
   body.light-mode .icon-circle { background: #ffffff; border-color: rgba(59, 130, 246, 0.3); }
   .gesture-hidden { opacity: 0 !important; pointer-events: none !important; }
+
+ /* ===================== 📝 核心正文排版强制浅色覆盖 ===================== */
+  /* 1. 强制覆盖 Markdown 默认段落、列表、文字块的颜色 */
+  body.light-mode #main_content,
+  body.light-mode #main_content p,
+  body.light-mode #main_content li,
+  body.light-mode #main_content div { 
+    color: #334155 !important; 
+  }
+  
+  /* 2. 强制各级标题变深色 (自动排除了你顶部加了特殊流光的 Logo 标题) */
+  body.light-mode #main_content h1:not(.header-sync-pulse):not(.header-sync-pulse-zh),
+  body.light-mode #main_content h2:not(.sub-title),
+  body.light-mode #main_content h3,
+  body.light-mode #main_content h4 { 
+    color: #0f172a !important; 
+  }
+
+  /* 3. 粗体字强制深黑色，提升阅读对比度 */
+  body.light-mode #main_content strong,
+  body.light-mode #main_content b { 
+    color: #1e293b !important; 
+  }
+
+  /* 4. GitHub 风格的提示块 (如 [!NOTE]) 浅色适配 */
+  body.light-mode #main_content blockquote {
+    background: rgba(226, 232, 240, 0.6) !important;
+    border-left: 4px solid #3b82f6 !important;
+    color: #475569 !important;
+  }
+  body.light-mode #main_content blockquote strong {
+    color: #1d4ed8 !important;
+  }
+
+  /* 5. 强制加深“副标题(sub-title)”的渐变色，使其在白色背景上清晰可见 */
+  body.light-mode .sub-title {
+    background: linear-gradient(90deg, #1d4ed8 0%, #4338ca 50%, #6d28d9 100%) !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+  }
+
+  /* 6. 分割线 <hr> 颜色加深 */
+  body.light-mode #main_content hr {
+    border-color: rgba(148, 163, 184, 0.4) !important;
+    background-color: transparent !important;
+  }
+ 
   /* ===================== 7. 基础动效定义 ===================== */
   @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
   @keyframes float-bot { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
@@ -310,7 +357,19 @@
     #bot-container.guide-mode .guide-arrow { animation: point-up 0.8s ease-in-out infinite alternate; }
     @keyframes point-up { from { transform: translateX(-50%) rotate(-90deg) translateY(0); } to { transform: translateX(-50%) rotate(-90deg) translateY(-15px); } }
     .aurora { filter: none !important; opacity: 0.15 !important; }
-    .container { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; background: rgba(10, 15, 30, 0.92) !important; }
+    
+    /* 手机端统一关闭高耗能的毛玻璃效果 */
+    .container { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
+    
+    /* 🚀 专属提亮：手机端黑夜模式的背景，改为高级深蓝灰，告别死黑 */
+    body:not(.light-mode) { background-color: #0b1121 !important; }
+    body:not(.light-mode) #neuro-ambient-bg { background: #0b1121 !important; }
+    body:not(.light-mode) .container { 
+      background: rgba(26, 35, 53, 0.95) !important; 
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4) !important; 
+      border-color: rgba(96, 165, 250, 0.3) !important;
+    }
+    
     .layout-wrapper { perspective: none !important; }
   }
 </style>
