@@ -745,7 +745,7 @@ if (localStorage.getItem('elink_visited') === 'true') {
   }
 
 // ── 粒子引擎 (终极神经风暴版：真实胞体 + 级联放电 + 动态流光) ──────────────────────────────────
-  // ── 粒子引擎 (最终进化：生物胞体 + 级联风暴 + 突触微气泡效果) ──────────────────────────────────
+// ── 粒子引擎 (极简静谧版：中心避让 + 极低频激发 + 灵动微泡) ──────────────────────────────────
   function initNeuralWeb() {
     const canvas = document.getElementById('neuro-dust-canvas');
     if (!canvas) return;
@@ -753,9 +753,7 @@ if (localStorage.getItem('elink_visited') === 'true') {
 
     const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || window.innerWidth < 768;
     let width, height, dpr;
-    let resizeTimer;
     let lastStormTime = 0; 
-    const stormCooldown = 20000; 
 
     function applyResize() {
       dpr = isMobile ? 1.0 : Math.min(window.devicePixelRatio || 1, 1.5);
@@ -767,195 +765,136 @@ if (localStorage.getItem('elink_visited') === 'true') {
       ctx.scale(dpr, dpr);
     }
     applyResize();
-    window.addEventListener('resize', () => {
-      clearTimeout(resizeTimer); resizeTimer = setTimeout(applyResize, 150);
-    }, { passive: true });
+    window.addEventListener('resize', applyResize, { passive: true });
 
-    const count = isMobile ? 18 : 55; 
-    const maxDistance = isMobile ? 120 : 160;
+    const count = isMobile ? 15 : 40; 
+    const maxDistance = 160;
     const maxDistSq = maxDistance * maxDistance;
     const particles = [];
     const sparks = []; 
     const signals = [];
 
     for (let i = 0; i < count; i++) {
-      let baseR = Math.random() * 1.5 + 1.5;
-      let spawnY = isMobile ? (Math.random() < 0.5 ? Math.random() * (height * 0.2) : height - Math.random() * (height * 0.2)) : Math.random() * height;
-
       particles.push({
         id: i,
         x: (width / count) * i + (Math.random() - 0.5) * 100,
-        y: spawnY,
-        vx: (Math.random() - 0.5) * 0.08, vy: (Math.random() - 0.5) * 0.08,
-        baseRadius: baseR, radius: baseR, charge: 0, 
-        refractory: 0, 
+        y: Math.random() * height,
+        vx: (Math.random() - 0.5) * 0.05, // 极慢游动
+        vy: (Math.random() - 0.5) * 0.05,
+        baseRadius: Math.random() * 1.5 + 1.2, 
+        radius: 1.2, charge: 0, refractory: 0, 
         pulse: Math.random() * Math.PI * 2,
-        pulseSpeed: 0.03 + Math.random() * 0.02,
+        pulseSpeed: 0.02 + Math.random() * 0.02,
         connections: []
       });
     }
 
     const px = new Float32Array(count);
     const py = new Float32Array(count);
-    let isHidden = false;
-    document.addEventListener('visibilitychange', () => { isHidden = document.hidden; });
 
-    rafScheduler.add('particles', (timestamp) => {
-      if (isHidden) return;
+    rafScheduler.add('particles', () => {
       ctx.clearRect(0, 0, width, height);
       const isLight = document.body.classList.contains('light-mode');
-      const nR = isLight ? 37 : 0, nG = isLight ? 99 : 255, nB = isLight ? 235 : 255; 
-      const lR = isLight ? 30 : 59, lG = isLight ? 144 : 130, lB = isLight ? 255 : 246; 
       const sigColor = isLight ? '37, 99, 235' : '0, 255, 255'; 
 
-      // 1. 物理引擎
+      // 1. 物理与避让逻辑
       for (let i = 0; i < count; i++) {
         const p = particles[i];
-        p.vx += (Math.random() - 0.5) * 0.02;
-        p.vy += (Math.random() - 0.5) * 0.02;
         if (p.refractory > 0) p.refractory--;
 
-        for (let j = 0; j < count; j++) {
-          if (i === j) continue;
+        for (let j = i + 1; j < count; j++) {
           const dx = particles[j].x - p.x, dy = particles[j].y - p.y;
           const distSq = dx * dx + dy * dy;
-          if (distSq < maxDistSq * 1.5) { 
+          if (distSq < maxDistSq) {
             const dist = Math.sqrt(distSq);
-            if (dist > 60) { 
-              p.vx += (dx / dist) * 0.005; p.vy += (dy / dist) * 0.005;
-            } else {
-              const push = (60 - dist) * 0.015; p.vx -= (dx / dist) * push; p.vy -= (dy / dist) * push;
-            }
-            // ⚡ 初始放电触发
-            if (dist < 75 && Math.random() < 0.012 && p.refractory <= 0) {
+            // 保持距离
+            const push = (60 - dist) * 0.005;
+            if (dist < 60) { p.vx -= (dx/dist)*push; p.vy -= (dy/dist)*push; }
+
+            // 🚀 核心修改：只在屏幕左右 30% 的区域偶尔闪烁
+            const isInSideZone = (p.x < width * 0.3 || p.x > width * 0.7);
+            if (isInSideZone && dist < 70 && Math.random() < 0.003 && p.refractory <= 0) {
               p.charge = 1; particles[j].charge = 1;
-              const midX = (p.x + particles[j].x) / 2;
-              const midY = (p.y + particles[j].y) / 2;
-              
-              // 🚀 核心：泡泡爆发逻辑 (一次生成多个小气泡)
-              for(let b=0; b<3; b++) {
-                sparks.push({ type: 'bubble', x: midX + (Math.random()-0.5)*10, y: midY + (Math.random()-0.5)*10, radius: 1 + Math.random()*2, life: 1, decay: 0.05 + Math.random()*0.05 });
+              // 产生 1-2 个微小泡泡
+              for(let b=0; b<2; b++) {
+                sparks.push({ type: 'bubble', x: (p.x+particles[j].x)/2, y: (p.y+particles[j].y)/2, radius: 1, life: 1, decay: 0.06 });
               }
-              
-              p.refractory = 30;
-              signals.push({ source: p, si: i, ep: particles[j], ei: j, progress: 0, speed: 0.15 + Math.random()*0.05, tail: 0.3 });
+              p.refractory = 100; // 极长的不应期，确保“偶尔”闪烁
+              signals.push({ source: p, si: i, ep: particles[j], ei: j, progress: 0, speed: 0.12, tail: 0.4 });
             }
           }
         }
-        p.vx *= 0.88; p.vy *= 0.88; p.x += p.vx; p.y += p.vy; 
+        p.vx *= 0.9; p.vy *= 0.9; p.x += p.vx; p.y += p.vy;
         if (p.x < -50) p.x = width + 50; else if (p.x > width + 50) p.x = -50;
         if (p.y < -50) p.y = height + 50; else if (p.y > height + 50) p.y = -50;
         p.connections = [];
-        px[i] = p.x + Math.sin(p.pulse) * 5;
-        py[i] = p.y + Math.cos(p.pulse * 0.8) * 5;
+        px[i] = p.x + Math.sin(p.pulse) * 3;
+        py[i] = p.y + Math.cos(p.pulse * 0.8) * 3;
       }
 
-      // 2. 静态连线绘制
+      // 2. 绘制极淡的背景连线
       for (let i = 0; i < count; i++) {
         for (let j = i + 1; j < count; j++) {
           const dx = px[i] - px[j], dy = py[i] - py[j];
           const dSq = dx * dx + dy * dy;
           if (dSq < maxDistSq) {
-            const intensity = Math.pow(1 - Math.sqrt(dSq) / maxDistance, 1.5) * 0.3;
+            const intensity = Math.pow(1 - Math.sqrt(dSq) / maxDistance, 2) * 0.15; // 进一步调暗
             particles[i].connections.push({ep: particles[j], ei: j});
-            particles[j].connections.push({ep: particles[i], ei: i});
-            ctx.beginPath(); ctx.strokeStyle = `rgba(${lR},${lG},${lB},${intensity})`;
+            ctx.beginPath(); ctx.strokeStyle = `rgba(59,130,246,${intensity})`;
             ctx.lineWidth = 0.5; ctx.moveTo(px[i], py[i]); ctx.lineTo(px[j], py[j]); ctx.stroke();
           }
         }
       }
 
-      // 3. 渲染泡泡与火花
+      // 3. 渲染微气泡
       for (let i = sparks.length - 1; i >= 0; i--) {
         const s = sparks[i]; s.life -= s.decay;
         if (s.life <= 0) { sparks.splice(i, 1); continue; }
-        
-        if (s.type === 'bubble') {
-          // 🚀 渲染那种你喜欢的“多个小泡泡”效果
-          s.radius += 1.2; 
-          ctx.beginPath(); 
-          ctx.strokeStyle = `rgba(${sigColor}, ${s.life * 0.4})`;
-          ctx.lineWidth = 0.6;
-          ctx.arc(s.x, s.y, s.radius, 0, Math.PI * 2); ctx.stroke();
-        } else {
-          // 实体火花
-          s.x += s.vx; s.y += s.vy; s.vx *= 0.85; s.vy *= 0.85;
-          ctx.beginPath(); ctx.fillStyle = `rgba(255, 255, 255, ${s.life})`; ctx.arc(s.x, s.y, s.life * 1.2, 0, Math.PI * 2); ctx.fill();
-        }
+        s.radius += 0.8;
+        ctx.beginPath(); ctx.strokeStyle = `rgba(${sigColor}, ${s.life * 0.3})`;
+        ctx.lineWidth = 0.5; ctx.arc(s.x, s.y, s.radius, 0, Math.PI * 2); ctx.stroke();
       }
 
-      // 4. 级联放电 (带神经风暴 + 泡泡爆发)
+      // 4. 优雅流光信号 (取消风暴级联)
       for (let i = signals.length - 1; i >= 0; i--) {
         const s = signals[i]; s.progress += s.speed;
-        if (s.progress > 0.95 && s.progress < 0.95 + s.speed && signals.length < 40) {
-          s.ep.charge = 1; 
-          if (s.ep.refractory <= 0 && Math.random() < 0.75) {
-            s.ep.refractory = 20;
-            // 🚀 级联时也产生一串小泡泡
-            for(let b=0; b<2; b++) {
-              sparks.push({ type: 'bubble', x: px[s.ei], y: py[s.ei], radius: 1, life: 0.8, decay: 0.07 });
-            }
-            const next = s.ep.connections[Math.floor(Math.random() * s.ep.connections.length)];
-            if (next && next.ei !== s.si) {
-              signals.push({ source: s.ep, si: s.ei, ep: next.ep, ei: next.ei, progress: 0, speed: 0.2, tail: 0.3 });
-            }
-          }
-        }
-        if (s.progress >= 1.3) { signals.splice(i, 1); continue; }
+        if (s.progress >= 1.4) { signals.splice(i, 1); continue; }
 
         const hx = px[s.si] + (px[s.ei] - px[s.si]) * Math.min(1, s.progress);
         const hy = py[s.si] + (py[s.ei] - py[s.si]) * Math.min(1, s.progress);
         const tx = px[s.si] + (px[s.ei] - px[s.si]) * Math.max(0, s.progress - s.tail);
         const ty = py[s.si] + (py[s.ei] - py[s.si]) * Math.max(0, s.progress - s.tail);
 
-        // 流光背景层
         ctx.beginPath(); 
         const g = ctx.createLinearGradient(tx, ty, hx, hy);
-        g.addColorStop(0, `rgba(${sigColor},0)`); g.addColorStop(0.5, `rgba(${sigColor},0.7)`); g.addColorStop(1, '#fff');
-        ctx.strokeStyle = g; ctx.lineWidth = 2.2; ctx.lineCap = 'round'; ctx.shadowBlur = 12;
-        ctx.shadowColor = `rgba(${sigColor}, 1)`; ctx.moveTo(tx, ty); ctx.lineTo(hx, hy); ctx.stroke();
+        g.addColorStop(0, `rgba(${sigColor},0)`); g.addColorStop(0.5, `rgba(${sigColor},0.5)`); g.addColorStop(1, '#fff');
+        ctx.strokeStyle = g; ctx.lineWidth = 1.8; ctx.lineCap = 'round';
+        ctx.shadowBlur = 8; ctx.shadowColor = `rgba(${sigColor}, 1)`;
+        ctx.moveTo(tx, ty); ctx.lineTo(hx, hy); ctx.stroke();
         
-        // 髓鞘虚线流光
-        ctx.beginPath(); ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.0;
-        ctx.setLineDash([4, 12]); ctx.lineDashOffset = -s.progress * 100;
+        ctx.beginPath(); ctx.strokeStyle = '#fff'; ctx.lineWidth = 0.8;
+        ctx.setLineDash([3, 15]); ctx.lineDashOffset = -s.progress * 50;
         ctx.moveTo(tx, ty); ctx.lineTo(hx, hy); ctx.stroke();
         ctx.setLineDash([]); ctx.shadowBlur = 0;
       }
 
-      // 5. 胞体渲染
+      // 5. 胞体渲染 (极低亮度)
       for (let i = 0; i < count; i++) {
         const p = particles[i]; p.pulse += p.pulseSpeed;
-        const breathing = Math.sin(p.pulse) * 0.2 + 1;
-        const r = p.radius * breathing;
-        const halo = ctx.createRadialGradient(px[i], py[i], 0, px[i], py[i], r * 4);
-        halo.addColorStop(0, `rgba(${nR},${nG},${nB},${0.15 + p.charge * 0.4})`);
+        const r = p.baseRadius * (Math.sin(p.pulse) * 0.1 + 1);
+        const halo = ctx.createRadialGradient(px[i], py[i], 0, px[i], py[i], r * 3);
+        halo.addColorStop(0, `rgba(59,130,246,${0.08 + p.charge * 0.2})`);
         halo.addColorStop(1, 'rgba(0,0,0,0)');
-        ctx.fillStyle = halo; ctx.beginPath(); ctx.arc(px[i], py[i], r * 4, 0, Math.PI * 2); ctx.fill();
-        ctx.fillStyle = `rgba(255, 255, 255, ${0.7 + p.charge * 0.3})`;
+        ctx.fillStyle = halo; ctx.beginPath(); ctx.arc(px[i], py[i], r * 3, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = `rgba(255, 255, 255, ${0.4 + p.charge * 0.4})`;
         ctx.beginPath(); ctx.arc(px[i], py[i], r * 0.5, 0, Math.PI * 2); ctx.fill();
         if (p.charge > 0) p.charge *= 0.9;
-      }
-
-      // 6. 联动 Guardian 对话
-      if (signals.length > 12 && Date.now() - lastStormTime > stormCooldown) {
-        const stormMsg = currentLang === 'en' ? "Detected high-frequency signal burst! E-Link is handling it with 0.0ms latency." : "检测到高频信号爆发！E-Link 正在以 0.0ms 延迟同步处理。";
-        if (typeof botSay === 'function') {
-          botSay(stormMsg, 4000);
-          const botContainer = document.getElementById('bot-container');
-          if (botContainer) {
-            botContainer.classList.add('attention-jump');
-            setTimeout(() => botContainer.classList.remove('attention-jump'), 1500);
-          } 
-        }
-        lastStormTime = Date.now(); 
       }
     });
   }
 
-// 给主线程留出 150ms 优先处理 Logo 动画
-setTimeout(() => {
-    initNeuralWeb();
-}, 150); 
+  // 🚀 确保 Logo 先出，150ms 后背景才动
+  setTimeout(initNeuralWeb, 150);
  
   // ── Lenis 平滑滚动 ───────────────────────────────────────────
   let globalLenis; // 提前在全局层级声明变量
