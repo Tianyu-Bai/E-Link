@@ -744,7 +744,7 @@ if (localStorage.getItem('elink_visited') === 'true') {
     });
   }
 
-// ── 粒子引擎 (高密度长程版：80节点 + 22级跳跃 + 物理粘附 + 堆积气泡) ──────────────────────────────────
+// ── 粒子引擎 (簇群坍缩版：动态吸附成大簇 + 实时寻路长程电流 + 顶5底3/PC限2) ──────────────────────────────────
   function initNeuralWeb() {
     const canvas = document.getElementById('neuro-dust-canvas');
     if (!canvas) return;
@@ -764,25 +764,25 @@ if (localStorage.getItem('elink_visited') === 'true') {
     applyResize();
     window.addEventListener('resize', applyResize, { passive: true });
 
-    // 🚀 节点倍增：展现 E-Link 高密度特性
-    const count = isMobile ? 35 : 80; 
-    const maxDistance = 135; 
+    const count = isMobile ? 45 : 85; 
+    const maxDistance = 160; // 增加感应距离以促进大簇形成
     const maxDistSq = maxDistance * maxDistance;
     const particles = [];
     const sparks = []; 
     const signals = [];
-    const EDGE_ZONE = 120; 
+    const TOP_ZONE = 85; 
+    const BOTTOM_ZONE = 130;
 
     for (let i = 0; i < count; i++) {
-      let baseR = isMobile ? (Math.random() * 1.2 + 2.2) : (Math.random() * 1.8 + 3.2);
+      let baseR = isMobile ? (Math.random() * 1.2 + 2.5) : (Math.random() * 1.8 + 3.5);
       let startY = Math.random() * height;
       if (isMobile) {
-        if (i < 12) startY = Math.random() * EDGE_ZONE; 
-        else if (i < 24) startY = height - Math.random() * EDGE_ZONE;
+        if (i < 22) startY = Math.random() * TOP_ZONE; 
+        else if (i < 35) startY = height - Math.random() * BOTTOM_ZONE;
       }
       particles.push({
         id: i, x: Math.random() * width, y: startY,
-        vx: (Math.random() - 0.5) * 0.04, vy: (Math.random() - 0.5) * 0.04,
+        vx: (Math.random() - 0.5) * 0.03, vy: (Math.random() - 0.5) * 0.03,
         baseRadius: baseR, radius: baseR, charge: 0, refractory: 0, 
         pulse: Math.random() * Math.PI * 2, pulseSpeed: 0.015 + Math.random() * 0.015,
         neighbors: [] 
@@ -798,15 +798,13 @@ if (localStorage.getItem('elink_visited') === 'true') {
       const sigColor = isLight ? '37, 99, 235' : '0, 255, 255'; 
       const nR = isLight ? 13 : 96, nG = isLight ? 148 : 165, nB = isLight ? 136 : 250;
 
-      let totalPC = signals.length;
+      let pcTotal = signals.length;
       let topAct = 0, bottomAct = 0;
       signals.forEach(s => {
-        if (isMobile) {
-          if (py[s.si] < height * 0.5) topAct++; else bottomAct++;
-        }
+        if (isMobile) { if (py[s.si] < height * 0.5) topAct++; else bottomAct++; }
       });
 
-      // 1. 物理引擎：加强粘附感
+      // 1. 物理引擎：超簇吸附算法 (Cluster Coalescence)
       for (let i = 0; i < count; i++) {
         const p = particles[i];
         p.neighbors = []; 
@@ -816,43 +814,49 @@ if (localStorage.getItem('elink_visited') === 'true') {
           const p2 = particles[j];
           const dx = p2.x - p.x, dy = p2.y - p.y;
           const distSq = dx * dx + dy * dy;
+          
           if (distSq < maxDistSq) {
             const dist = Math.sqrt(distSq);
             p.neighbors.push(j); p2.neighbors.push(i);
-            if (dist > 60) {
-              const pull = 0.006; p.vx += (dx / dist) * pull; p.vy += (dy / dist) * pull;
+
+            // 🚀 核心：强化吸附力，让零散节点不断靠近形成巨型簇
+            if (dist > 50) {
+              const pull = 0.008; // 增加引力系数
+              p.vx += (dx / dist) * pull; p.vy += (dy / dist) * pull;
               p2.vx -= (dx / dist) * pull; p2.vy -= (dy / dist) * pull;
-            } else if (dist < 40) {
-              const push = (40 - dist) * 0.012; p.vx -= (dx / dist) * push; p.vy -= (dy / dist) * push;
+            } else {
+              // 极近距离下的柔性排斥，防止重叠成一个点
+              const push = (50 - dist) * 0.015;
+              p.vx -= (dx / dist) * push; p.vy -= (dy / dist) * push;
             }
+
             const mX = (p.x + p2.x) / 2, mY = (p.y + p2.y) / 2;
             let canFire = false;
             if (isMobile) {
-              if (mY < EDGE_ZONE && topAct < 2) canFire = true;
-              if (mY > height - EDGE_ZONE && bottomAct < 1) canFire = true;
+              if (mY < TOP_ZONE && topAct < 5) canFire = true;
+              if (mY > height - BOTTOM_ZONE && bottomAct < 3) canFire = true;
             } else {
-              // PC端：限额 2 条
-              if ((mX < width * 0.35 || mX > width * 0.65) && totalPC < 2) canFire = true;
+              const isSide = (mX < width * 0.35 || mX > width * 0.65);
+              if (isSide && pcTotal < 2) canFire = true;
             }
-            if (canFire && dist < 70 && Math.random() < 0.01 && p.refractory <= 0) {
+
+            if (canFire && dist < 75 && Math.random() < 0.012 && p.refractory <= 0) {
               p.charge = 1; p2.charge = 1;
               for(let b=0; b<4; b++) sparks.push({ type: 'bubble', x: mX + (Math.random()-0.5)*15, y: mY + (Math.random()-0.5)*15, radius: 1, life: 1, decay: 0.015 });
-              p.refractory = 200;
+              p.refractory = 220;
               signals.push({ 
                 source: p, si: i, ep: p2, ei: j, progress: 0, 
-                speed: 0.045 + Math.random()*0.02, // 🚀 优雅慢速
-                tail: 0.5, 
-                hops: isMobile ? 4 : Math.floor(Math.random() * 10) + 12, // 🚀 12-22跳
-                history: [i]
+                speed: 0.04, // 🚀 优雅慢速
+                tail: 0.5, hops: isMobile ? 5 : Math.floor(Math.random() * 10) + 12, history: [i]
               });
-              if (!isMobile) totalPC++;
+              if (!isMobile) pcTotal++;
             }
           }
         }
-        p.vx *= 0.88; p.vy *= 0.88; p.x += p.vx; p.y += p.vy;
+        p.vx *= 0.85; p.vy *= 0.85; p.x += p.vx; p.y += p.vy;
         if (isMobile) {
-          if (i < 12 && p.y > EDGE_ZONE) p.vy -= 0.01;
-          if (i >= 12 && i < 24 && p.y < height - EDGE_ZONE) p.vy += 0.01;
+          if (i < 22 && p.y > TOP_ZONE) p.vy -= 0.02;
+          if (i >= 22 && i < 35 && p.y < height - BOTTOM_ZONE) p.vy += 0.02;
         }
         px[i] = p.x + Math.sin(p.pulse) * 5; py[i] = p.y + Math.cos(p.pulse * 0.8) * 5;
       }
@@ -861,65 +865,71 @@ if (localStorage.getItem('elink_visited') === 'true') {
       for (let i = 0; i < count; i++) {
         particles[i].neighbors.forEach(ni => {
           if (ni > i) {
-            const intensity = Math.pow(1 - Math.sqrt((px[i]-px[ni])**2 + (py[i]-py[ni])**2) / maxDistance, 2) * 0.1;
+            const intensity = Math.pow(1 - Math.sqrt((px[i]-px[ni])**2 + (py[i]-py[ni])**2) / maxDistance, 2) * 0.12;
             ctx.beginPath(); ctx.strokeStyle = `rgba(59,130,246,${intensity})`;
             ctx.lineWidth = 0.5; ctx.moveTo(px[i], py[i]); ctx.lineTo(px[ni], py[ni]); ctx.stroke();
           }
         });
       }
 
-      // 3. 气泡层 (堆积效果)
+      // 3. 气泡层
       for (let i = sparks.length - 1; i >= 0; i--) {
         const s = sparks[i]; s.life -= s.decay;
         if (s.life <= 0) { sparks.splice(i, 1); continue; }
-        s.radius += 0.4; 
-        ctx.beginPath(); ctx.strokeStyle = `rgba(${sigColor}, ${s.life * 0.22})`; ctx.lineWidth = 0.6;
+        s.radius += 0.4; ctx.beginPath(); 
+        ctx.strokeStyle = `rgba(${sigColor}, ${s.life * 0.25})`; ctx.lineWidth = 0.6;
         ctx.arc(s.x, s.y, s.radius, 0, Math.PI * 2); ctx.stroke();
       }
 
-      // 4. 超长程电流穿梭 (Deep Path-finding)
+      // 4. 实时长程电流传导 (Real-time Adaptive Routing)
       for (let i = signals.length - 1; i >= 0; i--) {
         const s = signals[i]; s.progress += s.speed;
         if (s.progress > 0.95 && s.progress < 0.95 + s.speed) {
             s.ep.charge = 1;
             if (s.hops > 0) {
-                // 🚀 核心：路径记忆。避开最近 5 个节点，走得更远
+                // 🚀 实时寻路：在当前这一帧重新寻找距离最近的邻居
                 const nextOptions = s.ep.neighbors.filter(ni => !s.history.slice(-5).includes(ni));
                 const nextId = nextOptions.length > 0 ? nextOptions[Math.floor(Math.random() * nextOptions.length)] : null;
                 if (nextId !== null) {
-                    s.si = s.ei; s.ei = nextId; s.source = s.ep; s.ep = particles[nextId];
+                    s.si = s.ei; s.ei = nextId; 
+                    s.source = s.ep; s.ep = particles[nextId];
                     s.history.push(nextId); s.progress = 0; s.hops--;
                     for(let nb=0; nb<2; nb++) sparks.push({ type: 'bubble', x: px[s.si], y: py[s.si], radius: 1, life: 0.8, decay: 0.015 });
                 } else { s.hops = 0; }
             }
         }
         if (s.progress >= 1.3 && s.hops <= 0) { signals.splice(i, 1); continue; }
+
         const hx = px[s.si] + (px[s.ei] - px[s.si]) * Math.min(1, s.progress);
         const hy = py[s.si] + (py[s.ei] - py[s.si]) * Math.min(1, s.progress);
         const tx = px[s.si] + (px[s.ei] - px[s.si]) * Math.max(0, s.progress - s.tail);
         const ty = py[s.si] + (py[s.ei] - py[s.si]) * Math.max(0, s.progress - s.tail);
+
         ctx.beginPath(); 
         const g = ctx.createLinearGradient(tx, ty, hx, hy);
-        g.addColorStop(0, `rgba(${sigColor},0)`); g.addColorStop(0.5, `rgba(${sigColor},0.3)`); g.addColorStop(1, 'rgba(255,255,255,0.4)');
-        ctx.strokeStyle = g; ctx.lineWidth = 2.0; ctx.lineCap = 'round';
-        ctx.shadowBlur = 6; ctx.shadowColor = `rgba(${sigColor}, 0.5)`;
+        g.addColorStop(0, `rgba(${sigColor},0)`); 
+        g.addColorStop(0.5, `rgba(${sigColor},0.3)`); // 🚀 降温：透明度调低
+        g.addColorStop(1, 'rgba(255,255,255,0.4)'); // 🚀 降温：亮度调低
+        ctx.strokeStyle = g; ctx.lineWidth = 2.2; ctx.lineCap = 'round';
+        ctx.shadowBlur = 8; ctx.shadowColor = `rgba(${sigColor}, 0.5)`;
         ctx.moveTo(tx, ty); ctx.lineTo(hx, hy); ctx.stroke();
-        ctx.beginPath(); ctx.strokeStyle = 'rgba(255,255,255,0.25)'; ctx.lineWidth = 0.8;
-        ctx.setLineDash([4, 12]); ctx.lineDashOffset = -s.progress * 40;
+        
+        ctx.beginPath(); ctx.strokeStyle = 'rgba(255,255,255,0.25)'; ctx.lineWidth = 1.0;
+        ctx.setLineDash([4, 12]); ctx.lineDashOffset = -s.progress * 30; // 🚀 降温：流速减慢
         ctx.moveTo(tx, ty); ctx.lineTo(hx, hy); ctx.stroke();
         ctx.setLineDash([]); ctx.shadowBlur = 0;
       }
 
-      // 5. 大胞体渲染 (高密度组网展示)
+      // 5. 大胞体渲染 (明亮核心 + 生物光晕)
       for (let i = 0; i < count; i++) {
         const p = particles[i]; p.pulse += p.pulseSpeed;
         const breathing = Math.sin(p.pulse) * 0.2 + 1;
         const r = p.baseRadius * breathing;
         const halo = ctx.createRadialGradient(px[i], py[i], 0, px[i], py[i], r * 4.5);
-        halo.addColorStop(0, `rgba(${nR},${nG},${nB},${0.1 + p.charge * 0.2})`);
+        halo.addColorStop(0, `rgba(${nR},${nG},${nB},${0.12 + p.charge * 0.3})`);
         halo.addColorStop(1, 'rgba(0,0,0,0)');
         ctx.fillStyle = halo; ctx.beginPath(); ctx.arc(px[i], py[i], r * 4.5, 0, Math.PI * 2); ctx.fill();
-        ctx.fillStyle = `rgba(255, 255, 255, ${0.5 + p.charge * 0.3})`;
+        ctx.fillStyle = `rgba(255, 255, 255, ${0.6 + p.charge * 0.3})`;
         ctx.beginPath(); ctx.arc(px[i], py[i], r * 0.6, 0, Math.PI * 2); ctx.fill();
         if (p.charge > 0) p.charge *= 0.9;
       }
