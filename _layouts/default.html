@@ -733,15 +733,18 @@ if (localStorage.getItem('elink_visited') === 'true') {
         }
       }
 
-      if (Math.random() < 0.04) {
+      // 🚀 1. 提升触发频率 (从 0.04 提升到 0.15)
+      if (Math.random() < 0.15) {
         const si = Math.floor(Math.random() * count);
         const sp = particles[si];
         if (sp.connections.length > 0) {
           const ep = sp.connections[Math.floor(Math.random() * sp.connections.length)];
-          const burst = Math.floor(Math.random() * 2) + 1;
+          // 🚀 2. 增加每次爆发的并发数量 (1~3条)
+          const burst = Math.floor(Math.random() * 3) + 1;
           for (let b = 0; b < burst; b++) {
-            signals.push({ si, ep, progress: -b * 0.18,
-              speed: Math.random() * 0.06 + 0.07, tail: 0.1 });
+            signals.push({ si, ep, progress: -b * 0.15,
+              // 🚀 3. 稍微调慢流速以看清轨迹，同时把尾巴拉长2.5倍 (tail: 0.25)
+              speed: Math.random() * 0.03 + 0.04, tail: 0.25 });
           }
         }
       }
@@ -760,11 +763,18 @@ if (localStorage.getItem('elink_visited') === 'true') {
         if (Math.abs(hx - tx) < 0.1 && Math.abs(hy - ty) < 0.1) continue;
         const g = ctx.createLinearGradient(tx, ty, hx, hy);
         g.addColorStop(0, `rgba(${sig},0)`);
-        g.addColorStop(0.6, `rgba(${sig},0.9)`);
-        g.addColorStop(1, '#fff');
-        ctx.beginPath(); ctx.strokeStyle = g; ctx.lineWidth = 2;
-        ctx.shadowBlur = 8; ctx.shadowColor = `rgba(${sig},0.8)`;
-        ctx.moveTo(tx, ty); ctx.lineTo(hx, hy); ctx.stroke();
+        g.addColorStop(0.6, `rgba(${sig},1)`); // 颜色饱和度拉满
+        g.addColorStop(1, '#ffffff'); // 头部为纯白高光
+        
+        ctx.beginPath(); 
+        ctx.strokeStyle = g; 
+        ctx.lineWidth = 3.5; // 🚀 4. 加粗放电线条 (从2改为3.5)
+        ctx.lineCap = 'round'; // 让线条头部变圆润
+        ctx.shadowBlur = 18; // 🚀 5. 增大泛光范围 (从8改为18)
+        ctx.shadowColor = `rgba(${sig}, 1)`; // 泛光不透明度拉满
+        ctx.moveTo(tx, ty); 
+        ctx.lineTo(hx, hy); 
+        ctx.stroke();
         ctx.shadowBlur = 0;
       }
 
