@@ -697,7 +697,7 @@ if (localStorage.getItem('elink_visited') === 'true') {
   }
 
   // ── 粒子引擎 ─────────────────────────────────────────────────
-  // ── 粒子引擎 (增强生物物理仿真 & 逼真放电版) ─────────────────────────────────────────────────
+  // ── 粒子引擎 (终极连接：贴合火花与突触激发版) ─────────────────────────────────────────────────
   function initNeuralWeb() {
     const canvas = document.getElementById('neuro-dust-canvas');
     if (!canvas) return;
@@ -719,21 +719,20 @@ if (localStorage.getItem('elink_visited') === 'true') {
       clearTimeout(resizeTimer); resizeTimer = setTimeout(applyResize, 150);
     }, { passive: true });
 
-    const count = window.innerWidth > 768 ? 55 : 25; // 稍微增加电脑端粒子数
+    const count = window.innerWidth > 768 ? 55 : 25; 
     const maxDistance = window.innerWidth > 768 ? 160 : 100;
     const maxDistSq = maxDistance * maxDistance;
     const particles = [];
     
-    // 初始化神经元粒子
+    // 🌟 新增：独立的火花粒子系统
+    const sparks = []; 
+
     for (let i = 0; i < count; i++) {
       let baseR = Math.random() * 1.5 + 1.2;
       particles.push({
         x: Math.random() * width, y: Math.random() * height,
-        vx: (Math.random() - 0.5) * 0.4, vy: (Math.random() - 0.5) * 0.4,
-        baseRadius: baseR, 
-        radius: baseR, 
-        // ☀️ 新增属性：生物电荷 (用于击中时的变亮回弹)
-        charge: 0, 
+        vx: (Math.random() - 0.5) * 0.5, vy: (Math.random() - 0.5) * 0.5,
+        baseRadius: baseR, radius: baseR, charge: 0, 
         phase: Math.random() * Math.PI * 2,
         breathSpeed: Math.random() * 0.015 + 0.008,
         connections: []
@@ -746,7 +745,7 @@ if (localStorage.getItem('elink_visited') === 'true') {
     document.addEventListener('visibilitychange', () => { isHidden = document.hidden; });
 
     let lastFrameTime = 0;
-    const targetInterval = 1000 / 30; // 降低帧率提升性能，同时减少僵硬感
+    const targetInterval = 1000 / 30; 
 
     rafScheduler.add('particles', (timestamp) => {
       if (isHidden) return;
@@ -755,151 +754,161 @@ if (localStorage.getItem('elink_visited') === 'true') {
 
       ctx.clearRect(0, 0, width, height);
       const isLight = document.body.classList.contains('light-mode');
-      const nR = isLight ? 13 : 96, nG = isLight ? 148 : 165, nB = isLight ? 136 : 250; // 神经元主体颜色
-      const lR = isLight ? 20 : 59, lG = isLight ? 184 : 130, lB = isLight ? 166 : 246; // 连线颜色
-      const sigColor = isLight ? '220,38,38' : '255,60,60'; // 放电核心颜色
+      const nR = isLight ? 13 : 96, nG = isLight ? 148 : 165, nB = isLight ? 136 : 250; 
+      const lR = isLight ? 20 : 59, lG = isLight ? 184 : 130, lB = isLight ? 166 : 246; 
+      const sigColor = isLight ? '220,38,38' : '255,60,60'; 
 
-      // 🚀 1. 物理引擎更新：引入引力聚拢 (聚拢贴合) 和流体阻尼
+      // 1. 物理引力与接触判定
       for (let i = 0; i < count; i++) {
         const p = particles[i];
-        
-        // --- 布朗运动 (微抖动) ---
-        p.vx += (Math.random() - 0.5) * 0.06;
-        p.vy += (Math.random() - 0.5) * 0.06;
+        p.vx += (Math.random() - 0.5) * 0.08;
+        p.vy += (Math.random() - 0.5) * 0.08;
 
-        // --- 突触引力 (物理聚拢贴合) ---
         for (let j = 0; j < count; j++) {
           if (i === j) continue;
           const dx = particles[j].x - p.x, dy = particles[j].y - p.y;
           const distSq = dx * dx + dy * dy;
-          if (distSq < maxDistSq * 1.5) { // 稍微扩大引力探测范围
+          
+          if (distSq < maxDistSq * 1.5) { 
             const dist = Math.sqrt(distSq);
-            if (dist > 30) { // 保持安全距离，防止聚成一个点
-              const intensity = (1 - dist / (maxDistance * 1.5));
-              // 温和的引力，距离越近吸力越强
-              const pull = 0.015 * Math.pow(intensity, 2); 
+            
+            // 🚀 核心改动 1：增强引力，并允许它们贴得极其近 (安全距离从 30 缩减为 10)
+            if (dist > 10) { 
+              const pull = 0.025 * Math.pow(1 - dist / (maxDistance * 1.5), 2); // 吸力加强
               p.vx += (dx / dist) * pull;
               p.vy += (dy / dist) * pull;
-            } else if (dist < 20) {
-              // 距离太近时产生斥力，防止僵硬重叠
-              const push = (20 - dist) * 0.005;
+            } else {
+              // 碰到一起后的微弱斥力，形成“黏连”感而不是完全重叠
+              const push = (10 - dist) * 0.05;
               p.vx -= (dx / dist) * push;
               p.vy -= (dy / dist) * push;
+            }
+
+            // 🌟 核心改动 2：接触瞬间的“火花激发” (碰在一起时高概率触发)
+            if (dist < 25 && Math.random() < 0.01) { 
+              // 双方瞬间充满生物电荷(极亮)
+              p.charge = 1; particles[j].charge = 1;
+              p.radius = p.baseRadius + 2.5; particles[j].radius = particles[j].baseRadius + 2.5;
+
+              // 计算碰撞中心点
+              const midX = (p.x + particles[j].x) / 2;
+              const midY = (p.y + particles[j].y) / 2;
+
+              // 💥 爆出 3~6 颗火花
+              const sparkCount = Math.floor(Math.random() * 4) + 3;
+              for (let k = 0; k < sparkCount; k++) {
+                const angle = Math.random() * Math.PI * 2;
+                const speed = Math.random() * 3 + 1.5; // 火花飞溅速度
+                sparks.push({
+                  x: midX, y: midY,
+                  vx: Math.cos(angle) * speed,
+                  vy: Math.sin(angle) * speed,
+                  life: 1, // 生命周期
+                  decay: Math.random() * 0.06 + 0.04 // 衰减速度
+                });
+              }
+
+              // ⚡ 顺着它们新建立的连接，发射出极速电脉冲！
+              signals.push({ 
+                source: p, si: i, ep: particles[j], ei: j, 
+                progress: 0, speed: 0.15 + Math.random() * 0.05, tail: 0.25 
+              });
             }
           }
         }
 
-        // --- 流体阻尼 (缓动感) ---
-        p.vx *= 0.95; p.vy *= 0.95;
+        p.vx *= 0.92; p.vy *= 0.92; // 增加阻尼，让它们贴合时更稳重
         p.x += p.vx; p.y += p.vy; 
         p.phase += p.breathSpeed;
         
-        // ☀️ 生物电荷回弹 (击中变亮后慢慢熄灭)
-        if (p.charge > 0) p.charge *= 0.9;
-        // 细胞体呼吸回弹
-        if (p.radius > p.baseRadius) p.radius -= 0.1;
+        if (p.charge > 0) p.charge *= 0.92;
+        if (p.radius > p.baseRadius) p.radius -= 0.15;
         else p.radius = p.baseRadius;
 
-        // 边界处理
         if (p.x < -50) p.x = width + 50; else if (p.x > width + 50) p.x = -50;
         if (p.y < -50) p.y = height + 50; else if (p.y > height + 50) p.y = -50;
         p.connections = [];
-        // ☀️ 生物抖动核心位置
         px[i] = p.x + Math.sin(p.phase) * 8;
         py[i] = p.y + Math.cos(p.phase * 0.8) * 8;
       }
 
       ctx.lineCap = 'round';
-      // 2. 绘制聚拢贴合后的突触连线
+      // 2. 绘制连线
       for (let i = 0; i < count; i++) {
         for (let j = i + 1; j < count; j++) {
           const dx = px[i] - px[j], dy = py[i] - py[j];
           const dSq = dx * dx + dy * dy;
           if (dSq < maxDistSq) {
             const dist = Math.sqrt(dSq);
-            // 🚀 连线更淡，突出放电
-            const intensity = (1 - dist / maxDistance) * 0.35;
+            // 距离越近，建立的连接线越粗越亮 (强调“连在一起”)
+            const intensity = Math.pow(1 - dist / maxDistance, 1.5) * 0.5;
             particles[i].connections.push({ep: particles[j], ei: j});
             ctx.beginPath();
             ctx.strokeStyle = `rgba(${lR},${lG},${lB},${intensity})`;
-            ctx.lineWidth = intensity * 2 + 0.3;
+            ctx.lineWidth = intensity * 4 + 0.5; 
             ctx.moveTo(px[i], py[i]); ctx.lineTo(px[j], py[j]); ctx.stroke();
           }
         }
         
-        // 鼠标流体排斥交互 (在贴合感上增加互动力)
         if (window.innerWidth > 768 && !document.body.classList.contains('modal-active')) {
           const mdx = mouseX - px[i], mdy = mouseY - py[i];
-          const mSq = mdx * mdx + mdy * mdy;
-          if (mSq < 45000) {
-            const mDist = Math.sqrt(mSq);
-            const force = (1 - mDist / 200) * 0.35;
-            // 鼠标推开神经元
+          if (mdx * mdx + mdy * mdy < 40000) {
+            const mDist = Math.sqrt(mdx * mdx + mdy * mdy);
+            const force = (1 - mDist / 200) * 0.5;
             particles[i].vx -= (mdx / mDist) * force;
             particles[i].vy -= (mdy / mDist) * force;
           }
         }
       }
 
-      // ☀️ 3. 🚀 放电仿真更新：逼真等离子体光球沿着轴突极速射出
-      // 降低放电频率，让每次都更震撼
-      if (Math.random() < 0.05) { 
-        const si = Math.floor(Math.random() * count);
-        const sp = particles[si];
-        if (sp.connections.length > 0) {
-          // 🚀 源神经元瞬间触发放电高光
-          sp.charge = 1; sp.radius = sp.baseRadius + 2; 
-          
-          const burst = Math.floor(Math.random() * 2) + 1; // 1~2条
-          for (let b = 0; b < burst; b++) {
-            const conn = sp.connections[Math.floor(Math.random() * sp.connections.length)];
-            signals.push({ 
-              source: sp, si: si, ep: conn.ep, ei: conn.ei, 
-              progress: 0,
-              // 🚀 极快速度，瞬间击中
-              speed: 0.08 + Math.random() * 0.1, 
-              // 🚀 拖尾拉长
-              tail: 0.18 + Math.random() * 0.05 
-            });
-          }
-        }
+      // 🌟 3. 渲染接触火花 (Sparks)
+      for (let i = sparks.length - 1; i >= 0; i--) {
+        const s = sparks[i];
+        s.x += s.vx; s.y += s.vy;
+        s.vx *= 0.85; s.vy *= 0.85; // 火花很快受到阻力减速
+        s.life -= s.decay;
+        
+        if (s.life <= 0) { sparks.splice(i, 1); continue; }
+        
+        ctx.beginPath();
+        // 火花中心是白色，边缘是红色泛光
+        ctx.fillStyle = `rgba(255, 255, 255, ${s.life})`;
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = `rgba(${sigColor}, ${s.life})`;
+        ctx.arc(s.x, s.y, s.life * 1.5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.shadowBlur = 0;
       }
 
-      // ☀️ 🚀 绘制动作电位 (放电光球)
+      // 4. 绘制放电光波 (Signals)
       for (let i = signals.length - 1; i >= 0; i--) {
         const s = signals[i];
         s.progress += s.speed;
         
-        // 🚀 当光球接近末端时，触发目标神经元高光
         if (s.progress > 0.8 && s.progress < 0.8 + s.speed) {
-          s.ep.charge = 1; s.ep.radius = s.ep.baseRadius + 1.5;
+          s.ep.charge = 1; s.ep.radius = s.ep.baseRadius + 2;
         }
 
         if (s.progress >= 1 + s.tail) { signals.splice(i, 1); continue; }
         if (s.progress <= 0) continue;
         
         const sx = px[s.si], sy = py[s.si], ex = px[s.ei], ey = py[s.ei];
-        
-        // ☀️ 动作电位等离子体波渲染
         const hp = Math.min(1, s.progress), tp = Math.max(0, s.progress - s.tail);
         const hx = sx + (ex - sx) * hp, hy = sy + (ey - sy) * hp;
         const tx = sx + (ex - sx) * tp, ty = sy + (ey - sy) * tp;
         
         if (Math.abs(hx - tx) < 0.1 && Math.abs(hy - ty) < 0.1) continue;
 
-        // ☀️ 生成等离子体梯度光束
         const g = ctx.createLinearGradient(tx, ty, hx, hy);
-        g.addColorStop(0, `rgba(${sigColor},0)`); // 尾部透明
-        g.addColorStop(0.3, `rgba(${sigColor},0.8)`); // 核心颜色
-        g.addColorStop(0.7, '#ffffff'); // 头部为纯白放电点
+        g.addColorStop(0, `rgba(${sigColor},0)`); 
+        g.addColorStop(0.3, `rgba(${sigColor},0.8)`); 
+        g.addColorStop(0.8, '#ffffff'); 
         g.addColorStop(1, '#ffffff');
 
         ctx.beginPath(); 
         ctx.strokeStyle = g; 
-        // 🚀 核心线条变细，但极其亮
-        ctx.lineWidth = 1.8; 
+        ctx.lineWidth = 2.5; 
         ctx.lineCap = 'round';
-        // 🚀 ☀️ 核心魔法：泛光和白核心
         ctx.shadowBlur = 15; 
         ctx.shadowColor = `rgba(${sigColor}, 1)`; 
         ctx.moveTo(tx, ty); 
@@ -907,28 +916,25 @@ if (localStorage.getItem('elink_visited') === 'true') {
         ctx.stroke();
         ctx.shadowBlur = 0;
         
-        // 🚀 叠加一层纯白色极细心线，模拟强光核心
         ctx.beginPath();
         ctx.strokeStyle = 'rgba(255, 255, 255, 0.9)';
-        ctx.lineWidth = 0.6;
+        ctx.lineWidth = 0.8;
         ctx.moveTo(tx, ty); ctx.lineTo(hx, hy); ctx.stroke();
       }
 
-      // ☀️ 4. 绘制神经元细胞体 (带生物电荷高光)
+      // 5. 绘制神经元细胞体
       for (let i = 0; i < count; i++) {
         const p = particles[i];
         const r = p.radius;
-        // ☀️ 绘制生物电荷晕 (击中时瞬间变亮膨胀)
         if (p.charge > 0.05) {
           ctx.beginPath();
-          ctx.fillStyle = `rgba(${nR},${nG},${nB},${p.charge * 0.15})`;
-          ctx.arc(px[i], py[i], r * 3, 0, Math.PI * 2); ctx.fill();
+          ctx.fillStyle = `rgba(${nR},${nG},${nB},${p.charge * 0.2})`;
+          ctx.arc(px[i], py[i], r * 4, 0, Math.PI * 2); ctx.fill();
         }
 
-        // ☀️ 绘制主体 (充电时亮度提高)
         ctx.beginPath();
         ctx.fillStyle = `rgba(${nR},${nG},${nB},${0.85 + p.charge * 0.15})`;
-        ctx.shadowBlur = 6 + p.charge * 8; 
+        ctx.shadowBlur = 6 + p.charge * 12; 
         ctx.shadowColor = `rgba(${nR},${nG},${nB},${0.6 + p.charge * 0.4})`;
         ctx.arc(px[i], py[i], r, 0, Math.PI * 2); ctx.fill();
         ctx.shadowBlur = 0;
