@@ -298,7 +298,10 @@ body.js-cursor-enabled { cursor: none; }
   body.light-mode .typewriter-container { color: #2563eb; }
  
   /* 3D 模型框的白天磨砂玻璃质感 */
-  body.light-mode .custom-model-viewer { background: rgba(255, 255, 255, 0.6); border-color: rgba(148, 163, 184, 0.5); box-shadow: 0 10px 30px rgba(148, 163, 184, 0.15), inset 0 0 15px rgba(255,255,255,0.5); }
+body.light-mode .custom-model-viewer {background: rgba(255, 255, 255, 0.8) !important; /* 提高白度 */
+border: 1px solid rgba(59, 130, 246, 0.3) !important; /* 淡淡的蓝色边框增加科技感 */
+box-shadow: 0 10px 30px rgba(148, 163, 184, 0.2), inset 0 0 20px rgba(255,255,255,1) !important; 
+}
  
   /* 数据表格与按钮适配 */
   body.light-mode #main_content table { background: rgba(255, 255, 255, 0.9); border-color: rgba(148, 163, 184, 0.4); box-shadow: 0 10px 30px rgba(148, 163, 184, 0.15); }
@@ -320,6 +323,24 @@ body.js-cursor-enabled { cursor: none; }
   body.light-mode .watermark-features strong { color: #2563eb; text-shadow: none; }
   body.light-mode .icon-circle { background: #ffffff; border-color: rgba(59, 130, 246, 0.3); }
   .gesture-hidden { opacity: 0 !important; pointer-events: none !important; }
+
+ /* 针对 3D 模型内部标签框的浅色适配 */
+body.light-mode .Hotspot, 
+body.light-mode .HotspotAnnotation,
+body.light-mode [slot^="hotspot"] {
+    background: #ffffff !important;           /* 强制白色背景 */
+    color: #1e293b !important;                /* 深色文字 */
+    border: 1px solid rgba(0, 0, 0, 0.1) !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1) !important;
+    opacity: 1 !important;                    /* 确保完全不透明 */
+}
+
+/* 如果你使用了自定义的标签容器类名，比如 .label-box */
+body.light-mode .label-box {
+    background-color: rgba(255, 255, 255, 0.95) !important;
+    color: #0f172a !important;
+    backdrop-filter: blur(4px);
+}
 
  /* ===================== 📝 核心正文排版强制浅色覆盖 ===================== */
   /* 1. 强制覆盖 Markdown 默认段落、列表、文字块的颜色 */
