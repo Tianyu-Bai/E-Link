@@ -744,7 +744,7 @@ if (localStorage.getItem('elink_visited') === 'true') {
     });
   }
 
-// ── 粒子引擎 (终极糅合大胞体版：大核心 + 级联风暴 + 簇状气泡 + 空间限流) ──────────────────────────────────
+// ── 粒子引擎 (长程传导版：N个节点深度穿梭 + 物理粘附 + PC限额2/手机顶2底1) ──────────────────────────────────
   function initNeuralWeb() {
     const canvas = document.getElementById('neuro-dust-canvas');
     if (!canvas) return;
@@ -764,26 +764,27 @@ if (localStorage.getItem('elink_visited') === 'true') {
     applyResize();
     window.addEventListener('resize', applyResize, { passive: true });
 
-    const count = isMobile ? 18 : 45; 
-    const maxDistance = 165;
+    const count = isMobile ? 22 : 45; 
+    const maxDistance = 145; 
     const maxDistSq = maxDistance * maxDistance;
     const particles = [];
     const sparks = []; 
     const signals = [];
+    const EDGE_ZONE = 120; 
 
     for (let i = 0; i < count; i++) {
-      // 🚀 核心修改 1：大幅提升胞体基础尺寸 (从原本的 1.2 提升至 3.0 以上)
-      let baseR = isMobile ? (Math.random() * 1.5 + 2.5) : (Math.random() * 2.0 + 3.5);
+      let baseR = isMobile ? (Math.random() * 1.5 + 2.5) : (Math.random() * 2.0 + 3.8);
+      let startY = Math.random() * height;
+      if (isMobile) {
+        if (i < 8) startY = Math.random() * EDGE_ZONE; 
+        else if (i < 14) startY = height - Math.random() * EDGE_ZONE;
+      }
       particles.push({
-        id: i,
-        x: (width / count) * i + (Math.random() - 0.5) * 80,
-        y: Math.random() * height,
-        vx: (Math.random() - 0.5) * 0.05, 
-        vy: (Math.random() - 0.5) * 0.05,
+        id: i, x: Math.random() * width, y: startY,
+        vx: (Math.random() - 0.5) * 0.05, vy: (Math.random() - 0.5) * 0.05,
         baseRadius: baseR, radius: baseR, charge: 0, refractory: 0, 
-        pulse: Math.random() * Math.PI * 2,
-        pulseSpeed: 0.02 + Math.random() * 0.02,
-        connections: []
+        pulse: Math.random() * Math.PI * 2, pulseSpeed: 0.02 + Math.random() * 0.02,
+        neighbors: [] 
       });
     }
 
@@ -796,100 +797,104 @@ if (localStorage.getItem('elink_visited') === 'true') {
       const sigColor = isLight ? '37, 99, 235' : '0, 255, 255'; 
       const nR = isLight ? 13 : 96, nG = isLight ? 148 : 165, nB = isLight ? 136 : 250;
 
-      // 🔄 空间流量监控
-      let totalAct = signals.length;
+      let pcSignals = signals.length;
       let topAct = 0, bottomAct = 0;
       signals.forEach(s => {
-        if (isMobile) {
-          if (py[s.si] < height * 0.3) topAct++;
-          if (py[s.si] > height * 0.7) bottomAct++;
-        }
+        if (py[s.si] < height * 0.5) topAct++; else bottomAct++;
       });
 
-      // 1. 物理层与激发控制
+      // 1. 物理引擎与激发控制
       for (let i = 0; i < count; i++) {
         const p = particles[i];
+        p.neighbors = []; 
         if (p.refractory > 0) p.refractory--;
 
         for (let j = i + 1; j < count; j++) {
-          const dx = particles[j].x - p.x, dy = particles[j].y - p.y;
+          const p2 = particles[j];
+          const dx = p2.x - p.x, dy = p2.y - p.y;
           const distSq = dx * dx + dy * dy;
           if (distSq < maxDistSq) {
             const dist = Math.sqrt(distSq);
-            if (dist < 65) { 
-              const push = (65 - dist) * 0.005;
-              p.vx -= (dx/dist)*push; p.vy -= (dy/dist)*push; 
+            p.neighbors.push(j); p2.neighbors.push(i);
+            if (dist > 65) {
+              const pull = 0.005; p.vx += (dx / dist) * pull; p.vy += (dy / dist) * pull;
+              p2.vx -= (dx / dist) * pull; p2.vy -= (dy / dist) * pull;
+            } else if (dist < 45) {
+              const push = (45 - dist) * 0.012; p.vx -= (dx / dist) * push; p.vy -= (dy / dist) * push;
             }
-
-            const mX = (p.x + particles[j].x) / 2;
-            const mY = (p.y + particles[j].y) / 2;
+            const mX = (p.x + p2.x) / 2, mY = (p.y + p2.y) / 2;
             let canFire = false;
-
             if (isMobile) {
-              if (mY < height * 0.25 && topAct < 2) canFire = true;
-              if (mY > height * 0.75 && bottomAct < 1) canFire = true;
+              if (mY < EDGE_ZONE && topAct < 2) canFire = true;
+              if (mY > height - EDGE_ZONE && bottomAct < 1) canFire = true;
             } else {
-              const isSide = (mX < width * 0.35 || mX > width * 0.65);
-              if (isSide && totalAct < 6) canFire = true;
+              if ((mX < width * 0.35 || mX > width * 0.65) && pcSignals < 2) canFire = true;
             }
-
-            if (canFire && dist < 75 && Math.random() < 0.012 && p.refractory <= 0) {
-              p.charge = 1; particles[j].charge = 1;
-              // 🚀 核心修改 2：怀念的气泡丛爆发
-              for(let b=0; b < 3; b++) {
-                sparks.push({ type: 'bubble', x: mX + (Math.random()-0.5)*15, y: mY + (Math.random()-0.5)*15, radius: 1, life: 1, decay: 0.07 });
-              }
-              p.refractory = 120;
-              signals.push({ source: p, si: i, ep: particles[j], ei: j, progress: 0, speed: 0.16, tail: 0.3 });
-              totalAct++;
+            if (canFire && dist < 75 && Math.random() < 0.015 && p.refractory <= 0) {
+              p.charge = 1; p2.charge = 1;
+              for(let b=0; b<3; b++) sparks.push({ type: 'bubble', x: mX + (Math.random()-0.5)*15, y: mY + (Math.random()-0.5)*10, radius: 1, life: 1, decay: 0.07 });
+              p.refractory = 200;
+              signals.push({ 
+                source: p, si: i, ep: p2, ei: j, progress: 0, speed: 0.14, tail: 0.4, 
+                // 🚀 N个节点：设定 8 到 15 次长距离跳跃
+                hops: isMobile ? 2 : Math.floor(Math.random() * 8) + 7,
+                history: [i] // 记忆路径，防止回头路
+              });
+              if (!isMobile) pcSignals++;
             }
           }
         }
         p.vx *= 0.88; p.vy *= 0.88; p.x += p.vx; p.y += p.vy;
+        if (isMobile) {
+          if (i < 8 && p.y > EDGE_ZONE) p.vy -= 0.01;
+          if (i >= 8 && i < 14 && p.y < height - EDGE_ZONE) p.vy += 0.01;
+        }
         if (p.x < -50) p.x = width + 50; else if (p.x > width + 50) p.x = -50;
         if (p.y < -50) p.y = height + 50; else if (p.y > height + 50) p.y = -50;
-        p.connections = [];
-        px[i] = p.x + Math.sin(p.pulse) * 5;
-        py[i] = p.y + Math.cos(p.pulse * 0.8) * 5;
+        px[i] = p.x + Math.sin(p.pulse) * 5; py[i] = p.y + Math.cos(p.pulse * 0.8) * 5;
       }
 
-      // 2. 绘制极淡的背景网路
+      // 2. 连线层
       for (let i = 0; i < count; i++) {
-        for (let j = i + 1; j < count; j++) {
-          const dx = px[i] - px[j], dy = py[i] - py[j];
-          const dSq = dx * dx + dy * dy;
-          if (dSq < maxDistSq) {
-            const intensity = Math.pow(1 - Math.sqrt(dSq) / maxDistance, 2) * 0.15;
+        particles[i].neighbors.forEach(ni => {
+          if (ni > i) {
+            const intensity = Math.pow(1 - Math.sqrt((px[i]-px[ni])**2 + (py[i]-py[ni])**2) / maxDistance, 2) * 0.15;
             ctx.beginPath(); ctx.strokeStyle = `rgba(59,130,246,${intensity})`;
-            ctx.lineWidth = 0.5; ctx.moveTo(px[i], py[i]); ctx.lineTo(px[j], py[j]); ctx.stroke();
+            ctx.lineWidth = 0.5; ctx.moveTo(px[i], py[i]); ctx.lineTo(px[ni], py[ni]); ctx.stroke();
           }
-        }
+        });
       }
 
-      // 3. 渲染气泡
+      // 3. 气泡层
       for (let i = sparks.length - 1; i >= 0; i--) {
         const s = sparks[i]; s.life -= s.decay;
         if (s.life <= 0) { sparks.splice(i, 1); continue; }
-        s.radius += 1.0; 
-        ctx.beginPath(); ctx.strokeStyle = `rgba(${sigColor}, ${s.life * 0.35})`; ctx.lineWidth = 0.6;
+        s.radius += 1.0; ctx.beginPath(); 
+        ctx.strokeStyle = `rgba(${sigColor}, ${s.life * 0.35})`; ctx.lineWidth = 0.6;
         ctx.arc(s.x, s.y, s.radius, 0, Math.PI * 2); ctx.stroke();
       }
 
-      // 4. 级联放电 (带动态流光)
+      // 4. 长程电流传导引擎 (Deep Circuit Propagation)
       for (let i = signals.length - 1; i >= 0; i--) {
         const s = signals[i]; s.progress += s.speed;
         
-        if (s.progress > 0.95 && s.progress < 0.95 + s.speed && signals.length < 40) {
-          s.ep.charge = 1; 
-          if (s.ep.refractory <= 0 && Math.random() < 0.6) {
-            s.ep.refractory = 25;
-            const next = s.ep.connections[Math.floor(Math.random() * s.ep.connections.length)];
-            if (next && next.ei !== s.si) {
-              signals.push({ source: s.ep, si: s.ei, ep: next.ep, ei: next.ei, progress: 0, speed: 0.2, tail: 0.3 });
+        if (s.progress > 0.95 && s.progress < 0.95 + s.speed) {
+            s.ep.charge = 1;
+            if (s.hops > 0) {
+                // 🚀 智能寻路：过滤掉刚刚走过的 3 个节点
+                const nextOptions = s.ep.neighbors.filter(ni => !s.history.slice(-3).includes(ni));
+                const nextId = nextOptions.length > 0 ? nextOptions[Math.floor(Math.random() * nextOptions.length)] : null;
+                
+                if (nextId !== null) {
+                    s.si = s.ei; s.ei = nextId; 
+                    s.source = s.ep; s.ep = particles[nextId];
+                    s.history.push(nextId);
+                    s.progress = 0; s.hops--;
+                    sparks.push({ type: 'bubble', x: px[s.si], y: py[s.si], radius: 1, life: 0.8, decay: 0.1 });
+                } else { s.hops = 0; } // 无路可走则提前结束
             }
-          }
         }
-        if (s.progress >= 1.3) { signals.splice(i, 1); continue; }
+        if (s.progress >= 1.3 && s.hops <= 0) { signals.splice(i, 1); continue; }
 
         const hx = px[s.si] + (px[s.ei] - px[s.si]) * Math.min(1, s.progress);
         const hy = py[s.si] + (py[s.ei] - py[s.si]) * Math.min(1, s.progress);
@@ -899,28 +904,23 @@ if (localStorage.getItem('elink_visited') === 'true') {
         ctx.beginPath(); 
         const g = ctx.createLinearGradient(tx, ty, hx, hy);
         g.addColorStop(0, `rgba(${sigColor},0)`); g.addColorStop(0.5, `rgba(${sigColor},0.8)`); g.addColorStop(1, '#fff');
-        ctx.strokeStyle = g; ctx.lineWidth = 2.2; ctx.lineCap = 'round'; ctx.shadowBlur = 12;
-        ctx.shadowColor = `rgba(${sigColor}, 1)`; ctx.moveTo(tx, ty); ctx.lineTo(hx, hy); ctx.stroke();
-        
+        ctx.strokeStyle = g; ctx.lineWidth = 2.4; ctx.lineCap = 'round';
+        ctx.shadowBlur = 12; ctx.shadowColor = `rgba(${sigColor}, 1)`;
+        ctx.moveTo(tx, ty); ctx.lineTo(hx, hy); ctx.stroke();
         ctx.beginPath(); ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.0;
         ctx.setLineDash([4, 12]); ctx.lineDashOffset = -s.progress * 80;
         ctx.moveTo(tx, ty); ctx.lineTo(hx, hy); ctx.stroke();
         ctx.setLineDash([]); ctx.shadowBlur = 0;
       }
 
-      // 5. 核心修改 3：胞体渲染 (大幅增强光晕和核心尺寸)
+      // 5. 巨型呼吸胞体
       for (let i = 0; i < count; i++) {
         const p = particles[i]; p.pulse += p.pulseSpeed;
-        const breathing = Math.sin(p.pulse) * 0.2 + 1;
-        const r = p.baseRadius * breathing;
-
-        // 🟢 胞质外层扩散光晕 (更饱满)
+        const r = p.baseRadius * (Math.sin(p.pulse) * 0.2 + 1);
         const halo = ctx.createRadialGradient(px[i], py[i], 0, px[i], py[i], r * 4.5);
         halo.addColorStop(0, `rgba(${nR},${nG},${nB},${0.18 + p.charge * 0.4})`);
         halo.addColorStop(1, 'rgba(0,0,0,0)');
         ctx.fillStyle = halo; ctx.beginPath(); ctx.arc(px[i], py[i], r * 4.5, 0, Math.PI * 2); ctx.fill();
-
-        // 🟢 细胞核 (白色高亮中心，从原本的 r 提高到更大的比例)
         ctx.fillStyle = `rgba(255, 255, 255, ${0.7 + p.charge * 0.3})`;
         ctx.beginPath(); ctx.arc(px[i], py[i], r * 0.6, 0, Math.PI * 2); ctx.fill();
         if (p.charge > 0) p.charge *= 0.9;
