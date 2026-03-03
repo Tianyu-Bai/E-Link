@@ -1460,28 +1460,42 @@ body.light-mode .watermark-features strong { color: #2563eb; text-shadow: none; 
 
 /* 绘图区背景：仅保留垂直对齐线 */
 .intan-canvas-container {
-  flex: 1 1 0%; /* 🚀 核心：强制分配剩余空间 */
-  position: relative; 
+  flex: 1 1 0%; 
+  position: relative;
   overflow: hidden;
   background: #000000;
-  min-height: 0; /* 🚀 核心：防止被 canvas 撑破高度 */
-  display: flex; /* 让内容自适应 */
+  min-height: 0; 
 }
-.intan-canvas { width: 100%; height: 100%; display: block; }
-
+.intan-canvas { 
+  position: absolute; 
+  top: 0; left: 0;
+  width: 100%; height: 100%; 
+  display: block; 
+}
 
 /* 底部状态栏 */
 .intan-pane-footer {
- height: 22px; background: #e0e0e0; display: flex; justify-content: space-between; align-items: center;
+  height: 24px; 
+  background: #e0e0e0; display: flex; justify-content: space-between; align-items: center;
   padding: 0 8px; font-size: 11px; color: #333; font-weight: 500; border-top: 1px solid #111;
-  /* 🚀 核心修复：防止底部被压缩挤出屏幕 */
-  flex-shrink: 0; 
+  flex-shrink: 0;
+  white-space: nowrap; /* 🚀 核心修复2：强行防折行 */
+  overflow: hidden;    
 }
-.intan-footer-tools { display: flex; align-items: center; gap: 8px; color: #555; }
-.intan-footer-tools input[type="checkbox"] { margin: 0; }
+.intan-footer-tools { 
+  display: flex; align-items: center; gap: 6px; color: #555; 
+  white-space: nowrap;
+}
+/* 🚀 核心修复3：屏蔽外部博客主题对 checkbox 和 label 元素的全局排版干扰 */
+.intan-footer-tools label {
+  display: inline-flex; align-items: center; gap: 3px; margin: 0; padding: 0; font-weight: normal; cursor: pointer;
+}
+.intan-footer-tools input[type="checkbox"] { 
+  margin: 0; width: 12px; height: 12px; flex-shrink: 0;
+}
 
-/* 右侧控制面板 (保留原样) */
-.intan-sidebar { width: 180px; background: #d4d0c8; padding: 10px; display: flex; flex-direction: column; gap: 10px; box-shadow: inset 1px 0 0 rgba(255,255,255,0.5); border-left: 1px solid #111;}
+/* 右侧控制面板 (保留原样并加防溢出保护) */
+.intan-sidebar {width: 180px; background: #d4d0c8; padding: 10px; display: flex; flex-direction: column; gap: 10px; box-shadow: inset 1px 0 0 rgba(255,255,255,0.5); border-left: 1px solid #111; overflow-y: auto; /* 🚀 防御性设置：防止如果屏幕过矮导致右侧栏被切 */}
 .intan-btn-group { display: flex; gap: 8px; }
 .intan-btn { flex: 1; background: linear-gradient(to bottom, #f0f0f0, #dcdcdc); border: 1px solid #888; border-radius: 3px; padding: 6px 0; font-size: 11px; font-weight: bold; color: #333; cursor: pointer; box-shadow: inset 1px 1px 0 #fff, 1px 1px 2px rgba(0,0,0,0.1); text-align: center;}
 .intan-btn:active { background: #d0d0d0; box-shadow: inset 1px 1px 3px rgba(0,0,0,0.2); }
