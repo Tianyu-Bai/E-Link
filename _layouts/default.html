@@ -60,7 +60,8 @@
 
   /* ===================== 2. 核心动态交互特效 ===================== */
   /* --- 🚀 磁性液态光标 --- */
-  .cursor-dot, .cursor-outline, .bot-head, .bot-eye { will-change: transform; backface-visibility: hidden; transform-style: preserve-3d; }
+  .cursor-dot, .cursor-outline { will-change: transform; backface-visibility: hidden; }
+  .bot-head, .bot-eye { backface-visibility: hidden; }
   .cursor-dot, .cursor-outline { position: fixed; top: 0; left: 0; border-radius: 50%; z-index: 99999; pointer-events: none; transform: translate3d(-100px, -100px, 0) translate(-50%, -50%); will-change: transform; }
   .cursor-dot { width: 6px; height: 6px; background-color: #ffffff; mix-blend-mode: exclusion; transition: opacity 0.2s ease; }
   .cursor-outline { width: 40px; height: 40px; border: 1.5px solid rgba(96, 165, 250, 0.5); transition: width 0.3s cubic-bezier(0.165, 0.84, 0.44, 1), height 0.3s cubic-bezier(0.165, 0.84, 0.44, 1), background-color 0.3s, border-color 0.3s; }
@@ -103,7 +104,8 @@
   
   /* --- 🚀 内容玻璃容器 --- */
   .layout-wrapper { position: relative; max-width: 860px; margin: 100px auto 60px; z-index: 10; perspective: 1000px; }
-  .container { position: relative; padding: 60px 80px; background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-radius: 20px; box-shadow: 0 20px 50px rgba(59, 130, 246, 0.15); border: 1px solid rgba(255, 255, 255, 0.1); border-top: 4px solid #3b82f6; opacity: 0; animation: fadeUp 0.6s ease-out 0.2s forwards; z-index: 1; transform-style: preserve-3d; transition: border-color 0.4s ease, box-shadow 0.4s ease, transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1); will-change: transform; contain: layout style paint; overflow: hidden; }
+  .container { position: relative; padding: 60px 80px; background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-radius: 20px; box-shadow: 0 20px 50px rgba(59, 130, 246, 0.15); border: 1px solid rgba(255, 255, 255, 0.1); border-top: 4px solid #3b82f6; opacity: 0;  animation: fadeUp 0.6s ease-out 0.2s forwards; z-index: 1; transition: border-color 0.4s ease, box-shadow 0.4s ease; }
+
   .container::before { content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: radial-gradient(800px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255, 255, 255, 0.07), transparent 40%); z-index: -1; pointer-events: none; opacity: 0; transition: opacity 0.5s; }
   .container:hover { border-color: rgba(96, 165, 250, 0.4); box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6), 0 0 30px rgba(59, 130, 246, 0.15); transform: translateY(-2px); }
   .container:hover::before { opacity: 1; }
@@ -264,7 +266,7 @@
   body.light-mode .watermark-features { color: #475569; }
   body.light-mode .watermark-features strong { color: #2563eb; text-shadow: none; }
   body.light-mode .icon-circle { background: #ffffff; border-color: rgba(59, 130, 246, 0.3); }
-
+  .gesture-hidden { opacity: 0 !important; pointer-events: none !important; }
   /* ===================== 7. 基础动效定义 ===================== */
   @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
   @keyframes float-bot { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
@@ -796,36 +798,6 @@ if (localStorage.getItem('elink_visited') === 'true') {
     });
   }, { passive: true });
 
-  // ── 容器 3D 倾斜 ─────────────────────────────────────────────
-  const container = document.querySelector('.container');
-  const pupils = document.querySelectorAll('.bot-pupil');
-  let containerRect = container ? container.getBoundingClientRect() : null;
-  window.addEventListener('resize', () => {
-    if (container) containerRect = container.getBoundingClientRect();
-  }, { passive: true });
-
-  if (window.innerWidth > 768 && container) {
-    rafScheduler.add('tilt', () => {
-      if (document.body.classList.contains('modal-active')) return;
-      const rx = (window.innerWidth / 2 - mouseX) / 60;
-      const ry = (window.innerHeight / 2 - mouseY) / 60;
-      container.style.transform =
-        `perspective(1000px) rotateY(${-rx}deg) rotateX(${ry}deg)`;
-      if (containerRect) {
-        container.style.setProperty('--mouse-x', `${mouseX - containerRect.left}px`);
-        container.style.setProperty('--mouse-y', `${mouseY - containerRect.top}px`);
-      }
-      pupils.forEach(p => {
-        const rect = p.parentElement.getBoundingClientRect();
-        const cx = rect.left + rect.width / 2, cy = rect.top + rect.height / 2;
-        const angle = Math.atan2(mouseY - cy, mouseX - cx);
-        const dist = Math.min(5, Math.hypot(mouseX - cx, mouseY - cy) / 15);
-        p.style.transform =
-          `translate(calc(-50% + ${Math.cos(angle) * dist}px),`
-          + `calc(-50% + ${Math.sin(angle) * dist}px))`;
-      });
-    });
-  }
 
   // ── 图片懒加载 ───────────────────────────────────────────────
   document.querySelectorAll('#main_content img').forEach((img, i) => {
@@ -917,10 +889,20 @@ if (localStorage.getItem('elink_visited') === 'true') {
     document.querySelectorAll(toZh ? '.lang-zh' : '.lang-en')
      .forEach(el => el.style.display = 'block');
     textIdx = 0; charIdx = 0; isDeleting = false;
-    if (rpgDialogue.classList.contains('active')) closeDialogue();
-    if (!rpgDialogue.classList.contains('active') && idleInterval) startIdleTips();
-  });
+      
+      // --- 新增：强制清除机器人气泡缓存 ---
+      if (botContainer.speechTimer) {
+        clearTimeout(botContainer.speechTimer);
+        botSpeech.textContent = ""; 
+        botContainer.classList.remove('speaking');
+      }
+      // -----------------------------------
 
+      if (rpgDialogue.classList.contains('active')) closeDialogue();
+      if (!rpgDialogue.classList.contains('active') && idleInterval) startIdleTips();
+    });
+
+ 
   // ── 视频弹窗 ─────────────────────────────────────────────────
   const videoModal = document.getElementById('video-modal');
   const guardianVideo = document.getElementById('guardian-video');
@@ -1031,7 +1013,19 @@ if (localStorage.getItem('elink_visited') === 'true') {
       });
       setTimeout(() => {
         if (url.includes('#')) {
-          try { const el = document.querySelector(url.substring(url.indexOf('#'))); if (el) { el.scrollIntoView({ behavior: 'smooth', block: 'start' }); return; } } catch (e) {}
+          try { 
+            const hash = url.substring(url.indexOf('#'));
+            const el = document.querySelector(hash); 
+            if (el) { 
+              // 如果存在 Lenis 实例，用 Lenis 接管；否则用原生方法
+              if (typeof lenis !== 'undefined') {
+                lenis.scrollTo(el, { duration: 1.2, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)) });
+              } else {
+                el.scrollIntoView({ behavior: 'smooth', block: 'start' }); 
+              }
+              return; 
+            } 
+          } catch (e) {}
         }
         this.target === '_blank' ? window.open(url, '_blank') : (window.location.href = url);
       }, 500);
@@ -1080,7 +1074,17 @@ if (localStorage.getItem('elink_visited') === 'true') {
 </script>
 <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 <script>
-  AOS.init({ duration: 1000, easing: 'ease-out-cubic', once: true });
+window.addEventListener('load', () => {
+    AOS.init({ 
+      duration: 800, 
+      easing: 'ease-out-cubic', 
+      once: true,
+      offset: 50, // 距离元素出现还有 50px 时提前触发，避免太晚出现
+      disable: function() {
+        return window.innerWidth < 768; // 动态检测，支持横竖屏切换和窗口缩放
+      }
+    });
+  });
 </script>
 
 </body>
