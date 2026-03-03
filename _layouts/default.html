@@ -50,16 +50,16 @@
     background-color: #0a0a0f; 
   }
  
- /* 仅当 JS 成功运行后才隐藏原生光标 */
-body.js-cursor-enabled { cursor: none; }
-@media (pointer: coarse) { body.js-cursor-enabled { cursor: auto; } }
+  /* 仅当 JS 成功运行后才隐藏原生光标 */
+  body.js-cursor-enabled { cursor: none; }
+  @media (pointer: coarse) { body.js-cursor-enabled { cursor: auto; } }
   img, video, iframe { max-width: 100% !important; height: auto !important; box-sizing: border-box; transition: opacity 0.5s ease; transform: translateZ(0); backface-visibility: hidden; }
   img[loading] { min-height: 1px; }
   ::-webkit-scrollbar { width: 6px; }
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: rgba(59, 130, 246, 0.5); border-radius: 10px; }
   ::-webkit-scrollbar-thumb:hover { background: rgba(59, 130, 246, 0.8); }
-  ::selection { background: #3b82f6; color: #ffffff; text-shadow: 0 0 8px rgba(255, 255, 255, 0.8); }
+  ::-selection { background: #3b82f6; color: #ffffff; text-shadow: 0 0 8px rgba(255, 255, 255, 0.8); }
 
   /* ===================== 2. 核心动态交互特效 ===================== */
   /* --- 🚀 磁性液态光标 --- */
@@ -76,7 +76,7 @@ body.js-cursor-enabled { cursor: none; }
   #progress-bar::after { content: ''; position: absolute; top: -1px; right: 0; width: 12px; height: 5px; background: #ffffff; border-radius: 50%; box-shadow: 0 0 15px 4px #60a5fa; }
   
   /* ===================== 3. 高级流体极光与景深粒子背景 ===================== */
- #neuro-ambient-bg { 
+  #neuro-ambient-bg { 
     position: fixed; z-index: -6; top: 0; left: 0; width: 100vw; height: 100vh; 
     background-color: #03060e; 
     /* 🚀 全局逼格升级 (深色模式)：科幻点阵网格 + 实验室深蓝微光底色 */
@@ -143,17 +143,17 @@ body.js-cursor-enabled { cursor: none; }
     animation: fadeUp 0.6s ease-out 0.2s forwards; 
     z-index: 1; 
     transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1); 
-}
+  }
 
-/* 悬停时增强“发光”感 */
-.container:hover { 
+  /* 悬停时增强“发光”感 */
+  .container:hover { 
     border-color: rgba(96, 165, 250, 0.5); 
     box-shadow: 
         0 40px 80px rgba(0, 0, 0, 0.6), 
         0 0 30px rgba(59, 130, 246, 0.2),            /* 蓝色外溢氛感 */
         inset 1px 1px 2px rgba(255, 255, 255, 0.5); /* 强化高光边缘 */
     transform: translateY(-4px) scale(1.005); 
-}
+  }
   /* --- 🚀 高级玻璃拟态数据表格 --- */
   #main_content table { width: 100% !important; border-collapse: separate; border-spacing: 0; margin: 30px 0; background: rgba(15, 23, 42, 0.4); border-radius: 12px; overflow: hidden; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); border: 1px solid rgba(59, 130, 246, 0.2); backdrop-filter: blur(10px); }
   #main_content th, #main_content td { padding: 15px 12px; border: none; border-bottom: 1px solid rgba(255, 255, 255, 0.05); text-align: left; }
@@ -284,20 +284,19 @@ body.js-cursor-enabled { cursor: none; }
 
   /* ===================== 6. ☁️ 护眼浅色模式 (全局净化版) ===================== */
   /* 1. 强制加深底层与极光幕布的灰色 */
- body.light-mode {   color: #1e293b; /* 加深文字颜色 */
- background-color: #f8fafc !important; /* 背景改为极浅的冷灰色 */}
- body.light-mode #neuro-ambient-bg { background: #f1f5f9 !important; }
-/* 调整容器，让它在浅色背景下有更清爽的投影 */
+  body.light-mode { color: #1e293b; background-color: #f8fafc !important; }
+  body.light-mode #neuro-ambient-bg { background: #f1f5f9 !important; }
+  
+  /* 调整容器，让它在浅色背景下有更清爽的投影 */
   body.light-mode .container { 
     background: rgba(255, 255, 255, 0.8); 
-    /* 浅色模式下，高光改为深色细线，模拟玻璃厚度 */
     box-shadow: 
         0 20px 50px rgba(148, 163, 184, 0.2), 
         inset 1px 1px 0px rgba(255, 255, 255, 0.9), 
         inset -1px -1px 0px rgba(0, 0, 0, 0.05); 
     border-color: rgba(203, 213, 225, 0.8); 
-}
- 
+  }
+  
   /* 2. 浅色极光颜色微调，适配灰色背景 */
   body.light-mode .aurora-1 { background: radial-gradient(circle, rgba(59, 130, 246, 0.20), transparent 70%); }
   body.light-mode .aurora-2 { background: radial-gradient(circle, rgba(147, 197, 253, 0.25), transparent 70%); }
@@ -312,13 +311,14 @@ body.js-cursor-enabled { cursor: none; }
   body.light-mode .rpg-btn:hover { background: #cbd5e1; color: #1e40af; border-color: #94a3b8; }
   body.light-mode #bot-speech { background: #ffffff; color: #334155; border-color: #cbd5e1; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
   body.light-mode .typewriter-container { color: #2563eb; }
- 
+  
   /* 3D 模型框的白天磨砂玻璃质感 */
-body.light-mode .custom-model-viewer {background: rgba(255, 255, 255, 0.8) !important; /* 提高白度 */
-border: 1px solid rgba(59, 130, 246, 0.3) !important; /* 淡淡的蓝色边框增加科技感 */
-box-shadow: 0 10px 30px rgba(148, 163, 184, 0.2), inset 0 0 20px rgba(255,255,255,1) !important; 
-}
- 
+  body.light-mode .custom-model-viewer {
+    background: rgba(255, 255, 255, 0.8) !important; 
+    border: 1px solid rgba(59, 130, 246, 0.3) !important; 
+    box-shadow: 0 10px 30px rgba(148, 163, 184, 0.2), inset 0 0 20px rgba(255,255,255,1) !important; 
+  }
+  
   /* 数据表格与按钮适配 */
   body.light-mode #main_content table { background: rgba(255, 255, 255, 0.9); border-color: rgba(148, 163, 184, 0.4); box-shadow: 0 10px 30px rgba(148, 163, 184, 0.15); }
   body.light-mode #main_content th { background: rgba(241, 245, 249, 1); color: #1e40af; border-bottom: 1px solid rgba(148, 163, 184, 0.4); }
@@ -340,25 +340,25 @@ box-shadow: 0 10px 30px rgba(148, 163, 184, 0.2), inset 0 0 20px rgba(255,255,25
   body.light-mode .icon-circle { background: #ffffff; border-color: rgba(59, 130, 246, 0.3); }
   .gesture-hidden { opacity: 0 !important; pointer-events: none !important; }
 
- /* 针对 3D 模型内部标签框的浅色适配 */
-body.light-mode .Hotspot, 
-body.light-mode .HotspotAnnotation,
-body.light-mode [slot^="hotspot"] {
-    background: #ffffff !important;           /* 强制白色背景 */
-    color: #1e293b !important;                /* 深色文字 */
+  /* 针对 3D 模型内部标签框的浅色适配 */
+  body.light-mode .Hotspot, 
+  body.light-mode .HotspotAnnotation,
+  body.light-mode [slot^="hotspot"] {
+    background: #ffffff !important;         /* 强制白色背景 */
+    color: #1e293b !important;              /* 深色文字 */
     border: 1px solid rgba(0, 0, 0, 0.1) !important;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1) !important;
-    opacity: 1 !important;                    /* 确保完全不透明 */
-}
+    opacity: 1 !important;                  /* 确保完全不透明 */
+  }
 
-/* 如果你使用了自定义的标签容器类名，比如 .label-box */
-body.light-mode .label-box {
+  /* 如果你使用了自定义的标签容器类名，比如 .label-box */
+  body.light-mode .label-box {
     background-color: rgba(255, 255, 255, 0.95) !important;
     color: #0f172a !important;
     backdrop-filter: blur(4px);
-}
+  }
 
- /* ===================== 📝 核心正文排版强制浅色覆盖 ===================== */
+  /* ===================== 📝 核心正文排版强制浅色覆盖 ===================== */
   /* 1. 强制覆盖 Markdown 默认段落、列表、文字块的颜色 */
   body.light-mode #main_content,
   body.light-mode #main_content p,
@@ -403,17 +403,17 @@ body.light-mode .label-box {
     border-color: rgba(148, 163, 184, 0.4) !important;
     background-color: transparent !important;
   }
- 
+  
   /* ===================== 7. 基础动效定义 ===================== */
   @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
   @keyframes float-bot { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
   @keyframes blink { 0%, 48%, 52%, 100% { height: 0%; } 50% { height: 100%; } }
   @keyframes blink-cursor { from, to { opacity: 1; } 50% { opacity: 0; } }
   @keyframes ripple-wave {
-  0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(96, 165, 250, 0.4); }
-  50% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(96, 165, 250, 0); }
-  100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(96, 165, 250, 0); }
-}
+    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(96, 165, 250, 0.4); }
+    50% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(96, 165, 250, 0); }
+    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(96, 165, 250, 0); }
+  }
 
   /* ===================== 8. 📱 手机端响应式适配 ===================== */
   @media (max-width: 768px) { 
@@ -438,29 +438,29 @@ body.light-mode .label-box {
     .aurora { filter: none !important; opacity: 0.15 !important; }
     
     /* 手机端统一关闭高耗能的毛玻璃效果 */
-  .container { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
+    .container { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
   
-  /* 🚀 专属提亮：手机端黑夜模式的背景，改为高级深蓝灰，告别死黑 */
-  body:not(.light-mode) { background-color: #0b1121 !important; }
-  
-  body:not(.light-mode) #neuro-ambient-bg { 
-    background-color: #0b1121 !important; /* ⚠️ 这里必须用 background-color，防止覆盖背景图片 */
-    background-image: 
-      radial-gradient(rgba(96, 165, 250, 0.12) 1px, transparent 1px),
-      radial-gradient(circle at 50% 50%, rgba(15, 23, 42, 0.9), #0b1121 100%) !important;
-  }
-  
-  #neuro-ambient-bg, body.light-mode #neuro-ambient-bg {
-    /* 缩小网格尺寸 (30px -> 20px)，让移动端画面更细腻 */
-    background-size: 20px 20px, 100% 100% !important; 
-  }
-  
-  body:not(.light-mode) .container { 
-    background: rgba(26, 35, 53, 0.95) !important; 
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4) !important; 
-    border-color: rgba(96, 165, 250, 0.3) !important;
-  }
+    /* 🚀 专属提亮：手机端黑夜模式的背景，改为高级深蓝灰，告别死黑 */
+    body:not(.light-mode) { background-color: #0b1121 !important; }
     
+    body:not(.light-mode) #neuro-ambient-bg { 
+      background-color: #0b1121 !important; /* ⚠️ 这里必须用 background-color，防止覆盖背景图片 */
+      background-image: 
+        radial-gradient(rgba(96, 165, 250, 0.12) 1px, transparent 1px),
+        radial-gradient(circle at 50% 50%, rgba(15, 23, 42, 0.9), #0b1121 100%) !important;
+    }
+    
+    #neuro-ambient-bg, body.light-mode #neuro-ambient-bg {
+      /* 缩小网格尺寸 (30px -> 20px)，让移动端画面更细腻 */
+      background-size: 20px 20px, 100% 100% !important; 
+    }
+    
+    body:not(.light-mode) .container { 
+      background: rgba(26, 35, 53, 0.95) !important; 
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4) !important; 
+      border-color: rgba(96, 165, 250, 0.3) !important;
+    }
+      
     .layout-wrapper { perspective: none !important; }
   }
 </style>
@@ -825,7 +825,7 @@ const rafScheduler = {
     });
   }
 
-// ── 粒子引擎 (簇群坍缩版：动态吸附成大簇 + 实时寻路长程电流 + 科技风发光大脑底座) ──────────
+  // ── 粒子引擎 (簇群坍缩版：动态吸附成大簇 + 实时寻路长程电流 + 科技风发光大脑底座) ──────────
   function initNeuralWeb() {
     const canvas = document.getElementById('neuro-dust-canvas');
     if (!canvas) return;
@@ -949,7 +949,6 @@ const rafScheduler = {
       drawTechBrain(ctx, width / 2, height / 2, brainSize, isLight);
       // ────────────────────────────────
 
-      // ⚠️ 已经清理了重复声明的 const
       const sigColor = isLight ? '30, 58, 138' : '0, 255, 255';
       const connectionOpacity = isLight ? 0.25 : 0.12;
       const nR = isLight ? 13 : 96, nG = isLight ? 148 : 165, nB = isLight ? 136 : 250;
