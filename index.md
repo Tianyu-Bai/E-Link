@@ -1530,12 +1530,17 @@ body.light-mode .watermark-features strong { color: #2563eb; text-shadow: none; 
 .port-led.on { background: #27c93f; border: 1px solid #1a8a29; box-shadow: inset -1px -1px 2px rgba(0,0,0,0.3), 0 0 5px #27c93f; }
 .port-led.off { background: #666; border: 1px solid #444; box-shadow: inset 1px 1px 2px rgba(0,0,0,0.5); }
 
-@media (max-width: 600px) {
+@media (max-width: 768px) {
   .intan-body { flex-direction: column; height: auto; }
-  .intan-plots-wrapper { flex-direction: column; height: 450px;  min-height: 450px;}
-  .intan-plot-pane {flex: 1 1 220px;  height: 220px;}
-  .intan-sidebar { width: 100%; flex-direction: row; flex-wrap: wrap; }
-  .intan-btn-group, .intan-panel { flex: 1; min-width: 120px; }
+  .intan-plots-wrapper { flex-direction: column; height: auto; min-height: 0; border-right: none; }
+  .intan-plot-pane { flex: none; height: 220px; border-right: none; border-bottom: 2px solid #333; }
+  .intan-plot-pane:last-child { border-bottom: none; }
+  /* 🚀 核心修复：同步左侧 80px 的缩进，让波形和 0ms 刻度完美对齐！ */
+  .intan-time-axis { padding: 0 10px 0 80px; } 
+  /* 🚀 控制面板防挤压排版 */
+  .intan-sidebar { width: 100%; flex-direction: row; flex-wrap: wrap; border-left: none; border-top: 1px solid #111; padding: 10px; gap: 8px; }
+  .intan-btn-group { width: 100%; flex: none; }
+  .intan-panel { flex: 1 1 40%; min-width: 130px; margin: 0; }
 }
 
 /* ================= 新增：Intan 物理硬件前面板复刻 ================= */
@@ -1891,12 +1896,10 @@ This project is open-source and available under the **MIT License**. Click the b
 }
 
 /* 2. 中文版专属图片遮罩扫光 */
-./* 2. 中文版专属图片遮罩扫光 */
 .logo-mask-zh {
   position: relative; 
-  display: flex; 
-  align-items: center;
-  /* 🚀 核心修复：移除这里的 mask-image */
+  display: inline-block; /* 🚀 核心修复1：放弃 flex，改用紧密贴合的 inline-block */
+  line-height: 0; /* 🚀 核心修复2：杀掉所有不可见的幽灵行高间隙 */
 }
 
 .logo-mask-zh::after {
@@ -3059,8 +3062,8 @@ intanSimulators.forEach(sim => {
   let animationFrame;
 
 function drawPane(ctx, channelsData, isLeftPane) {
-    // 🚀 1. 新增：动态判断手机端，并设定专属尺寸
-    const isMobile = window.innerWidth <= 600;
+    // 🚀 1. 新增：动态判断手机端，并设定专属尺寸 (同步为 768px)
+    const isMobile = window.innerWidth <= 768;
     
     // 手机端彩色框宽度设为80（原本是 95），腾出 20px 给波形
     const currentLabelWidth = isMobile ? 80 : LABEL_WIDTH; 
@@ -3210,7 +3213,7 @@ function drawPane(ctx, channelsData, isLeftPane) {
       scanX += scanSpeed;
       if (scanX >= width) {
         // 🚀 核心修复：回到左侧时，如果是手机则回到 80，否则回到原本的 LABEL_WIDTH
-        scanX = window.innerWidth <= 600 ? 80 : LABEL_WIDTH; 
+        scanX = window.innerWidth <= 768 ? 80 : LABEL_WIDTH;
       }
     }
     animationFrame = requestAnimationFrame(renderDualSweep);
