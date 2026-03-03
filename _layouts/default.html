@@ -744,8 +744,7 @@ if (localStorage.getItem('elink_visited') === 'true') {
     });
   }
 
-// ── 粒子引擎 (终极神经风暴版：真实胞体 + 级联放电 + 动态流光) ──────────────────────────────────
-// ── 粒子引擎 (精准限流版：PC左1右2，手机顶2底1，中间避让) ──────────────────────────────────
+// ── 粒子引擎 (自然随机版：PC全局限额6/随机分布，手机顶2底1，中心避让) ──────────────────────────────────
   function initNeuralWeb() {
     const canvas = document.getElementById('neuro-dust-canvas');
     if (!canvas) return;
@@ -777,11 +776,9 @@ if (localStorage.getItem('elink_visited') === 'true') {
         id: i,
         x: (width / count) * i + (Math.random() - 0.5) * 80,
         y: Math.random() * height,
-        vx: (Math.random() - 0.5) * 0.04, 
-        vy: (Math.random() - 0.5) * 0.04,
+        vx: (Math.random() - 0.5) * 0.04, vy: (Math.random() - 0.5) * 0.04,
         baseRadius: Math.random() * 1.5 + 1.2, radius: 1.2, charge: 0, refractory: 0, 
-        pulse: Math.random() * Math.PI * 2,
-        pulseSpeed: 0.02 + Math.random() * 0.02,
+        pulse: Math.random() * Math.PI * 2, pulseSpeed: 0.02 + Math.random() * 0.02,
         connections: []
       });
     }
@@ -794,20 +791,17 @@ if (localStorage.getItem('elink_visited') === 'true') {
       const isLight = document.body.classList.contains('light-mode');
       const sigColor = isLight ? '37, 99, 235' : '0, 255, 255'; 
 
-      // 🔄 空间活跃度监控：实时计算每个区域正在闪烁的数量
-      let leftAct = 0, rightAct = 0, topAct = 0, bottomAct = 0;
-      signals.forEach(s => {
-        const sx = px[s.si], sy = py[s.si];
-        if (isMobile) {
-          if (sy < height * 0.3) topAct++;      // 统计顶部
-          if (sy > height * 0.7) bottomAct++;   // 统计底部
-        } else {
-          if (sx < width * 0.35) leftAct++;     // 统计左侧
-          if (sx > width * 0.65) rightAct++;    // 统计右侧
-        }
-      });
+      // 🔄 空间流量实时监控
+      let totalAct = signals.length;
+      let topAct = 0, bottomAct = 0;
+      if (isMobile) {
+        signals.forEach(s => {
+          if (py[s.si] < height * 0.3) topAct++;
+          if (py[s.si] > height * 0.7) bottomAct++;
+        });
+      }
 
-      // 1. 物理层与激发控制
+      // 1. 物理层与智能激发
       for (let i = 0; i < count; i++) {
         const p = particles[i];
         if (p.refractory > 0) p.refractory--;
@@ -822,62 +816,60 @@ if (localStorage.getItem('elink_visited') === 'true') {
               p.vx -= (dx/dist)*push; p.vy -= (dy/dist)*push; 
             }
 
-            // 🚀 空间控制逻辑：精准分配激发额度
-            const midX = (p.x + particles[j].x) / 2;
-            const midY = (p.y + particles[j].y) / 2;
+            const mX = (p.x + particles[j].x) / 2;
+            const mY = (p.y + particles[j].y) / 2;
             let canFire = false;
 
             if (isMobile) {
-              // 📱 手机端：顶2底1
-              if (midY < height * 0.25 && topAct < 2) canFire = true;    // 顶部限额 2
-              if (midY > height * 0.75 && bottomAct < 1) canFire = true; // 底部限额 1
+              // 📱 手机端：顶2底1，中间避让
+              if (mY < height * 0.25 && topAct < 2) canFire = true;
+              if (mY > height * 0.75 && bottomAct < 1) canFire = true;
             } else {
-              // 💻 电脑端：左1右2
-              if (midX < width * 0.35 && leftAct < 1) canFire = true;   // 左侧限额 1
-              if (midX > width * 0.65 && rightAct < 2) canFire = true;  // 右侧限额 2
+              // 💻 电脑端：全局限额 6 个，随机分布在左右 35% 区域
+              const isSide = (mX < width * 0.35 || mX > width * 0.65);
+              if (isSide && totalAct < 6) canFire = true;
             }
 
-            if (canFire && dist < 75 && Math.random() < 0.015 && p.refractory <= 0) {
+            if (canFire && dist < 75 && Math.random() < 0.012 && p.refractory <= 0) {
               p.charge = 1; particles[j].charge = 1;
-              // 簇状泡泡：突触囊泡释放感
+              // 簇状泡泡爆发 (囊泡释放感)
               for(let b=0; b < 3; b++) {
-                sparks.push({ type: 'bubble', x: midX + (Math.random()-0.5)*15, y: midY + (Math.random()-0.5)*15, radius: 1, life: 1, decay: 0.07 });
+                sparks.push({ type: 'bubble', x: mX + (Math.random()-0.5)*15, y: mY + (Math.random()-0.5)*15, radius: 1, life: 1, decay: 0.07 });
               }
-              p.refractory = 120;
-              signals.push({ source: p, si: i, ep: particles[j], ei: j, progress: 0, speed: 0.15, tail: 0.4 });
+              p.refractory = 100; // 适当冷却
+              signals.push({ source: p, si: i, ep: particles[j], ei: j, progress: 0, speed: 0.14, tail: 0.4 });
+              totalAct++; // 手动递增计数防止同帧爆发过多
             }
           }
         }
         p.vx *= 0.9; p.vy *= 0.9; p.x += p.vx; p.y += p.vy;
         if (p.x < -50) p.x = width + 50; else if (p.x > width + 50) p.x = -50;
         if (p.y < -50) p.y = height + 50; else if (p.y > height + 50) p.y = -50;
-        px[i] = p.x + Math.sin(p.pulse) * 4;
-        py[i] = p.y + Math.cos(p.pulse * 0.8) * 4;
+        px[i] = p.x + Math.sin(p.pulse) * 4; py[i] = p.y + Math.cos(p.pulse * 0.8) * 4;
       }
 
-      // 2. 背景网路（极淡，不抢戏）
+      // 2. 绘制极淡连线
       for (let i = 0; i < count; i++) {
         for (let j = i + 1; j < count; j++) {
           const dx = px[i] - px[j], dy = py[i] - py[j];
-          const distSq = dx * dx + dy * dy;
-          if (distSq < maxDistSq) {
-            const intensity = Math.pow(1 - Math.sqrt(distSq) / maxDistance, 2) * 0.12;
+          if ((dx*dx + dy*dy) < maxDistSq) {
+            const intensity = Math.pow(1 - Math.sqrt(dx*dx + dy*dy) / maxDistance, 2) * 0.12;
             ctx.beginPath(); ctx.strokeStyle = `rgba(59,130,246,${intensity})`;
             ctx.lineWidth = 0.5; ctx.moveTo(px[i], py[i]); ctx.lineTo(px[j], py[j]); ctx.stroke();
           }
         }
       }
 
-      // 3. 渲染泡泡
+      // 3. 渲染气泡
       for (let i = sparks.length - 1; i >= 0; i--) {
         const s = sparks[i]; s.life -= s.decay;
         if (s.life <= 0) { sparks.splice(i, 1); continue; }
         s.radius += 1.0; 
-        ctx.beginPath(); ctx.strokeStyle = `rgba(${sigColor}, ${s.life * 0.35})`; ctx.lineWidth = 0.6;
+        ctx.beginPath(); ctx.strokeStyle = `rgba(${sigColor}, ${s.life * 0.3})`; ctx.lineWidth = 0.6;
         ctx.arc(s.x, s.y, s.radius, 0, Math.PI * 2); ctx.stroke();
       }
 
-      // 4. 放电信号（向前流动的髓鞘虚线）
+      // 4. 电流脉冲 (髓鞘流动虚线)
       for (let i = signals.length - 1; i >= 0; i--) {
         const s = signals[i]; s.progress += s.speed;
         if (s.progress >= 1.4) { signals.splice(i, 1); continue; }
@@ -896,7 +888,7 @@ if (localStorage.getItem('elink_visited') === 'true') {
         ctx.setLineDash([]); ctx.shadowBlur = 0;
       }
 
-      // 5. 胞体渲染（带呼吸感的生物核心）
+      // 5. 胞体渲染
       for (let i = 0; i < count; i++) {
         const p = particles[i]; p.pulse += p.pulseSpeed;
         const r = p.baseRadius * (Math.sin(p.pulse) * 0.15 + 1);
@@ -911,7 +903,6 @@ if (localStorage.getItem('elink_visited') === 'true') {
     });
   }
 
-  // 🚀 优先渲染 Logo，150ms 后背景动
   setTimeout(initNeuralWeb, 150);
  
   // ── Lenis 平滑滚动 ───────────────────────────────────────────
