@@ -61,19 +61,18 @@
   /* ===================== 2. 核心动态交互特效 ===================== */
   /* --- 🚀 磁性液态光标 --- */
   .cursor-dot, .cursor-outline, .bot-head, .bot-eye { will-change: transform; backface-visibility: hidden; transform-style: preserve-3d; }
-  .cursor-dot, .cursor-outline { position: fixed; top: 0; left: 0; border-radius: 50%; z-index: 99999; pointer-events: none; transform: translate(-50%, -50%); }
-  .cursor-dot { width: 6px; height: 6px; background-color: #ffffff; mix-blend-mode: exclusion; transition: opacity 0.2s ease, transform 0.1s ease-out; }
+  .cursor-dot, .cursor-outline { position: fixed; top: 0; left: 0; border-radius: 50%; z-index: 99999; pointer-events: none; transform: translate3d(-100px, -100px, 0) translate(-50%, -50%); will-change: transform; }
+  .cursor-dot { width: 6px; height: 6px; background-color: #ffffff; mix-blend-mode: exclusion; transition: opacity 0.2s ease; }
   .cursor-outline { width: 40px; height: 40px; border: 1.5px solid rgba(96, 165, 250, 0.5); transition: width 0.3s cubic-bezier(0.165, 0.84, 0.44, 1), height 0.3s cubic-bezier(0.165, 0.84, 0.44, 1), background-color 0.3s, border-color 0.3s; }
-  body.hovering .cursor-dot { transform: translate(-50%, -50%) scale(0.5); opacity: 0.5; } 
   body.hovering .cursor-outline { width: 65px; height: 65px; background-color: rgba(96, 165, 250, 0.08); border-color: rgba(96, 165, 250, 0.8); box-shadow: 0 0 20px rgba(59, 130, 246, 0.2); backdrop-filter: blur(4px); }
-
+  body.hovering .cursor-dot { transform: translate(-50%, -50%) scale(0.5); opacity: 0.5; }
   /* --- 🚀 赛博流光进度条 --- */
-  #progress-bar { position: fixed; top: 0; left: 0; height: 3px; background: linear-gradient(90deg, #1d4ed8, #3b82f6, #60a5fa, #3b82f6); background-size: 200% 100%; box-shadow: 0 0 10px rgba(59, 130, 246, 0.6), 0 0 20px rgba(29, 78, 216, 0.4); width: 0%; z-index: 99999; animation: gradient-flow 2s linear infinite; }
+  #progress-bar { position: fixed; top: 0; left: 0; height: 3px; background: linear-gradient(90deg, #1d4ed8, #3b82f6, #60a5fa, #3b82f6); background-size: 200% 100%; box-shadow: 0 0 10px rgba(59, 130, 246, 0.6), 0 0 20px rgba(29, 78, 216, 0.4); width: 0%; z-index: 99999; animation: gradient-flow 2s linear infinite; will-change: width; transform: translateZ(0); }
   @keyframes gradient-flow { 0% { background-position: 100% 0; } 100% { background-position: -100% 0; } }
   #progress-bar::after { content: ''; position: absolute; top: -1px; right: 0; width: 12px; height: 5px; background: #ffffff; border-radius: 50%; box-shadow: 0 0 15px 4px #60a5fa; }
   
   /* ===================== 3. 高级流体极光与景深粒子背景 ===================== */
-  #neuro-ambient-bg { position: fixed; z-index: -6; top: 0; left: 0; width: 100vw; height: 100vh; background: #03060e; overflow: hidden; }
+ #neuro-ambient-bg { position: fixed; z-index: -6; top: 0; left: 0; width: 100vw; height: 100vh; background: #03060e; overflow: hidden; transform: translateZ(0); isolation: isolate; }
   
   /* 🌟 核心魔法：叠加一层苹果级的高级胶片噪点纹理，瞬间提升硬件质感 */
   #neuro-ambient-bg::before { 
@@ -83,20 +82,19 @@
   }
   
   /* 缓慢流动的极光色块 (Blackrock 色调) */
-  .aurora { position: absolute; border-radius: 50%; filter: blur(90px); opacity: 0.4; animation: aurora-float 25s infinite alternate cubic-bezier(0.4, 0, 0.2, 1); will-change: transform; pointer-events: none;}
+  .aurora { position: absolute; border-radius: 50%; filter: blur(70px); opacity: 0.35; animation: aurora-float 25s infinite alternate cubic-bezier(0.4, 0, 0.2, 1); will-change: transform; pointer-events: none; transform: translateZ(0); }
   .aurora-1 { width: 50vw; height: 50vw; background: radial-gradient(circle, rgba(13, 148, 136, 0.4), transparent 70%); top: -20%; left: -10%; animation-delay: 0s; }
   .aurora-2 { width: 60vw; height: 60vw; background: radial-gradient(circle, rgba(6, 182, 212, 0.25), transparent 70%); bottom: -20%; right: -20%; animation-delay: -7s; }
-  .aurora-3 { width: 45vw; height: 45vw; background: radial-gradient(circle, rgba(30, 58, 138, 0.5), transparent 70%); top: 30%; left: 40%; transform: translate(-50%, -50%); animation-delay: -14s; }
-  
+  .aurora-3 { width: 45vw; height: 45vw; background: radial-gradient(circle, rgba(30, 58, 138, 0.5), transparent 70%); top: 30%; left: 40%; margin-left: -22.5vw; margin-top: -22.5vw; animation-delay: -14s; }
   @keyframes aurora-float {
     0% { transform: translate(0, 0) scale(1); }
     50% { transform: translate(6vw, 8vh) scale(1.15); }
     100% { transform: translate(-6vw, -5vh) scale(0.9); }
   }
 
-  #neuro-dust-canvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -5; pointer-events: none; }
+  #neuro-dust-canvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -5; pointer-events: none; transform: translateZ(0); will-change: contents; }
   
-  /* ☀️ 浅色模式完美覆盖 */
+ /* ☀️ 浅色模式完美覆盖 */
   body.light-mode #neuro-ambient-bg { background: #f8fafc; }
   body.light-mode .aurora-1 { background: radial-gradient(circle, rgba(59, 130, 246, 0.25), transparent 70%); }
   body.light-mode .aurora-2 { background: radial-gradient(circle, rgba(147, 197, 253, 0.35), transparent 70%); }
@@ -105,7 +103,7 @@
   
   /* --- 🚀 内容玻璃容器 --- */
   .layout-wrapper { position: relative; max-width: 860px; margin: 100px auto 60px; z-index: 10; perspective: 1000px; }
-  .container { position: relative; padding: 60px 80px; background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(20px) saturate(180%); -webkit-backdrop-filter: blur(20px) saturate(180%); border-radius: 20px; box-shadow: 0 20px 50px rgba(59, 130, 246, 0.15); border: 1px solid rgba(255, 255, 255, 0.1); border-top: 4px solid #3b82f6; opacity: 0; animation: fadeUp 0.6s ease-out 0.2s forwards; z-index: 1; transform-style: preserve-3d; transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);  will-change: backdrop-filter; contain: layout style; overflow: hidden; }
+  .container { position: relative; padding: 60px 80px; background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-radius: 20px; box-shadow: 0 20px 50px rgba(59, 130, 246, 0.15); border: 1px solid rgba(255, 255, 255, 0.1); border-top: 4px solid #3b82f6; opacity: 0; animation: fadeUp 0.6s ease-out 0.2s forwards; z-index: 1; transform-style: preserve-3d; transition: border-color 0.4s ease, box-shadow 0.4s ease, transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1); will-change: transform; contain: layout style paint; overflow: hidden; }
   .container::before { content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: radial-gradient(800px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255, 255, 255, 0.07), transparent 40%); z-index: -1; pointer-events: none; opacity: 0; transition: opacity 0.5s; }
   .container:hover { border-color: rgba(96, 165, 250, 0.4); box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6), 0 0 30px rgba(59, 130, 246, 0.15); transform: translateY(-2px); }
   .container:hover::before { opacity: 1; }
@@ -183,7 +181,7 @@
   .video-header { display: flex; justify-content: space-between; align-items: center; padding: 12px 24px; background: rgba(15, 23, 42, 0.6); border-bottom: 1px solid rgba(255, 255, 255, 0.1); color: #93c5fd; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; letter-spacing: 1px; text-shadow: 0 0 10px rgba(147, 197, 253, 0.5); }
   .video-close { cursor: pointer; font-size: 1.8rem; line-height: 1; color: #64748b; transition: all 0.3s ease; }
   .video-close:hover { color: #ef4444; transform: rotate(90deg) scale(1.2); text-shadow: 0 0 10px rgba(239, 68, 68, 0.6); }
-  video#guardian-video { width: 100%; display: block; outline: none; background: #000; }
+  video#guardian-video { width: 100%; max-height: 75vh; display: block; outline: none; background: #000; object-fit: contain; }
 
   /* ===================== 5. 交互机器人 ===================== */
   .model-loader { width: 40px; height: 40px; border: 3px solid rgba(59, 130, 246, 0.1); border-radius: 50%; border-top-color: #3b82f6; animation: spin 1s linear infinite; }
@@ -298,6 +296,9 @@
     .guide-arrow { left: 50%; top: -40px; transform: translateX(-50%) rotate(90deg); }
     #bot-container.guide-mode .guide-arrow { animation: point-up 0.8s ease-in-out infinite alternate; }
     @keyframes point-up { from { transform: translateX(-50%) rotate(-90deg) translateY(0); } to { transform: translateX(-50%) rotate(-90deg) translateY(-15px); } }
+    .aurora { filter: none !important; opacity: 0.15 !important; }
+    .container { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; background: rgba(10, 15, 30, 0.92) !important; }
+    .layout-wrapper { perspective: none !important; }
   }
 </style>
 
@@ -342,7 +343,7 @@
   const linkEn = document.getElementById('mirror-link-en');
   const linkZh = document.getElementById('mirror-link-zh');
 
-  let targetDomain = host.includes(siteA) ? siteB : siteA;
+  let targetDomain = host.includes("pages.dev") ? siteB : siteA;
   let fullURL = "https://" + targetDomain;
 
   linkEn.href = fullURL;
@@ -466,6 +467,10 @@
     @keyframes live-glow-blue { 0% { color: #1d4ed8; opacity: 0.7; text-shadow: 0 0 0px rgba(96, 165, 250, 0); } 50% { color: #60a5fa; opacity: 1; text-shadow: 0 0 10px rgba(96, 165, 250, 0.8); } 100% { color: #1d4ed8; opacity: 0.7; text-shadow: 0 0 0px rgba(96, 165, 250, 0); } }
     @keyframes float-up-fade { 0% { transform: translateY(0); opacity: 0; } 20% { opacity: 1; } 100% { transform: translateY(-12px); opacity: 0; } }
     .animate-plus { animation: float-up-fade 1.2s ease-out forwards; }
+     @media (prefers-reduced-motion: reduce) {
+    .aurora, .bot-head, .bot-eye, .bot-antenna::after, .typewriter-cursor, #progress-bar { animation: none !important; }
+    .container { transition: none !important; }
+  }
   </style>
 
 <script>
@@ -566,578 +571,516 @@
   let currentLang = 'en';
   let dialogData = dialogData_EN;
    
-  document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
 
-    // ✅ 1. 优先获取所有的 DOM 元素，防止未定义报错
-    const container = document.querySelector('.container');
-    const cursorDot = document.querySelector('.cursor-dot');
-    const cursorOutline = document.querySelector('.cursor-outline');
-    const pupils = document.querySelectorAll('.bot-pupil');
-    const botContainer = document.getElementById('bot-container');
-    const botSpeech = document.getElementById('bot-speech');
-    const rpgDialogue = document.getElementById('rpg-dialogue');
-    const rpgText = document.getElementById('rpg-text');
-    const rpgOptions = document.getElementById('rpg-options');
-    const rpgClose = document.querySelector('.rpg-close');
-
-    // ✅ 2. 安全地初始化鼠标和容器位置变量
-    let mouseX = window.innerWidth / 2, mouseY = window.innerHeight / 2, ticking = false;
-    let containerRect = container ? container.getBoundingClientRect() : null;
-    window.addEventListener('resize', () => { if(container) containerRect = container.getBoundingClientRect(); });
-
-// ===================== 🌟 仿生神经突触网络 (Neural Plexus) ====================
+if (localStorage.getItem('elink_visited') === 'true') {
+    // 已经访问过，彻底隐藏并解除锁定
+    welcomeModal.style.display = 'none'; 
+    document.body.classList.remove('modal-active');
+  } else {
+    // 首次访问，触发动画
+    setTimeout(() => {
+      welcomeModal.classList.add('show');
+      document.body.classList.add('modal-active');
+    }, 10);
+  }
  
-    // ===================== 🌟 顶尖大厂级：仿生神经突触网络 (Neural Plexus) =====================
-    function initNeuralWeb() {
-      const canvas = document.getElementById('neuro-dust-canvas');
-      if(!canvas) return;
-      const ctx = canvas.getContext('2d', { alpha: true });
-      let width, height;
-      
-      function resize() {
-        width = window.innerWidth; height = window.innerHeight;
-        const dpr = Math.min(window.devicePixelRatio || 1, 2); 
-        canvas.width = width * dpr; canvas.height = height * dpr;
-        canvas.style.width = `${width}px`; canvas.style.height = `${height}px`;
-        ctx.scale(dpr, dpr); 
-      }
-      window.addEventListener('resize', resize);
-      resize();
-
-      const particles = [];
-      const signals = []; // ⚡ 神经电信号队列
-      
-      // 移动端适当减少节点保证流畅度
-      const count = window.innerWidth > 768 ? 70 : 35; 
-      const maxDistance = 180; 
-      
-      // 初始化神经元细胞体
-      for(let i = 0; i < count; i++) {
-        particles.push({
-          x: Math.random() * width,
-          y: Math.random() * height,
-          vx: (Math.random() - 0.5) * 0.3,
-          vy: (Math.random() - 0.5) * 0.3,
-          radius: Math.random() * 2 + 1.5, 
-          phase: Math.random() * Math.PI * 2, 
-          breathSpeed: Math.random() * 0.02 + 0.01, 
-          connections: [] 
-        });
-      }
-
-      function draw() {
-        if (document.hidden || document.body.classList.contains('modal-active')) {
-          requestAnimationFrame(draw); return; 
-        }
-        
-        ctx.clearRect(0, 0, width, height);
-        const isLight = document.body.classList.contains('light-mode');
-        
-        // 节点和连线保持深邃的青蓝色系，作为背景基调
-        const nodeColor = isLight ? '13, 148, 136' : '96, 165, 250'; 
-        const lineColor = isLight ? '20, 184, 166' : '59, 130, 246';
-        
-        // 🔴 激光红
-        const signalColor = isLight ? '220, 38, 38' : '255, 60, 60'; 
-
-        // 1. 更新位置 (引入有机呼吸算法)
-        particles.forEach(p => {
-          p.x += p.vx; p.y += p.vy;
-          p.phase += p.breathSpeed; 
-
-          if (p.x < -100) p.x = width + 100; if (p.x > width + 100) p.x = -100;
-          if (p.y < -100) p.y = height + 100; if (p.y > height + 100) p.y = -100;
-          
-          p.connections = []; 
-        });
-
-        // 2. 绘制神经突触连线
-        ctx.lineCap = 'round';
-        for(let i = 0; i < count; i++) {
-          const p1 = particles[i];
-          const r1x = p1.x + Math.sin(p1.phase) * 12; 
-          const r1y = p1.y + Math.cos(p1.phase * 0.8) * 12;
-
-          for(let j = i + 1; j < count; j++) {
-            const p2 = particles[j];
-            const r2x = p2.x + Math.sin(p2.phase) * 12;
-            const r2y = p2.y + Math.cos(p2.phase * 0.8) * 12;
-
-            const dx = r1x - r2x; const dy = r1y - r2y;
-            const dist = Math.sqrt(dx*dx + dy*dy);
-
-            if(dist < maxDistance) {
-              p1.connections.push(p2); 
-              p2.connections.push(p1);
-
-              ctx.beginPath();
-              const intensity = 1 - dist/maxDistance;
-              ctx.strokeStyle = `rgba(${lineColor}, ${0.35 * intensity})`;
-              ctx.lineWidth = 1.5 * intensity + 0.5;
-              ctx.moveTo(r1x, r1y);
-              ctx.lineTo(r2x, r2y);
-              ctx.stroke();
-            }
-          }
-
-          // 🌟 鼠标交互：神经元向鼠标方向伸出突触
-          const mdx = mouseX - r1x; const mdy = mouseY - r1y;
-          const mDist = Math.sqrt(mdx*mdx + mdy*mdy);
-          if (mDist < 220) {
-            ctx.beginPath();
-            ctx.strokeStyle = `rgba(${lineColor}, ${0.5 * (1 - mDist/220)})`;
-            ctx.lineWidth = 1;
-            ctx.moveTo(r1x, r1y);
-            ctx.lineTo(mouseX, mouseY);
-            ctx.stroke();
-            
-            p1.x += (mdx / mDist) * 0.4;
-            p1.y += (mdy / mDist) * 0.4;
-          }
-        }
-
-        // 3. ⚡ 突发性高频电信号 (Spike Trains - “突突突”效果)
-        if (Math.random() < 0.06) { 
-          const startNode = particles[Math.floor(Math.random() * particles.length)];
-          if (startNode.connections.length > 0) {
-            const endNode = startNode.connections[Math.floor(Math.random() * startNode.connections.length)];
-            
-            const burstCount = Math.floor(Math.random() * 3) + 2; 
-            const baseSpeed = Math.random() * 0.05 + 0.08; 
-            
-            for(let b = 0; b < burstCount; b++) {
-              signals.push({
-                start: startNode, end: endNode,
-                progress: -b * 0.15, 
-                speed: baseSpeed,
-                tailLength: 0.12 // 尾巴长度
-              });
-            }
-          }
-        }
-
-        // 4. ⚡ 渲染带渐变拖尾的彗星光梭
-        for (let i = signals.length - 1; i >= 0; i--) {
-          const sig = signals[i];
-          sig.progress += sig.speed;
-          
-          if (sig.progress >= 1 + sig.tailLength) {
-            signals.splice(i, 1); 
-            continue;
-          }
-
-          if (sig.progress > 0) {
-            const sx = sig.start.x + Math.sin(sig.start.phase) * 12;
-            const sy = sig.start.y + Math.cos(sig.start.phase * 0.8) * 12;
-            const ex = sig.end.x + Math.sin(sig.end.phase) * 12;
-            const ey = sig.end.y + Math.cos(sig.end.phase * 0.8) * 12;
-
-            const headP = Math.min(1, sig.progress);
-            const headX = sx + (ex - sx) * headP;
-            const headY = sy + (ey - sy) * headP;
-
-            const tailP = Math.max(0, sig.progress - sig.tailLength);
-            const tailX = sx + (ex - sx) * tailP;
-            const tailY = sy + (ey - sy) * tailP;
-
-            // 🎯 核心改动：创建线性渐变制造完美的拖影
-            const lineGrad = ctx.createLinearGradient(tailX, tailY, headX, headY);
-            lineGrad.addColorStop(0, `rgba(${signalColor}, 0)`);     // 尾部完全透明
-            lineGrad.addColorStop(0.7, `rgba(${signalColor}, 1)`);   // 中前部红色实体
-            lineGrad.addColorStop(1, `#ffffff`);                     // 弹头纯白高光
-
-            ctx.beginPath();
-            ctx.strokeStyle = lineGrad; // 赋予渐变色
-            ctx.lineWidth = 2.5; 
-            ctx.shadowBlur = 15; // 保留泛光，让光束看起来有能量感
-            ctx.shadowColor = `rgba(${signalColor}, 1)`;
-            ctx.moveTo(tailX, tailY);
-            ctx.lineTo(headX, headY);
-            ctx.stroke();
-            ctx.shadowBlur = 0; 
-
-            // 在头部补一个实心白点，让“弹头”更有质感
-            if (headP < 1) {
-              ctx.beginPath();
-              ctx.fillStyle = '#ffffff'; 
-              ctx.arc(headX, headY, 1.8, 0, Math.PI * 2);
-              ctx.fill();
-            }
-          }
-        }
-
-        // 5. 🦠 渲染多层神经细胞体 (Soma)
-        particles.forEach(p => {
-          const rx = p.x + Math.sin(p.phase) * 12;
-          const ry = p.y + Math.cos(p.phase * 0.8) * 12;
-
-          ctx.beginPath();
-          ctx.fillStyle = `rgba(${nodeColor}, 0.15)`;
-          ctx.arc(rx, ry, p.radius * 3.5, 0, Math.PI * 2);
-          ctx.fill();
-
-          ctx.beginPath();
-          ctx.fillStyle = `rgba(${nodeColor}, 0.9)`;
-          ctx.shadowBlur = 10;
-          ctx.shadowColor = `rgba(${nodeColor}, 0.8)`;
-          ctx.arc(rx, ry, p.radius, 0, Math.PI * 2);
-          ctx.fill();
-          ctx.shadowBlur = 0; 
-        });
-
-        requestAnimationFrame(draw);
-      }
-      draw();
-    }
-    initNeuralWeb(); // 启动神经网
-    // ===================== 🚀 极简 3D 模型渲染器 (彻底修复滑动白屏 Bug) =====================
-    const models = Array.from(document.querySelectorAll('model-viewer'));
-    if (models.length) {
-        const modelObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                const viewer = entry.target;
-                if (entry.isIntersecting) {
-                    // 进入视口：如果是手动加载模式且没加载过，则触发加载
-                    if (viewer.getAttribute('reveal') === 'manual' && viewer.dataset.loaded !== "true") {
-                        viewer.dataset.loaded = "true";
-                        viewer.dismissPoster();
-                    }
-                    try { viewer.play(); } catch(e) {}
-                    
-                    // 显示手势 HUD
-                    if (viewer.dataset.overlayDisabled !== "true") {
-                        clearTimeout(viewer.hudTimer);
-                        viewer.hudTimer = setTimeout(() => {
-                            viewer.querySelectorAll('.gesture-overlay').forEach(el => el.classList.add('gesture-active'));
-                        }, 500);
-                    }
-                } else {
-                    // 离开视口：仅暂停动画，绝不销毁 src (彻底修复白屏 Bug)
-                    viewer.pause();
-                    viewer.querySelectorAll('.gesture-overlay').forEach(el => el.classList.remove('gesture-active'));
-                }
-            });
-        }, { threshold: 0.1 });
-
-        models.forEach(viewer => {
-            modelObserver.observe(viewer);
-            // 用户点击后加载模型
-            viewer.addEventListener('click', () => {
-                if (viewer.dataset.loaded !== "true") {
-                    viewer.dataset.loaded = "true";
-                    viewer.dismissPoster();
-                }
-            });
-            // 用户开始操作模型后，永久隐藏提示
-            const handleCameraChange = (event) => {
-                if (event.detail.source === 'user-interaction' && viewer.dataset.overlayDisabled !== "true") {
-                    viewer.querySelectorAll('.gesture-overlay, .gesture-hud').forEach(el => {
-                        el.classList.add('gesture-hidden');
-                    });
-                    viewer.dataset.overlayDisabled = "true";
-                    viewer.removeEventListener('camera-change', handleCameraChange);
-                }
-            };
-            viewer.addEventListener('camera-change', handleCameraChange);
-        });
-    }
-
-    // ===================== 0. Lenis 平滑滚动 =====================
-    let lenis = null;
-    if (typeof Lenis !== 'undefined') {
-      lenis = new Lenis({
-        duration: 1.2,
-        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-        direction: 'vertical', gestureDirection: 'vertical',
-        smooth: true, mouseMultiplier: 1, smoothTouch: false, touchMultiplier: 2,
-      });
-      function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
-      requestAnimationFrame(raf);
-    }
-
-    // ===================== 其余功能：懒加载、打字机、机器人互动等 =====================
-    const images = document.querySelectorAll('#main_content img');
-    images.forEach((img, index) => {
-        if (index < 2) { img.setAttribute('loading', 'eager'); img.setAttribute('fetchpriority', 'high'); } 
-        else { if(!img.getAttribute('loading')) img.setAttribute('loading', 'lazy'); }
-    });
-
-    const textsEN = ["Welcome to this webpage!", "Thanks for visiting us!", "Stay tuned!"];
-    const textsZH = ["欢迎访问本网页！", "感谢您的关注！", "欢迎常来访问！"];
-    let texts = textsEN; 
-    let textIdx = 0, charIdx = 0, isDeleting = false;
-    
-    function type() {
-      const currentText = texts[textIdx];
-      const display = isDeleting ? currentText.substring(0, charIdx--) : currentText.substring(0, charIdx++);
-      document.getElementById('typewriter-text').textContent = display;
-      let speed = isDeleting ? 50 : 100;
-      if (!isDeleting && charIdx === currentText.length + 1) { isDeleting = true; speed = 2000; } 
-      else if (isDeleting && charIdx === 0) { isDeleting = false; textIdx = (textIdx + 1) % texts.length; speed = 500; }
-      setTimeout(type, speed);
-    }
-    type();
-
-    let typeTimer = null;
- 
-    // --- 🔥 弹窗逻辑 ---
-    const welcomeModal = document.getElementById('welcome-modal');
-    const modalKeepDarkBtn = document.getElementById('modal-keep-dark-btn');
-    const modalSwitchLightBtn = document.getElementById('modal-switch-light-btn');
-    const modalLangCheckbox = document.getElementById('modal-lang-toggle-checkbox');
-    let modalIsZh = false; 
- 
-    setTimeout(() => { welcomeModal.classList.add('show'); document.body.classList.add('modal-active'); }, 10);
- 
-    let idleInterval; let tipIndex = 0;
-    function startIdleTips() {
-      if(idleInterval) clearInterval(idleInterval);
-      const enTips = ["Click me for guide!", "I'm here to help!"];
-      const zhTips = ["我是E-Link智能向导", "🤖‘戳’我脑袋与我互动吧！"];
-      const runCycle = () => { botSay((currentLang === 'en' ? enTips : zhTips)[tipIndex], 3000); tipIndex = (tipIndex + 1) % 2; };
-      runCycle(); idleInterval = setInterval(runCycle, 3500);
-    }
- 
-    function closeModal() {
-      welcomeModal.classList.remove('show');
-      document.body.classList.remove('modal-active'); 
-      if (modalIsZh && currentLang !== 'zh') langToggle.click(); 
-      else if (!modalIsZh && currentLang === 'zh') langToggle.click();
-      setTimeout(() => {
-          botContainer.classList.add('attention-jump'); 
-          startIdleTips();
-          setTimeout(() => botContainer.classList.remove('attention-jump'), 3200);
-      }, 100);
-    }
- 
-    modalKeepDarkBtn.addEventListener('click', closeModal);
-    modalSwitchLightBtn.addEventListener('click', () => { themeToggle.click(); closeModal(); });
- 
-    modalLangCheckbox.addEventListener('change', () => {
-      const enTexts = document.querySelectorAll('.m-en');
-      const zhTexts = document.querySelectorAll('.m-zh');
-      const enContent = document.querySelectorAll('.lang-en');
-      const zhContent = document.querySelectorAll('.lang-zh');
-      modalIsZh = modalLangCheckbox.checked;
-      if (modalIsZh) {
-        enTexts.forEach(el => el.style.display = 'none'); zhTexts.forEach(el => el.style.display = 'inline');
-        enContent.forEach(el => el.style.display = 'none'); zhContent.forEach(el => el.style.display = 'block');
-      } else {
-        zhTexts.forEach(el => el.style.display = 'none'); enTexts.forEach(el => el.style.display = 'inline');
-        zhContent.forEach(el => el.style.display = 'block'); enContent.forEach(el => el.style.display = 'none');
-      }
-    });
- 
-    // --- 切换逻辑 ---
-    const themeToggle = document.getElementById('theme-toggle');
-    const langToggle = document.getElementById('lang-toggle');
-    let isLight = false;
-        
-    themeToggle.addEventListener('click', () => {
-      isLight = !isLight;
-      document.body.classList.toggle('light-mode');
-      if (isLight) { themeToggle.textContent = "🌙"; } else { themeToggle.textContent = "☀️"; }
-    });
- 
-    langToggle.addEventListener('click', () => {
-      const enContent = document.querySelectorAll('.lang-en');
-      const zhContent = document.querySelectorAll('.lang-zh');
-      if (currentLang === 'en') {
-           currentLang = 'zh'; dialogData = dialogData_ZH; texts = textsZH;            
-           langToggle.textContent = "中 / 英";
-           enContent.forEach(el => el.style.display = 'none'); zhContent.forEach(el => el.style.display = 'block');
-      } else {
-           currentLang = 'en'; dialogData = dialogData_EN; texts = textsEN;
-           langToggle.textContent = "EN / CN";
-           enContent.forEach(el => el.style.display = 'block'); zhContent.forEach(el => el.style.display = 'none');
-      }
-      textIdx = 0; charIdx = 0; isDeleting = false;
-      if(rpgDialogue.classList.contains('active')) closeDialogue();
-      if (!rpgDialogue.classList.contains('active') && idleInterval) startIdleTips();
-    });
-
-    // 鼠标引擎 (防抖动，处理所有鼠标跟随特效)
-    window.addEventListener('mousemove', (e) => {
-        if (window.innerWidth <= 768 || document.body.classList.contains('modal-active')) return; 
-        mouseX = e.clientX; mouseY = e.clientY;
-        if (!ticking) {
-            window.requestAnimationFrame(() => {
-                if(cursorDot) cursorDot.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0) translate(-50%, -50%)`;
-                if(cursorOutline) cursorOutline.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0) translate(-50%, -50%)`;
-                if (container) {
-                    const rx = (window.innerWidth / 2 - mouseX) / 50; 
-                    const ry = (window.innerHeight / 2 - mouseY) / 50;
-                    container.style.transform = `rotateY(${rx * -1}deg) rotateX(${ry}deg)`;
-                    if(containerRect) {
-                        container.style.setProperty("--mouse-x", `${mouseX - containerRect.left}px`);
-                        container.style.setProperty("--mouse-y", `${mouseY - containerRect.top}px`);
-                    }
-                }
-                pupils.forEach(p => {
-                    const rect = p.parentElement.getBoundingClientRect(); 
-                    const cx = rect.left + rect.width / 2, cy = rect.top + rect.height / 2;
-                    const angle = Math.atan2(mouseY - cy, mouseX - cx);
-                    const dist = Math.min(6, Math.hypot(mouseX - cx, mouseY - cy) / 15);
-                    p.style.transform = `translate(calc(-50% + ${Math.cos(angle) * dist}px), calc(-50% + ${Math.sin(angle) * dist}px))`;
-                });
-                ticking = false;
-            });
-            ticking = true;
-        }
-    });
-
-    // 顶部进度条与机器人的固定模式
-    let scrollTimeout;
-    window.addEventListener('scroll', () => {
-        if(scrollTimeout) cancelAnimationFrame(scrollTimeout);
-        scrollTimeout = requestAnimationFrame(() => {
-            const scrolled = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
-            const pb = document.getElementById("progress-bar");
-            if(pb) pb.style.width = scrolled + "%";
-            if(botContainer && window.innerWidth > 768) {
-                if(window.scrollY > 200) { botContainer.classList.add('fixed-mode'); } 
-                else { botContainer.classList.remove('fixed-mode'); }
-            }
-        });
-    }, { passive: true });
- 
-    function botSay(text, duration = 1000) {
-      if(!botSpeech || !botContainer || rpgDialogue.classList.contains('active')) return; 
-      botSpeech.textContent = text;
-      botContainer.classList.add('speaking');
-      if(botContainer.speechTimer) clearTimeout(botContainer.speechTimer);
-      botContainer.speechTimer = setTimeout(() => botContainer.classList.remove('speaking'), duration);
-    }
-
-    // --- 🎬 视频控制逻辑 ---
-    const videoModal = document.getElementById('video-modal');
-    const guardianVideo = document.getElementById('guardian-video');
-
-    window.openVideoModal = function() {
-        videoModal.classList.add('show');
-        document.body.classList.add('modal-active'); 
-    }
-    window.closeVideoModal = function() {
-        videoModal.classList.remove('show');
-        document.body.classList.remove('modal-active');
-        if(guardianVideo) guardianVideo.pause(); 
-    }
-    videoModal.addEventListener('click', (e) => { if(e.target === videoModal) closeVideoModal(); });
-
-    function showDialogueNode(nodeKey, isFastMode = false) {
-      if (nodeKey === 'play_video') {
-         botSay(currentLang === 'en' ? "Accessing Video Feed..." : "正在接入视频信号...", 1000);
-         setTimeout(openVideoModal, 1000); return; 
-      }
-      if(nodeKey === 'close') { 
-           closeDialogue(); botContainer.classList.add('interaction-done');
-           botSay(currentLang === 'en' ? "Nice chatting with you!" : "很高兴与你交谈！", 3000); return; 
-      }  
-      
-      const node = dialogData[nodeKey]; if(!node) return;
-      rpgOptions.innerHTML = ''; 
-      if(typeTimer) clearInterval(typeTimer);
- 
-      const showButtons = () => {
-           node.options.forEach((opt, idx) => {
-             const btn = document.createElement('div');
-             btn.className = 'rpg-btn'; btn.textContent = '> ' + opt.text;
-             const isBackAction = opt.text.includes("Back") || opt.text.includes("返回");
-             if(isFastMode) { btn.style.opacity = 1; btn.style.transform = 'translateX(0)'; btn.style.animation = 'none'; } 
-             else { btn.style.animationDelay = `${idx * 0.05}s`; }
-             btn.onclick = (e) => { e.stopPropagation(); showDialogueNode(opt.next, isBackAction); };
-             rpgOptions.appendChild(btn);
-           });
+  // ── 统一 RAF 调度器 ──────────────────────────────────────────
+  const rafScheduler = {
+    tasks: new Map(),
+    isRunning: false,
+    add(key, fn) { this.tasks.set(key, fn); if (!this.isRunning) this.start(); },
+    remove(key) { this.tasks.delete(key); },
+    start() {
+      this.isRunning = true;
+      const loop = (time) => {
+        if (this.tasks.size === 0) { this.isRunning = false; return; }
+        this.tasks.forEach(fn => { try { fn(time); } catch (e) {} });
+        requestAnimationFrame(loop);
       };
- 
-      if (isFastMode) { rpgText.textContent = node.text; showButtons(); } 
-      else {
-           rpgText.textContent = ''; let i = 0;
-           typeTimer = setInterval(() => {
-             rpgText.textContent += node.text.charAt(i); i++;
-             if(i >= node.text.length) { clearInterval(typeTimer); showButtons(); }
-           }, 20);
-      }
+      requestAnimationFrame(loop);
     }
- 
-    function openDialogue() {
-      if(rpgDialogue.classList.contains('active')) return;
-      rpgDialogue.classList.add('active'); botContainer.classList.add('speaking', 'hint-removed'); 
-      showDialogueNode('start');
-    }
- 
-    function closeDialogue() {
-      rpgDialogue.classList.remove('active'); botContainer.classList.remove('speaking');
-      setTimeout(() => { rpgText.textContent = ''; rpgOptions.innerHTML = ''; }, 300);
-    }
- 
-    if(botContainer) {
-      botContainer.addEventListener('click', (e) => {
-        e.stopPropagation();
-        if (idleInterval) { clearInterval(idleInterval); idleInterval = null; }
-        if(botContainer.speechTimer) clearTimeout(botContainer.speechTimer); 
-        botSpeech.textContent = "";                    
-        botContainer.classList.remove('speaking'); 
-        if(rpgDialogue.classList.contains('active')) closeDialogue(); else openDialogue();
-      });
-    }
-    if(rpgDialogue) { rpgDialogue.addEventListener('click', (e) => { e.stopPropagation(); }); }
-    if(rpgClose) { rpgClose.addEventListener('click', (e) => { e.stopPropagation(); closeDialogue(); }); }
- 
-    setTimeout(() => botSay(currentLang === 'en' ? "Click me for guide!" : "点击我答疑解惑", 60000), 1000);
- 
-    const badges = document.querySelectorAll('.nav-badges a');
-    badges.forEach(b => {
-      b.addEventListener('mouseenter', () => {
-        document.body.classList.add('badge-hovering', 'hovering');
-        botSay(currentLang === 'en' ? "Accessing..." : "正在访问...", 1500);
-      });
-      b.addEventListener('mouseleave', () => {
-        document.body.classList.remove('badge-hovering', 'hovering');
-      });
-      b.addEventListener('click', function(e) {
-        e.preventDefault(); 
-        const url = this.href;
-        
-        badges.forEach((sib, idx) => {
-            const img = sib.querySelector('img');
-            img.style.animationDelay = `${Math.abs(idx - [...badges].indexOf(this)) * 0.06}s`;
-            img.classList.add('rippling');
-        });
-        
-        setTimeout(() => {
-            if (url.includes('#')) {
-                const targetId = url.substring(url.indexOf('#'));
-                try {
-                    const targetElement = document.querySelector(targetId);
-                    if (targetElement) {
-                        targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                        return; 
-                    }
-                } catch (error) {}
-            }
-            if (this.target === '_blank') { window.open(url, '_blank'); } 
-            else { window.location.href = url; }
-        }, 500);
-      });
-     });
-    
-    document.body.addEventListener('mouseover', (e) => {
-      if (e.target.closest('a, button, .ctrl-btn, .rpg-btn, #bot-container, .slider')) document.body.classList.add('hovering');
+  };
+
+  // ── 光标引擎 ─────────────────────────────────────────────────
+  const cursorDot = document.querySelector('.cursor-dot');
+  const cursorOutline = document.querySelector('.cursor-outline');
+  let mouseX = -100, mouseY = -100;
+  let outlineX = -100, outlineY = -100;
+
+  if (window.innerWidth > 768 && cursorDot && cursorOutline) {
+    document.addEventListener('mousemove', (e) => {
+      mouseX = e.clientX; mouseY = e.clientY;
+    }, { passive: true });
+
+    rafScheduler.add('cursor', () => {
+      if (document.body.classList.contains('modal-active')) return;
+      cursorDot.style.transform =
+        `translate3d(${mouseX}px,${mouseY}px,0) translate(-50%,-50%)`;
+      outlineX += (mouseX - outlineX) * 0.12;
+      outlineY += (mouseY - outlineY) * 0.12;
+      cursorOutline.style.transform =
+        `translate3d(${outlineX}px,${outlineY}px,0) translate(-50%,-50%)`;
     });
-    document.body.addEventListener('mouseout', (e) => {
-      if (e.target.closest('a, button, .ctrl-btn, .rpg-btn, #bot-container, .slider')) document.body.classList.remove('hovering');
+  }
+
+  // ── 粒子引擎 ─────────────────────────────────────────────────
+  function initNeuralWeb() {
+    const canvas = document.getElementById('neuro-dust-canvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d', { alpha: true, desynchronized: true });
+    let width, height, dpr;
+
+    let resizeTimer;
+    function applyResize() {
+      dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+      width = window.innerWidth; height = window.innerHeight;
+      canvas.width = Math.floor(width * dpr);
+      canvas.height = Math.floor(height * dpr);
+      canvas.style.width = `${width}px`; canvas.style.height = `${height}px`;
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.scale(dpr, dpr);
+    }
+    applyResize();
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimer); resizeTimer = setTimeout(applyResize, 150);
+    }, { passive: true });
+
+    const count = window.innerWidth > 768 ? 50 : 20;
+    const maxDistance = window.innerWidth > 768 ? 150 : 100;
+    const maxDistSq = maxDistance * maxDistance;
+    const particles = [];
+    for (let i = 0; i < count; i++) {
+      particles.push({
+        x: Math.random() * width, y: Math.random() * height,
+        vx: (Math.random() - 0.5) * 0.25, vy: (Math.random() - 0.5) * 0.25,
+        radius: Math.random() * 1.5 + 1,
+        phase: Math.random() * Math.PI * 2,
+        breathSpeed: Math.random() * 0.015 + 0.008,
+        connections: []
+      });
+    }
+    const signals = [];
+    const px = new Float32Array(count);
+    const py = new Float32Array(count);
+    let isHidden = false;
+    document.addEventListener('visibilitychange', () => { isHidden = document.hidden; });
+
+    let lastFrameTime = 0;
+    const targetInterval = 1000 / 30;
+
+    rafScheduler.add('particles', (timestamp) => {
+      if (isHidden) return;
+      if (timestamp - lastFrameTime < targetInterval) return;
+      lastFrameTime = timestamp;
+
+      ctx.clearRect(0, 0, width, height);
+      const isLight = document.body.classList.contains('light-mode');
+      const nR = isLight ? 13 : 96, nG = isLight ? 148 : 165, nB = isLight ? 136 : 250;
+      const lR = isLight ? 20 : 59, lG = isLight ? 184 : 130, lB = isLight ? 166 : 246;
+      const sig = isLight ? '220,38,38' : '255,60,60';
+
+      for (let i = 0; i < count; i++) {
+        const p = particles[i];
+        p.x += p.vx; p.y += p.vy; p.phase += p.breathSpeed;
+        if (p.x < -50) p.x = width + 50; else if (p.x > width + 50) p.x = -50;
+        if (p.y < -50) p.y = height + 50; else if (p.y > height + 50) p.y = -50;
+        p.connections = [];
+        px[i] = p.x + Math.sin(p.phase) * 10;
+        py[i] = p.y + Math.cos(p.phase * 0.8) * 10;
+      }
+
+      ctx.lineCap = 'round';
+      for (let i = 0; i < count; i++) {
+        for (let j = i + 1; j < count; j++) {
+          const dx = px[i] - px[j], dy = py[i] - py[j];
+          const dSq = dx * dx + dy * dy;
+          if (dSq < maxDistSq) {
+            const intensity = (1 - Math.sqrt(dSq) / maxDistance) * 0.3;
+            particles[i].connections.push(particles[j]);
+            ctx.beginPath();
+            ctx.strokeStyle = `rgba(${lR},${lG},${lB},${intensity})`;
+            ctx.lineWidth = intensity * 2 + 0.3;
+            ctx.moveTo(px[i], py[i]); ctx.lineTo(px[j], py[j]); ctx.stroke();
+          }
+        }
+        if (window.innerWidth > 768) {
+          const mdx = mouseX - px[i], mdy = mouseY - py[i];
+          const mSq = mdx * mdx + mdy * mdy;
+          if (mSq < 40000) {
+            const mDist = Math.sqrt(mSq);
+            const alpha = (1 - mDist / 200) * 0.4;
+            ctx.beginPath();
+            ctx.strokeStyle = `rgba(${lR},${lG},${lB},${alpha})`;
+            ctx.lineWidth = 0.8;
+            ctx.moveTo(px[i], py[i]); ctx.lineTo(mouseX, mouseY); ctx.stroke();
+            particles[i].x += (mdx / mDist) * 0.3;
+            particles[i].y += (mdy / mDist) * 0.3;
+          }
+        }
+      }
+
+      if (Math.random() < 0.04) {
+        const si = Math.floor(Math.random() * count);
+        const sp = particles[si];
+        if (sp.connections.length > 0) {
+          const ep = sp.connections[Math.floor(Math.random() * sp.connections.length)];
+          const burst = Math.floor(Math.random() * 2) + 1;
+          for (let b = 0; b < burst; b++) {
+            signals.push({ si, ep, progress: -b * 0.18,
+              speed: Math.random() * 0.06 + 0.07, tail: 0.1 });
+          }
+        }
+      }
+
+      for (let i = signals.length - 1; i >= 0; i--) {
+        const s = signals[i];
+        s.progress += s.speed;
+        if (s.progress >= 1 + s.tail) { signals.splice(i, 1); continue; }
+        if (s.progress <= 0) continue;
+        const ei = particles.indexOf(s.ep);
+        if (ei < 0) { signals.splice(i, 1); continue; }
+        const sx = px[s.si], sy = py[s.si], ex = px[ei], ey = py[ei];
+        const hp = Math.min(1, s.progress), tp = Math.max(0, s.progress - s.tail);
+        const hx = sx + (ex - sx) * hp, hy = sy + (ey - sy) * hp;
+        const tx = sx + (ex - sx) * tp, ty = sy + (ey - sy) * tp;
+        if (Math.abs(hx - tx) < 0.1 && Math.abs(hy - ty) < 0.1) continue;
+        const g = ctx.createLinearGradient(tx, ty, hx, hy);
+        g.addColorStop(0, `rgba(${sig},0)`);
+        g.addColorStop(0.6, `rgba(${sig},0.9)`);
+        g.addColorStop(1, '#fff');
+        ctx.beginPath(); ctx.strokeStyle = g; ctx.lineWidth = 2;
+        ctx.shadowBlur = 8; ctx.shadowColor = `rgba(${sig},0.8)`;
+        ctx.moveTo(tx, ty); ctx.lineTo(hx, hy); ctx.stroke();
+        ctx.shadowBlur = 0;
+      }
+
+      for (let i = 0; i < count; i++) {
+        const r = particles[i].radius;
+        ctx.beginPath();
+        ctx.fillStyle = `rgba(${nR},${nG},${nB},0.12)`;
+        ctx.arc(px[i], py[i], r * 3, 0, Math.PI * 2); ctx.fill();
+        ctx.beginPath();
+        ctx.fillStyle = `rgba(${nR},${nG},${nB},0.85)`;
+        ctx.shadowBlur = 6; ctx.shadowColor = `rgba(${nR},${nG},${nB},0.6)`;
+        ctx.arc(px[i], py[i], r, 0, Math.PI * 2); ctx.fill();
+        ctx.shadowBlur = 0;
+      }
+    });
+  }
+  initNeuralWeb();
+
+  // ── Lenis 平滑滚动 ───────────────────────────────────────────
+  if (typeof Lenis !== 'undefined') {
+    const lenis = new Lenis({
+      duration: 1.1,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      smoothTouch: false, touchMultiplier: 1.5,
+    });
+    rafScheduler.add('lenis', (time) => lenis.raf(time));
+  }
+
+  // ── 滚动进度条 ───────────────────────────────────────────────
+  const progressBar = document.getElementById('progress-bar');
+  const botContainer = document.getElementById('bot-container');
+  let scrollRAF = null;
+  window.addEventListener('scroll', () => {
+    if (scrollRAF) return;
+    scrollRAF = requestAnimationFrame(() => {
+      const pct = window.scrollY /
+        (document.documentElement.scrollHeight - window.innerHeight) * 100;
+      if (progressBar) progressBar.style.width = pct + '%';
+      if (botContainer && window.innerWidth > 768)
+        botContainer.classList.toggle('fixed-mode', window.scrollY > 200);
+      scrollRAF = null;
+    });
+  }, { passive: true });
+
+  // ── 容器 3D 倾斜 ─────────────────────────────────────────────
+  const container = document.querySelector('.container');
+  const pupils = document.querySelectorAll('.bot-pupil');
+  let containerRect = container ? container.getBoundingClientRect() : null;
+  window.addEventListener('resize', () => {
+    if (container) containerRect = container.getBoundingClientRect();
+  }, { passive: true });
+
+  if (window.innerWidth > 768 && container) {
+    rafScheduler.add('tilt', () => {
+      if (document.body.classList.contains('modal-active')) return;
+      const rx = (window.innerWidth / 2 - mouseX) / 60;
+      const ry = (window.innerHeight / 2 - mouseY) / 60;
+      container.style.transform =
+        `perspective(1000px) rotateY(${-rx}deg) rotateX(${ry}deg)`;
+      if (containerRect) {
+        container.style.setProperty('--mouse-x', `${mouseX - containerRect.left}px`);
+        container.style.setProperty('--mouse-y', `${mouseY - containerRect.top}px`);
+      }
+      pupils.forEach(p => {
+        const rect = p.parentElement.getBoundingClientRect();
+        const cx = rect.left + rect.width / 2, cy = rect.top + rect.height / 2;
+        const angle = Math.atan2(mouseY - cy, mouseX - cx);
+        const dist = Math.min(5, Math.hypot(mouseX - cx, mouseY - cy) / 15);
+        p.style.transform =
+          `translate(calc(-50% + ${Math.cos(angle) * dist}px),`
+          + `calc(-50% + ${Math.sin(angle) * dist}px))`;
+      });
+    });
+  }
+
+  // ── 图片懒加载 ───────────────────────────────────────────────
+  document.querySelectorAll('#main_content img').forEach((img, i) => {
+    if (i < 2) { img.setAttribute('loading', 'eager'); img.setAttribute('fetchpriority', 'high'); }
+    else if (!img.getAttribute('loading')) img.setAttribute('loading', 'lazy');
+  });
+
+  // ── 打字机 ───────────────────────────────────────────────────
+  const textsEN = ["Welcome to this webpage!", "Thanks for visiting us!", "Stay tuned!"];
+  const textsZH = ["欢迎访问本网页！", "感谢您的关注！", "欢迎常来访问！"];
+  let texts = textsEN, textIdx = 0, charIdx = 0, isDeleting = false;
+  function type() {
+    const cur = texts[textIdx];
+    const el = document.getElementById('typewriter-text');
+    if (el) el.textContent = isDeleting
+      ? cur.substring(0, charIdx--) : cur.substring(0, charIdx++);
+    let speed = isDeleting ? 50 : 100;
+    if (!isDeleting && charIdx === cur.length + 1) { isDeleting = true; speed = 2000; }
+    else if (isDeleting && charIdx === 0) { isDeleting = false; textIdx = (textIdx + 1) % texts.length; speed = 500; }
+    setTimeout(type, speed);
+  }
+  type();
+
+  // ── 模态框 & 主题 & 语言 ─────────────────────────────────────
+  const welcomeModal = document.getElementById('welcome-modal');
+  const modalKeepDarkBtn = document.getElementById('modal-keep-dark-btn');
+  const modalSwitchLightBtn = document.getElementById('modal-switch-light-btn');
+  const modalLangCheckbox = document.getElementById('modal-lang-toggle-checkbox');
+  const themeToggle = document.getElementById('theme-toggle');
+  const langToggle = document.getElementById('lang-toggle');
+  const botSpeech = document.getElementById('bot-speech');
+  const rpgDialogue = document.getElementById('rpg-dialogue');
+  const rpgText = document.getElementById('rpg-text');
+  const rpgOptions = document.getElementById('rpg-options');
+  const rpgClose = document.querySelector('.rpg-close');
+  let isLight = false, modalIsZh = false;
+
+  let idleInterval, tipIndex = 0;
+  function startIdleTips() {
+    if (idleInterval) clearInterval(idleInterval);
+    const enT = ["Click me for guide!", "I'm here to help!"];
+    const zhT = ["我是E-Link智能向导", "🤖'戳'我脑袋与我互动吧！"];
+    const run = () => { botSay((currentLang === 'en' ? enT : zhT)[tipIndex], 3000); tipIndex = (tipIndex + 1) % 2; };
+    run(); idleInterval = setInterval(run, 3500);
+  }
+
+  function closeModal() {
+    welcomeModal.classList.remove('show');
+   document.body.classList.remove('modal-active');
+  // 记录用户已看过欢迎弹窗
+  localStorage.setItem('elink_visited', 'true');
+    if (modalIsZh && currentLang !== 'zh') langToggle.click();
+    else if (!modalIsZh && currentLang === 'zh') langToggle.click();
+    setTimeout(() => {
+      if (botContainer) {
+        botContainer.classList.add('attention-jump');
+        startIdleTips();
+        setTimeout(() => botContainer.classList.remove('attention-jump'), 3200);
+      }
+    }, 100);
+  }
+
+  modalKeepDarkBtn.addEventListener('click', closeModal);
+  modalSwitchLightBtn.addEventListener('click', () => { themeToggle.click(); closeModal(); });
+  modalLangCheckbox.addEventListener('change', () => {
+    modalIsZh = modalLangCheckbox.checked;
+    const show = modalIsZh ? '.m-zh' : '.m-en', hide = modalIsZh ? '.m-en' : '.m-zh';
+    const showC = modalIsZh ? '.lang-zh' : '.lang-en', hideC = modalIsZh ? '.lang-en' : '.lang-zh';
+    document.querySelectorAll(show).forEach(el => el.style.display = 'inline');
+    document.querySelectorAll(hide).forEach(el => el.style.display = 'none');
+    document.querySelectorAll(showC).forEach(el => el.style.display = 'block');
+    document.querySelectorAll(hideC).forEach(el => el.style.display = 'none');
+  });
+
+  themeToggle.addEventListener('click', () => {
+    isLight = !isLight;
+    document.body.classList.toggle('light-mode');
+    themeToggle.textContent = isLight ? "🌙" : "☀️";
+  });
+
+  langToggle.addEventListener('click', () => {
+    const toZh = currentLang === 'en';
+    currentLang = toZh ? 'zh' : 'en';
+    dialogData = toZh ? dialogData_ZH : dialogData_EN;
+    texts = toZh ? textsZH : textsEN;
+    langToggle.textContent = toZh ? "中 / 英" : "EN / CN";
+    document.querySelectorAll(toZh ? '.lang-en' : '.lang-zh')
+      .forEach(el => el.style.display = 'none');
+    document.querySelectorAll(toZh ? '.lang-zh' : '.lang-en')
+     .forEach(el => el.style.display = 'block');
+    textIdx = 0; charIdx = 0; isDeleting = false;
+    if (rpgDialogue.classList.contains('active')) closeDialogue();
+    if (!rpgDialogue.classList.contains('active') && idleInterval) startIdleTips();
+  });
+
+  // ── 视频弹窗 ─────────────────────────────────────────────────
+  const videoModal = document.getElementById('video-modal');
+  const guardianVideo = document.getElementById('guardian-video');
+  window.openVideoModal = () => {
+    videoModal.classList.add('show'); document.body.classList.add('modal-active');
+  };
+  window.closeVideoModal = () => {
+    videoModal.classList.remove('show'); document.body.classList.remove('modal-active');
+    if (guardianVideo) guardianVideo.pause();
+  };
+  videoModal.addEventListener('click', (e) => { if (e.target === videoModal) closeVideoModal(); });
+
+  // ── 机器人对话 ───────────────────────────────────────────────
+  let typeTimer = null;
+  function botSay(text, duration = 1000) {
+    if (!botSpeech || !botContainer) return;
+    if (rpgDialogue && rpgDialogue.classList.contains('active')) return;
+    botSpeech.textContent = text;
+    botContainer.classList.add('speaking');
+    if (botContainer.speechTimer) clearTimeout(botContainer.speechTimer);
+    botContainer.speechTimer = setTimeout(
+      () => botContainer.classList.remove('speaking'), duration
+    );
+  }
+
+  function showDialogueNode(nodeKey, isFast = false) {
+    if (nodeKey === 'play_video') {
+      botSay(currentLang === 'en' ? "Accessing Video Feed..." : "正在接入视频信号...", 1000);
+      setTimeout(openVideoModal, 1000); return;
+    }
+    if (nodeKey === 'close') {
+      closeDialogue(); botContainer.classList.add('interaction-done');
+      botSay(currentLang === 'en' ? "Nice chatting with you!" : "很高兴与你交谈！", 3000); return;
+    }
+    const node = dialogData[nodeKey]; if (!node) return;
+    rpgOptions.innerHTML = '';
+    if (typeTimer) clearInterval(typeTimer);
+    const showBtns = () => {
+      node.options.forEach((opt, idx) => {
+        const btn = document.createElement('div');
+        btn.className = 'rpg-btn'; btn.textContent = '> ' + opt.text;
+        const isBack = opt.text.includes("Back") || opt.text.includes("返回");
+        if (isFast) { btn.style.cssText = 'opacity:1;transform:translateX(0);animation:none'; }
+        else { btn.style.animationDelay = `${idx * 0.05}s`; }
+        btn.onclick = (e) => { e.stopPropagation(); showDialogueNode(opt.next, isBack); };
+        rpgOptions.appendChild(btn);
+      });
+    };
+    if (isFast) { rpgText.textContent = node.text; showBtns(); }
+    else {
+      rpgText.textContent = ''; let i = 0;
+      typeTimer = setInterval(() => {
+        rpgText.textContent += node.text.charAt(i++);
+        if (i >= node.text.length) { clearInterval(typeTimer); showBtns(); }
+      }, 20);
+    }
+  }
+
+  function openDialogue() {
+    if (rpgDialogue.classList.contains('active')) return;
+    rpgDialogue.classList.add('active');
+    botContainer.classList.add('speaking', 'hint-removed');
+    showDialogueNode('start');
+  }
+  function closeDialogue() {
+    rpgDialogue.classList.remove('active');
+    botContainer.classList.remove('speaking');
+    setTimeout(() => { rpgText.textContent = ''; rpgOptions.innerHTML = ''; }, 300);
+  }
+
+  if (botContainer) {
+    botContainer.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (idleInterval) { clearInterval(idleInterval); idleInterval = null; }
+      if (botContainer.speechTimer) clearTimeout(botContainer.speechTimer);
+      botSpeech.textContent = ""; botContainer.classList.remove('speaking');
+      rpgDialogue.classList.contains('active') ? closeDialogue() : openDialogue();
+    });
+  }
+  if (rpgDialogue) rpgDialogue.addEventListener('click', (e) => e.stopPropagation());
+  if (rpgClose) rpgClose.addEventListener('click', (e) => { e.stopPropagation(); closeDialogue(); });
+
+  setTimeout(() => botSay(currentLang === 'en' ? "Click me for guide!" : "点击我答疑解惑", 60000), 1000);
+
+  // ── 悬停态 ───────────────────────────────────────────────────
+  const hoverSel = 'a, button, .ctrl-btn, .rpg-btn, #bot-container, .slider';
+  document.body.addEventListener('mouseover', (e) => {
+    if (e.target.closest(hoverSel)) document.body.classList.add('hovering');
+  });
+  document.body.addEventListener('mouseout', (e) => {
+    if (e.target.closest(hoverSel)) document.body.classList.remove('hovering');
+  });
+
+  // ── 徽章 ─────────────────────────────────────────────────────
+  const badges = document.querySelectorAll('.nav-badges a');
+  badges.forEach(b => {
+    b.addEventListener('mouseenter', () => {
+      document.body.classList.add('hovering');
+      botSay(currentLang === 'en' ? "Accessing..." : "正在访问...", 1500);
+    });
+    b.addEventListener('mouseleave', () => document.body.classList.remove('hovering'));
+    b.addEventListener('click', function (e) {
+      e.preventDefault();
+      const url = this.href;
+      badges.forEach((sib, idx) => {
+        const img = sib.querySelector('img');
+        if (img) { img.style.animationDelay = `${Math.abs(idx - [...badges].indexOf(this)) * 0.06}s`; img.classList.add('rippling'); }
+      });
+      setTimeout(() => {
+        if (url.includes('#')) {
+          try { const el = document.querySelector(url.substring(url.indexOf('#'))); if (el) { el.scrollIntoView({ behavior: 'smooth', block: 'start' }); return; } } catch (e) {}
+        }
+        this.target === '_blank' ? window.open(url, '_blank') : (window.location.href = url);
+      }, 500);
     });
   });
+
+  // ── 3D 模型观察器 ────────────────────────────────────────────
+  const models = Array.from(document.querySelectorAll('model-viewer'));
+  if (models.length) {
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        const v = entry.target;
+        if (entry.isIntersecting) {
+          if (v.getAttribute('reveal') === 'manual' && v.dataset.loaded !== "true") {
+            v.dataset.loaded = "true"; v.dismissPoster();
+          }
+          try { v.play(); } catch (e) {}
+          if (v.dataset.overlayDisabled !== "true") {
+            clearTimeout(v.hudTimer);
+            v.hudTimer = setTimeout(() => {
+              v.querySelectorAll('.gesture-overlay').forEach(el => el.classList.add('gesture-active'));
+            }, 500);
+          }
+        } else {
+          v.pause();
+          v.querySelectorAll('.gesture-overlay').forEach(el => el.classList.remove('gesture-active'));
+        }
+      });
+    }, { threshold: 0.1 });
+    models.forEach(v => {
+      obs.observe(v);
+      v.addEventListener('click', () => {
+        if (v.dataset.loaded !== "true") { v.dataset.loaded = "true"; v.dismissPoster(); }
+      });
+      const onCam = (ev) => {
+        if (ev.detail.source === 'user-interaction' && v.dataset.overlayDisabled !== "true") {
+          v.querySelectorAll('.gesture-overlay, .gesture-hud').forEach(el => el.classList.add('gesture-hidden'));
+          v.dataset.overlayDisabled = "true"; v.removeEventListener('camera-change', onCam);
+        }
+      };
+      v.addEventListener('camera-change', onCam);
+    });
+  }
+
+});
 </script>
-   
 <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 <script>
-  AOS.init({
-    duration: 1000, 
-    easing: 'ease-out-cubic', 
-    once: true 
-  });
+  AOS.init({ duration: 1000, easing: 'ease-out-cubic', once: true });
 </script>
 
 </body>
