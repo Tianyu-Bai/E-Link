@@ -1325,8 +1325,8 @@ document.addEventListener("DOMContentLoaded", function() {
 .node-desc { margin-top: 4px; color: #94a3b8; font-size: 11px; text-align: center; line-height: 1.4; font-family: sans-serif; }
 
 @media (max-width: 600px) {
-  /* 🚨 核心修复：将 padding 和 min-height 与电脑端保持绝对一致，防止 SVG Y轴被压扁脱靶 */
-  .species-glass-box { padding: 30px 5px 40px 5px; min-height: 380px; } 
+  /* 🚀 手机端专属提裤子：底部内边距收紧至 15px，总高度压缩至 330px，消除多余留白 */
+  .species-glass-box { padding: 30px 5px 15px 5px; min-height: 330px; } 
   
   .icon-circle { width: 45px; height: 45px; }
   .icon-circle span { font-size: 24px !important; }
