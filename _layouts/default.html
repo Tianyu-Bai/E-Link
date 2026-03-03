@@ -799,7 +799,7 @@ const rafScheduler = {
     window.addEventListener('resize', applyResize, { passive: true });
 
     // 💡 1. 密度加大：数量整体翻倍
-    const count = isMobile ? 70 : 130; 
+    const count = isMobile ? 38 : 75; 
     const maxDistance = 140; 
     const maxDistSq = maxDistance * maxDistance;
     const particles = [];
@@ -811,37 +811,41 @@ const rafScheduler = {
     for (let i = 0; i < count; i++) {
       let sizeType = Math.random();
       let baseR;
+      
+      // 💡 高级功能：定义细胞核心的 RGB 分量
+      let cR, cG, cB;
+
       if (sizeType > 0.88) {
+        // 12% 概率：巨型枢纽节点 (类似主神经元，能量最高) -> 【突触金】
         baseR = isMobile ? (Math.random() * 1.5 + 3.5) : (Math.random() * 2.5 + 5.5);
+        // PC/Dark 模式下高亮金 RGB (255, 215, 100)，亮色模式略深
+        cR = isLight ? 230 : 255; 
+        cG = isLight ? 120 : 215; 
+        cB = isLight ? 20  : 100; 
       } else if (sizeType > 0.35) {
+        // 53% 概率：常规神经元 -> 【常规蓝白】
         baseR = isMobile ? (Math.random() * 1.0 + 2.0) : (Math.random() * 1.5 + 3.0);
+        cR = 180; cG = 240; cB = 255; // 淡淡的青白色
       } else {
+        // 35% 概率：微型节点/胶质细胞 -> 【纯蓝白】
         baseR = isMobile ? (Math.random() * 0.5 + 1.0) : (Math.random() * 0.8 + 1.5);
+        cR = 200; cG = 255; cB = 255; // 更偏白，最细微
       }
 
-      // 💡 1. 核心技巧：趋中随机函数 (模拟正态分布)。返回值 0~1，但极大概率落在 0.5 附近
+      // ... (clusterRand() 和 startX, startY 的生成逻辑保持不变)
       const clusterRand = () => (Math.random() + Math.random() + Math.random()) / 3;
-
       let isLeft = Math.random() < 0.5;
-      
-      // 💡 2. X轴：向左右各侧的中心线聚拢，而不是边缘
       let startX = isLeft ? clusterRand() * sideZone : width - clusterRand() * sideZone;
-
+      
       let startY;
       if (isMobile) {
-        // 移动端：向顶部和底部区域的中心聚拢
         if (i < count * 0.6) startY = clusterRand() * TOP_ZONE; 
         else startY = height - clusterRand() * BOTTOM_ZONE;
       } else {
-        // 💡 3. PC端 Y轴：人为制造上下两个“初始神经节 (Hub)”
         let isTopCluster = Math.random() < 0.5;
-        let hubY = isTopCluster ? height * 0.3 : height * 0.7; // 聚集在 30% 和 70% 的高度
-        
-        // 产生一个 -1 到 1 的正态偏移，控制聚拢程度（0.25 控制了上下散开的范围）
+        let hubY = isTopCluster ? height * 0.3 : height * 0.7; 
         let offsetY = (Math.random() + Math.random() - 1) * (height * 0.25); 
-        
         startY = hubY + offsetY;
-        // 兜底限制，防止超出屏幕
         startY = Math.max(10, Math.min(height - 10, startY));
       }
 
@@ -851,7 +855,9 @@ const rafScheduler = {
         baseRadius: baseR, radius: baseR, charge: 0, refractory: 0, 
         pulse: Math.random() * Math.PI * 2, pulseSpeed: 0.015 + Math.random() * 0.015,
         neighbors: [],
-        isLeft: isLeft
+        isLeft: isLeft,
+        // 🚀 将计算好的 RGB 存入粒子对象中
+        cR: cR, cG: cG, cB: cB 
       });
     }
 
@@ -1021,12 +1027,22 @@ const rafScheduler = {
         const p = particles[i]; p.pulse += p.pulseSpeed;
         const breathing = Math.sin(p.pulse) * 0.2 + 1;
         const r = p.baseRadius * breathing;
+        
         const halo = ctx.createRadialGradient(px[i], py[i], 0, px[i], py[i], r * 4.5);
         halo.addColorStop(0, `rgba(${nR},${nG},${nB},${0.12 + p.charge * 0.3})`);
         halo.addColorStop(1, 'rgba(0,0,0,0)');
         ctx.fillStyle = halo; ctx.beginPath(); ctx.arc(px[i], py[i], r * 4.5, 0, Math.PI * 2); ctx.fill();
-        ctx.fillStyle = `rgba(255, 255, 255, ${0.6 + p.charge * 0.3})`;
+        
+        // 💡 修改这里：定义细胞核的颜色 (这里使用的是【突触金】的配色)
+        // 如果是暗色模式用高亮金，亮色模式用深一点的橘色保证对比度
+        const cR = isLight ? 230 : 255; 
+        const cG = isLight ? 120 : 215; 
+        const cB = isLight ? 20  : 100; 
+
+       // 🚀 高级分级配色：不再统一用 255, 255, 255，而是使用粒子自己的属性
+        ctx.fillStyle = `rgba(${p.cR}, ${p.cG}, ${p.cB}, ${0.7 + p.charge * 0.3})`;
         ctx.beginPath(); ctx.arc(px[i], py[i], r * 0.6, 0, Math.PI * 2); ctx.fill();
+        
         if (p.charge > 0) p.charge *= 0.9;
       }
     });
