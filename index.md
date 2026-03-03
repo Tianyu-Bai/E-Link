@@ -1253,13 +1253,22 @@ document.addEventListener("DOMContentLoaded", function() {
 }
 .base-line { fill: none; stroke: rgba(255, 255, 255, 0.1); stroke-width: 2; }
 .pulse-line {
-  fill: none; stroke: #60a5fa; stroke-width: 3; stroke-dasharray: 20 120; 
-  animation: data-flow 2.5s linear infinite; filter: drop-shadow(0 0 5px rgba(96, 165, 250, 0.8));
+  fill: none; 
+  stroke: #60a5fa; 
+  stroke-width: 3; 
+  stroke-linecap: round; /* ✨ 修复1：让光波两头变圆滑，像一颗流星 */
+  stroke-dasharray: 15 125; /* ✨ 修复2：光波长度15，间距125，总周期正好是 140 */
+  animation: data-flow 2.8s linear infinite; /* ✨ 修复3：稍微放慢一点点，显得更沉稳高级 */
+  filter: drop-shadow(0 0 6px rgba(96, 165, 250, 0.8));
 }
-.line-to-monkey { stroke: #f59e0b !important; filter: drop-shadow(0 0 5px rgba(245, 158, 11, 0.8)) !important;}
-.line-to-mouse { stroke: #10b981 !important; filter: drop-shadow(0 0 5px rgba(16, 185, 129, 0.8)) !important; }
+.line-to-monkey { stroke: #f59e0b !important; filter: drop-shadow(0 0 6px rgba(245, 158, 11, 0.8)) !important;}
+.line-to-mouse { stroke: #10b981 !important; filter: drop-shadow(0 0 6px rgba(16, 185, 129, 0.8)) !important; }
 
-@keyframes data-flow { from { stroke-dashoffset: 115; } to { stroke-dashoffset: 0; } }
+/* 🚀 核心修复：起始值 140 必须和上面 dasharray 的和 (15+125) 完全相等，实现完美无缝循环！ */
+@keyframes data-flow { 
+  from { stroke-dashoffset: 140; } 
+  to { stroke-dashoffset: 0; } 
+}
 
 .node {
   position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center;
