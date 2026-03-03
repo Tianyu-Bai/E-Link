@@ -892,7 +892,7 @@ const rafScheduler = {
             p.neighbors.push(j); p2.neighbors.push(i);
 
             if (dist > 50) {
-              const pull = 0.008; 
+              const pull = 0.015; 
               p.vx += (dx / dist) * pull; p.vy += (dy / dist) * pull;
               p2.vx -= (dx / dist) * pull; p2.vy -= (dy / dist) * pull;
             } else {
