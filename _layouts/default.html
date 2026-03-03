@@ -78,22 +78,8 @@ body.js-cursor-enabled { cursor: none; }
   /* ===================== 3. 高级流体极光与景深粒子背景 ===================== */
  #neuro-ambient-bg { position: fixed; z-index: -6; top: 0; left: 0; width: 100vw; height: 100vh; background: #03060e; overflow: hidden; transform: translateZ(0); isolation: isolate; }
   
-  /* 🌟 零性能损耗的全局磨砂玻璃遮罩（光学欺骗法） */
-  #frosted-glass-overlay {
-    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-    pointer-events: none; 
-    z-index: -4; /* 🚀 核心：必须盖在 Canvas(-5) 和 极光(-6) 之上，但在文字内容之下 */
-    
-    /* 极其密集的微观颗粒噪点，模拟磨砂玻璃表面的漫反射 */
-    background-image: url('data:image/svg+xml;utf8,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noiseFilter"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="1.5" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noiseFilter)" opacity="0.12"/%3E%3C/svg%3E');
-    
-    /* 压一层半透明深色膜，形成厚重玻璃的阻尼感。底下的极光和放电会透射上来 */
-    background-color: rgba(6, 10, 20, 0.45); 
-    mix-blend-mode: normal; 
-  }
-  
   /* 缓慢流动的极光色块 (Blackrock 色调) */
-  .aurora { position: absolute; border-radius: 50%; filter: blur(70px); opacity: 0.35; animation: aurora-float 25s infinite alternate cubic-bezier(0.4, 0, 0.2, 1); will-change: transform; pointer-events: none; transform: translateZ(0); }
+  .aurora { position: absolute; border-radius: 50%; filter: blur(70px); opacity: 0.2; animation: aurora-float 25s infinite alternate cubic-bezier(0.4, 0, 0.2, 1); will-change: transform; pointer-events: none; transform: translateZ(0); }
   .aurora-1 { width: 50vw; height: 50vw; background: radial-gradient(circle, rgba(13, 148, 136, 0.4), transparent 70%); top: -20%; left: -10%; animation-delay: 0s; }
   .aurora-2 { width: 60vw; height: 60vw; background: radial-gradient(circle, rgba(6, 182, 212, 0.25), transparent 70%); bottom: -20%; right: -20%; animation-delay: -7s; }
   .aurora-3 { width: 45vw; height: 45vw; background: radial-gradient(circle, rgba(30, 58, 138, 0.5), transparent 70%); top: 30%; left: 40%; margin-left: -22.5vw; margin-top: -22.5vw; animation-delay: -14s; }
@@ -115,21 +101,43 @@ body.js-cursor-enabled { cursor: none; }
   /* --- 🚀 内容玻璃容器 --- */
   .layout-wrapper { position: relative; max-width: 860px; margin: 100px auto 60px; z-index: 10; perspective: 1000px; }
   .container { 
-    position: relative; padding: 60px 80px; 
-    background: rgba(255, 255, 255, 0.05); 
-    backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); 
+    position: relative; 
+    padding: 60px 80px; 
+    
+    /* 1. 增加背景梯度的变化，模拟玻璃表面的微弱反光 */
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%); 
+    
+    /* 2. 增强模糊度，即使背景清晰，文字依然有极佳的可读性 */
+    backdrop-filter: blur(24px); 
+    -webkit-backdrop-filter: blur(24px); 
+    
     border-radius: 20px; 
-    box-shadow: 0 20px 50px rgba(59, 130, 246, 0.15); 
-    border: 1px solid rgba(255, 255, 255, 0.1); 
-    border-top: 4px solid #3b82f6; 
-    opacity: 0;  animation: fadeUp 0.6s ease-out 0.2s forwards; z-index: 1; transition: border-color 0.4s ease, box-shadow 0.4s ease; 
-  }
-  .container:hover { 
-    border-color: rgba(96, 165, 250, 0.4); 
-    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6), 0 0 30px rgba(59, 130, 246, 0.15); 
-    transform: translateY(-2px); 
-  }
+    
+    /* 3. 核心：多重阴影组合 */
+    box-shadow: 
+        0 30px 60px rgba(0, 0, 0, 0.5),            /* 远地层：大范围悬浮阴影 */
+        inset 1px 1px 1px rgba(255, 255, 255, 0.3), /* 核心高光：模拟左上角切面折射 */
+        inset -1px -1px 1px rgba(255, 255, 255, 0.05); /* 边缘微弱泛光 */
+    
+    /* 4. 边框微调：半透明边框 */
+    border: 1px solid rgba(255, 255, 255, 0.12); 
+    border-top: 4px solid #3b82f6; /* 保持你标志性的蓝色顶梁 */
+    
+    opacity: 0; 
+    animation: fadeUp 0.6s ease-out 0.2s forwards; 
+    z-index: 1; 
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1); 
+}
 
+/* 悬停时增强“发光”感 */
+.container:hover { 
+    border-color: rgba(96, 165, 250, 0.5); 
+    box-shadow: 
+        0 40px 80px rgba(0, 0, 0, 0.6), 
+        0 0 30px rgba(59, 130, 246, 0.2),            /* 蓝色外溢氛感 */
+        inset 1px 1px 2px rgba(255, 255, 255, 0.5); /* 强化高光边缘 */
+    transform: translateY(-4px) scale(1.005); 
+}
   /* --- 🚀 高级玻璃拟态数据表格 --- */
   #main_content table { width: 100% !important; border-collapse: separate; border-spacing: 0; margin: 30px 0; background: rgba(15, 23, 42, 0.4); border-radius: 12px; overflow: hidden; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); border: 1px solid rgba(59, 130, 246, 0.2); backdrop-filter: blur(10px); }
   #main_content th, #main_content td { padding: 15px 12px; border: none; border-bottom: 1px solid rgba(255, 255, 255, 0.05); text-align: left; }
@@ -265,8 +273,13 @@ body.js-cursor-enabled { cursor: none; }
  body.light-mode #neuro-ambient-bg { background: #f1f5f9 !important; }
 /* 调整容器，让它在浅色背景下有更清爽的投影 */
   body.light-mode .container { 
-  background: rgba(255, 255, 255, 0.9); 
-  box-shadow: 0 20px 50px rgba(148, 163, 184, 0.15); 
+    background: rgba(255, 255, 255, 0.8); 
+    /* 浅色模式下，高光改为深色细线，模拟玻璃厚度 */
+    box-shadow: 
+        0 20px 50px rgba(148, 163, 184, 0.2), 
+        inset 1px 1px 0px rgba(255, 255, 255, 0.9), 
+        inset -1px -1px 0px rgba(0, 0, 0, 0.05); 
+    border-color: rgba(203, 213, 225, 0.8); 
 }
  
   /* 2. 浅色极光颜色微调，适配灰色背景 */
@@ -509,7 +522,7 @@ body.js-cursor-enabled { cursor: none; }
   <div class="aurora aurora-3"></div>
 </div>
 <canvas id="neuro-dust-canvas"></canvas>
-<div id="frosted-glass-overlay"></div>
+ 
  
 <div id="bot-container" title="Chat with me!">
   <div class="guide-arrow">➤</div>
@@ -779,8 +792,9 @@ if (localStorage.getItem('elink_visited') === 'true') {
 
       particles.push({
         id: i,
-        x: Math.random() * width, 
+        x: (width / count) * i + (Math.random() - 0.5) * 100,
         y: spawnY,
+       
         vx: (Math.random() - 0.5) * 0.5, vy: (Math.random() - 0.5) * 0.5,
         baseRadius: baseR, radius: baseR, charge: 0, 
         refractory: 0, 
@@ -826,18 +840,20 @@ if (localStorage.getItem('elink_visited') === 'true') {
           if (distSq < maxDistSq * 1.5) { 
             const dist = Math.sqrt(distSq);
             
-            if (dist > 10) { 
-              const pull = 0.025 * Math.pow(1 - dist / (maxDistance * 1.5), 2);
+            if (dist > 60) { 
+              // 🚀 修改点 2：减弱吸力系数（从 0.025 改到 0.008）
+              const pull = 0.008 * Math.pow(1 - dist / (maxDistance * 2), 2);
               p.vx += (dx / dist) * pull;
               p.vy += (dy / dist) * pull;
             } else {
-              const push = (10 - dist) * 0.05;
+              // 🚀 修改点 3：增强近距离排斥感，保持神经元之间的“独立性”
+              const push = (50 - dist) * 0.02; 
               p.vx -= (dx / dist) * push;
               p.vy -= (dy / dist) * push;
             }
 
-            // 💥 碰撞激发！
-            if (dist < 25 && Math.random() < 0.008) { 
+            // 💥 只有靠得比较近且有缘分时才触发碰撞（保持画面整洁）
+            if (dist < 30 && Math.random() < 0.005) {
               p.charge = 1; particles[j].charge = 1;
               p.radius = p.baseRadius + 2.5; particles[j].radius = particles[j].baseRadius + 2.5;
 
