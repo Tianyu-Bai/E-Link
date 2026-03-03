@@ -744,7 +744,7 @@ if (localStorage.getItem('elink_visited') === 'true') {
     });
   }
 
-// ── 粒子引擎 (自然随机版：PC全局限额6/随机分布，手机顶2底1，中心避让) ──────────────────────────────────
+// ── 粒子引擎 (终极糅合大胞体版：大核心 + 级联风暴 + 簇状气泡 + 空间限流) ──────────────────────────────────
   function initNeuralWeb() {
     const canvas = document.getElementById('neuro-dust-canvas');
     if (!canvas) return;
@@ -772,13 +772,17 @@ if (localStorage.getItem('elink_visited') === 'true') {
     const signals = [];
 
     for (let i = 0; i < count; i++) {
+      // 🚀 核心修改 1：大幅提升胞体基础尺寸 (从原本的 1.2 提升至 3.0 以上)
+      let baseR = isMobile ? (Math.random() * 1.5 + 2.5) : (Math.random() * 2.0 + 3.5);
       particles.push({
         id: i,
         x: (width / count) * i + (Math.random() - 0.5) * 80,
         y: Math.random() * height,
-        vx: (Math.random() - 0.5) * 0.04, vy: (Math.random() - 0.5) * 0.04,
-        baseRadius: Math.random() * 1.5 + 1.2, radius: 1.2, charge: 0, refractory: 0, 
-        pulse: Math.random() * Math.PI * 2, pulseSpeed: 0.02 + Math.random() * 0.02,
+        vx: (Math.random() - 0.5) * 0.05, 
+        vy: (Math.random() - 0.5) * 0.05,
+        baseRadius: baseR, radius: baseR, charge: 0, refractory: 0, 
+        pulse: Math.random() * Math.PI * 2,
+        pulseSpeed: 0.02 + Math.random() * 0.02,
         connections: []
       });
     }
@@ -790,18 +794,19 @@ if (localStorage.getItem('elink_visited') === 'true') {
       ctx.clearRect(0, 0, width, height);
       const isLight = document.body.classList.contains('light-mode');
       const sigColor = isLight ? '37, 99, 235' : '0, 255, 255'; 
+      const nR = isLight ? 13 : 96, nG = isLight ? 148 : 165, nB = isLight ? 136 : 250;
 
-      // 🔄 空间流量实时监控
+      // 🔄 空间流量监控
       let totalAct = signals.length;
       let topAct = 0, bottomAct = 0;
-      if (isMobile) {
-        signals.forEach(s => {
+      signals.forEach(s => {
+        if (isMobile) {
           if (py[s.si] < height * 0.3) topAct++;
           if (py[s.si] > height * 0.7) bottomAct++;
-        });
-      }
+        }
+      });
 
-      // 1. 物理层与智能激发
+      // 1. 物理层与激发控制
       for (let i = 0; i < count; i++) {
         const p = particles[i];
         if (p.refractory > 0) p.refractory--;
@@ -821,39 +826,40 @@ if (localStorage.getItem('elink_visited') === 'true') {
             let canFire = false;
 
             if (isMobile) {
-              // 📱 手机端：顶2底1，中间避让
               if (mY < height * 0.25 && topAct < 2) canFire = true;
               if (mY > height * 0.75 && bottomAct < 1) canFire = true;
             } else {
-              // 💻 电脑端：全局限额 6 个，随机分布在左右 35% 区域
               const isSide = (mX < width * 0.35 || mX > width * 0.65);
               if (isSide && totalAct < 6) canFire = true;
             }
 
             if (canFire && dist < 75 && Math.random() < 0.012 && p.refractory <= 0) {
               p.charge = 1; particles[j].charge = 1;
-              // 簇状泡泡爆发 (囊泡释放感)
+              // 🚀 核心修改 2：怀念的气泡丛爆发
               for(let b=0; b < 3; b++) {
                 sparks.push({ type: 'bubble', x: mX + (Math.random()-0.5)*15, y: mY + (Math.random()-0.5)*15, radius: 1, life: 1, decay: 0.07 });
               }
-              p.refractory = 100; // 适当冷却
-              signals.push({ source: p, si: i, ep: particles[j], ei: j, progress: 0, speed: 0.14, tail: 0.4 });
-              totalAct++; // 手动递增计数防止同帧爆发过多
+              p.refractory = 120;
+              signals.push({ source: p, si: i, ep: particles[j], ei: j, progress: 0, speed: 0.16, tail: 0.3 });
+              totalAct++;
             }
           }
         }
-        p.vx *= 0.9; p.vy *= 0.9; p.x += p.vx; p.y += p.vy;
+        p.vx *= 0.88; p.vy *= 0.88; p.x += p.vx; p.y += p.vy;
         if (p.x < -50) p.x = width + 50; else if (p.x > width + 50) p.x = -50;
         if (p.y < -50) p.y = height + 50; else if (p.y > height + 50) p.y = -50;
-        px[i] = p.x + Math.sin(p.pulse) * 4; py[i] = p.y + Math.cos(p.pulse * 0.8) * 4;
+        p.connections = [];
+        px[i] = p.x + Math.sin(p.pulse) * 5;
+        py[i] = p.y + Math.cos(p.pulse * 0.8) * 5;
       }
 
-      // 2. 绘制极淡连线
+      // 2. 绘制极淡的背景网路
       for (let i = 0; i < count; i++) {
         for (let j = i + 1; j < count; j++) {
           const dx = px[i] - px[j], dy = py[i] - py[j];
-          if ((dx*dx + dy*dy) < maxDistSq) {
-            const intensity = Math.pow(1 - Math.sqrt(dx*dx + dy*dy) / maxDistance, 2) * 0.12;
+          const dSq = dx * dx + dy * dy;
+          if (dSq < maxDistSq) {
+            const intensity = Math.pow(1 - Math.sqrt(dSq) / maxDistance, 2) * 0.15;
             ctx.beginPath(); ctx.strokeStyle = `rgba(59,130,246,${intensity})`;
             ctx.lineWidth = 0.5; ctx.moveTo(px[i], py[i]); ctx.lineTo(px[j], py[j]); ctx.stroke();
           }
@@ -865,39 +871,58 @@ if (localStorage.getItem('elink_visited') === 'true') {
         const s = sparks[i]; s.life -= s.decay;
         if (s.life <= 0) { sparks.splice(i, 1); continue; }
         s.radius += 1.0; 
-        ctx.beginPath(); ctx.strokeStyle = `rgba(${sigColor}, ${s.life * 0.3})`; ctx.lineWidth = 0.6;
+        ctx.beginPath(); ctx.strokeStyle = `rgba(${sigColor}, ${s.life * 0.35})`; ctx.lineWidth = 0.6;
         ctx.arc(s.x, s.y, s.radius, 0, Math.PI * 2); ctx.stroke();
       }
 
-      // 4. 电流脉冲 (髓鞘流动虚线)
+      // 4. 级联放电 (带动态流光)
       for (let i = signals.length - 1; i >= 0; i--) {
         const s = signals[i]; s.progress += s.speed;
-        if (s.progress >= 1.4) { signals.splice(i, 1); continue; }
+        
+        if (s.progress > 0.95 && s.progress < 0.95 + s.speed && signals.length < 40) {
+          s.ep.charge = 1; 
+          if (s.ep.refractory <= 0 && Math.random() < 0.6) {
+            s.ep.refractory = 25;
+            const next = s.ep.connections[Math.floor(Math.random() * s.ep.connections.length)];
+            if (next && next.ei !== s.si) {
+              signals.push({ source: s.ep, si: s.ei, ep: next.ep, ei: next.ei, progress: 0, speed: 0.2, tail: 0.3 });
+            }
+          }
+        }
+        if (s.progress >= 1.3) { signals.splice(i, 1); continue; }
+
         const hx = px[s.si] + (px[s.ei] - px[s.si]) * Math.min(1, s.progress);
         const hy = py[s.si] + (py[s.ei] - py[s.si]) * Math.min(1, s.progress);
         const tx = px[s.si] + (px[s.ei] - px[s.si]) * Math.max(0, s.progress - s.tail);
         const ty = py[s.si] + (py[s.ei] - py[s.si]) * Math.max(0, s.progress - s.tail);
+
         ctx.beginPath(); 
         const g = ctx.createLinearGradient(tx, ty, hx, hy);
-        g.addColorStop(0, `rgba(${sigColor},0)`); g.addColorStop(0.5, `rgba(${sigColor},0.5)`); g.addColorStop(1, '#fff');
-        ctx.strokeStyle = g; ctx.lineWidth = 2.0; ctx.lineCap = 'round'; ctx.shadowBlur = 10;
+        g.addColorStop(0, `rgba(${sigColor},0)`); g.addColorStop(0.5, `rgba(${sigColor},0.8)`); g.addColorStop(1, '#fff');
+        ctx.strokeStyle = g; ctx.lineWidth = 2.2; ctx.lineCap = 'round'; ctx.shadowBlur = 12;
         ctx.shadowColor = `rgba(${sigColor}, 1)`; ctx.moveTo(tx, ty); ctx.lineTo(hx, hy); ctx.stroke();
-        ctx.beginPath(); ctx.strokeStyle = '#fff'; ctx.lineWidth = 0.8;
+        
+        ctx.beginPath(); ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.0;
         ctx.setLineDash([4, 12]); ctx.lineDashOffset = -s.progress * 80;
         ctx.moveTo(tx, ty); ctx.lineTo(hx, hy); ctx.stroke();
         ctx.setLineDash([]); ctx.shadowBlur = 0;
       }
 
-      // 5. 胞体渲染
+      // 5. 核心修改 3：胞体渲染 (大幅增强光晕和核心尺寸)
       for (let i = 0; i < count; i++) {
         const p = particles[i]; p.pulse += p.pulseSpeed;
-        const r = p.baseRadius * (Math.sin(p.pulse) * 0.15 + 1);
-        const halo = ctx.createRadialGradient(px[i], py[i], 0, px[i], py[i], r * 3);
-        halo.addColorStop(0, `rgba(59,130,246,${0.08 + p.charge * 0.3})`);
+        const breathing = Math.sin(p.pulse) * 0.2 + 1;
+        const r = p.baseRadius * breathing;
+
+        // 🟢 胞质外层扩散光晕 (更饱满)
+        const halo = ctx.createRadialGradient(px[i], py[i], 0, px[i], py[i], r * 4.5);
+        halo.addColorStop(0, `rgba(${nR},${nG},${nB},${0.18 + p.charge * 0.4})`);
         halo.addColorStop(1, 'rgba(0,0,0,0)');
-        ctx.fillStyle = halo; ctx.beginPath(); ctx.arc(px[i], py[i], r * 3, 0, Math.PI * 2); ctx.fill();
-        ctx.fillStyle = `rgba(255, 255, 255, ${0.5 + p.charge * 0.4})`;
-        ctx.beginPath(); ctx.arc(px[i], py[i], r * 0.5, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = halo; ctx.beginPath(); ctx.arc(px[i], py[i], r * 4.5, 0, Math.PI * 2); ctx.fill();
+
+        // 🟢 细胞核 (白色高亮中心，从原本的 r 提高到更大的比例)
+        ctx.fillStyle = `rgba(255, 255, 255, ${0.7 + p.charge * 0.3})`;
+        ctx.beginPath(); ctx.arc(px[i], py[i], r * 0.6, 0, Math.PI * 2); ctx.fill();
         if (p.charge > 0) p.charge *= 0.9;
       }
     });
