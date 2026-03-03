@@ -776,7 +776,7 @@ const rafScheduler = {
     });
   }
 
-// ── 粒子引擎 (簇群坍缩版：动态吸附成大簇 + 实时寻路长程电流 + 顶5底3/PC限2 + 左右侧高密分布) ──────────
+// ── 粒子引擎 (簇群动态平衡版：持续生命力 + 强化结界防逃逸 + 移动端左下双簇/PC双侧) ──────────
   function initNeuralWeb() {
     const canvas = document.getElementById('neuro-dust-canvas');
     if (!canvas) return;
@@ -792,61 +792,51 @@ const rafScheduler = {
       canvas.height = Math.floor(height * dpr);
       canvas.style.width = `${width}px`; canvas.style.height = `${height}px`;
       ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.scale(dpr, dpr);
-      // 💡 定义左右侧允许分布的宽度比例 (PC占两侧各20%，移动端各占25%)
-      sideZone = width * (isMobile ? 0.25 : 0.2); 
+      sideZone = width * (isMobile ? 0.4 : 0.2); 
     }
     applyResize();
     window.addEventListener('resize', applyResize, { passive: true });
 
-    // 💡 1. 密度加大：数量整体翻倍
     const count = isMobile ? 38 : 75; 
     const maxDistance = 180; 
     const maxDistSq = maxDistance * maxDistance;
     const particles = [];
     const sparks = []; 
     const signals = [];
-    const TOP_ZONE = 85; 
-    const BOTTOM_ZONE = 130;
 
     for (let i = 0; i < count; i++) {
       let sizeType = Math.random();
       let baseR;
       
-      // 💡 高级功能：定义细胞核心的 RGB 分量
       let cR, cG, cB;
-
       if (sizeType > 0.88) {
-        // 12% 概率：巨型枢纽节点 (类似主神经元，能量最高) -> 【突触金】
         baseR = isMobile ? (Math.random() * 1.5 + 3.5) : (Math.random() * 2.5 + 5.5);
-        // PC/Dark 模式下高亮金 RGB (255, 215, 100)，亮色模式略深
-        cR = isLight ? 230 : 255; 
-        cG = isLight ? 120 : 215; 
-        cB = isLight ? 20  : 100; 
+        cR = isLight ? 230 : 255; cG = isLight ? 120 : 215; cB = isLight ? 20  : 100; 
       } else if (sizeType > 0.35) {
-        // 53% 概率：常规神经元 -> 【常规蓝白】
         baseR = isMobile ? (Math.random() * 1.0 + 2.0) : (Math.random() * 1.5 + 3.0);
-        cR = 180; cG = 240; cB = 255; // 淡淡的青白色
+        cR = 180; cG = 240; cB = 255; 
       } else {
-        // 35% 概率：微型节点/胶质细胞 -> 【纯蓝白】
         baseR = isMobile ? (Math.random() * 0.5 + 1.0) : (Math.random() * 0.8 + 1.5);
-        cR = 200; cG = 255; cB = 255; // 更偏白，最细微
+        cR = 200; cG = 255; cB = 255; 
       }
 
-      // ... (clusterRand() 和 startX, startY 的生成逻辑保持不变)
       const clusterRand = () => (Math.random() + Math.random() + Math.random()) / 3;
-      let isLeft = Math.random() < 0.5;
+      
+      let isLeft = isMobile ? true : Math.random() < 0.5;
       let startX = isLeft ? clusterRand() * sideZone : width - clusterRand() * sideZone;
       
       let startY;
       if (isMobile) {
-        if (i < count * 0.6) startY = clusterRand() * TOP_ZONE; 
-        else startY = height - clusterRand() * BOTTOM_ZONE;
+        let isUpperCluster = Math.random() < 0.5;
+        let hubY = isUpperCluster ? height - 200 : height - 80; 
+        let offsetY = (Math.random() + Math.random() - 1) * 40; 
+        startY = Math.max(height - 280, Math.min(height - 20, hubY + offsetY)); 
       } else {
         let isTopCluster = Math.random() < 0.5;
         let hubY = isTopCluster ? height * 0.3 : height * 0.7; 
         let offsetY = (Math.random() + Math.random() - 1) * (height * 0.25); 
         startY = hubY + offsetY;
-        startY = Math.max(10, Math.min(height - 10, startY));
+        startY = Math.max(40, Math.min(height - 40, startY));
       }
 
       particles.push({
@@ -854,10 +844,7 @@ const rafScheduler = {
         vx: (Math.random() - 0.5) * 0.03, vy: (Math.random() - 0.5) * 0.03,
         baseRadius: baseR, radius: baseR, charge: 0, refractory: 0, 
         pulse: Math.random() * Math.PI * 2, pulseSpeed: 0.015 + Math.random() * 0.015,
-        neighbors: [],
-        isLeft: isLeft,
-        // 🚀 将计算好的 RGB 存入粒子对象中
-        cR: cR, cG: cG, cB: cB 
+        neighbors: [], isLeft: isLeft, cR: cR, cG: cG, cB: cB 
       });
     }
 
@@ -871,12 +858,8 @@ const rafScheduler = {
       const nR = isLight ? 13 : 96, nG = isLight ? 148 : 165, nB = isLight ? 136 : 250;
 
       let pcTotal = signals.length;
-      let topAct = 0, bottomAct = 0;
-      signals.forEach(s => {
-        if (isMobile) { if (py[s.si] < height * 0.5) topAct++; else bottomAct++; }
-      });
 
-      // 1. 物理引擎：超簇吸附算法 (Cluster Coalescence)
+      // 1. 物理引擎：超簇吸附算法
       for (let i = 0; i < count; i++) {
         const p = particles[i];
         p.neighbors = []; 
@@ -891,62 +874,67 @@ const rafScheduler = {
             const dist = Math.sqrt(distSq);
             p.neighbors.push(j); p2.neighbors.push(i);
 
+            // 💡 优化 1：调弱远距吸力，调强近距斥力，让簇群更“松软Q弹”
             if (dist > 50) {
-              const pull = 0.015; 
+              const pull = 0.01; 
               p.vx += (dx / dist) * pull; p.vy += (dy / dist) * pull;
               p2.vx -= (dx / dist) * pull; p2.vy -= (dy / dist) * pull;
             } else {
-              const push = (50 - dist) * 0.015;
+              const push = (50 - dist) * 0.025;
               p.vx -= (dx / dist) * push; p.vy -= (dy / dist) * push;
             }
 
             const mX = (p.x + p2.x) / 2, mY = (p.y + p2.y) / 2;
             let canFire = false;
+            
+            // 💡 优化 2：放宽并发限制，保持高频电活动
             if (isMobile) {
-              if (mY < TOP_ZONE && topAct < 5) canFire = true;
-              if (mY > height - BOTTOM_ZONE && bottomAct < 3) canFire = true;
+              if (pcTotal < 4) canFire = true; 
             } else {
-              // 侧边判定范围自适应新的侧边宽度
-              const isSide = (mX < sideZone * 1.2 || mX > width - sideZone * 1.2);
-              if (isSide && pcTotal < 2) canFire = true;
+              const isSide = (mX < sideZone * 1.5 || mX > width - sideZone * 1.5);
+              if (isSide && pcTotal < 6) canFire = true; 
             }
 
-            if (canFire && dist < 75 && Math.random() < 0.012 && p.refractory <= 0) {
+            // 💡 优化 3：放宽触发距离，冷却时间从 220 降至 80
+            if (canFire && dist < 85 && Math.random() < 0.015 && p.refractory <= 0) {
               p.charge = 1; p2.charge = 1;
-              
-              // 🚀 新增：根据发射源细胞的大小，计算这道电流的“能量倍率”
-              // PC端基准大小约3.5，移动端约2.0。巨型节点发出的倍率会 > 1.5
               const power = p.baseRadius / (isMobile ? 2.0 : 3.5); 
-
               for(let b=0; b<4; b++) sparks.push({ type: 'bubble', x: mX + (Math.random()-0.5)*15, y: mY + (Math.random()-0.5)*15, radius: 1 * power, life: 1, decay: 0.015 });
-              p.refractory = 220;
+              p.refractory = 80; // 冷却变快
               signals.push({ 
                 source: p, si: i, ep: p2, ei: j, progress: 0, 
-                speed: 0.04, 
-                tail: 0.5, hops: isMobile ? 5 : Math.floor(Math.random() * 10) + 12, history: [i],
-                power: power // 🚀 将能量倍率存入信号中
+                speed: 0.04, tail: 0.5, hops: isMobile ? 5 : Math.floor(Math.random() * 10) + 12, history: [i], power: power 
               });
-              if (!isMobile) pcTotal++;
+              pcTotal++;
             }
           }
         }
         
+        // 💡 优化 4：生命力注入！加入微小的持续布朗运动，打破静止僵局
+        p.vx += (Math.random() - 0.5) * 0.015;
+        p.vy += (Math.random() - 0.5) * 0.015;
+
         p.vx *= 0.85; p.vy *= 0.85; 
         p.x += p.vx; p.y += p.vy;
 
-        // 💡 3. X轴结界屏障：防止因相互吸附而被拉到中间内容区
+        // 💡 优化 5：全面强化边缘结界 (Hardened Boundaries)
         if (p.isLeft) {
-            if (p.x > sideZone) p.vx -= 0.05; // 越过右侧结界，推回左边
-            if (p.x < 0) p.vx += 0.05;        // 越过屏幕最左侧，推回右边
+            if (p.x > sideZone) p.vx -= 0.08; 
+            if (p.x < 15) p.vx += 0.08;        
         } else {
-            if (p.x < width - sideZone) p.vx += 0.05; // 越过左侧结界，推回右边
-            if (p.x > width) p.vx -= 0.05;            // 越过屏幕最右侧，推回左边
+            if (p.x < width - sideZone) p.vx += 0.08; 
+            if (p.x > width - 15) p.vx -= 0.08;            
         }
 
         if (isMobile) {
-          if (i < count * 0.6 && p.y > TOP_ZONE) p.vy -= 0.02;
-          if (i >= count * 0.6 && p.y < height - BOTTOM_ZONE) p.vy += 0.02;
+          if (p.y < height - 280) p.vy += 0.06; 
+          if (p.y > height - 15) p.vy -= 0.06;
+        } else {
+          // PC端上下壁垒大幅度加固，防止飞出屏幕
+          if (p.y < 40) p.vy += 0.06;
+          if (p.y > height - 40) p.vy -= 0.06;
         }
+
         px[i] = p.x + Math.sin(p.pulse) * 5; py[i] = p.y + Math.cos(p.pulse * 0.8) * 5;
       }
 
@@ -970,8 +958,7 @@ const rafScheduler = {
         ctx.arc(s.x, s.y, s.radius, 0, Math.PI * 2); ctx.stroke();
       }
 
-     
- // 4. 实时长程电流传导 (Real-time Adaptive Routing)
+      // 4. 实时长程电流传导
       for (let i = signals.length - 1; i >= 0; i--) {
         const s = signals[i]; s.progress += s.speed;
         if (s.progress > 0.95 && s.progress < 0.95 + s.speed) {
@@ -983,7 +970,6 @@ const rafScheduler = {
                     s.si = s.ei; s.ei = nextId; 
                     s.source = s.ep; s.ep = particles[nextId];
                     s.history.push(nextId); s.progress = 0; s.hops--;
-                    // 传导时的气泡也受到 power 影响
                     for(let nb=0; nb<2; nb++) sparks.push({ type: 'bubble', x: px[s.si], y: py[s.si], radius: 0.8 * s.power, life: 0.8, decay: 0.015 });
                 } else { s.hops = 0; }
             }
@@ -998,22 +984,18 @@ const rafScheduler = {
         ctx.beginPath(); 
         const g = ctx.createLinearGradient(tx, ty, hx, hy);
         g.addColorStop(0, `rgba(${sigColor},0)`); 
-        // 🚀 动态亮度：高能量信号更亮
         g.addColorStop(0.5, `rgba(${sigColor},${0.15 + s.power * 0.15})`); 
         g.addColorStop(1, `rgba(255,255,255,${0.2 + s.power * 0.2})`); 
         
         ctx.strokeStyle = g; 
-        // 🚀 动态粗细：基础 1.0 + 能量加成
         ctx.lineWidth = 1.0 + s.power * 1.5; 
         ctx.lineCap = 'round';
         
-        // 🚀 巨型节点专属外发光效果
         ctx.shadowBlur = s.power > 1.3 ? 8 : 0; 
         ctx.shadowColor = `rgba(${sigColor}, 0.8)`;
         
         ctx.moveTo(tx, ty); ctx.lineTo(hx, hy); ctx.stroke();
         
-        // 内核电流虚线也跟随粗细变化
         ctx.beginPath(); 
         ctx.strokeStyle = `rgba(255,255,255,${0.15 + s.power * 0.1})`; 
         ctx.lineWidth = 0.5 + s.power * 0.6; 
@@ -1033,13 +1015,10 @@ const rafScheduler = {
         halo.addColorStop(1, 'rgba(0,0,0,0)');
         ctx.fillStyle = halo; ctx.beginPath(); ctx.arc(px[i], py[i], r * 4.5, 0, Math.PI * 2); ctx.fill();
         
-        // 💡 修改这里：定义细胞核的颜色 (这里使用的是【突触金】的配色)
-        // 如果是暗色模式用高亮金，亮色模式用深一点的橘色保证对比度
         const cR = isLight ? 230 : 255; 
         const cG = isLight ? 120 : 215; 
         const cB = isLight ? 20  : 100; 
 
-       // 🚀 高级分级配色：不再统一用 255, 255, 255，而是使用粒子自己的属性
         ctx.fillStyle = `rgba(${p.cR}, ${p.cG}, ${p.cB}, ${0.7 + p.charge * 0.3})`;
         ctx.beginPath(); ctx.arc(px[i], py[i], r * 0.6, 0, Math.PI * 2); ctx.fill();
         
