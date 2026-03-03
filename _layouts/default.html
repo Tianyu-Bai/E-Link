@@ -821,7 +821,7 @@ if (localStorage.getItem('elink_visited') === 'true') {
       const isLight = document.body.classList.contains('light-mode');
       const nR = isLight ? 13 : 96, nG = isLight ? 148 : 165, nB = isLight ? 136 : 250; 
       const lR = isLight ? 20 : 59, lG = isLight ? 184 : 130, lB = isLight ? 166 : 246; 
-      const sigColor = isLight ? '220,38,38' : '255,60,60'; 
+      const sigColor = isLight ? '37, 99, 235' : '0, 255, 255'; // 浅色模式用深蓝，深色模式用亮青
 
       // 1. 物理引力与接触判定
       for (let i = 0; i < count; i++) {
@@ -829,7 +829,6 @@ if (localStorage.getItem('elink_visited') === 'true') {
         p.vx += (Math.random() - 0.5) * 0.08;
         p.vy += (Math.random() - 0.5) * 0.08;
 
-        // 🧬 不应期冷却倒计时
         if (p.refractory > 0) p.refractory--;
 
         for (let j = 0; j < count; j++) {
@@ -840,34 +839,33 @@ if (localStorage.getItem('elink_visited') === 'true') {
           if (distSq < maxDistSq * 1.5) { 
             const dist = Math.sqrt(distSq);
             
+            // 🚀 修正后的平衡逻辑：距离 > 60 拉近，距离 < 60 推开（保持 60px 的黄金距离）
             if (dist > 60) { 
-              // 🚀 修改点 2：减弱吸力系数（从 0.025 改到 0.008）
               const pull = 0.008 * Math.pow(1 - dist / (maxDistance * 2), 2);
               p.vx += (dx / dist) * pull;
               p.vy += (dy / dist) * pull;
             } else {
-              // 🚀 修改点 3：增强近距离排斥感，保持神经元之间的“独立性”
-              const push = (50 - dist) * 0.02; 
+              // 这里的推力公式修正：让它们稳定在 60px 左右
+              const push = (60 - dist) * 0.015; 
               p.vx -= (dx / dist) * push;
               p.vy -= (dy / dist) * push;
             }
 
-            // 💥 只有靠得比较近且有缘分时才触发碰撞（保持画面整洁）
-            if (dist < 30 && Math.random() < 0.005) {
+            // 💥 放电触发门槛：只要进入 70px 范围就有概率触发
+            if (dist < 70 && Math.random() < 0.015) {
               p.charge = 1; particles[j].charge = 1;
-              p.radius = p.baseRadius + 2.5; particles[j].radius = particles[j].baseRadius + 2.5;
+              p.radius = p.baseRadius + 2.5; 
+              particles[j].radius = particles[j].baseRadius + 2.5;
 
               const midX = (p.x + particles[j].x) / 2;
               const midY = (p.y + particles[j].y) / 2;
 
-              // 🌊 产生电磁冲击波（涟漪）
               sparks.push({ type: 'ripple', x: midX, y: midY, radius: 2, life: 1, decay: 0.04 });
 
-              // ✨ 产生飞溅火花
-              const sparkCount = Math.floor(Math.random() * 4) + 3;
+              const sparkCount = Math.floor(Math.random() * 3) + 2;
               for (let k = 0; k < sparkCount; k++) {
                 const angle = Math.random() * Math.PI * 2;
-                const speed = Math.random() * 3 + 1.5;
+                const speed = Math.random() * 2 + 1;
                 sparks.push({
                   type: 'spark', x: midX, y: midY,
                   vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed,
@@ -875,9 +873,8 @@ if (localStorage.getItem('elink_visited') === 'true') {
                 });
               }
 
-              // 触发初始电脉冲
               if (p.refractory <= 0) {
-                p.refractory = 30; // 锁定冷却
+                p.refractory = 30; 
                 signals.push({ 
                   source: p, si: i, ep: particles[j], ei: j, 
                   progress: 0, speed: 0.15 + Math.random() * 0.05, tail: 0.25 
@@ -950,7 +947,7 @@ if (localStorage.getItem('elink_visited') === 'true') {
           s.vx *= 0.85; s.vy *= 0.85;
           ctx.beginPath();
           ctx.fillStyle = `rgba(255, 255, 255, ${s.life})`;
-          ctx.shadowBlur = 10; ctx.shadowColor = `rgba(${sigColor}, ${s.life})`;
+          ctx.shadowBlur = 15; ctx.shadowColor = `rgba(${sigColor}, ${s.life})`;
           ctx.arc(s.x, s.y, s.life * 1.5, 0, Math.PI * 2);
           ctx.fill();
           ctx.shadowBlur = 0;
@@ -995,7 +992,7 @@ if (localStorage.getItem('elink_visited') === 'true') {
         if (Math.abs(hx - tx) < 0.1 && Math.abs(hy - ty) < 0.1) continue;
 
         const g = ctx.createLinearGradient(tx, ty, hx, hy);
-        g.addColorStop(0, `rgba(${sigColor},0)`); 
+        g.addColorStop(0, `rgba(${sigColor},0)`);   // ✅ 必须使用反引号 `
         g.addColorStop(0.3, `rgba(${sigColor},0.8)`); 
         g.addColorStop(0.8, '#ffffff'); 
         g.addColorStop(1, '#ffffff');
@@ -1006,7 +1003,7 @@ if (localStorage.getItem('elink_visited') === 'true') {
         ctx.lineWidth = 2.5; 
         ctx.lineCap = 'round';
         ctx.shadowBlur = 15; 
-        ctx.shadowColor = `rgba(${sigColor}, 1)`; 
+        ctx.shadowColor = `rgba(${sigColor}, 1)`; // ✅ 必须使用反引号 `
         ctx.moveTo(tx, ty); ctx.lineTo(hx, hy); ctx.stroke();
         ctx.shadowBlur = 0;
         
