@@ -744,7 +744,7 @@ if (localStorage.getItem('elink_visited') === 'true') {
     });
   }
 
-// ── 粒子引擎 (长程传导版：N个节点深度穿梭 + 物理粘附 + PC限额2/手机顶2底1) ──────────────────────────────────
+// ── 粒子引擎 (长效气泡流转版：慢速电流 + 堆积感气泡 + 顶2底1/左2) ──────────────────────────────────
   function initNeuralWeb() {
     const canvas = document.getElementById('neuro-dust-canvas');
     if (!canvas) return;
@@ -773,7 +773,7 @@ if (localStorage.getItem('elink_visited') === 'true') {
     const EDGE_ZONE = 120; 
 
     for (let i = 0; i < count; i++) {
-      let baseR = isMobile ? (Math.random() * 1.5 + 2.5) : (Math.random() * 2.0 + 3.8);
+      let baseR = isMobile ? (Math.random() * 1.5 + 2.8) : (Math.random() * 2.0 + 4.0);
       let startY = Math.random() * height;
       if (isMobile) {
         if (i < 8) startY = Math.random() * EDGE_ZONE; 
@@ -797,13 +797,13 @@ if (localStorage.getItem('elink_visited') === 'true') {
       const sigColor = isLight ? '37, 99, 235' : '0, 255, 255'; 
       const nR = isLight ? 13 : 96, nG = isLight ? 148 : 165, nB = isLight ? 136 : 250;
 
-      let pcSignals = signals.length;
+      let totalPC = signals.length;
       let topAct = 0, bottomAct = 0;
       signals.forEach(s => {
         if (py[s.si] < height * 0.5) topAct++; else bottomAct++;
       });
 
-      // 1. 物理引擎与激发控制
+      // 1. 物理引擎：物理吸附
       for (let i = 0; i < count; i++) {
         const p = particles[i];
         p.neighbors = []; 
@@ -816,11 +816,11 @@ if (localStorage.getItem('elink_visited') === 'true') {
           if (distSq < maxDistSq) {
             const dist = Math.sqrt(distSq);
             p.neighbors.push(j); p2.neighbors.push(i);
-            if (dist > 65) {
+            if (dist > 70) {
               const pull = 0.005; p.vx += (dx / dist) * pull; p.vy += (dy / dist) * pull;
               p2.vx -= (dx / dist) * pull; p2.vy -= (dy / dist) * pull;
             } else if (dist < 45) {
-              const push = (45 - dist) * 0.012; p.vx -= (dx / dist) * push; p.vy -= (dy / dist) * push;
+              const push = (45 - dist) * 0.01; p.vx -= (dx / dist) * push; p.vy -= (dy / dist) * push;
             }
             const mX = (p.x + p2.x) / 2, mY = (p.y + p2.y) / 2;
             let canFire = false;
@@ -828,74 +828,73 @@ if (localStorage.getItem('elink_visited') === 'true') {
               if (mY < EDGE_ZONE && topAct < 2) canFire = true;
               if (mY > height - EDGE_ZONE && bottomAct < 1) canFire = true;
             } else {
-              if ((mX < width * 0.35 || mX > width * 0.65) && pcSignals < 2) canFire = true;
+              if ((mX < width * 0.35 || mX > width * 0.65) && totalPC < 2) canFire = true;
             }
-            if (canFire && dist < 75 && Math.random() < 0.015 && p.refractory <= 0) {
+            if (canFire && dist < 75 && Math.random() < 0.012 && p.refractory <= 0) {
               p.charge = 1; p2.charge = 1;
-              for(let b=0; b<3; b++) sparks.push({ type: 'bubble', x: mX + (Math.random()-0.5)*15, y: mY + (Math.random()-0.5)*10, radius: 1, life: 1, decay: 0.07 });
-              p.refractory = 200;
+              // 🚀 核心：气泡爆发延迟化。增加数量，大幅放慢 decay
+              for(let b=0; b<5; b++) {
+                sparks.push({ 
+                  type: 'bubble', x: mX + (Math.random()-0.5)*20, y: mY + (Math.random()-0.5)*20, 
+                  radius: 1, life: 1, 
+                  decay: 0.02 + Math.random()*0.02 // 降低衰减，让气泡停留很久
+                });
+              }
+              p.refractory = 250; // 加长冷却
               signals.push({ 
-                source: p, si: i, ep: p2, ei: j, progress: 0, speed: 0.14, tail: 0.4, 
-                // 🚀 N个节点：设定 8 到 15 次长距离跳跃
-                hops: isMobile ? 2 : Math.floor(Math.random() * 8) + 7,
-                history: [i] // 记忆路径，防止回头路
+                source: p, si: i, ep: p2, ei: j, progress: 0, 
+                speed: 0.05 + Math.random()*0.03, // 🚀 速度减慢一半，更丝滑
+                tail: 0.5, 
+                hops: isMobile ? 3 : Math.floor(Math.random() * 8) + 7,
+                history: [i]
               });
-              if (!isMobile) pcSignals++;
+              if (!isMobile) totalPC++;
             }
           }
         }
         p.vx *= 0.88; p.vy *= 0.88; p.x += p.vx; p.y += p.vy;
-        if (isMobile) {
-          if (i < 8 && p.y > EDGE_ZONE) p.vy -= 0.01;
-          if (i >= 8 && i < 14 && p.y < height - EDGE_ZONE) p.vy += 0.01;
-        }
-        if (p.x < -50) p.x = width + 50; else if (p.x > width + 50) p.x = -50;
-        if (p.y < -50) p.y = height + 50; else if (p.y > height + 50) p.y = -50;
         px[i] = p.x + Math.sin(p.pulse) * 5; py[i] = p.y + Math.cos(p.pulse * 0.8) * 5;
       }
 
-      // 2. 连线层
+      // 2. 静态线层 (调暗)
       for (let i = 0; i < count; i++) {
         particles[i].neighbors.forEach(ni => {
           if (ni > i) {
-            const intensity = Math.pow(1 - Math.sqrt((px[i]-px[ni])**2 + (py[i]-py[ni])**2) / maxDistance, 2) * 0.15;
+            const intensity = Math.pow(1 - Math.sqrt((px[i]-px[ni])**2 + (py[i]-py[ni])**2) / maxDistance, 2) * 0.12;
             ctx.beginPath(); ctx.strokeStyle = `rgba(59,130,246,${intensity})`;
             ctx.lineWidth = 0.5; ctx.moveTo(px[i], py[i]); ctx.lineTo(px[ni], py[ni]); ctx.stroke();
           }
         });
       }
 
-      // 3. 气泡层
+      // 3. 气泡层渲染 (堆积感)
       for (let i = sparks.length - 1; i >= 0; i--) {
         const s = sparks[i]; s.life -= s.decay;
         if (s.life <= 0) { sparks.splice(i, 1); continue; }
-        s.radius += 1.0; ctx.beginPath(); 
-        ctx.strokeStyle = `rgba(${sigColor}, ${s.life * 0.35})`; ctx.lineWidth = 0.6;
+        s.radius += 0.5; // 🚀 扩张变慢
+        ctx.beginPath(); 
+        ctx.strokeStyle = `rgba(${sigColor}, ${s.life * 0.25})`; // 🚀 亮度调低
+        ctx.lineWidth = 0.6;
         ctx.arc(s.x, s.y, s.radius, 0, Math.PI * 2); ctx.stroke();
       }
 
-      // 4. 长程电流传导引擎 (Deep Circuit Propagation)
+      // 4. 长程电流流转 (优雅慢速版)
       for (let i = signals.length - 1; i >= 0; i--) {
         const s = signals[i]; s.progress += s.speed;
-        
         if (s.progress > 0.95 && s.progress < 0.95 + s.speed) {
             s.ep.charge = 1;
             if (s.hops > 0) {
-                // 🚀 智能寻路：过滤掉刚刚走过的 3 个节点
                 const nextOptions = s.ep.neighbors.filter(ni => !s.history.slice(-3).includes(ni));
                 const nextId = nextOptions.length > 0 ? nextOptions[Math.floor(Math.random() * nextOptions.length)] : null;
-                
                 if (nextId !== null) {
-                    s.si = s.ei; s.ei = nextId; 
-                    s.source = s.ep; s.ep = particles[nextId];
-                    s.history.push(nextId);
-                    s.progress = 0; s.hops--;
-                    sparks.push({ type: 'bubble', x: px[s.si], y: py[s.si], radius: 1, life: 0.8, decay: 0.1 });
-                } else { s.hops = 0; } // 无路可走则提前结束
+                    s.si = s.ei; s.ei = nextId; s.source = s.ep; s.ep = particles[nextId];
+                    s.history.push(nextId); s.progress = 0; s.hops--;
+                    // 跳跃时再爆 2 个长效气泡
+                    for(let nb=0; nb<2; nb++) sparks.push({ type: 'bubble', x: px[s.si], y: py[s.si], radius: 1, life: 0.8, decay: 0.03 });
+                } else { s.hops = 0; }
             }
         }
         if (s.progress >= 1.3 && s.hops <= 0) { signals.splice(i, 1); continue; }
-
         const hx = px[s.si] + (px[s.ei] - px[s.si]) * Math.min(1, s.progress);
         const hy = py[s.si] + (py[s.ei] - py[s.si]) * Math.min(1, s.progress);
         const tx = px[s.si] + (px[s.ei] - px[s.si]) * Math.max(0, s.progress - s.tail);
@@ -903,31 +902,35 @@ if (localStorage.getItem('elink_visited') === 'true') {
 
         ctx.beginPath(); 
         const g = ctx.createLinearGradient(tx, ty, hx, hy);
-        g.addColorStop(0, `rgba(${sigColor},0)`); g.addColorStop(0.5, `rgba(${sigColor},0.8)`); g.addColorStop(1, '#fff');
-        ctx.strokeStyle = g; ctx.lineWidth = 2.4; ctx.lineCap = 'round';
-        ctx.shadowBlur = 12; ctx.shadowColor = `rgba(${sigColor}, 1)`;
+        g.addColorStop(0, `rgba(${sigColor},0)`); 
+        g.addColorStop(0.5, `rgba(${sigColor},0.3)`); // 🚀 电流透明度调低
+        g.addColorStop(1, 'rgba(255,255,255,0.5)'); // 🚀 核心亮度调低
+        ctx.strokeStyle = g; ctx.lineWidth = 1.8; ctx.lineCap = 'round';
+        ctx.shadowBlur = 6; ctx.shadowColor = `rgba(${sigColor}, 0.5)`;
         ctx.moveTo(tx, ty); ctx.lineTo(hx, hy); ctx.stroke();
-        ctx.beginPath(); ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.0;
-        ctx.setLineDash([4, 12]); ctx.lineDashOffset = -s.progress * 80;
+        
+        ctx.beginPath(); ctx.strokeStyle = 'rgba(255,255,255,0.3)'; ctx.lineWidth = 0.8;
+        ctx.setLineDash([4, 12]); ctx.lineDashOffset = -s.progress * 40; // 🚀 流动速度减半
         ctx.moveTo(tx, ty); ctx.lineTo(hx, hy); ctx.stroke();
         ctx.setLineDash([]); ctx.shadowBlur = 0;
       }
 
-      // 5. 巨型呼吸胞体
+      // 5. 大胞体渲染 (保持饱满)
       for (let i = 0; i < count; i++) {
         const p = particles[i]; p.pulse += p.pulseSpeed;
-        const r = p.baseRadius * (Math.sin(p.pulse) * 0.2 + 1);
+        const breathing = Math.sin(p.pulse) * 0.2 + 1;
+        const r = p.baseRadius * breathing;
         const halo = ctx.createRadialGradient(px[i], py[i], 0, px[i], py[i], r * 4.5);
-        halo.addColorStop(0, `rgba(${nR},${nG},${nB},${0.18 + p.charge * 0.4})`);
+        halo.addColorStop(0, `rgba(${nR},${nG},${nB},${0.1 + p.charge * 0.2})`);
         halo.addColorStop(1, 'rgba(0,0,0,0)');
         ctx.fillStyle = halo; ctx.beginPath(); ctx.arc(px[i], py[i], r * 4.5, 0, Math.PI * 2); ctx.fill();
-        ctx.fillStyle = `rgba(255, 255, 255, ${0.7 + p.charge * 0.3})`;
+        ctx.fillStyle = `rgba(255, 255, 255, ${0.5 + p.charge * 0.3})`;
         ctx.beginPath(); ctx.arc(px[i], py[i], r * 0.6, 0, Math.PI * 2); ctx.fill();
         if (p.charge > 0) p.charge *= 0.9;
       }
     });
   }
-
+ 
   setTimeout(initNeuralWeb, 150);
  
   // ── Lenis 平滑滚动 ───────────────────────────────────────────
