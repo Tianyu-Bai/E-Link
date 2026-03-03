@@ -890,8 +890,6 @@ if (localStorage.getItem('elink_visited') === 'true') {
         p.vx *= 0.92; p.vy *= 0.92; 
         p.x += p.vx; p.y += p.vy; 
         p.phase += p.breathSpeed;
-
-        p.x += p.vx; p.y += p.vy; 
         
         // 🚀 手机端垂直约束：如果粒子试图离开顶部/底部活跃区，给予一个微弱的反向推力
         if (window.innerWidth <= 768) {
