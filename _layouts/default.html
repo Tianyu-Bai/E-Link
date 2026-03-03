@@ -575,7 +575,7 @@
   let dialogData = dialogData_EN;
    
 document.addEventListener("DOMContentLoaded", function () {
-
+const welcomeModal = document.getElementById('welcome-modal');
 if (localStorage.getItem('elink_visited') === 'true') {
     // 已经访问过，彻底隐藏并解除锁定
     welcomeModal.style.display = 'none'; 
@@ -824,7 +824,6 @@ if (localStorage.getItem('elink_visited') === 'true') {
   type();
 
   // ── 模态框 & 主题 & 语言 ─────────────────────────────────────
-  const welcomeModal = document.getElementById('welcome-modal');
   const modalKeepDarkBtn = document.getElementById('modal-keep-dark-btn');
   const modalSwitchLightBtn = document.getElementById('modal-switch-light-btn');
   const modalLangCheckbox = document.getElementById('modal-lang-toggle-checkbox');
@@ -1084,15 +1083,13 @@ if (localStorage.getItem('elink_visited') === 'true') {
 <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 <script>
 window.addEventListener('load', () => {
-    AOS.init({ 
-      duration: 800, 
-      easing: 'ease-out-cubic', 
-      once: true,
-      offset: 50, // 距离元素出现还有 50px 时提前触发，避免太晚出现
-      disable: function() {
-        return window.innerWidth < 768; // 动态检测，支持横竖屏切换和窗口缩放
-      }
-    });
+  AOS.init({ 
+  duration: 600, // 手机端稍微加快动画速度
+  easing: 'ease-out-cubic', 
+  once: true,
+  offset: 20, // 调低 offset，只要稍微露出边缘就触发动画
+  // disable: function() { return window.innerWidth < 768; } // 把这行注释掉，在手机端重新启用！
+});
   });
 </script>
 
