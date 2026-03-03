@@ -776,14 +776,14 @@ const rafScheduler = {
     });
   }
 
-// ── 粒子引擎 (簇群坍缩版：动态吸附成大簇 + 实时寻路长程电流 + 顶5底3/PC限2) ──────────────────────────────────
+// ── 粒子引擎 (簇群坍缩版：动态吸附成大簇 + 实时寻路长程电流 + 顶5底3/PC限2 + 左右侧高密分布) ──────────
   function initNeuralWeb() {
     const canvas = document.getElementById('neuro-dust-canvas');
     if (!canvas) return;
     const ctx = canvas.getContext('2d', { alpha: true, desynchronized: true });
 
     const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || window.innerWidth < 768;
-    let width, height, dpr;
+    let width, height, dpr, sideZone;
 
     function applyResize() {
       dpr = isMobile ? 1.0 : Math.min(window.devicePixelRatio || 1, 1.5);
@@ -792,12 +792,15 @@ const rafScheduler = {
       canvas.height = Math.floor(height * dpr);
       canvas.style.width = `${width}px`; canvas.style.height = `${height}px`;
       ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.scale(dpr, dpr);
+      // 💡 定义左右侧允许分布的宽度比例 (PC占两侧各20%，移动端各占25%)
+      sideZone = width * (isMobile ? 0.25 : 0.2); 
     }
     applyResize();
     window.addEventListener('resize', applyResize, { passive: true });
 
-    const count = isMobile ? 35 : 65; 
-    const maxDistance = 140; // 增加感应距离以促进大簇形成
+    // 💡 1. 密度加大：数量整体翻倍
+    const count = isMobile ? 70 : 130; 
+    const maxDistance = 140; 
     const maxDistSq = maxDistance * maxDistance;
     const particles = [];
     const sparks = []; 
@@ -806,18 +809,39 @@ const rafScheduler = {
     const BOTTOM_ZONE = 130;
 
     for (let i = 0; i < count; i++) {
-      let baseR = isMobile ? (Math.random() * 1.2 + 2.5) : (Math.random() * 1.8 + 3.5);
-      let startY = Math.random() * height;
-      if (isMobile) {
-        if (i < 22) startY = Math.random() * TOP_ZONE; 
-        else if (i < 35) startY = height - Math.random() * BOTTOM_ZONE;
+      // 💡 模拟真实神经元：通过概率分布生成不同量级的胞体
+      let sizeType = Math.random();
+      let baseR;
+      
+      if (sizeType > 0.88) {
+        // 12% 概率：巨型枢纽节点 (类似主神经元，引力更强、光晕更大)
+        baseR = isMobile ? (Math.random() * 1.5 + 3.5) : (Math.random() * 2.5 + 5.5);
+      } else if (sizeType > 0.35) {
+        // 53% 概率：常规神经元
+        baseR = isMobile ? (Math.random() * 1.0 + 2.0) : (Math.random() * 1.5 + 3.0);
+      } else {
+        // 35% 概率：微型节点 (类似胶质细胞或末梢)
+        baseR = isMobile ? (Math.random() * 0.5 + 1.0) : (Math.random() * 0.8 + 1.5);
       }
+
+      let startY = Math.random() * height;
+      
+      // 2. 初始位置限制：只在左右两侧随机生成
+      let isLeft = Math.random() < 0.5;
+      let startX = isLeft ? Math.random() * sideZone : width - Math.random() * sideZone;
+
+      if (isMobile) {
+        if (i < count * 0.6) startY = Math.random() * TOP_ZONE; 
+        else startY = height - Math.random() * BOTTOM_ZONE;
+      }
+      
       particles.push({
-        id: i, x: Math.random() * width, y: startY,
+        id: i, x: startX, y: startY,
         vx: (Math.random() - 0.5) * 0.03, vy: (Math.random() - 0.5) * 0.03,
         baseRadius: baseR, radius: baseR, charge: 0, refractory: 0, 
         pulse: Math.random() * Math.PI * 2, pulseSpeed: 0.015 + Math.random() * 0.015,
-        neighbors: [] 
+        neighbors: [],
+        isLeft: isLeft
       });
     }
 
@@ -851,13 +875,11 @@ const rafScheduler = {
             const dist = Math.sqrt(distSq);
             p.neighbors.push(j); p2.neighbors.push(i);
 
-            // 🚀 核心：强化吸附力，让零散节点不断靠近形成巨型簇
             if (dist > 50) {
-              const pull = 0.008; // 增加引力系数
+              const pull = 0.008; 
               p.vx += (dx / dist) * pull; p.vy += (dy / dist) * pull;
               p2.vx -= (dx / dist) * pull; p2.vy -= (dy / dist) * pull;
             } else {
-              // 极近距离下的柔性排斥，防止重叠成一个点
               const push = (50 - dist) * 0.015;
               p.vx -= (dx / dist) * push; p.vy -= (dy / dist) * push;
             }
@@ -868,7 +890,8 @@ const rafScheduler = {
               if (mY < TOP_ZONE && topAct < 5) canFire = true;
               if (mY > height - BOTTOM_ZONE && bottomAct < 3) canFire = true;
             } else {
-              const isSide = (mX < width * 0.35 || mX > width * 0.65);
+              // 侧边判定范围自适应新的侧边宽度
+              const isSide = (mX < sideZone * 1.2 || mX > width - sideZone * 1.2);
               if (isSide && pcTotal < 2) canFire = true;
             }
 
@@ -878,17 +901,29 @@ const rafScheduler = {
               p.refractory = 220;
               signals.push({ 
                 source: p, si: i, ep: p2, ei: j, progress: 0, 
-                speed: 0.04, // 🚀 优雅慢速
+                speed: 0.04, 
                 tail: 0.5, hops: isMobile ? 5 : Math.floor(Math.random() * 10) + 12, history: [i]
               });
               if (!isMobile) pcTotal++;
             }
           }
         }
-        p.vx *= 0.85; p.vy *= 0.85; p.x += p.vx; p.y += p.vy;
+        
+        p.vx *= 0.85; p.vy *= 0.85; 
+        p.x += p.vx; p.y += p.vy;
+
+        // 💡 3. X轴结界屏障：防止因相互吸附而被拉到中间内容区
+        if (p.isLeft) {
+            if (p.x > sideZone) p.vx -= 0.05; // 越过右侧结界，推回左边
+            if (p.x < 0) p.vx += 0.05;        // 越过屏幕最左侧，推回右边
+        } else {
+            if (p.x < width - sideZone) p.vx += 0.05; // 越过左侧结界，推回右边
+            if (p.x > width) p.vx -= 0.05;            // 越过屏幕最右侧，推回左边
+        }
+
         if (isMobile) {
-          if (i < 22 && p.y > TOP_ZONE) p.vy -= 0.02;
-          if (i >= 22 && i < 35 && p.y < height - BOTTOM_ZONE) p.vy += 0.02;
+          if (i < count * 0.6 && p.y > TOP_ZONE) p.vy -= 0.02;
+          if (i >= count * 0.6 && p.y < height - BOTTOM_ZONE) p.vy += 0.02;
         }
         px[i] = p.x + Math.sin(p.pulse) * 5; py[i] = p.y + Math.cos(p.pulse * 0.8) * 5;
       }
@@ -919,7 +954,6 @@ const rafScheduler = {
         if (s.progress > 0.95 && s.progress < 0.95 + s.speed) {
             s.ep.charge = 1;
             if (s.hops > 0) {
-                // 🚀 实时寻路：在当前这一帧重新寻找距离最近的邻居
                 const nextOptions = s.ep.neighbors.filter(ni => !s.history.slice(-5).includes(ni));
                 const nextId = nextOptions.length > 0 ? nextOptions[Math.floor(Math.random() * nextOptions.length)] : null;
                 if (nextId !== null) {
@@ -940,14 +974,14 @@ const rafScheduler = {
         ctx.beginPath(); 
         const g = ctx.createLinearGradient(tx, ty, hx, hy);
         g.addColorStop(0, `rgba(${sigColor},0)`); 
-        g.addColorStop(0.5, `rgba(${sigColor},0.3)`); // 🚀 降温：透明度调低
-        g.addColorStop(1, 'rgba(255,255,255,0.4)'); // 🚀 降温：亮度调低
+        g.addColorStop(0.5, `rgba(${sigColor},0.3)`); 
+        g.addColorStop(1, 'rgba(255,255,255,0.4)'); 
         ctx.strokeStyle = g; ctx.lineWidth = 2.2; ctx.lineCap = 'round';
         ctx.shadowBlur = 0; ctx.shadowColor = `rgba(${sigColor}, 0.5)`;
         ctx.moveTo(tx, ty); ctx.lineTo(hx, hy); ctx.stroke();
         
         ctx.beginPath(); ctx.strokeStyle = 'rgba(255,255,255,0.25)'; ctx.lineWidth = 1.0;
-        ctx.setLineDash([4, 12]); ctx.lineDashOffset = -s.progress * 30; // 🚀 降温：流速减慢
+        ctx.setLineDash([4, 12]); ctx.lineDashOffset = -s.progress * 30; 
         ctx.moveTo(tx, ty); ctx.lineTo(hx, hy); ctx.stroke();
         ctx.setLineDash([]); ctx.shadowBlur = 0;
       }
@@ -968,7 +1002,6 @@ const rafScheduler = {
     });
   }
 
-  // 🚀 确保主线程优先处理 UI
   setTimeout(initNeuralWeb, 150);
  
   // ── Lenis 平滑滚动 ───────────────────────────────────────────
