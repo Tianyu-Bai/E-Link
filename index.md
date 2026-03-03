@@ -17,45 +17,45 @@ title: E-Link Home
 }
 
 /* 2. 【英文版专属】图片遮罩与光束扫过 */
+/* 2. 【英文版专属】图片遮罩与光束扫过 */
 .logo-mask-container {
   position: relative; 
   /* 加上 max-content 强行锁死物理宽度 */
   display: inline-block; 
   width: max-content; 
   max-width: 100%;
-  
-  -webkit-mask-image: var(--logo-url); 
-  mask-image: var(--logo-url);
-  -webkit-mask-size: contain;
-  -webkit-mask-position: center;
-  -webkit-mask-repeat: no-repeat;
+  /* 🚀 核心修复：移除这里的 mask-image，防止由于遮罩失效导致整个 Logo 消失 */
 }
 
 .logo-mask-container::after {
   content: "";
   position: absolute;
-  top: 0;
-  /* 起始位置稍微往左偏一点，包容性更强 */
-  left: -20%; 
-  /* 💡 强行把光束拉宽到容器的 1.5 倍，让高光区彻底淹没字符 */
-  width: 150%; 
-  height: 100%;
+  inset: 0; /* 完美覆盖底层图片 */
   
+  /* 🚀 核心修复：把遮罩仅应用于光束层！底图绝对安全 */
+  -webkit-mask-image: var(--logo-url); 
+  mask-image: var(--logo-url);
+  -webkit-mask-size: contain;
+  -webkit-mask-position: center;
+  -webkit-mask-repeat: no-repeat;
+  
+  /* 使用带角度的渐变代替 transform skewX，手机端硬件加速更流畅 */
   background: linear-gradient(
-    to right, 
+    105deg, 
     transparent 0%, 
-    rgba(96, 165, 250, 0.4) 15%,   
-    rgba(167, 139, 250, 0.95) 45%, /* ✨ 高光区更宽 */
-    rgba(167, 139, 250, 0.95) 70%, 
-    rgba(96, 165, 250, 0.4) 85%,   
+    transparent 20%,
+    rgba(96, 165, 250, 0.4) 35%,   
+    rgba(167, 139, 250, 0.95) 50%, 
+    rgba(167, 139, 250, 0.95) 60%, 
+    rgba(96, 165, 250, 0.4) 75%,   
+    transparent 90%,
     transparent 100%
   );
-  
+  background-size: 250% 100%;
+  background-repeat: no-repeat;
   mix-blend-mode: screen;
   pointer-events: none;
-  
-  /* 💡 时间直接拉长到 3 秒 */
-  animation: searchlight-sweep 3s linear infinite;
+  animation: safe-sweep-anim 3s linear infinite;
 }
 
 @keyframes searchlight-sweep {
@@ -1891,39 +1891,49 @@ This project is open-source and available under the **MIT License**. Click the b
 }
 
 /* 2. 中文版专属图片遮罩扫光 */
+./* 2. 中文版专属图片遮罩扫光 */
 .logo-mask-zh {
   position: relative; 
   display: flex; 
   align-items: center;
-  -webkit-mask-image: var(--logo-url); 
-  mask-image: var(--logo-url);
-  -webkit-mask-size: contain;
-  -webkit-mask-position: center;
-  -webkit-mask-repeat: no-repeat;
+  /* 🚀 核心修复：移除这里的 mask-image */
 }
 
 .logo-mask-zh::after {
   content: ""; 
   position: absolute; 
-  top: 0; left: -20%; width: 150%; height: 100%;
+  inset: 0;
+  
+  /* 🚀 把遮罩仅应用于光束层 */
+  -webkit-mask-image: var(--logo-url); 
+  mask-image: var(--logo-url);
+  -webkit-mask-size: contain;
+  -webkit-mask-position: center;
+  -webkit-mask-repeat: no-repeat;
+
   background: linear-gradient(
-    to right, 
+    105deg, 
     transparent 0%, 
-    rgba(96, 165, 250, 0.4) 15%, 
-    rgba(167, 139, 250, 0.95) 45%, 
-    rgba(167, 139, 250, 0.95) 70%, 
-    rgba(96, 165, 250, 0.4) 85%, 
+    transparent 20%,
+    rgba(96, 165, 250, 0.4) 35%, 
+    rgba(167, 139, 250, 0.95) 50%, 
+    rgba(167, 139, 250, 0.95) 60%, 
+    rgba(96, 165, 250, 0.4) 75%, 
+    transparent 90%,
     transparent 100%
   );
+  background-size: 250% 100%;
+  background-repeat: no-repeat;
   mix-blend-mode: screen; 
   pointer-events: none; 
-  animation: searchlight-sweep-zh 3s linear infinite;
+  animation: safe-sweep-anim 3s linear infinite;
 }
 
-@keyframes searchlight-sweep-zh {
-  0%    { transform: translateX(-100%) skewX(-20deg); }
-  75%   { transform: translateX(100%) skewX(-20deg); }  
-  100%  { transform: translateX(100%) skewX(-20deg); }
+/* 🚀 统一的高性能扫光动画 (通过移动背景而不是形变 DOM) */
+@keyframes safe-sweep-anim {
+  0%   { background-position: 200% 0; }
+  75%  { background-position: -100% 0; }  
+  100% { background-position: -100% 0; }
 }
 
 /* 3. 中文纯文本渐变扫光 */
