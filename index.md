@@ -1577,7 +1577,7 @@ body.light-mode .watermark-features strong { color: #2563eb; text-shadow: none; 
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12h4l3-9 5 18 3-9h5"/></svg>
       Intan RHX Interface - Simulated E-Link (256-ch) Stream
     </div>
-    <div class="intan-window-controls"><span class="min"></span><span class="max"></span><span class="close"></span></div>
+    <div class="intan-window-controls"><span class="close"></span><span class="min"></span><span class="max"></span></div>
   </div>
   
   <div class="intan-body">
@@ -2481,7 +2481,7 @@ This project is open-source and available under the **MIT License**. Click the b
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12h4l3-9 5 18 3-9h5"/></svg>
       Intan RHX Interface - Simulated E-Link (256-ch) Stream
     </div>
-    <div class="intan-window-controls"><span class="min"></span><span class="max"></span><span class="close"></span></div>
+    <div class="intan-window-controls"><span class="close"></span><span class="min"></span><span class="max"></span></div>
   </div>
   
   <div class="intan-body">
