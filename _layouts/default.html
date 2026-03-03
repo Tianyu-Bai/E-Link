@@ -809,32 +809,42 @@ const rafScheduler = {
     const BOTTOM_ZONE = 130;
 
     for (let i = 0; i < count; i++) {
-      // 💡 模拟真实神经元：通过概率分布生成不同量级的胞体
       let sizeType = Math.random();
       let baseR;
-      
       if (sizeType > 0.88) {
-        // 12% 概率：巨型枢纽节点 (类似主神经元，引力更强、光晕更大)
         baseR = isMobile ? (Math.random() * 1.5 + 3.5) : (Math.random() * 2.5 + 5.5);
       } else if (sizeType > 0.35) {
-        // 53% 概率：常规神经元
         baseR = isMobile ? (Math.random() * 1.0 + 2.0) : (Math.random() * 1.5 + 3.0);
       } else {
-        // 35% 概率：微型节点 (类似胶质细胞或末梢)
         baseR = isMobile ? (Math.random() * 0.5 + 1.0) : (Math.random() * 0.8 + 1.5);
       }
 
-      let startY = Math.random() * height;
-      
-      // 2. 初始位置限制：只在左右两侧随机生成
-      let isLeft = Math.random() < 0.5;
-      let startX = isLeft ? Math.random() * sideZone : width - Math.random() * sideZone;
+      // 💡 1. 核心技巧：趋中随机函数 (模拟正态分布)。返回值 0~1，但极大概率落在 0.5 附近
+      const clusterRand = () => (Math.random() + Math.random() + Math.random()) / 3;
 
-      if (isMobile) {
-        if (i < count * 0.6) startY = Math.random() * TOP_ZONE; 
-        else startY = height - Math.random() * BOTTOM_ZONE;
-      }
+      let isLeft = Math.random() < 0.5;
       
+      // 💡 2. X轴：向左右各侧的中心线聚拢，而不是边缘
+      let startX = isLeft ? clusterRand() * sideZone : width - clusterRand() * sideZone;
+
+      let startY;
+      if (isMobile) {
+        // 移动端：向顶部和底部区域的中心聚拢
+        if (i < count * 0.6) startY = clusterRand() * TOP_ZONE; 
+        else startY = height - clusterRand() * BOTTOM_ZONE;
+      } else {
+        // 💡 3. PC端 Y轴：人为制造上下两个“初始神经节 (Hub)”
+        let isTopCluster = Math.random() < 0.5;
+        let hubY = isTopCluster ? height * 0.3 : height * 0.7; // 聚集在 30% 和 70% 的高度
+        
+        // 产生一个 -1 到 1 的正态偏移，控制聚拢程度（0.25 控制了上下散开的范围）
+        let offsetY = (Math.random() + Math.random() - 1) * (height * 0.25); 
+        
+        startY = hubY + offsetY;
+        // 兜底限制，防止超出屏幕
+        startY = Math.max(10, Math.min(height - 10, startY));
+      }
+
       particles.push({
         id: i, x: startX, y: startY,
         vx: (Math.random() - 0.5) * 0.03, vy: (Math.random() - 0.5) * 0.03,
@@ -897,12 +907,18 @@ const rafScheduler = {
 
             if (canFire && dist < 75 && Math.random() < 0.012 && p.refractory <= 0) {
               p.charge = 1; p2.charge = 1;
-              for(let b=0; b<4; b++) sparks.push({ type: 'bubble', x: mX + (Math.random()-0.5)*15, y: mY + (Math.random()-0.5)*15, radius: 1, life: 1, decay: 0.015 });
+              
+              // 🚀 新增：根据发射源细胞的大小，计算这道电流的“能量倍率”
+              // PC端基准大小约3.5，移动端约2.0。巨型节点发出的倍率会 > 1.5
+              const power = p.baseRadius / (isMobile ? 2.0 : 3.5); 
+
+              for(let b=0; b<4; b++) sparks.push({ type: 'bubble', x: mX + (Math.random()-0.5)*15, y: mY + (Math.random()-0.5)*15, radius: 1 * power, life: 1, decay: 0.015 });
               p.refractory = 220;
               signals.push({ 
                 source: p, si: i, ep: p2, ei: j, progress: 0, 
                 speed: 0.04, 
-                tail: 0.5, hops: isMobile ? 5 : Math.floor(Math.random() * 10) + 12, history: [i]
+                tail: 0.5, hops: isMobile ? 5 : Math.floor(Math.random() * 10) + 12, history: [i],
+                power: power // 🚀 将能量倍率存入信号中
               });
               if (!isMobile) pcTotal++;
             }
@@ -948,7 +964,8 @@ const rafScheduler = {
         ctx.arc(s.x, s.y, s.radius, 0, Math.PI * 2); ctx.stroke();
       }
 
-      // 4. 实时长程电流传导 (Real-time Adaptive Routing)
+     
+ // 4. 实时长程电流传导 (Real-time Adaptive Routing)
       for (let i = signals.length - 1; i >= 0; i--) {
         const s = signals[i]; s.progress += s.speed;
         if (s.progress > 0.95 && s.progress < 0.95 + s.speed) {
@@ -960,7 +977,8 @@ const rafScheduler = {
                     s.si = s.ei; s.ei = nextId; 
                     s.source = s.ep; s.ep = particles[nextId];
                     s.history.push(nextId); s.progress = 0; s.hops--;
-                    for(let nb=0; nb<2; nb++) sparks.push({ type: 'bubble', x: px[s.si], y: py[s.si], radius: 1, life: 0.8, decay: 0.015 });
+                    // 传导时的气泡也受到 power 影响
+                    for(let nb=0; nb<2; nb++) sparks.push({ type: 'bubble', x: px[s.si], y: py[s.si], radius: 0.8 * s.power, life: 0.8, decay: 0.015 });
                 } else { s.hops = 0; }
             }
         }
@@ -974,13 +992,25 @@ const rafScheduler = {
         ctx.beginPath(); 
         const g = ctx.createLinearGradient(tx, ty, hx, hy);
         g.addColorStop(0, `rgba(${sigColor},0)`); 
-        g.addColorStop(0.5, `rgba(${sigColor},0.3)`); 
-        g.addColorStop(1, 'rgba(255,255,255,0.4)'); 
-        ctx.strokeStyle = g; ctx.lineWidth = 2.2; ctx.lineCap = 'round';
-        ctx.shadowBlur = 0; ctx.shadowColor = `rgba(${sigColor}, 0.5)`;
+        // 🚀 动态亮度：高能量信号更亮
+        g.addColorStop(0.5, `rgba(${sigColor},${0.15 + s.power * 0.15})`); 
+        g.addColorStop(1, `rgba(255,255,255,${0.2 + s.power * 0.2})`); 
+        
+        ctx.strokeStyle = g; 
+        // 🚀 动态粗细：基础 1.0 + 能量加成
+        ctx.lineWidth = 1.0 + s.power * 1.5; 
+        ctx.lineCap = 'round';
+        
+        // 🚀 巨型节点专属外发光效果
+        ctx.shadowBlur = s.power > 1.3 ? 8 : 0; 
+        ctx.shadowColor = `rgba(${sigColor}, 0.8)`;
+        
         ctx.moveTo(tx, ty); ctx.lineTo(hx, hy); ctx.stroke();
         
-        ctx.beginPath(); ctx.strokeStyle = 'rgba(255,255,255,0.25)'; ctx.lineWidth = 1.0;
+        // 内核电流虚线也跟随粗细变化
+        ctx.beginPath(); 
+        ctx.strokeStyle = `rgba(255,255,255,${0.15 + s.power * 0.1})`; 
+        ctx.lineWidth = 0.5 + s.power * 0.6; 
         ctx.setLineDash([4, 12]); ctx.lineDashOffset = -s.progress * 30; 
         ctx.moveTo(tx, ty); ctx.lineTo(hx, hy); ctx.stroke();
         ctx.setLineDash([]); ctx.shadowBlur = 0;
