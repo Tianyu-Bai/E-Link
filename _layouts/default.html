@@ -886,9 +886,11 @@ const rafScheduler = {
     const py = new Float32Array(count);
 
     rafScheduler.add('particles', () => {
+     
       ctx.clearRect(0, 0, width, height);
       const isLight = document.body.classList.contains('light-mode');
-      const sigColor = isLight ? '37, 99, 235' : '0, 255, 255'; 
+      const sigColor = isLight ? '30, 58, 138' : '0, 255, 255';
+      const connectionOpacity = isLight ? 0.25 : 0.12;
       const nR = isLight ? 13 : 96, nG = isLight ? 148 : 165, nB = isLight ? 136 : 250;
 
       let pcTotal = signals.length;
