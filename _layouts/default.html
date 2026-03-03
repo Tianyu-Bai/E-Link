@@ -114,19 +114,17 @@
   .layout-wrapper { position: relative; max-width: 860px; margin: 100px auto 60px; z-index: 10; perspective: 1000px; }
   .container { 
     position: relative; padding: 60px 80px; 
-    /* 🚀 升级为高级玻璃拟态：加入对角线高光反射 */
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.01) 100%); 
-    backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); 
+    background: rgba(255, 255, 255, 0.05); 
+    backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); 
     border-radius: 20px; 
-    /* 🚀 加入纯白内发光，模拟厚玻璃被物理切割后的高光边缘 */
-    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5), inset 1px 1px 1px rgba(255, 255, 255, 0.15); 
-    border: 1px solid rgba(255, 255, 255, 0.12); 
+    box-shadow: 0 20px 50px rgba(59, 130, 246, 0.15); 
+    border: 1px solid rgba(255, 255, 255, 0.1); 
     border-top: 4px solid #3b82f6; 
-    opacity: 0; animation: fadeUp 0.6s ease-out 0.2s forwards; z-index: 1; transition: border-color 0.4s ease, box-shadow 0.4s ease; 
+    opacity: 0;  animation: fadeUp 0.6s ease-out 0.2s forwards; z-index: 1; transition: border-color 0.4s ease, box-shadow 0.4s ease; 
   }
   .container:hover { 
     border-color: rgba(96, 165, 250, 0.4); 
-    box-shadow: 0 35px 70px rgba(0, 0, 0, 0.6), 0 0 30px rgba(59, 130, 246, 0.15), inset 1px 1px 1px rgba(255, 255, 255, 0.2); 
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6), 0 0 30px rgba(59, 130, 246, 0.15); 
     transform: translateY(-2px); 
   }
 
@@ -276,7 +274,10 @@
   body.light-mode .rpg-btn:hover { background: #cbd5e1; color: #1e40af; border-color: #94a3b8; }
   body.light-mode #bot-speech { background: #ffffff; color: #334155; border-color: #cbd5e1; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
   body.light-mode .typewriter-container { color: #2563eb; }
-  
+ 
+  /* 3D 模型框的白天磨砂玻璃质感 */
+  body.light-mode .custom-model-viewer { background: rgba(255, 255, 255, 0.6); border-color: rgba(148, 163, 184, 0.5); box-shadow: 0 10px 30px rgba(148, 163, 184, 0.15), inset 0 0 15px rgba(255,255,255,0.5); }
+ 
   /* 数据表格与按钮适配 */
   body.light-mode #main_content table { background: rgba(255, 255, 255, 0.9); border-color: rgba(148, 163, 184, 0.4); box-shadow: 0 10px 30px rgba(148, 163, 184, 0.15); }
   body.light-mode #main_content th { background: rgba(241, 245, 249, 1); color: #1e40af; border-bottom: 1px solid rgba(148, 163, 184, 0.4); }
@@ -716,8 +717,7 @@ if (localStorage.getItem('elink_visited') === 'true') {
     });
   }
 
-  // ── 粒子引擎 ─────────────────────────────────────────────────
-  // ── 粒子引擎 (终极连接：贴合火花与突触激发版) ─────────────────────────────────────────────────
+  // ── 粒子引擎 (顶配版：跳跃传导 + 突触级联风暴 + 电磁涟漪) ──────────────────────────────────
   function initNeuralWeb() {
     const canvas = document.getElementById('neuro-dust-canvas');
     if (!canvas) return;
@@ -739,20 +739,33 @@ if (localStorage.getItem('elink_visited') === 'true') {
       clearTimeout(resizeTimer); resizeTimer = setTimeout(applyResize, 150);
     }, { passive: true });
 
-    const count = window.innerWidth > 768 ? 55 : 25; 
-    const maxDistance = window.innerWidth > 768 ? 160 : 100;
+    const count = window.innerWidth > 768 ? 160 : 75; 
+    const maxDistance = window.innerWidth > 768 ? 140 : 90;
     const maxDistSq = maxDistance * maxDistance;
     const particles = [];
-    
-    // 🌟 新增：独立的火花粒子系统
     const sparks = []; 
 
     for (let i = 0; i < count; i++) {
       let baseR = Math.random() * 1.5 + 1.2;
+      
+      // 🚀 核心优化：手机端强制将粒子分布在顶部和底部
+      let spawnY;
+      if (window.innerWidth <= 768) {
+        // 50% 概率在顶部 25% 区域，50% 概率在底部 25% 区域
+        spawnY = Math.random() < 0.5 
+          ? Math.random() * (height * 0.25) 
+          : height - Math.random() * (height * 0.25);
+      } else {
+        spawnY = Math.random() * height;
+      }
+
       particles.push({
-        x: Math.random() * width, y: Math.random() * height,
+        id: i,
+        x: Math.random() * width, 
+        y: spawnY,
         vx: (Math.random() - 0.5) * 0.5, vy: (Math.random() - 0.5) * 0.5,
         baseRadius: baseR, radius: baseR, charge: 0, 
+        refractory: 0, 
         phase: Math.random() * Math.PI * 2,
         breathSpeed: Math.random() * 0.015 + 0.008,
         connections: []
@@ -784,6 +797,9 @@ if (localStorage.getItem('elink_visited') === 'true') {
         p.vx += (Math.random() - 0.5) * 0.08;
         p.vy += (Math.random() - 0.5) * 0.08;
 
+        // 🧬 不应期冷却倒计时
+        if (p.refractory > 0) p.refractory--;
+
         for (let j = 0; j < count; j++) {
           if (i === j) continue;
           const dx = particles[j].x - p.x, dy = particles[j].y - p.y;
@@ -792,53 +808,64 @@ if (localStorage.getItem('elink_visited') === 'true') {
           if (distSq < maxDistSq * 1.5) { 
             const dist = Math.sqrt(distSq);
             
-            // 🚀 核心改动 1：增强引力，并允许它们贴得极其近 (安全距离从 30 缩减为 10)
             if (dist > 10) { 
-              const pull = 0.025 * Math.pow(1 - dist / (maxDistance * 1.5), 2); // 吸力加强
+              const pull = 0.025 * Math.pow(1 - dist / (maxDistance * 1.5), 2);
               p.vx += (dx / dist) * pull;
               p.vy += (dy / dist) * pull;
             } else {
-              // 碰到一起后的微弱斥力，形成“黏连”感而不是完全重叠
               const push = (10 - dist) * 0.05;
               p.vx -= (dx / dist) * push;
               p.vy -= (dy / dist) * push;
             }
 
-            // 🌟 核心改动 2：接触瞬间的“火花激发” (碰在一起时高概率触发)
-            if (dist < 25 && Math.random() < 0.01) { 
-              // 双方瞬间充满生物电荷(极亮)
+            // 💥 碰撞激发！
+            if (dist < 25 && Math.random() < 0.008) { 
               p.charge = 1; particles[j].charge = 1;
               p.radius = p.baseRadius + 2.5; particles[j].radius = particles[j].baseRadius + 2.5;
 
-              // 计算碰撞中心点
               const midX = (p.x + particles[j].x) / 2;
               const midY = (p.y + particles[j].y) / 2;
 
-              // 💥 爆出 3~6 颗火花
+              // 🌊 产生电磁冲击波（涟漪）
+              sparks.push({ type: 'ripple', x: midX, y: midY, radius: 2, life: 1, decay: 0.04 });
+
+              // ✨ 产生飞溅火花
               const sparkCount = Math.floor(Math.random() * 4) + 3;
               for (let k = 0; k < sparkCount; k++) {
                 const angle = Math.random() * Math.PI * 2;
-                const speed = Math.random() * 3 + 1.5; // 火花飞溅速度
+                const speed = Math.random() * 3 + 1.5;
                 sparks.push({
-                  x: midX, y: midY,
-                  vx: Math.cos(angle) * speed,
-                  vy: Math.sin(angle) * speed,
-                  life: 1, // 生命周期
-                  decay: Math.random() * 0.06 + 0.04 // 衰减速度
+                  type: 'spark', x: midX, y: midY,
+                  vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed,
+                  life: 1, decay: Math.random() * 0.06 + 0.04
                 });
               }
 
-              // ⚡ 顺着它们新建立的连接，发射出极速电脉冲！
-              signals.push({ 
-                source: p, si: i, ep: particles[j], ei: j, 
-                progress: 0, speed: 0.15 + Math.random() * 0.05, tail: 0.25 
-              });
+              // 触发初始电脉冲
+              if (p.refractory <= 0) {
+                p.refractory = 30; // 锁定冷却
+                signals.push({ 
+                  source: p, si: i, ep: particles[j], ei: j, 
+                  progress: 0, speed: 0.15 + Math.random() * 0.05, tail: 0.25 
+                });
+              }
             }
           }
         }
 
-        p.vx *= 0.92; p.vy *= 0.92; // 增加阻尼，让它们贴合时更稳重
+        p.vx *= 0.92; p.vy *= 0.92; 
         p.x += p.vx; p.y += p.vy; 
+        p.phase += p.breathSpeed;
+
+        p.x += p.vx; p.y += p.vy; 
+        
+        // 🚀 手机端垂直约束：如果粒子试图离开顶部/底部活跃区，给予一个微弱的反向推力
+        if (window.innerWidth <= 768) {
+          const middleMargin = height * 0.3; // 中间留出 40% 的空白区
+          if (p.y > height * 0.25 && p.y < height * 0.5) p.vy -= 0.02; // 从上往下掉时推回去
+          if (p.y < height * 0.75 && p.y >= height * 0.5) p.vy += 0.02; // 从下往上飘时推回去
+        }
+
         p.phase += p.breathSpeed;
         
         if (p.charge > 0) p.charge *= 0.92;
@@ -860,53 +887,69 @@ if (localStorage.getItem('elink_visited') === 'true') {
           const dSq = dx * dx + dy * dy;
           if (dSq < maxDistSq) {
             const dist = Math.sqrt(dSq);
-            // 距离越近，建立的连接线越粗越亮 (强调“连在一起”)
             const intensity = Math.pow(1 - dist / maxDistance, 1.5) * 0.5;
             particles[i].connections.push({ep: particles[j], ei: j});
+            particles[j].connections.push({ep: particles[i], ei: i}); // 双向记录，为了级联风暴
             ctx.beginPath();
             ctx.strokeStyle = `rgba(${lR},${lG},${lB},${intensity})`;
             ctx.lineWidth = intensity * 4 + 0.5; 
             ctx.moveTo(px[i], py[i]); ctx.lineTo(px[j], py[j]); ctx.stroke();
           }
         }
-        
-        if (window.innerWidth > 768 && !document.body.classList.contains('modal-active')) {
-          const mdx = mouseX - px[i], mdy = mouseY - py[i];
-          if (mdx * mdx + mdy * mdy < 40000) {
-            const mDist = Math.sqrt(mdx * mdx + mdy * mdy);
-            const force = (1 - mDist / 200) * 0.5;
-            particles[i].vx -= (mdx / mDist) * force;
-            particles[i].vy -= (mdy / mDist) * force;
-          }
+      }
+
+      // 3. 渲染涟漪与火花
+      for (let i = sparks.length - 1; i >= 0; i--) {
+        const s = sparks[i];
+        s.life -= s.decay;
+        if (s.life <= 0) { sparks.splice(i, 1); continue; }
+
+        if (s.type === 'ripple') {
+          // 🌊 扩散冲击波
+          s.radius += 1.5;
+          ctx.beginPath();
+          ctx.strokeStyle = `rgba(${sigColor}, ${s.life * 0.6})`;
+          ctx.lineWidth = 1.5;
+          ctx.arc(s.x, s.y, s.radius, 0, Math.PI * 2);
+          ctx.stroke();
+        } else {
+          // ✨ 实体火花
+          s.x += s.vx; s.y += s.vy;
+          s.vx *= 0.85; s.vy *= 0.85;
+          ctx.beginPath();
+          ctx.fillStyle = `rgba(255, 255, 255, ${s.life})`;
+          ctx.shadowBlur = 10; ctx.shadowColor = `rgba(${sigColor}, ${s.life})`;
+          ctx.arc(s.x, s.y, s.life * 1.5, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.shadowBlur = 0;
         }
       }
 
-      // 🌟 3. 渲染接触火花 (Sparks)
-      for (let i = sparks.length - 1; i >= 0; i--) {
-        const s = sparks[i];
-        s.x += s.vx; s.y += s.vy;
-        s.vx *= 0.85; s.vy *= 0.85; // 火花很快受到阻力减速
-        s.life -= s.decay;
-        
-        if (s.life <= 0) { sparks.splice(i, 1); continue; }
-        
-        ctx.beginPath();
-        // 火花中心是白色，边缘是红色泛光
-        ctx.fillStyle = `rgba(255, 255, 255, ${s.life})`;
-        ctx.shadowBlur = 10;
-        ctx.shadowColor = `rgba(${sigColor}, ${s.life})`;
-        ctx.arc(s.x, s.y, s.life * 1.5, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.shadowBlur = 0;
-      }
-
-      // 4. 绘制放电光波 (Signals)
+      // 4. 绘制放电光波 (带神经雪崩级联与跳跃传导)
       for (let i = signals.length - 1; i >= 0; i--) {
         const s = signals[i];
         s.progress += s.speed;
         
+        // 🌪️ 击中目标！触发【神经雪崩级联风暴】
         if (s.progress > 0.8 && s.progress < 0.8 + s.speed) {
           s.ep.charge = 1; s.ep.radius = s.ep.baseRadius + 2;
+          
+          // 如果目标神经元不在冷却期，且有相邻连接，引发链式反应！(50%概率向下传导)
+          if (s.ep.refractory <= 0 && Math.random() < 0.5 && s.ep.connections.length > 0) {
+            s.ep.refractory = 25; // 进入不应期
+            // 随机挑1~2个下游邻居继续发射
+            const fireCount = Math.floor(Math.random() * 2) + 1;
+            for (let f = 0; f < fireCount; f++) {
+              const nextConn = s.ep.connections[Math.floor(Math.random() * s.ep.connections.length)];
+              // 避免原路打回去
+              if (nextConn.ei !== s.si) {
+                signals.push({ 
+                  source: s.ep, si: s.ei, ep: nextConn.ep, ei: nextConn.ei, 
+                  progress: 0, speed: 0.12 + Math.random() * 0.08, tail: 0.2 
+                });
+              }
+            }
+          }
         }
 
         if (s.progress >= 1 + s.tail) { signals.splice(i, 1); continue; }
@@ -925,21 +968,23 @@ if (localStorage.getItem('elink_visited') === 'true') {
         g.addColorStop(0.8, '#ffffff'); 
         g.addColorStop(1, '#ffffff');
 
+        // 绘制红色的等离子泛光底座
         ctx.beginPath(); 
         ctx.strokeStyle = g; 
         ctx.lineWidth = 2.5; 
         ctx.lineCap = 'round';
         ctx.shadowBlur = 15; 
         ctx.shadowColor = `rgba(${sigColor}, 1)`; 
-        ctx.moveTo(tx, ty); 
-        ctx.lineTo(hx, hy); 
-        ctx.stroke();
+        ctx.moveTo(tx, ty); ctx.lineTo(hx, hy); ctx.stroke();
         ctx.shadowBlur = 0;
         
+        // ⚡ 核心科技：髓鞘跳跃传导 (将内部的白线变成虚线断点，极具赛博/生物科技感)
         ctx.beginPath();
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.9)';
-        ctx.lineWidth = 0.8;
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.95)';
+        ctx.lineWidth = 1.2;
+        ctx.setLineDash([8, 6]); // 设置虚线：8px长，6px间距
         ctx.moveTo(tx, ty); ctx.lineTo(hx, hy); ctx.stroke();
+        ctx.setLineDash([]); // 恢复实线，防止影响其他绘图
       }
 
       // 5. 绘制神经元细胞体
