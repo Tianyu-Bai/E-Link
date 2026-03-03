@@ -1188,7 +1188,7 @@ document.addEventListener("DOMContentLoaded", function() {
   <path class="base-line" d="M300,141 L465,225" stroke="rgba(255,255,255,0.1)" fill="none" /> 
   
   <path class="pulse-line line-to-mouse" d="M300,141 L135,225" />
-  <path class="pulse-line" d="M300,141 L300,255" />
+  <path class="pulse-line line-to-rat" d="M300,141 L300,255" />
   <path class="pulse-line line-to-monkey" d="M300,141 L465,225" />
 </svg>
 
@@ -1263,6 +1263,16 @@ document.addEventListener("DOMContentLoaded", function() {
 }
 .line-to-monkey { stroke: #f59e0b !important; filter: drop-shadow(0 0 6px rgba(245, 158, 11, 0.8)) !important;}
 .line-to-mouse { stroke: #10b981 !important; filter: drop-shadow(0 0 6px rgba(16, 185, 129, 0.8)) !important; }
+/* 🚀 核心修复：单独按比例缩短中间大鼠线的流光长度，使其与斜线视觉统一 */
+.line-to-rat {
+  stroke-dasharray: 9 106 !important; /* 光长缩短为 9，间距 106，总和 115 */
+  animation: data-flow-mid 2.3s linear infinite !important; /* 动画时间等比例缩短为 2.3s，保持流速一致 */
+}
+
+@keyframes data-flow-mid { 
+  from { stroke-dashoffset: 115; } /* 与上方的总和 115 完美咬合 */
+  to { stroke-dashoffset: 0; } 
+}
 
 /* 🚀 核心修复：起始值 140 必须和上面 dasharray 的和 (15+125) 完全相等，实现完美无缝循环！ */
 @keyframes data-flow { 
@@ -2350,7 +2360,7 @@ This project is open-source and available under the **MIT License**. Click the b
   <path class="base-line" d="M300,141 L465,225" stroke="rgba(255,255,255,0.1)" fill="none" /> 
   
   <path class="pulse-line line-to-mouse" d="M300,141 L135,225" />
-  <path class="pulse-line" d="M300,141 L300,255" />
+  <path class="pulse-line line-to-rat" d="M300,141 L300,255" />
   <path class="pulse-line line-to-monkey" d="M300,141 L465,225" />
 </svg>
 
