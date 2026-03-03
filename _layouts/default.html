@@ -45,12 +45,14 @@
     margin: 0; padding: 0; color: #e0e7ff; 
     font-family: 'Inter', -apple-system, sans-serif; 
     line-height: 1.6; overflow-x: hidden; 
-    cursor: none; 
     scrollbar-width: thin; scrollbar-color: #3b82f6 transparent;
     transition: color 0.3s ease, background-color 0.3s ease;
     background-color: #0a0a0f; 
   }
-  @media (pointer: coarse) { body { cursor: auto; } }
+ 
+ /* 仅当 JS 成功运行后才隐藏原生光标 */
+body.js-cursor-enabled { cursor: none; }
+@media (pointer: coarse) { body.js-cursor-enabled { cursor: auto; } }
   img, video, iframe { max-width: 100% !important; height: auto !important; box-sizing: border-box; transition: opacity 0.5s ease; transform: translateZ(0); backface-visibility: hidden; }
   img[loading] { min-height: 1px; }
   ::-webkit-scrollbar { width: 6px; }
@@ -256,10 +258,15 @@
 
   /* ===================== 6. ☁️ 护眼浅色模式 (全局净化版) ===================== */
   /* 1. 强制加深底层与极光幕布的灰色 */
-  body.light-mode { color: #334155; background-color: #cbd5e1 !important; }
-  body.light-mode #neuro-ambient-bg { background: #cbd5e1 !important; } 
-  body.light-mode #frosted-glass-overlay { background-color: rgba(255, 255, 255, 0.15); opacity: 0.6; mix-blend-mode: overlay; }
-
+ body.light-mode {   color: #1e293b; /* 加深文字颜色 */
+ background-color: #f8fafc !important; /* 背景改为极浅的冷灰色 */}
+ body.light-mode #neuro-ambient-bg { background: #f1f5f9 !important; }
+/* 调整容器，让它在浅色背景下有更清爽的投影 */
+  body.light-mode .container { 
+  background: rgba(255, 255, 255, 0.9); 
+  box-shadow: 0 20px 50px rgba(148, 163, 184, 0.15); 
+}
+ 
   /* 2. 浅色极光颜色微调，适配灰色背景 */
   body.light-mode .aurora-1 { background: radial-gradient(circle, rgba(59, 130, 246, 0.20), transparent 70%); }
   body.light-mode .aurora-2 { background: radial-gradient(circle, rgba(147, 197, 253, 0.25), transparent 70%); }
@@ -643,7 +650,7 @@
     "root_menu": { text: "系统已就绪。请选择想要咨询的类别：", options: [ { text: "🌟 核心亮点 (弹性互连与零插拔)", next: "innovation" }, { text: "📊 规格参数 (重量/噪音/温度)", next: "specs_menu" }, { text: "🛡️ 可靠性与物理防护", next: "reliability_menu" }, { text: "🔧 模块化使用与兼容", next: "usage_menu" }, { text: "🌍 了解本开源项目", next: "open_source" }, { text: "随便看看", next: "close" } ] },
     "innovation": { text: "我引入了各向异性导电弹性体 (ACE)。实现了从“刚性针脚”到“弹性中介层”的范式重构", options: [ { text: "“零插拔力”有什么好处？", next: "zero_force" }, { text: "什么是“三明治”模块化结构？", next: "modularity" }, { text: "通道数能扩展吗？", next: "scalability" }, { text: "返回主菜单", next: "root_menu" } ] },
     "zero_force": { text: "传统插针不仅难对准，插拔力还会损伤探针。利用“拧瓶盖”原理，将扭矩转化为均匀的轴向压力，物理层面彻底告别断针和弯针！", options: [ { text: "以柔克刚", next: "innovation" } ] },
-    "modularity": { text: "外壳、转接板、放大器板（Headstage）均可独立更换。局部损坏无需整套报废，能显著降低科研团队的维护成本。", options: [ { text: "经济化方案，返回", next: "innovation" } ] },
+    "modularity": { text: "E-Link 采用三明治架构：顶部是集成 4 颗 Intan 芯片的放大器，中间是各向异性导电胶层 (ACE)，底部是 3D 打印的螺纹底座。这种解耦设计意味着你可以像‘换手机壳’一样更换受损部件，而无需报废昂贵的探测器。", options: [ { text: "这种结构如何保证对齐？", next: "misalignment" }, { text: "返回", next: "innovation" } ] },   
     "scalability": { text: "传统插针方案在极高通道下体积庞大。得益于百微米级导电柱，我在极小体积内规划了 256 → 512 → 1024 通道的演进路线。", options: [ { text: "能够拓展更多，返回", next: "innovation" } ] },
     "specs_menu": { text: "正在读取底层传感器数据... 你想了解什么？", options: [ { text: "对小鼠负担大吗？ (重量)", next: "weight" }, { text: "运行会发热吗？ (热学)", next: "thermal" }, { text: "信号保真度如何？ (噪音)", next: "noise" }, { text: "返回主菜单", next: "root_menu" } ] },
     "weight": { text: "轻量化设计！核心组件仅 2.8g，整机(含外壳)重 6.6g，大幅降低动物的头部负重。", options: [ { text: "很适合自由活动实验", next: "specs_menu" } ] },
@@ -665,7 +672,12 @@
   let dialogData = dialogData_EN;
    
 document.addEventListener("DOMContentLoaded", function () {
+ 
 const welcomeModal = document.getElementById('welcome-modal');
+if (window.innerWidth > 768) {
+  document.body.classList.add('js-cursor-enabled');
+}
+ 
 if (localStorage.getItem('elink_visited') === 'true') {
     // 已经访问过，彻底隐藏并解除锁定
     welcomeModal.style.display = 'none'; 
@@ -722,11 +734,16 @@ if (localStorage.getItem('elink_visited') === 'true') {
     const canvas = document.getElementById('neuro-dust-canvas');
     if (!canvas) return;
     const ctx = canvas.getContext('2d', { alpha: true, desynchronized: true });
+
+   // --- 🚀 新增：手机/性能检测 ---
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || window.innerWidth < 768;
+    
     let width, height, dpr;
 
-    let resizeTimer;
     function applyResize() {
-      dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+      // 优化点：手机端强制使用 1.0 的分辨率（DPR），电脑端用 1.5，这能极大减轻显存压力
+      dpr = isMobile ? 1.0 : Math.min(window.devicePixelRatio || 1, 1.5);
+      
       width = window.innerWidth; height = window.innerHeight;
       canvas.width = Math.floor(width * dpr);
       canvas.height = Math.floor(height * dpr);
@@ -735,12 +752,11 @@ if (localStorage.getItem('elink_visited') === 'true') {
       ctx.scale(dpr, dpr);
     }
     applyResize();
-    window.addEventListener('resize', () => {
-      clearTimeout(resizeTimer); resizeTimer = setTimeout(applyResize, 150);
-    }, { passive: true });
 
-    const count = window.innerWidth > 768 ? 160 : 75; 
-    const maxDistance = window.innerWidth > 768 ? 140 : 90;
+    // --- 🚀 修改点：根据设备调整数量 ---
+    const count = isMobile ? 15 : 55; // 手机端只跑 15 个点，肉眼看依然有效果但省电
+    const maxDistance = isMobile ? 110 : 160;
+
     const maxDistSq = maxDistance * maxDistance;
     const particles = [];
     const sparks = []; 
@@ -1046,6 +1062,7 @@ if (localStorage.getItem('elink_visited') === 'true') {
   const textsEN = ["Welcome to this webpage!", "Thanks for visiting us!", "Stay tuned!"];
   const textsZH = ["欢迎访问本网页！", "感谢您的关注！", "欢迎常来访问！"];
   let texts = textsEN, textIdx = 0, charIdx = 0, isDeleting = false;
+  let typewriterTimeout; // 新增这一行，用来记录计时器
   function type() {
     const cur = texts[textIdx];
     const el = document.getElementById('typewriter-text');
@@ -1054,7 +1071,7 @@ if (localStorage.getItem('elink_visited') === 'true') {
     let speed = isDeleting ? 50 : 100;
     if (!isDeleting && charIdx === cur.length + 1) { isDeleting = true; speed = 2000; }
     else if (isDeleting && charIdx === 0) { isDeleting = false; textIdx = (textIdx + 1) % texts.length; speed = 500; }
-    setTimeout(type, speed);
+    typewriterTimeout = setTimeout(type, speed);
   }
   type();
 
@@ -1128,6 +1145,8 @@ if (localStorage.getItem('elink_visited') === 'true') {
     document.querySelectorAll(toZh ? '.lang-zh' : '.lang-en')
      .forEach(el => el.style.display = 'block');
     textIdx = 0; charIdx = 0; isDeleting = false;
+    clearTimeout(typewriterTimeout); // 杀掉正在运行的打字进程
+   type(); // 立即按新语言重新开始
       
       // --- 新增：强制清除机器人气泡缓存 ---
       if (botContainer.speechTimer) {
