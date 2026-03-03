@@ -913,10 +913,45 @@ const rafScheduler = {
     const px = new Float32Array(count);
     const py = new Float32Array(count);
 
+    // ── 🧠 新增：极简科技风发光大脑轮廓绘制 ──
+    function drawTechBrain(ctx, cx, cy, size, isLight) {
+        ctx.save();
+        ctx.translate(cx, cy);
+        
+        ctx.strokeStyle = isLight ? 'rgba(37, 99, 235, 0.12)' : 'rgba(96, 165, 250, 0.15)';
+        ctx.lineWidth = isLight ? 1.5 : 2;
+        ctx.shadowBlur = 15;
+        ctx.shadowColor = isLight ? 'rgba(37, 99, 235, 0.3)' : 'rgba(96, 165, 250, 0.4)';
+        
+        ctx.beginPath();
+        // 勾勒左半脑
+        ctx.moveTo(0, -size * 0.8);
+        ctx.bezierCurveTo(-size * 1.0, -size * 0.8, -size * 1.2, size * 0.4, -size * 0.2, size * 0.8);
+        // 勾勒右半脑
+        ctx.moveTo(0, -size * 0.8);
+        ctx.bezierCurveTo(size * 1.0, -size * 0.8, size * 1.2, size * 0.4, size * 0.2, size * 0.8);
+        // 中央纵裂 (科技感断点线)
+        ctx.moveTo(0, -size * 0.7); ctx.lineTo(0, -size * 0.2);
+        ctx.moveTo(0, size * 0.1); ctx.lineTo(0, size * 0.7);
+        // 内部皮层结构线
+        ctx.moveTo(-size * 0.4, -size * 0.3); ctx.quadraticCurveTo(-size * 0.7, 0, -size * 0.5, size * 0.4);
+        ctx.moveTo(size * 0.4, -size * 0.3); ctx.quadraticCurveTo(size * 0.7, 0, size * 0.5, size * 0.4);
+
+        ctx.stroke();
+        ctx.restore();
+    }
+
     rafScheduler.add('particles', () => {
-     
+    
       ctx.clearRect(0, 0, width, height);
       const isLight = document.body.classList.contains('light-mode');
+      // ── 🧠 新增：在此处绘制底层大脑 ──
+      const brainSize = isMobile ? width * 0.4 : height * 0.45;
+      drawTechBrain(ctx, width / 2, height / 2, brainSize, isLight);
+      // ────────────────────────────────
+
+      const sigColor = isLight ? '30, 58, 138' : '0, 255, 255';
+      const connectionOpacity = isLight ? 0.25 : 0.12;
       const sigColor = isLight ? '30, 58, 138' : '0, 255, 255';
       const connectionOpacity = isLight ? 0.25 : 0.12;
       const nR = isLight ? 13 : 96, nG = isLight ? 148 : 165, nB = isLight ? 136 : 250;
