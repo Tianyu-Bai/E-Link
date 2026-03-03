@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta id="theme-color-meta" name="theme-color" content="#0a0a0f">
 <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
  
 <title>{{ page.title }}</title>
@@ -773,13 +774,14 @@ if (localStorage.getItem('elink_visited') === 'true') {
   initNeuralWeb();
 
   // ── Lenis 平滑滚动 ───────────────────────────────────────────
+  let globalLenis; // 提前在全局层级声明变量
   if (typeof Lenis !== 'undefined') {
-    const lenis = new Lenis({
+    globalLenis = new Lenis({
       duration: 1.1,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       smoothTouch: false, touchMultiplier: 1.5,
     });
-    rafScheduler.add('lenis', (time) => lenis.raf(time));
+    rafScheduler.add('lenis', (time) => globalLenis.raf(time));
   }
 
   // ── 滚动进度条 ───────────────────────────────────────────────
@@ -876,6 +878,9 @@ if (localStorage.getItem('elink_visited') === 'true') {
     isLight = !isLight;
     document.body.classList.toggle('light-mode');
     themeToggle.textContent = isLight ? "🌙" : "☀️";
+  // 新增：动态修改手机状态栏颜色以匹配主题
+    const metaThemeColor = document.getElementById('theme-color-meta');
+    if (metaThemeColor) metaThemeColor.content = isLight ? "#ffffff" : "#0a0a0f";
   });
 
   langToggle.addEventListener('click', () => {
@@ -1007,19 +1012,22 @@ if (localStorage.getItem('elink_visited') === 'true') {
     b.addEventListener('click', function (e) {
       e.preventDefault();
       const url = this.href;
+      const linkTarget = this.target; // 安全缓存 target 属性，防止 setTimeout 内部 this 丢失
+      
       badges.forEach((sib, idx) => {
         const img = sib.querySelector('img');
         if (img) { img.style.animationDelay = `${Math.abs(idx - [...badges].indexOf(this)) * 0.06}s`; img.classList.add('rippling'); }
       });
+      
       setTimeout(() => {
         if (url.includes('#')) {
           try { 
             const hash = url.substring(url.indexOf('#'));
             const el = document.querySelector(hash); 
             if (el) { 
-              // 如果存在 Lenis 实例，用 Lenis 接管；否则用原生方法
-              if (typeof lenis !== 'undefined') {
-                lenis.scrollTo(el, { duration: 1.2, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)) });
+              // ✨ 你要找的修改就在这里：如果存在 globalLenis 实例，用它接管；否则用原生方法
+              if (typeof globalLenis !== 'undefined') {
+                globalLenis.scrollTo(el, { duration: 1.2, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)) });
               } else {
                 el.scrollIntoView({ behavior: 'smooth', block: 'start' }); 
               }
@@ -1027,7 +1035,8 @@ if (localStorage.getItem('elink_visited') === 'true') {
             } 
           } catch (e) {}
         }
-        this.target === '_blank' ? window.open(url, '_blank') : (window.location.href = url);
+        // 使用安全缓存的 linkTarget 进行判断跳转
+        linkTarget === '_blank' ? window.open(url, '_blank') : (window.location.href = url);
       }, 500);
     });
   });
