@@ -825,7 +825,7 @@ const rafScheduler = {
     });
   }
 
-// ── 粒子引擎 (簇群坍缩版：动态吸附成大簇 + 实时寻路长程电流 + 顶5底3/PC限2 + 左右侧高密分布) ──────────
+// ── 粒子引擎 (簇群坍缩版：动态吸附成大簇 + 实时寻路长程电流 + 科技风发光大脑底座) ──────────
   function initNeuralWeb() {
     const canvas = document.getElementById('neuro-dust-canvas');
     if (!canvas) return;
@@ -867,10 +867,8 @@ const rafScheduler = {
       if (sizeType > 0.88) {
         // 12% 概率：巨型枢纽节点 (类似主神经元，能量最高) -> 【突触金】
         baseR = isMobile ? (Math.random() * 1.5 + 3.5) : (Math.random() * 2.5 + 5.5);
-        // PC/Dark 模式下高亮金 RGB (255, 215, 100)，亮色模式略深
-        cR = isLight ? 230 : 255; 
-        cG = isLight ? 120 : 215; 
-        cB = isLight ? 20  : 100; 
+        // PC/Dark 模式下高亮金 RGB (255, 215, 100)
+        cR = 255; cG = 215; cB = 100; 
       } else if (sizeType > 0.35) {
         // 53% 概率：常规神经元 -> 【常规蓝白】
         baseR = isMobile ? (Math.random() * 1.0 + 2.0) : (Math.random() * 1.5 + 3.0);
@@ -942,16 +940,16 @@ const rafScheduler = {
     }
 
     rafScheduler.add('particles', () => {
-    
+      
       ctx.clearRect(0, 0, width, height);
       const isLight = document.body.classList.contains('light-mode');
+      
       // ── 🧠 新增：在此处绘制底层大脑 ──
       const brainSize = isMobile ? width * 0.4 : height * 0.45;
       drawTechBrain(ctx, width / 2, height / 2, brainSize, isLight);
       // ────────────────────────────────
 
-      const sigColor = isLight ? '30, 58, 138' : '0, 255, 255';
-      const connectionOpacity = isLight ? 0.25 : 0.12;
+      // ⚠️ 已经清理了重复声明的 const
       const sigColor = isLight ? '30, 58, 138' : '0, 255, 255';
       const connectionOpacity = isLight ? 0.25 : 0.12;
       const nR = isLight ? 13 : 96, nG = isLight ? 148 : 165, nB = isLight ? 136 : 250;
@@ -1001,7 +999,6 @@ const rafScheduler = {
               p.charge = 1; p2.charge = 1;
               
               // 🚀 新增：根据发射源细胞的大小，计算这道电流的“能量倍率”
-              // PC端基准大小约3.5，移动端约2.0。巨型节点发出的倍率会 > 1.5
               const power = p.baseRadius / (isMobile ? 2.0 : 3.5); 
 
               for(let b=0; b<4; b++) sparks.push({ type: 'bubble', x: mX + (Math.random()-0.5)*15, y: mY + (Math.random()-0.5)*15, radius: 1 * power, life: 1, decay: 0.015 });
@@ -1043,8 +1040,8 @@ const rafScheduler = {
       for (let i = 0; i < count; i++) {
         particles[i].neighbors.forEach(ni => {
           if (ni > i) {
-            const intensity = Math.pow(1 - Math.sqrt((px[i]-px[ni])**2 + (py[i]-py[ni])**2) / maxDistance, 2) * 0.12;
-            ctx.beginPath(); ctx.strokeStyle = `rgba(59,130,246,${intensity})`;
+            const intensity = Math.pow(1 - Math.sqrt((px[i]-px[ni])**2 + (py[i]-py[ni])**2) / maxDistance, 2) * connectionOpacity;
+            ctx.beginPath(); ctx.strokeStyle = `rgba(${isLight ? '30,58,138' : '59,130,246'},${intensity})`;
             ctx.lineWidth = 0.5; ctx.moveTo(px[i], py[i]); ctx.lineTo(px[ni], py[ni]); ctx.stroke();
           }
         });
@@ -1059,8 +1056,7 @@ const rafScheduler = {
         ctx.arc(s.x, s.y, s.radius, 0, Math.PI * 2); ctx.stroke();
       }
 
-     
- // 4. 实时长程电流传导 (Real-time Adaptive Routing)
+      // 4. 实时长程电流传导 (Real-time Adaptive Routing)
       for (let i = signals.length - 1; i >= 0; i--) {
         const s = signals[i]; s.progress += s.speed;
         if (s.progress > 0.95 && s.progress < 0.95 + s.speed) {
@@ -1087,16 +1083,16 @@ const rafScheduler = {
         ctx.beginPath(); 
         // 优化流星的渐变色，让头部（1.0 处）更有爆发力
         const g = ctx.createLinearGradient(tx, ty, hx, hy);
-           g.addColorStop(0, `rgba(${sigColor}, 0)`);  
-           g.addColorStop(0.2, `rgba(${sigColor}, ${0.1 + s.power * 0.1})`); 
-           g.addColorStop(0.8, `rgba(255, 255, 255, ${0.4 + s.power * 0.3})`); // 增加白光比例
-           g.addColorStop(1, '#ffffff'); // 头部直接给纯白，模拟破空感
+        g.addColorStop(0, `rgba(${sigColor}, 0)`);  
+        g.addColorStop(0.2, `rgba(${sigColor}, ${0.1 + s.power * 0.1})`); 
+        g.addColorStop(0.8, `rgba(255, 255, 255, ${0.4 + s.power * 0.3})`); // 增加白光比例
+        g.addColorStop(1, '#ffffff'); // 头部直接给纯白，模拟破空感
 
-            ctx.strokeStyle = g;
-         ctx.lineWidth = (isLight ? 1.5 : 2.0) + s.power * 2.0; // 稍微加粗，防止速度快了看不清
+        ctx.strokeStyle = g;
+        ctx.lineWidth = (isLight ? 1.5 : 2.0) + s.power * 2.0; // 稍微加粗，防止速度快了看不清
         ctx.lineCap = 'round';
         
-        // 🚀 动态外发光效果：只有高能量（巨型节点发射）的电流才附带耀眼光晕
+        // 🚀 动态外发光效果修复版：只有高能量的电流才附带耀眼光晕
         ctx.shadowBlur = s.power > 1.3 ? 10 : 0; 
         ctx.shadowColor = isLight ? '#2563eb' : '#00ffff';
         
@@ -1112,44 +1108,44 @@ const rafScheduler = {
       }
 
       // --- 5. 大胞体渲染 (浅色模式下去掉模糊，增加锐度) ---
-for (let i = 0; i < count; i++) {
-    const p = particles[i];
-    p.pulse += p.pulseSpeed;
-    const breathing = Math.sin(p.pulse) * 0.2 + 1;
-    const r = p.baseRadius * breathing;
+      for (let i = 0; i < count; i++) {
+        const p = particles[i];
+        p.pulse += p.pulseSpeed;
+        const breathing = Math.sin(p.pulse) * 0.2 + 1;
+        const r = p.baseRadius * breathing;
 
-    if (isLight) {
-        // ☀️ 浅色模式：去掉模糊光晕 (Halo)，改用清晰的描边或实色
-        ctx.shadowBlur = 0; // 强制关闭阴影，解决“糊”的问题
-        
-        // 绘制一个带微弱透明度的深蓝色核心
-        ctx.fillStyle = `rgba(37, 99, 235, ${0.4 + p.charge * 0.4})`;
-        ctx.beginPath();
-        ctx.arc(px[i], py[i], r * 1.2, 0, Math.PI * 2);
-        ctx.fill();
+        if (isLight) {
+            // ☀️ 浅色模式：去掉模糊光晕 (Halo)，改用清晰的描边或实色
+            ctx.shadowBlur = 0; // 强制关闭阴影，解决“糊”的问题
+            
+            // 绘制一个带微弱透明度的深蓝色核心
+            ctx.fillStyle = `rgba(37, 99, 235, ${0.4 + p.charge * 0.4})`;
+            ctx.beginPath();
+            ctx.arc(px[i], py[i], r * 1.2, 0, Math.PI * 2);
+            ctx.fill();
 
-        // 增加一个极细的深色描边，让节点在白色背景上立起来
-        ctx.strokeStyle = `rgba(30, 58, 138, 0.6)`;
-        ctx.lineWidth = 0.5;
-        ctx.stroke();
-    } else {
-        // 🌙 深色模式：保留原来的全息光晕逻辑
-        const halo = ctx.createRadialGradient(px[i], py[i], 0, px[i], py[i], r * 4.5);
-        halo.addColorStop(0, `rgba(${nR},${nG},${nB},${0.12 + p.charge * 0.3})`);
-        halo.addColorStop(1, 'rgba(0,0,0,0)');
-        ctx.fillStyle = halo; 
-        ctx.beginPath(); 
-        ctx.arc(px[i], py[i], r * 4.5, 0, Math.PI * 2); 
-        ctx.fill();
+            // 增加一个极细的深色描边，让节点在白色背景上立起来
+            ctx.strokeStyle = `rgba(30, 58, 138, 0.6)`;
+            ctx.lineWidth = 0.5;
+            ctx.stroke();
+        } else {
+            // 🌙 深色模式：保留原来的全息光晕逻辑
+            const halo = ctx.createRadialGradient(px[i], py[i], 0, px[i], py[i], r * 4.5);
+            halo.addColorStop(0, `rgba(${nR},${nG},${nB},${0.12 + p.charge * 0.3})`);
+            halo.addColorStop(1, 'rgba(0,0,0,0)');
+            ctx.fillStyle = halo; 
+            ctx.beginPath(); 
+            ctx.arc(px[i], py[i], r * 4.5, 0, Math.PI * 2); 
+            ctx.fill();
 
-        ctx.fillStyle = `rgba(${p.cR}, ${p.cG}, ${p.cB}, ${0.7 + p.charge * 0.3})`;
-        ctx.beginPath(); 
-        ctx.arc(px[i], py[i], r * 0.6, 0, Math.PI * 2); 
-        ctx.fill();
-    }
+            ctx.fillStyle = `rgba(${p.cR}, ${p.cG}, ${p.cB}, ${0.7 + p.charge * 0.3})`;
+            ctx.beginPath(); 
+            ctx.arc(px[i], py[i], r * 0.6, 0, Math.PI * 2); 
+            ctx.fill();
+        }
 
-    if (p.charge > 0) p.charge *= 0.9;
-}
+        if (p.charge > 0) p.charge *= 0.9;
+      }
     });
   }
 
