@@ -1617,68 +1617,47 @@ body.light-mode .watermark-features strong { color: #2563eb; text-shadow: none; 
 .port-led.on { background: #27c93f; border: 1px solid #1a8a29; box-shadow: inset -1px -1px 2px rgba(0,0,0,0.3), 0 0 5px #27c93f; }
 .port-led.off { background: #666; border: 1px solid #444; box-shadow: inset 1px 1px 2px rgba(0,0,0,0.5); }
 
-/* ===================== 🚀 Intan 模拟器浅色模式专项修复 ===================== */
+/* ===================== 🚀 Intan 模拟器浅色模式专项修复 (权重增强版) ===================== */
 
-/* 1. 标题栏：强制文字和图标变白，对抗全局黑色文字规则 */
-body.light-mode .intan-title-text {
+/* 1. 标题栏：强制文字变白 */
+body.light-mode #main_content .intan-title-text {
   color: #ffffff !important;
-  text-shadow: 0 1px 2px rgba(0,0,0,0.5) !important;
 }
-
-/* 2. 标题栏波形图标：强制变白 */
-body.light-mode .intan-title-text svg {
+body.light-mode #main_content .intan-title-text svg {
   stroke: #ffffff !important;
 }
 
-/* 3. 右侧控制面板按钮：确保文字在浅色按钮上保持深色，不被背景吞噬 */
-body.light-mode .intan-btn {
-  color: #333333 !important;
-  background: linear-gradient(to bottom, #f8fafc, #e2e8f0) !important;
-  border-color: #94a3b8 !important;
+/* 2. 侧边栏所有标签文字：强制改为纯黑 (覆盖掉深蓝色) */
+body.light-mode #main_content .intan-sidebar .intan-setting-row span,
+body.light-mode #main_content .intan-sidebar .intan-panel-title {
+  color: #000000 !important;
+  opacity: 1 !important;
 }
 
-/* 4. 示波器底部状态栏：增加对比度，让它看起来更像实体仪器 */
-body.light-mode .intan-pane-footer {
-  background: #d1d5db !important; /* 稍微加深的灰，更有金属感 */
-  color: #0f172a !important;
-  border-top: 1px solid #94a3b8 !important;
+/* 3. 重点：System Status 中的绿色状态文字修复 */
+/* 强制让带有颜色定义的 span 恢复原本的逻辑色彩，或者深绿色 */
+body.light-mode #main_content .intan-sidebar .intan-setting-row[style*="color: #27c93f"],
+body.light-mode #main_content .intan-sidebar .intan-setting-row[style*="color: #27c93f"] span {
+  color: #15803d !important; /* 墨绿色，在灰底上更清晰 */
+  font-weight: bold !important;
 }
 
-/* 5. 状态栏内的复选框文字 */
-body.light-mode .intan-footer-tools,
-body.light-mode .intan-footer-tools label {
-  color: #334155 !important;
+/* 4. 数值框 (300 Hz / 7.5 kHz) */
+body.light-mode #main_content .intan-value-box {
+  color: #000000 !important;
+  background-color: #ffffff !important;
+  border: 1px solid #999999 !important;
 }
 
-/* 6. 端口标签文字修复 */
-body.light-mode .hw-port-label {
-  color: #1e293b !important;
+/* 5. 底部 Port A / Port B 状态条文字 */
+body.light-mode #main_content .intan-pane-footer span,
+body.light-mode #main_content .intan-pane-footer div {
+  color: #1a1a1a !important;
 }
 
-/* 7. 专项修复：面板内部的所有设置文字、数值、标题 */
-body.light-mode .intan-panel-title {
-  color: #444444 !important;       /* 标题用深灰色 */
-  border-bottom-color: #cccccc !important;
-}
-
-body.light-mode .intan-setting-row span {
-  color: #222222 !important;       /* 标签文字用接近纯黑 */
-}
-
-body.light-mode .intan-value-box {
-  color: #000000 !important;       /* 数值（如 300 Hz）用纯黑 */
-  background-color: #ffffff !important; /* 确保背景是纯白 */
-  border-color: #999999 !important;
-}
-
-/* 8. 修复底部状态栏中“Ports Status”等文字 */
-body.light-mode .intan-setting-row {
-  color: #222222 !important;
-}
-
-/* 9. 确保绿色状态文字（如 2 Detected）不被覆盖 */
-body.light-mode .intan-setting-row[style*="color: #27c93f"] span {
-  color: #15803d !important;       /* 稍微加深一点绿，提高对比度 */
+/* 6. 按钮文字颜色 */
+body.light-mode #main_content .intan-btn {
+  color: #000000 !important;
 }
   
 @media (max-width: 768px) {
