@@ -492,11 +492,18 @@
     pointer-events: none !important;
   }
   
+  /* 🛡️ 修复 GLB 触摸断触问题：给 3D 模型及其内部的标签发免死金牌 */
+  html.lenis-scrolling model-viewer,
+  html.lenis-scrolling model-viewer * {
+    pointer-events: auto !important; 
+  }
+  
   html.lenis-scrolling .cursor-outline,
   html.lenis-scrolling .cursor-dot {
     opacity: 0 !important; /* 滚动时暂时隐藏自定义磁性光标，防止卡顿脱节 */
     transition: opacity 0.1s;
   }
+  
  /* 🚀 滚动时动态降低毛玻璃渲染压力 (极大幅度提升低端机型的滚动帧率) */
   html.lenis-scrolling .container {
     backdrop-filter: blur(4px) !important;
