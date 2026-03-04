@@ -490,7 +490,21 @@
   html.lenis-scrolling body * {
     pointer-events: none !important;
   }
-  
+ /* 🚀 1. 强制光标图层提速：让圆圈渲染完全独立 */
+  .cursor-dot, .cursor-outline {
+    pointer-events: none !important;
+    z-index: 100000 !important;
+    will-change: transform;
+    transform: translateZ(0); /* 开启显卡 3D 加速 */
+  }
+
+  /* 🚀 2. 事件穿透：防止视频和 Canvas 干扰鼠标移动的响应速度 */
+  #ambient-video, 
+  #neuro-dust-canvas, 
+  #neuro-ambient-bg {
+    pointer-events: none !important; /* 确保它们对鼠标来说是“透明”的 */
+  }
+ 
   /* 🛡️ 修复 GLB 触摸断触问题：给 3D 模型及其内部的标签发免死金牌 */
   html.lenis-scrolling model-viewer,
   html.lenis-scrolling model-viewer * {
@@ -872,27 +886,31 @@ const rafScheduler = {
   }
 };
 
-  // ── 光标引擎 ─────────────────────────────────────────────────
-  const cursorDot = document.querySelector('.cursor-dot');
-  const cursorOutline = document.querySelector('.cursor-outline');
-  let mouseX = -100, mouseY = -100;
-  let outlineX = -100, outlineY = -100;
+  // ── 光标引擎优化 ─────────────────────────────────────────────────
+const cursorDot = document.querySelector('.cursor-dot');
+const cursorOutline = document.querySelector('.cursor-outline');
+let mouseX = -100, mouseY = -100;
+let outlineX = -100, outlineY = -100;
 
-  if (window.innerWidth > 768 && cursorDot && cursorOutline) {
-    document.addEventListener('mousemove', (e) => {
-      mouseX = e.clientX; mouseY = e.clientY;
-    }, { passive: true });
+if (window.innerWidth > 768 && cursorDot && cursorOutline) {
+  document.addEventListener('mousemove', (e) => {
+    mouseX = e.clientX; mouseY = e.clientY;
+    // 🚀 优化 1：小点直接跟随，不设延迟，消除视觉上的第一层延迟
+    cursorDot.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0) translate(-50%, -50%)`;
+  }, { passive: true });
 
-    rafScheduler.add('cursor', () => {
-      if (document.body.classList.contains('modal-active')) return;
-      cursorDot.style.transform =
-        `translate3d(${mouseX}px,${mouseY}px,0) translate(-50%,-50%)`;
-      outlineX += (mouseX - outlineX) * 0.12;
-      outlineY += (mouseY - outlineY) * 0.12;
-      cursorOutline.style.transform =
-        `translate3d(${outlineX}px,${outlineY}px,0) translate(-50%,-50%)`;
-    });
-  }
+  rafScheduler.add('cursor', () => {
+    if (document.body.classList.contains('modal-active')) return;
+
+    // 🚀 优化 2：将跟随系数从 0.12 提高到 0.22。数值越大越跟手，越小越丝滑但越迟钝
+    const snappiness = 0.22; 
+    outlineX += (mouseX - outlineX) * snappiness;
+    outlineY += (mouseY - outlineY) * snappiness;
+
+    cursorOutline.style.transform =
+      `translate3d(${outlineX}px, ${outlineY}px, 0) translate(-50%, -50%)`;
+  });
+}
 
 // ── 粒子引擎 (簇群坍缩版：动态吸附成大簇 + 实时寻路长程电流 + 科技风发光大脑底座) ──────────
   function initNeuralWeb() {
@@ -928,11 +946,8 @@ const rafScheduler = {
       // 只有宽度发生实质性改变（如屏幕旋转），才执行重置
       if (window.innerWidth !== lastWidth) {
         lastWidth = window.innerWidth;
-        applyResize();
-      }
+        applyResize();}
     }, { passive: true });
-   
-    window.addEventListener('resize', applyResize, { passive: true });
 
     // 💡 1. 密度加大：数量整体翻倍
     const count = isMobile ? 38 : 75; 
@@ -1020,18 +1035,20 @@ const rafScheduler = {
         p.neighbors = []; 
         if (p.refractory > 0) p.refractory--;
 
-        // 🌊 新增：鼠标流体排斥力 (微观避让)
-        if (mouse.active && !isMobile) {
-            const dx = mouse.x - p.x;
-            const dy = mouse.y - p.y;
-            const dist = Math.sqrt(dx * dx + dy * dy);
-            if (dist < 250) { // 鼠标影响半径
-                const force = (250 - dist) / 250;
-                // 轻轻推开节点，形成呼吸感
-                p.vx -= (dx / dist) * force * 0.12; 
-                p.vy -= (dy / dist) * force * 0.12; 
-            }
-        }
+        // 🌊 修改：更高效的鼠标流体排斥
+if (mouse.active && !isMobile) {
+    const dx = mouse.x - p.x;
+    const dy = mouse.y - p.y;
+    // 🚀 优化：先用平方进行范围预判（避免昂贵的 Math.sqrt 计算）
+    const distSq = dx * dx + dy * dy;
+    if (distSq < 62500) { // 250的平方
+        const dist = Math.sqrt(distSq);
+        const force = (250 - dist) / 250;
+        // 轻轻推开，但力度减小一点点，防止节点抖动太快带来的视觉卡顿感
+        p.vx -= (dx / dist) * force * 0.1; 
+        p.vy -= (dy / dist) * force * 0.1; 
+    }
+}
 
         for (let j = i + 1; j < count; j++) {
           const p2 = particles[j];
