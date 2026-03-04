@@ -1617,6 +1617,44 @@ body.light-mode .watermark-features strong { color: #2563eb; text-shadow: none; 
 .port-led.on { background: #27c93f; border: 1px solid #1a8a29; box-shadow: inset -1px -1px 2px rgba(0,0,0,0.3), 0 0 5px #27c93f; }
 .port-led.off { background: #666; border: 1px solid #444; box-shadow: inset 1px 1px 2px rgba(0,0,0,0.5); }
 
+/* ===================== 🚀 Intan 模拟器浅色模式专项修复 ===================== */
+
+/* 1. 标题栏：强制文字和图标变白，对抗全局黑色文字规则 */
+body.light-mode .intan-title-text {
+  color: #ffffff !important;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.5) !important;
+}
+
+/* 2. 标题栏波形图标：强制变白 */
+body.light-mode .intan-title-text svg {
+  stroke: #ffffff !important;
+}
+
+/* 3. 右侧控制面板按钮：确保文字在浅色按钮上保持深色，不被背景吞噬 */
+body.light-mode .intan-btn {
+  color: #333333 !important;
+  background: linear-gradient(to bottom, #f8fafc, #e2e8f0) !important;
+  border-color: #94a3b8 !important;
+}
+
+/* 4. 示波器底部状态栏：增加对比度，让它看起来更像实体仪器 */
+body.light-mode .intan-pane-footer {
+  background: #d1d5db !important; /* 稍微加深的灰，更有金属感 */
+  color: #0f172a !important;
+  border-top: 1px solid #94a3b8 !important;
+}
+
+/* 5. 状态栏内的复选框文字 */
+body.light-mode .intan-footer-tools,
+body.light-mode .intan-footer-tools label {
+  color: #334155 !important;
+}
+
+/* 6. 端口标签文字修复 */
+body.light-mode .hw-port-label {
+  color: #1e293b !important;
+}
+  
 @media (max-width: 768px) {
   .intan-body { flex-direction: column; height: auto; }
   .intan-plots-wrapper { flex-direction: column; height: auto; min-height: 0; border-right: none; }
