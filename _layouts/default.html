@@ -87,8 +87,19 @@
     background-position: center center;
     overflow: hidden; transform: translateZ(0); isolation: isolate; 
   }
-  
-  /* 缓慢流动的极光色块 (Blackrock 色调) */
+ 
+  /* 🎬 增加电影级暗角，压暗四周，极大地拉升空间纵深感 */
+  #neuro-ambient-bg::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    /* 从中心透明向四周纯黑渐变 */
+    background: radial-gradient(circle at 50% 50%, transparent 20%, rgba(3, 6, 14, 0.95) 100%);
+    pointer-events: none; /* 防止遮挡点击 */
+    z-index: 1;
+  }
+ 
+  /* 缓慢流动的极光色块*/
   .aurora { position: absolute; border-radius: 50%; filter: blur(70px); opacity: 0.2; animation: aurora-float 25s infinite alternate cubic-bezier(0.4, 0, 0.2, 1); will-change: transform; pointer-events: none; transform: translateZ(0); }
   .aurora-1 { width: 50vw; height: 50vw; background: radial-gradient(circle, rgba(13, 148, 136, 0.4), transparent 70%); top: -20%; left: -10%; animation-delay: 0s; }
   .aurora-2 { width: 60vw; height: 60vw; background: radial-gradient(circle, rgba(6, 182, 212, 0.25), transparent 70%); bottom: -20%; right: -20%; animation-delay: -7s; }
@@ -575,6 +586,9 @@
 <div class="cursor-dot"></div>
 <div class="cursor-outline"></div>
 <div id="progress-bar"></div>
+<video autoplay loop muted playsinline id="ambient-video" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; object-fit: cover; z-index: -7; opacity: 0.15; filter: grayscale(80%) contrast(1.2) brightness(0.6); pointer-events: none; mix-blend-mode: screen;">
+  <source src="{{ '/Videos/bg.mp4' | relative_url }}" type="video/mp4">
+</video>
 <div id="neuro-ambient-bg">
   <div class="aurora aurora-1"></div>
   <div class="aurora aurora-2"></div>
@@ -843,6 +857,13 @@ const rafScheduler = {
 
     const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || window.innerWidth < 768;
     let width, height, dpr, sideZone;
+    let mouse = { x: -1000, y: -1000, active: false };
+    window.addEventListener('mousemove', (e) => {
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
+      mouse.active = true;
+    }, { passive: true });
+    window.addEventListener('mouseout', () => mouse.active = false);
 
     function applyResize() {
       dpr = isMobile ? 1.0 : Math.min(window.devicePixelRatio || 1, 1.5);
@@ -975,6 +996,19 @@ const rafScheduler = {
         const p = particles[i];
         p.neighbors = []; 
         if (p.refractory > 0) p.refractory--;
+
+        // 🌊 新增：鼠标流体排斥力 (微观避让)
+        if (mouse.active && !isMobile) {
+            const dx = mouse.x - p.x;
+            const dy = mouse.y - p.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < 250) { // 鼠标影响半径
+                const force = (250 - dist) / 250;
+                // 轻轻推开节点，形成呼吸感
+                p.vx -= (dx / dist) * force * 0.12; 
+                p.vy -= (dy / dist) * force * 0.12; 
+            }
+        }
 
         for (let j = i + 1; j < count; j++) {
           const p2 = particles[j];
