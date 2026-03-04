@@ -319,9 +319,8 @@
   body.light-mode .aurora-2 { background: radial-gradient(circle, rgba(147, 197, 253, 0.25), transparent 70%); }
   body.light-mode .aurora-3 { background: radial-gradient(circle, rgba(167, 139, 250, 0.12), transparent 70%); }
 
-  /* 3. 提升中间卡片的亮度，在灰背景上形成“悬浮毛玻璃”的高级感 */
-  body.light-mode .container { background: rgba(255, 255, 255, 0.85); border-color: rgba(255, 255, 255, 0.6); box-shadow: 0 20px 50px rgba(100, 116, 139, 0.2); backdrop-filter: blur(25px); }
-  body.light-mode .model-watermark-text { color: rgba(51, 65, 85, 0.5); }
+ /* 3. 浅色模式主卡片：全局冷灰色调 (Apple 磨砂质感)，保持与滚动状态色彩一致 */
+  body.light-mode .container { background: rgba(226, 232, 240, 0.85) !important; border-color: rgba(148, 163, 184, 0.4) !important; box-shadow: 0 20px 50px rgba(100, 116, 139, 0.15) !important; backdrop-filter: blur(25px); }
   body.light-mode #rpg-dialogue { background: #ffffff; border-color: #cbd5e1; box-shadow: 0 10px 30px rgba(148, 163, 184, 0.1); }
   body.light-mode #rpg-text { color: #334155; }
   body.light-mode .rpg-btn { background: rgba(226, 232, 240, 0.6); color: #475569; border-color: rgba(203, 213, 225, 0.8); }
@@ -504,16 +503,28 @@
     transition: opacity 0.1s;
   }
   
- /* 🚀 滚动时动态降低毛玻璃渲染压力 (极大幅度提升低端机型的滚动帧率) */
-  html.lenis-scrolling .container {
-    backdrop-filter: blur(4px) !important;
-    -webkit-backdrop-filter: blur(4px) !important;
-    background: rgba(15, 23, 42, 0.2) !important; /* 稍微加深底色弥补模糊度的降低 */
-    transition: backdrop-filter 0.2s, background 0.2s; 
+ /* 🚀 仅限电脑端 (PC)：开启滚动时的毛玻璃动态降级。彻底禁止手机端参与此类重绘！ */
+  @media (min-width: 769px) {
+    html.lenis-scrolling .container {
+      backdrop-filter: blur(4px) !important;
+      -webkit-backdrop-filter: blur(4px) !important;
+      background: rgba(15, 23, 42, 0.2) !important; 
+      transition: backdrop-filter 0.2s, background 0.2s; 
+    }
+    html.light-mode.lenis-scrolling .container {
+      background: rgba(226, 232, 240, 0.85) !important; 
+    }
   }
-  
-  html.light-mode.lenis-scrolling .container {
-    background: rgba(255, 255, 255, 0.9) !important; /* 浅色模式同步适配 */
+
+  /* 🛡️ 手机端 (Mobile) 终极防闪退护盾：无论如何滚动，永远保持静态的纯净不透明底色 */
+  @media (max-width: 768px) {
+    body.light-mode .container {
+      /* 手机端浅色模式：不透明的冷灰色，高级且不消耗显卡 */
+      background: rgba(226, 232, 240, 0.98) !important; 
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+      transition: none !important; /* 杀掉所有颜色和毛玻璃的过渡动画 */
+    }
   }
  
 </style>
