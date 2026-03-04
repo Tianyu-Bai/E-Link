@@ -586,9 +586,11 @@
 <div class="cursor-dot"></div>
 <div class="cursor-outline"></div>
 <div id="progress-bar"></div>
-<video autoplay loop muted playsinline id="ambient-video" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; object-fit: cover; z-index: -5; opacity: 0.85; filter: grayscale(0%) contrast(1.1) brightness(1.0); pointer-events: none; mix-blend-mode: screen;">
+
+<video autoplay loop muted playsinline id="ambient-video" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; object-fit: cover; z-index: -5; opacity: 0.95; mix-blend-mode: screen; pointer-events: none; transform: translateZ(0); will-change: opacity;">
   <source src="{{ '/Videos/bg.mp4' | relative_url }}" type="video/mp4">
 </video>
+ 
 <div id="neuro-ambient-bg">
   <div class="aurora aurora-1"></div>
   <div class="aurora aurora-2"></div>
