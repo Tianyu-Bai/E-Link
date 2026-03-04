@@ -1899,7 +1899,7 @@ The hardware designs and visual assets in this repository correspond directly to
 If you utilize these designs, code, or assets in your research, please cite this repository using the persistent DOI provided by Zenodo:
 
 **Current Reference:**
-> T. Bai, et al., "E-Link GitHub Repository," v1.0, MINE Lab, Dartmouth College, 2026. [![DOI](https://zenodo.org/badge/1119765398.svg)](https://doi.org/10.5281/zenodo.18440104)
+> T. Bai, et al., "E-Link GitHub Repository," v1.0, MINE Lab, Dartmouth College, 2026. [![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.18440104-007EC6?style=flat-square)](https://doi.org/10.5281/zenodo.18440104)
 
 ---
 
@@ -2801,8 +2801,8 @@ This project is open-source and available under the **MIT License**. Click the b
 
 如果您在研究中使用了这些设计、代码或资产，需使用 Zenodo 提供的永久 DOI 引用本仓库：
 
-**当前参考：**
-> T. Bai, et al., "E-Link GitHub Repository," v1.0, MINE Lab, Dartmouth College, 2026. [![DOI](https://zenodo.org/badge/1119765398.svg)](https://doi.org/10.5281/zenodo.18440104)
+**当前引用源：**
+> T. Bai, et al., "E-Link GitHub Repository," v1.0, MINE Lab, Dartmouth College, 2026. [![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.18440104-007EC6?style=flat-square)](https://doi.org/10.5281/zenodo.18440104)
 
 ---
 
