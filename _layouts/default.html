@@ -79,11 +79,11 @@
   #neuro-ambient-bg { 
     position: fixed; z-index: -6; top: 0; left: 0; width: 100vw; height: 100vh; 
     background-color: #03060e; 
-    /* 🧬 替换为 SVG 分形噪声，模拟生物组织/脑皮层/细胞液的有机纹理 */
+    /* 🧬 完美数学缝合：800 * 0.00625 = 5.0，彻底消除边缘方块感 */
     background-image: 
-        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='t'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.012' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.1 0 0 0 0 0.2 0 0 0 0 0.4 0 0 0 0.15 0' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23t)'/%3E%3C/svg%3E"),
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='800'%3E%3Cfilter id='t'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.00625' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.1 0 0 0 0 0.2 0 0 0 0 0.4 0 0 0 0.15 0' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23t)'/%3E%3C/svg%3E"),
         radial-gradient(circle at 50% 50%, rgba(15, 23, 42, 0.8), #03060e 100%); 
-    background-size: 400px 400px, 100% 100%;
+    background-size: 800px 800px, 100% 100%;
     background-position: center center;
     overflow: hidden; transform: translateZ(0); isolation: isolate; 
   }
@@ -104,11 +104,11 @@
   /* ☀️ 浅色模式完美覆盖 (高级工程图纸风) */
   body.light-mode #neuro-ambient-bg { 
     background-color: #f1f5f9 !important; 
-    /* 🧬 浅色组织纹理，调配为冷灰色系的有机形态 */
+    /* 🧬 浅色组织纹理完美拼接 */
     background-image: 
-        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='t'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.012' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.4 0 0 0 0 0.5 0 0 0 0 0.6 0 0 0 0.1 0' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23t)'/%3E%3C/svg%3E"), 
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='800'%3E%3Cfilter id='t'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.00625' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.4 0 0 0 0 0.5 0 0 0 0 0.6 0 0 0 0.1 0' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23t)'/%3E%3C/svg%3E"), 
         linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(241, 245, 249, 0.2)) !important; 
-    background-size: 400px 400px, 100% 100% !important;
+    background-size: 800px 800px, 100% 100% !important;
   }
   body.light-mode .aurora-1 { background: radial-gradient(circle, rgba(59, 130, 246, 0.20), transparent 70%); }
   body.light-mode .aurora-2 { background: radial-gradient(circle, rgba(147, 197, 253, 0.25), transparent 70%); }
@@ -341,15 +341,24 @@
   body.light-mode .icon-circle { background: #ffffff; border-color: rgba(59, 130, 246, 0.3); }
   .gesture-hidden { opacity: 0 !important; pointer-events: none !important; }
 
-  /* 针对 3D 模型内部标签框的浅色适配 */
+  /* 针对 3D 模型内部标签框的浅色适配 (全面柔化轻量级版本) */
   body.light-mode .Hotspot, 
   body.light-mode .HotspotAnnotation,
   body.light-mode [slot^="hotspot"] {
-    background: #ffffff !important;         /* 强制白色背景 */
-    color: #1e293b !important;              /* 深色文字 */
-    border: 1px solid rgba(0, 0, 0, 0.1) !important;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1) !important;
-    opacity: 1 !important;                  /* 确保完全不透明 */
+    background: rgba(255, 255, 255, 0.85) !important; /* 半透明乳白，增加通透感 */
+    color: #2563eb !important;              /* 核心文字改为清爽的亮蓝色，告别死黑 */
+    border: 1px solid rgba(59, 130, 246, 0.25) !important; /* 极浅的蓝色边框 */
+    backdrop-filter: blur(8px) !important;  /* 加入毛玻璃滤镜 */
+    -webkit-backdrop-filter: blur(8px) !important;
+    box-shadow: 0 4px 15px rgba(148, 163, 184, 0.15) !important; /* 阴影调得更轻柔 */
+    font-weight: 600 !important;            /* 稍微加粗，保证在浅色下的可读性 */
+  }
+
+  /* 如果你的标签里有次级文字（比如段落 p 或 span），让它们呈现高级冷灰色 */
+  body.light-mode .HotspotAnnotation p,
+  body.light-mode .HotspotAnnotation span {
+    color: #64748b !important;              
+    font-weight: 400 !important;
   }
 
   /* 如果你使用了自定义的标签容器类名，比如 .label-box */
@@ -446,15 +455,14 @@
     
     body:not(.light-mode) #neuro-ambient-bg { 
       background-color: #0b1121 !important; 
-      /* 🧬 同样去除手机端网格，加入生物流体纹理 */
+      /* 🧬 手机端适配：800 * 0.00875 = 7.0，保持细腻且无缝 */
       background-image: 
-        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='t'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.015' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.1 0 0 0 0 0.2 0 0 0 0 0.4 0 0 0 0.15 0' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23t)'/%3E%3C/svg%3E"),
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='800'%3E%3Cfilter id='t'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.00875' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.1 0 0 0 0 0.2 0 0 0 0 0.4 0 0 0 0.15 0' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23t)'/%3E%3C/svg%3E"),
         radial-gradient(circle at 50% 50%, rgba(15, 23, 42, 0.9), #0b1121 100%) !important;
     }
     
     #neuro-ambient-bg, body.light-mode #neuro-ambient-bg {
-      /* 适配分形噪声的大尺寸，不再使用之前 20px 的小网格 */
-      background-size: 400px 400px, 100% 100% !important; 
+      background-size: 800px 800px, 100% 100% !important; 
     }
     
     body:not(.light-mode) .container { 
