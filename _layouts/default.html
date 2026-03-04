@@ -825,7 +825,7 @@ const rafScheduler = {
     });
   }
 
-  // ── 粒子引擎 (簇群坍缩版：动态吸附成大簇 + 实时寻路长程电流 + 科技风发光大脑底座) ──────────
+// ── 粒子引擎 (簇群坍缩版：动态吸附成大簇 + 实时寻路长程电流 + 科技风发光大脑底座) ──────────
   function initNeuralWeb() {
     const canvas = document.getElementById('neuro-dust-canvas');
     if (!canvas) return;
@@ -949,6 +949,7 @@ const rafScheduler = {
       drawTechBrain(ctx, width / 2, height / 2, brainSize, isLight);
       // ────────────────────────────────
 
+      // ⚠️ 已经清理了重复声明的 const
       const sigColor = isLight ? '30, 58, 138' : '0, 255, 255';
       const connectionOpacity = isLight ? 0.25 : 0.12;
       const nR = isLight ? 13 : 96, nG = isLight ? 148 : 165, nB = isLight ? 136 : 250;
