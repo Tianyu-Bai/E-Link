@@ -1654,6 +1654,32 @@ body.light-mode .intan-footer-tools label {
 body.light-mode .hw-port-label {
   color: #1e293b !important;
 }
+
+/* 7. 专项修复：面板内部的所有设置文字、数值、标题 */
+body.light-mode .intan-panel-title {
+  color: #444444 !important;       /* 标题用深灰色 */
+  border-bottom-color: #cccccc !important;
+}
+
+body.light-mode .intan-setting-row span {
+  color: #222222 !important;       /* 标签文字用接近纯黑 */
+}
+
+body.light-mode .intan-value-box {
+  color: #000000 !important;       /* 数值（如 300 Hz）用纯黑 */
+  background-color: #ffffff !important; /* 确保背景是纯白 */
+  border-color: #999999 !important;
+}
+
+/* 8. 修复底部状态栏中“Ports Status”等文字 */
+body.light-mode .intan-setting-row {
+  color: #222222 !important;
+}
+
+/* 9. 确保绿色状态文字（如 2 Detected）不被覆盖 */
+body.light-mode .intan-setting-row[style*="color: #27c93f"] span {
+  color: #15803d !important;       /* 稍微加深一点绿，提高对比度 */
+}
   
 @media (max-width: 768px) {
   .intan-body { flex-direction: column; height: auto; }
