@@ -76,16 +76,24 @@
   #progress-bar::after { content: ''; position: absolute; top: -1px; right: 0; width: 12px; height: 5px; background: #ffffff; border-radius: 50%; box-shadow: 0 0 15px 4px #60a5fa; }
   
   /* ===================== 3. 高级流体极光与景深粒子背景 ===================== */
-  /* 🚀 性能优化：强制分离背景图层，拒绝随页面滚动重绘 */
-  #neuro-ambient-bg, 
-  #neuro-dust-canvas, 
-  #ambient-video {
-    transform: translate3d(0, 0, 0) !important; /* 强制开启 3D 硬件加速 */
-    will-change: transform !important;          /* 提前宣告图层独立 */
-    backface-visibility: hidden;
-    contain: strict;                            /* 彻底切断与外层文档流的重绘关系 */
+  #neuro-ambient-bg { 
+    position: fixed; z-index: -6; top: 0; left: 0; width: 100vw; height: 100vh; 
+    background-color: #03060e; 
+    background-image: radial-gradient(circle at 50% 50%, rgba(15, 23, 42, 0.8), #03060e 100%); 
+    background-size: 100% 100%;
+    background-position: center center;
+    overflow: hidden; 
   }
- 
+  
+  /* 🚀 性能优化：强制分离背景图层*/
+  #neuro-ambient-bg,
+  #neuro-dust-canvas {
+    transform: translate3d(0, 0, 0) !important; 
+    will-change: transform !important;          
+    backface-visibility: hidden;
+    contain: strict;                            
+  }
+
   /* 🎬 增加电影级暗角，压暗四周，极大地拉升空间纵深感 */
   #neuro-ambient-bg::after {
     content: '';
@@ -489,6 +497,18 @@
     opacity: 0 !important; /* 滚动时暂时隐藏自定义磁性光标，防止卡顿脱节 */
     transition: opacity 0.1s;
   }
+ /* 🚀 滚动时动态降低毛玻璃渲染压力 (极大幅度提升低端机型的滚动帧率) */
+  html.lenis-scrolling .container {
+    backdrop-filter: blur(4px) !important;
+    -webkit-backdrop-filter: blur(4px) !important;
+    background: rgba(15, 23, 42, 0.2) !important; /* 稍微加深底色弥补模糊度的降低 */
+    transition: backdrop-filter 0.2s, background 0.2s; 
+  }
+  
+  html.light-mode.lenis-scrolling .container {
+    background: rgba(255, 255, 255, 0.9) !important; /* 浅色模式同步适配 */
+  }
+ 
 </style>
 
  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
@@ -592,10 +612,10 @@
 <div class="cursor-outline"></div>
 <div id="progress-bar"></div>
 
-<video autoplay loop muted playsinline id="ambient-video" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; object-fit: cover; z-index: -5; opacity: 0.85; mix-blend-mode: screen; pointer-events: none; transform: translateZ(0); will-change: opacity;">
+<video autoplay loop muted playsinline id="ambient-video" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; object-fit: cover; z-index: -5; opacity: 0.85; mix-blend-mode: screen; pointer-events: none;">
   <source src="{{ '/Videos/bg.mp4' | relative_url }}" type="video/mp4">
 </video>
- 
+
 <div id="neuro-ambient-bg">
   <div class="aurora aurora-1"></div>
   <div class="aurora aurora-2"></div>
@@ -883,6 +903,17 @@ const rafScheduler = {
       sideZone = width * (isMobile ? 0.25 : 0.2); 
     }
     applyResize();
+
+   // 🚀 优化：锁定移动端滚动时的地址栏高度变化触发重绘
+    let lastWidth = window.innerWidth;
+    window.addEventListener('resize', () => {
+      // 只有宽度发生实质性改变（如屏幕旋转），才执行重置
+      if (window.innerWidth !== lastWidth) {
+        lastWidth = window.innerWidth;
+        applyResize();
+      }
+    }, { passive: true });
+   
     window.addEventListener('resize', applyResize, { passive: true });
 
     // 💡 1. 密度加大：数量整体翻倍
