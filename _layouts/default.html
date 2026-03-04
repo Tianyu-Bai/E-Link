@@ -76,16 +76,14 @@
   #progress-bar::after { content: ''; position: absolute; top: -1px; right: 0; width: 12px; height: 5px; background: #ffffff; border-radius: 50%; box-shadow: 0 0 15px 4px #60a5fa; }
   
   /* ===================== 3. 高级流体极光与景深粒子背景 ===================== */
-  #neuro-ambient-bg { 
-    position: fixed; z-index: -6; top: 0; left: 0; width: 100vw; height: 100vh; 
-    background-color: #03060e; 
-    /* 🧬 完美数学缝合：800 * 0.00625 = 5.0，彻底消除边缘方块感 */
-    background-image: 
-        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='800'%3E%3Cfilter id='t'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.00625' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.1 0 0 0 0 0.2 0 0 0 0 0.4 0 0 0 0.15 0' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23t)'/%3E%3C/svg%3E"),
-        radial-gradient(circle at 50% 50%, rgba(15, 23, 42, 0.8), #03060e 100%); 
-    background-size: 800px 800px, 100% 100%;
-    background-position: center center;
-    overflow: hidden; transform: translateZ(0); isolation: isolate; 
+  /* 🚀 性能优化：强制分离背景图层，拒绝随页面滚动重绘 */
+  #neuro-ambient-bg, 
+  #neuro-dust-canvas, 
+  #ambient-video {
+    transform: translate3d(0, 0, 0) !important; /* 强制开启 3D 硬件加速 */
+    will-change: transform !important;          /* 提前宣告图层独立 */
+    backface-visibility: hidden;
+    contain: strict;                            /* 彻底切断与外层文档流的重绘关系 */
   }
  
   /* 🎬 增加电影级暗角，压暗四周，极大地拉升空间纵深感 */
@@ -113,14 +111,13 @@
   #neuro-dust-canvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -5; pointer-events: none; transform: translateZ(0); will-change: contents; }
   
   /* ☀️ 浅色模式完美覆盖 (高级工程图纸风) */
-  body.light-mode #neuro-ambient-bg { 
+ body.light-mode #neuro-ambient-bg { 
     background-color: #f1f5f9 !important; 
-    /* 🧬 浅色组织纹理完美拼接 */
-    background-image: 
-        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='800'%3E%3Cfilter id='t'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.00625' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.4 0 0 0 0 0.5 0 0 0 0 0.6 0 0 0 0.1 0' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23t)'/%3E%3C/svg%3E"), 
-        linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(241, 245, 249, 0.2)) !important; 
-    background-size: 800px 800px, 100% 100% !important;
+    /* 净化浅色模式背景 */
+    background-image: linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(241, 245, 249, 0.2)) !important; 
+    background-size: 100% 100% !important;
   }
+ 
   body.light-mode .aurora-1 { background: radial-gradient(circle, rgba(59, 130, 246, 0.20), transparent 70%); }
   body.light-mode .aurora-2 { background: radial-gradient(circle, rgba(147, 197, 253, 0.25), transparent 70%); }
   body.light-mode .aurora-3 { background: radial-gradient(circle, rgba(167, 139, 250, 0.12), transparent 70%); }
@@ -466,14 +463,11 @@
     
     body:not(.light-mode) #neuro-ambient-bg { 
       background-color: #0b1121 !important; 
-      /* 🧬 手机端适配：800 * 0.00875 = 7.0，保持细腻且无缝 */
-      background-image: 
-        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='800'%3E%3Cfilter id='t'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.00875' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.1 0 0 0 0 0.2 0 0 0 0 0.4 0 0 0 0.15 0' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23t)'/%3E%3C/svg%3E"),
-        radial-gradient(circle at 50% 50%, rgba(15, 23, 42, 0.9), #0b1121 100%) !important;
+      background-image: radial-gradient(circle at 50% 50%, rgba(15, 23, 42, 0.9), #0b1121 100%) !important;
     }
     
     #neuro-ambient-bg, body.light-mode #neuro-ambient-bg {
-      background-size: 800px 800px, 100% 100% !important; 
+      background-size: 100% 100% !important; 
     }
     
     body:not(.light-mode) .container { 
@@ -483,6 +477,17 @@
     }
       
     .layout-wrapper { perspective: none !important; }
+  }
+
+ /* 🚀 Lenis 滚动专属优化：滚动时关闭所有高耗能的交互检测 */
+  html.lenis-scrolling body * {
+    pointer-events: none !important;
+  }
+  
+  html.lenis-scrolling .cursor-outline,
+  html.lenis-scrolling .cursor-dot {
+    opacity: 0 !important; /* 滚动时暂时隐藏自定义磁性光标，防止卡顿脱节 */
+    transition: opacity 0.1s;
   }
 </style>
 
@@ -587,7 +592,7 @@
 <div class="cursor-outline"></div>
 <div id="progress-bar"></div>
 
-<video autoplay loop muted playsinline id="ambient-video" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; object-fit: cover; z-index: -5; opacity: 0.95; mix-blend-mode: screen; pointer-events: none; transform: translateZ(0); will-change: opacity;">
+<video autoplay loop muted playsinline id="ambient-video" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; object-fit: cover; z-index: -5; opacity: 0.85; mix-blend-mode: screen; pointer-events: none; transform: translateZ(0); will-change: opacity;">
   <source src="{{ '/Videos/bg.mp4' | relative_url }}" type="video/mp4">
 </video>
  
@@ -944,44 +949,11 @@ const rafScheduler = {
     const px = new Float32Array(count);
     const py = new Float32Array(count);
 
-    // ── 🧠 新增：极简科技风发光大脑轮廓绘制 ──
-    function drawTechBrain(ctx, cx, cy, size, isLight) {
-        ctx.save();
-        ctx.translate(cx, cy);
-        
-        ctx.strokeStyle = isLight ? 'rgba(37, 99, 235, 0.12)' : 'rgba(96, 165, 250, 0.15)';
-        ctx.lineWidth = isLight ? 1.5 : 2;
-        ctx.shadowBlur = 15;
-        ctx.shadowColor = isLight ? 'rgba(37, 99, 235, 0.3)' : 'rgba(96, 165, 250, 0.4)';
-        
-        ctx.beginPath();
-        // 勾勒左半脑
-        ctx.moveTo(0, -size * 0.8);
-        ctx.bezierCurveTo(-size * 1.0, -size * 0.8, -size * 1.2, size * 0.4, -size * 0.2, size * 0.8);
-        // 勾勒右半脑
-        ctx.moveTo(0, -size * 0.8);
-        ctx.bezierCurveTo(size * 1.0, -size * 0.8, size * 1.2, size * 0.4, size * 0.2, size * 0.8);
-        // 中央纵裂 (科技感断点线)
-        ctx.moveTo(0, -size * 0.7); ctx.lineTo(0, -size * 0.2);
-        ctx.moveTo(0, size * 0.1); ctx.lineTo(0, size * 0.7);
-        // 内部皮层结构线
-        ctx.moveTo(-size * 0.4, -size * 0.3); ctx.quadraticCurveTo(-size * 0.7, 0, -size * 0.5, size * 0.4);
-        ctx.moveTo(size * 0.4, -size * 0.3); ctx.quadraticCurveTo(size * 0.7, 0, size * 0.5, size * 0.4);
-
-        ctx.stroke();
-        ctx.restore();
-    }
-
     rafScheduler.add('particles', () => {
       
       ctx.clearRect(0, 0, width, height);
       const isLight = document.body.classList.contains('light-mode');
       
-      // ── 🧠 新增：在此处绘制底层大脑 ──
-      const brainSize = isMobile ? width * 0.4 : height * 0.45;
-      drawTechBrain(ctx, width / 2, height / 2, brainSize, isLight);
-      // ────────────────────────────────
-
       // ⚠️ 已经清理了重复声明的 const
       const sigColor = isLight ? '30, 58, 138' : '0, 255, 255';
       const connectionOpacity = isLight ? 0.25 : 0.12;
