@@ -397,6 +397,70 @@ model-viewer > [slot="poster"] {
 /* 加一根淡淡的分隔线 */
 .gesture-hud span + span { position: relative; padding-left: 5px; }
 .gesture-hud span + span::before { content: ""; position: absolute; left: -12px; top: 20%; height: 60%; width: 1px; background: rgba(255, 255, 255, 0.2); }
+
+/* ===================== 🚀 浅色模式专属：3D 模型 UI 界面适配 ===================== */
+
+/* 1. 修复顶部 HUD (Rotate: Drag / Zoom: Pinch) */
+body.light-mode .gesture-hud {
+  color: #1e293b !important;                  /* 文字变成深蓝灰色 */
+  background: rgba(255, 255, 255, 0.7) !important; /* 背景变成半透明白色 */
+  border-color: rgba(59, 130, 246, 0.3) !important; /* 边框变成浅蓝色 */
+  box-shadow: 0 4px 12px rgba(148, 163, 184, 0.2) !important; /* 加上轻微的浅色阴影 */
+}
+/* HUD 里的分隔线也要变色 */
+body.light-mode .gesture-hud span + span::before {
+  background: rgba(0, 0, 0, 0.15) !important; 
+}
+
+/* 2. 修复中心手势动画提示框 (黑框白字 -> 白框深字) */
+body.light-mode .gesture-text {
+  color: #1e293b !important;
+  text-shadow: none !important; /* 去掉黑色的文字阴影 */
+  background: rgba(255, 255, 255, 0.85) !important;
+  border: 1px solid rgba(59, 130, 246, 0.2) !important;
+  box-shadow: 0 4px 15px rgba(148, 163, 184, 0.2) !important;
+}
+
+/* 3. 修复底部 Reset View 按钮 */
+body.light-mode .reset-btn {
+  background: rgba(255, 255, 255, 0.8) !important;
+  color: #334155 !important;
+  border-color: rgba(148, 163, 184, 0.4) !important;
+  box-shadow: 0 2px 8px rgba(148, 163, 184, 0.15) !important;
+}
+body.light-mode .reset-btn:hover {
+  background: #ffffff !important;
+  color: #2563eb !important;
+  border-color: #60a5fa !important;
+}
+
+/* 4. 修复加载海报 (Poster) 的黑屏问题 */
+/* 我们要覆盖内联样式 style="..."，所以必须用 !important */
+body.light-mode .model-block [slot="poster"] {
+  background: radial-gradient(circle at center, #f8fafc 0%, #e2e8f0 100%) !important;
+}
+/* 海报里的网格变色 */
+body.light-mode .model-block [slot="poster"] > div:nth-child(1) {
+  background-image: linear-gradient(rgba(59, 130, 246, 0.15) 1px, transparent 1px), 
+                    linear-gradient(90deg, rgba(59, 130, 246, 0.15) 1px, transparent 1px) !important;
+}
+/* 初始化文字变深色 */
+body.light-mode .model-block [slot="poster"] p:first-of-type {
+  color: #1e40af !important;
+  text-shadow: 0 0 10px rgba(59, 130, 246, 0.3) !important;
+}
+/* 底部点击提示字变色 */
+body.light-mode .model-block [slot="poster"] .click-to-load-glow {
+  color: #64748b !important;
+}
+body.light-mode .model-block [slot="poster"] .click-to-load-glow:hover {
+  text-shadow: 0 0 10px rgba(59, 130, 246, 0.5) !important;
+}
+
+/* 5. 修复右下角的版权水印水印 */
+body.light-mode .model-watermark-text {
+  color: rgba(71, 85, 105, 0.6) !important; /* 变成高级的冷灰色 */
+}
   
 /* ===================== E-Link 动态仪表盘样式 ===================== */
 .nav-badges img, .github-only img, a img {
