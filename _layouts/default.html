@@ -1258,53 +1258,47 @@ if (mouse.active && !isMobile) {
     });
   }
 
- /* ✅ 新增：手机端直接暂停背景视频，释放 GPU */
-const ambientVideo = document.getElementById('ambient-video');
-if (ambientVideo && (isMobile || window.innerWidth <= 768)) {
-  ambientVideo.pause();
-  ambientVideo.style.display = 'none';
-}
+  // ── initNeuralWeb 函数到这里结束 ──
+  } // 这是 initNeuralWeb 函数本身的闭合括号
 
-// 横屏/竖屏切换时重新判断
-window.addEventListener('orientationchange', () => {
-  setTimeout(() => {
-    if (ambientVideo) {
+  // ── 手机端背景视频处理（必须在 initNeuralWeb 外面，DOMContentLoaded 里面）──
+  const ambientVideo = document.getElementById('ambient-video');
+  const isMobileGlobal = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || window.innerWidth <= 768;
+  
+  if (ambientVideo && isMobileGlobal) {
+    // 手机端：不强制 pause()，只是隐藏，避免 DOMException 中断 JS
+    ambientVideo.style.display = 'none';
+  }
+
+  window.addEventListener('orientationchange', () => {
+    setTimeout(() => {
+      if (!ambientVideo) return;
       if (window.innerWidth <= 768) {
-        ambientVideo.pause();
         ambientVideo.style.display = 'none';
       } else {
         ambientVideo.style.display = '';
-        ambientVideo.play().catch(() => {});
       }
-    }
-  }, 300);
-});
- 
-  setTimeout(initNeuralWeb, 150);
- 
-  // ── Lenis 平滑滚动 ───────────────────────────────────────────
-  let globalLenis; // 提前在全局层级声明变量
-  if (typeof Lenis !== 'undefined') {
-  globalLenis = new Lenis({
-    duration: 1.1,
-    easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-    smoothTouch: false,
-    touchMultiplier: 1.5,
-    prevent: (node) => node.tagName === 'MODEL-VIEWER', // 核心：阻止 Lenis 接管 model-viewer 的滚动
+    }, 300);
   });
-  rafScheduler.add('lenis', (time) => globalLenis.raf(time));
 
-  // 横屏后 150ms 重算
-  window.addEventListener('orientationchange', () => {
-    setTimeout(() => { globalLenis.resize(); }, 150);
-  });
-}
+  // ── 启动粒子背景（延迟保证 DOM 就绪）──
+  setTimeout(initNeuralWeb, 150);
+
+  // ── Lenis 平滑滚动（只初始化一次！）──
+  let globalLenis;
+  if (typeof Lenis !== 'undefined') {
     globalLenis = new Lenis({
       duration: 1.1,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      smoothTouch: false, touchMultiplier: 1.5,
+      smoothTouch: false,
+      touchMultiplier: 1.5,
+      prevent: (node) => node.tagName === 'MODEL-VIEWER',
     });
     rafScheduler.add('lenis', (time) => globalLenis.raf(time));
+
+    window.addEventListener('orientationchange', () => {
+      setTimeout(() => { if (globalLenis) globalLenis.resize(); }, 150);
+    });
   }
 
   // ── 滚动进度条 ───────────────────────────────────────────────
