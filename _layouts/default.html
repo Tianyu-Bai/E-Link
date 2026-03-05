@@ -50,7 +50,6 @@
     background-color: #0a0a0f; 
   }
  
-  /* 仅当 JS 成功运行后才隐藏原生光标 */
   body.js-cursor-enabled { cursor: none; }
   @media (pointer: coarse) { body.js-cursor-enabled { cursor: auto; } }
   img, video, iframe { max-width: 100% !important; height: auto !important; box-sizing: border-box; transition: opacity 0.5s ease; transform: translateZ(0); backface-visibility: hidden; }
@@ -62,7 +61,6 @@
   ::-selection { background: #3b82f6; color: #ffffff; text-shadow: 0 0 8px rgba(255, 255, 255, 0.8); }
 
   /* ===================== 2. 核心动态交互特效 ===================== */
-  /* --- 🚀 磁性液态光标 --- */
   .cursor-dot, .cursor-outline { will-change: transform; backface-visibility: hidden; }
   .bot-head, .bot-eye { backface-visibility: hidden; }
   .cursor-dot, .cursor-outline { position: fixed; top: 0; left: 0; border-radius: 50%; z-index: 99999; pointer-events: none; transform: translate3d(-100px, -100px, 0) translate(-50%, -50%); will-change: transform; }
@@ -70,7 +68,7 @@
   .cursor-outline { width: 40px; height: 40px; border: 1.5px solid rgba(96, 165, 250, 0.5); transition: width 0.3s cubic-bezier(0.165, 0.84, 0.44, 1), height 0.3s cubic-bezier(0.165, 0.84, 0.44, 1), background-color 0.3s, border-color 0.3s; }
   body.hovering .cursor-outline { width: 65px; height: 65px; background-color: rgba(96, 165, 250, 0.08); border-color: rgba(96, 165, 250, 0.8); box-shadow: 0 0 20px rgba(59, 130, 246, 0.2); backdrop-filter: blur(4px); }
   body.hovering .cursor-dot { transform: translate(-50%, -50%) scale(0.5); opacity: 0.5; }
-  /* --- 🚀 赛博流光进度条 --- */
+  
   #progress-bar { position: fixed; top: 0; left: 0; height: 3px; background: linear-gradient(90deg, #1d4ed8, #3b82f6, #60a5fa, #3b82f6); background-size: 200% 100%; box-shadow: 0 0 10px rgba(59, 130, 246, 0.6), 0 0 20px rgba(29, 78, 216, 0.4); width: 0%; z-index: 99999; animation: gradient-flow 2s linear infinite; will-change: width; transform: translateZ(0); }
   @keyframes gradient-flow { 0% { background-position: 100% 0; } 100% { background-position: -100% 0; } }
   #progress-bar::after { content: ''; position: absolute; top: -1px; right: 0; width: 12px; height: 5px; background: #ffffff; border-radius: 50%; box-shadow: 0 0 15px 4px #60a5fa; }
@@ -85,7 +83,6 @@
     overflow: hidden; 
   }
   
-  /* 🚀 性能优化：强制分离背景图层*/
   #neuro-ambient-bg,
   #neuro-dust-canvas {
     transform: translate3d(0, 0, 0) !important; 
@@ -94,18 +91,12 @@
     contain: strict;                            
   }
 
-  /* 🎬 增加电影级暗角，压暗四周，极大地拉升空间纵深感 */
   #neuro-ambient-bg::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    /* 从中心透明向四周纯黑渐变 */
+    content: ''; position: absolute; inset: 0;
     background: radial-gradient(circle at 50% 50%, transparent 20%, rgba(3, 6, 14, 0.95) 100%);
-    pointer-events: none; /* 防止遮挡点击 */
-    z-index: 1;
+    pointer-events: none; z-index: 1;
   }
  
-  /* 缓慢流动的极光色块*/
   .aurora { position: absolute; border-radius: 50%; filter: blur(70px); opacity: 0.2; animation: aurora-float 25s infinite alternate cubic-bezier(0.4, 0, 0.2, 1); will-change: transform; pointer-events: none; transform: translateZ(0); }
   .aurora-1 { width: 50vw; height: 50vw; background: radial-gradient(circle, rgba(13, 148, 136, 0.4), transparent 70%); top: -20%; left: -10%; animation-delay: 0s; }
   .aurora-2 { width: 60vw; height: 60vw; background: radial-gradient(circle, rgba(6, 182, 212, 0.25), transparent 70%); bottom: -20%; right: -20%; animation-delay: -7s; }
@@ -118,10 +109,8 @@
 
   #neuro-dust-canvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -5; pointer-events: none; transform: translateZ(0); will-change: contents; }
   
-  /* ☀️ 浅色模式完美覆盖 (高级工程图纸风) */
- body.light-mode #neuro-ambient-bg { 
+  body.light-mode #neuro-ambient-bg { 
     background-color: #f1f5f9 !important; 
-    /* 净化浅色模式背景 */
     background-image: linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(241, 245, 249, 0.2)) !important; 
     background-size: 100% 100% !important;
   }
@@ -131,47 +120,23 @@
   body.light-mode .aurora-3 { background: radial-gradient(circle, rgba(167, 139, 250, 0.12), transparent 70%); }
   body.light-mode #neuro-ambient-bg::before { opacity: 0.15; }
   
-  /* --- 🚀 内容玻璃容器 --- */
   .layout-wrapper { position: relative; max-width: 860px; margin: 100px auto 60px; z-index: 10; perspective: 1000px; }
   .container { 
-    position: relative; 
-    padding: 60px 80px; 
-    
-    /* 1. 增加背景梯度的变化，模拟玻璃表面的微弱反光 */
+    position: relative; padding: 60px 80px; 
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%); 
-    
-    /* 2. 增强模糊度，即使背景清晰，文字依然有极佳的可读性 */
-    backdrop-filter: blur(24px); 
-    -webkit-backdrop-filter: blur(24px); 
-    
+    backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); 
     border-radius: 20px; 
-    
-    /* 3. 核心：多重阴影组合 */
-    box-shadow: 
-        0 30px 60px rgba(0, 0, 0, 0.5),            /* 远地层：大范围悬浮阴影 */
-        inset 1px 1px 1px rgba(255, 255, 255, 0.3), /* 核心高光：模拟左上角切面折射 */
-        inset -1px -1px 1px rgba(255, 255, 255, 0.05); /* 边缘微弱泛光 */
-    
-    /* 4. 边框微调：半透明边框 */
-    border: 1px solid rgba(255, 255, 255, 0.12); 
-    border-top: 4px solid #3b82f6; /* 保持你标志性的蓝色顶梁 */
-    
-    opacity: 0; 
-    animation: fadeUp 0.6s ease-out 0.2s forwards; 
-    z-index: 1; 
-    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1); 
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5), inset 1px 1px 1px rgba(255, 255, 255, 0.3), inset -1px -1px 1px rgba(255, 255, 255, 0.05); 
+    border: 1px solid rgba(255, 255, 255, 0.12); border-top: 4px solid #3b82f6; 
+    opacity: 0; animation: fadeUp 0.6s ease-out 0.2s forwards; z-index: 1; transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1); 
   }
 
-  /* 悬停时增强“发光”感 */
   .container:hover { 
     border-color: rgba(96, 165, 250, 0.5); 
-    box-shadow: 
-        0 40px 80px rgba(0, 0, 0, 0.6), 
-        0 0 30px rgba(59, 130, 246, 0.2),            /* 蓝色外溢氛感 */
-        inset 1px 1px 2px rgba(255, 255, 255, 0.5); /* 强化高光边缘 */
+    box-shadow: 0 40px 80px rgba(0, 0, 0, 0.6), 0 0 30px rgba(59, 130, 246, 0.2), inset 1px 1px 2px rgba(255, 255, 255, 0.5); 
     transform: translateY(-4px) scale(1.005); 
   }
-  /* --- 🚀 高级玻璃拟态数据表格 --- */
+  
   #main_content table { width: 100% !important; border-collapse: separate; border-spacing: 0; margin: 30px 0; background: rgba(15, 23, 42, 0.4); border-radius: 12px; overflow: hidden; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); border: 1px solid rgba(59, 130, 246, 0.2); backdrop-filter: blur(10px); }
   #main_content th, #main_content td { padding: 15px 12px; border: none; border-bottom: 1px solid rgba(255, 255, 255, 0.05); text-align: left; }
   #main_content tr:last-child td { border-bottom: none; }
@@ -179,7 +144,6 @@
   #main_content tbody tr:hover { background: rgba(59, 130, 246, 0.05) !important; }
   #main_content th { background: rgba(59, 130, 246, 0.1); color: #93c5fd; font-weight: 600; text-transform: uppercase; font-size: 0.85em; letter-spacing: 1px; }
 
-  /* --- 🚀 导航徽章 (磁性吸附) --- */
   .nav-badges { margin: 2.5rem 0 1.5rem 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
   .nav-badges a { opacity: 0; animation: fadeUp 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; position: relative; z-index: 2; border-radius: 4px; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
   .nav-badges a::after { content: ''; position: absolute; inset: -2px; border-radius: 6px; background: linear-gradient(90deg, #60a5fa, #a78bfa); z-index: -1; opacity: 0; filter: blur(8px); transition: opacity 0.4s ease; }
@@ -188,28 +152,24 @@
   .nav-badges img { height: 28px !important; width: auto; border-radius: 4px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); border: none; display: block; transition: all 0.3s; }
   .nav-badges img.rippling { animation: ripple-wave 0.5s forwards; }
 
-  /* --- 🚀 终端发光打字光标 --- */
   .typewriter-container { font-family: 'JetBrains Mono', monospace; font-size: 1.1rem; color: #93c5fd; min-height: 1.6em; margin-bottom: 2rem; text-align: center; width: 100%; display: flex; justify-content: center; align-items: center; }
   .typewriter-cursor { display: inline-block; width: 10px; height: 1.2em; background: #3b82f6; box-shadow: 0 0 10px rgba(59, 130, 246, 0.8); margin-left: 6px; vertical-align: bottom; animation: blink-cursor 1s step-end infinite; }
 
-  /* --- 🚀 玻璃拟态控制按钮 --- */
   .controls-container { position: fixed; top: 20px; right: 20px; display: flex; gap: 12px; z-index: 10000; }
   .ctrl-btn { width: 42px; height: 42px; background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); font-size: 1.1rem; user-select: none; color: rgba(255, 255, 255, 0.8); box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); }
   .ctrl-btn:hover { background: rgba(59, 130, 246, 0.2); border-color: rgba(96, 165, 250, 0.5); color: #ffffff; transform: translateY(-3px) scale(1.05); box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3); }
   .ctrl-btn:active { transform: translateY(0) scale(0.95); }
   #lang-toggle { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; font-weight: bold; width: auto; padding: 0 14px; border-radius: 20px; letter-spacing: 0.5px; }
 
-  /* --- 🚀 页脚数据面板 --- */
   .footer-dashboard { margin: 0 auto 25px auto; width: 360px; max-width: 100%; min-height: 240px; display: flex; flex-direction: column; justify-content: center; align-items: center; border: 1px solid rgba(59, 130, 246, 0.2); border-radius: 16px; padding: 15px; background: linear-gradient(145deg, rgba(15, 23, 42, 0.8), rgba(2, 6, 23, 0.9)); box-shadow: inset 0 0 20px rgba(59, 130, 246, 0.05), 0 10px 30px rgba(0, 0, 0, 0.5); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); overflow: hidden; position: relative; transition: all 0.3s ease; }
 
-  /* ===================== 4. 模态弹窗 (Welcome & Video) ===================== */
+  /* ===================== 4. 模态弹窗 ===================== */
   .welcome-modal { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(5px); z-index: 100001; display: flex; justify-content: center; align-items: center; opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s; padding: 20px; cursor: default !important; }
   .welcome-modal.show { opacity: 1; visibility: visible; }
   .welcome-modal * { cursor: default !important; }
   .welcome-modal .btn-primary, .welcome-modal .btn-secondary, .welcome-modal .slider { cursor: pointer !important; }
   .welcome-modal:hover ~ .cursor-dot, .welcome-modal:hover ~ .cursor-outline { opacity: 0 !important; }
   
-  /* --- 🚀 玻璃切割欢迎弹窗 --- */
   .modal-content { background: linear-gradient(145deg, rgba(30, 41, 59, 0.9), rgba(15, 23, 42, 0.95)); border: 1px solid rgba(255, 255, 255, 0.15); box-shadow: inset 0 1px 0 rgba(255,255,255,0.1), 0 25px 50px -12px rgba(0, 0, 0, 0.7); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); padding: 30px; border-radius: 24px; width: 90%; max-width: 400px; text-align: center; margin: auto; max-height: 90vh; overflow-y: auto; transform: scale(0.95); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; padding-bottom: 140px; }
   .welcome-modal.show .modal-content { transform: scale(1); }
   .modal-title { font-size: 1.5rem; margin-bottom: 15px; color: #fff; font-weight: 600; }
@@ -217,7 +177,6 @@
   .m-zh { display: none; }
   .modal-btns { display: flex; flex-direction: column; gap: 10px; }
 
-  /* --- 🚀 触觉拟态按钮 & iOS级开关 --- */
   .btn-primary, .btn-secondary { padding: 12px 24px; border-radius: 12px; font-weight: 600; font-family: inherit; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); border: none; letter-spacing: 0.5px; overflow: hidden; }
   .btn-primary { background: linear-gradient(180deg, #60a5fa 0%, #3b82f6 100%); color: white; box-shadow: inset 0 1px 1px rgba(255,255,255,0.4), 0 4px 15px rgba(59, 130, 246, 0.3); text-shadow: 0 1px 2px rgba(0,0,0,0.2); }
   .btn-primary:hover { transform: translateY(-2px); box-shadow: inset 0 1px 1px rgba(255,255,255,0.6), 0 8px 25px rgba(59, 130, 246, 0.5); filter: brightness(1.05); }
@@ -236,7 +195,6 @@
   input:checked + .slider:before { transform: translateX(20px); }
   .modal-watermark { position: absolute; bottom: 20px; left: 0; width: 100%; text-align: center; font-size: 0.65rem; color: #94a3b8; font-family: 'JetBrains Mono', monospace; pointer-events: none; opacity: 0.6; }
 
-  /* --- 🎬 视频弹窗高级全息玻璃面板 --- */
   .video-modal { position: fixed; inset: 0; background: rgba(2, 6, 23, 0.85); z-index: 100005; display: flex; justify-content: center; align-items: center; opacity: 0; visibility: hidden; transition: opacity 0.4s cubic-bezier(0.165, 0.84, 0.44, 1), visibility 0.4s; backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); }
   .video-modal.show { opacity: 1; visibility: visible; }
   .video-content { width: 90%; max-width: 860px; background: linear-gradient(145deg, rgba(30, 41, 59, 0.9), rgba(15, 23, 42, 0.95)); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 16px; box-shadow: inset 0 1px 0 rgba(255,255,255,0.1), 0 30px 60px -15px rgba(0, 0, 0, 0.8), 0 0 30px rgba(59, 130, 246, 0.2); overflow: hidden; transform: scale(0.95) translateY(20px); transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
@@ -244,8 +202,8 @@
   .video-header { display: flex; justify-content: space-between; align-items: center; padding: 12px 24px; background: rgba(15, 23, 42, 0.6); border-bottom: 1px solid rgba(255, 255, 255, 0.1); color: #93c5fd; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; letter-spacing: 1px; text-shadow: 0 0 10px rgba(147, 197, 253, 0.5); }
   .video-close { cursor: pointer; font-size: 1.8rem; line-height: 1; color: #64748b; transition: all 0.3s ease; }
   .video-close:hover { color: #ef4444; transform: rotate(90deg) scale(1.2); text-shadow: 0 0 10px rgba(239, 68, 68, 0.6); }
-   video#guardian-video { width: 100%; max-height: 75vh; display: block; outline: none; background: #000; object-fit: contain; border: 2px solid rgba(59, 130, 246, 0.5); /* 你建议的蓝色半透明边框 */
-    border-radius: 8px; /* 轻微圆角，符合现代 UI 审美 */ box-shadow: 0 0 20px rgba(59, 130, 246, 0.2), inset 0 0 10px rgba(59, 130, 246, 0.1); /* 增加一个极其微弱的扫描线滤镜（可选，增加硬核极客感） */
+   video#guardian-video { width: 100%; max-height: 75vh; display: block; outline: none; background: #000; object-fit: contain; border: 2px solid rgba(59, 130, 246, 0.5); 
+    border-radius: 8px; box-shadow: 0 0 20px rgba(59, 130, 246, 0.2), inset 0 0 10px rgba(59, 130, 246, 0.1); 
     filter: brightness(1.1) contrast(1.05);}
 
   /* ===================== 5. 交互机器人 ===================== */
@@ -282,7 +240,6 @@
   #bot-speech::after { content: ''; position: absolute; bottom: -5px; left: 50%; width: 8px; height: 8px; background: inherit; transform: translateX(-50%) rotate(45deg); border-right: 1px solid rgba(59, 130, 246, 0.4); border-bottom: 1px solid rgba(59, 130, 246, 0.4); }
   #bot-container.speaking #bot-speech { transform: translateX(-50%) scale(1); opacity: 1; }
 
-  /* --- RPG 对话面板 --- */
   #rpg-dialogue { position: absolute; top: 65px; left: 50%; transform: translateX(-50%) translateY(20px); width: 600px; max-width: 90vw; background-color: rgba(10, 15, 30, 0.95); background-image: linear-gradient(rgba(59, 130, 246, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(59, 130, 246, 0.1) 1px, transparent 1px); background-size: 20px 20px; border: 1px solid rgba(96, 165, 250, 0.5); border-radius: 12px; padding: 15px; box-shadow: 0 10px 40px rgba(0,0,0,0.8), 0 0 20px rgba(59, 130, 246, 0.3), inset 0 0 15px rgba(59, 130, 246, 0.2); z-index: 20000; opacity: 0; pointer-events: none; transition: all 0.3s ease; display: flex; flex-direction: column; gap: 10px; font-family: 'JetBrains Mono', monospace; overflow: hidden; }
   #rpg-dialogue::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 10% !important; background: linear-gradient(to bottom, transparent, rgba(96, 165, 250, 0.4), transparent); box-shadow: 0 0 10px rgba(96, 165, 250, 0.5); opacity: 0.5; pointer-events: none; z-index: -1; animation: hud-scan 3s linear infinite; }
   @keyframes hud-scan { 0% { transform: translateY(-100px); } 100% { transform: translateY(300px); } }
@@ -299,27 +256,20 @@
   .rpg-close { position: absolute; top: 5px; right: 8px; font-size: 18px; color: #475569; cursor: pointer; }
   .rpg-close:hover { color: #fff; }
 
-  /* ===================== 6. ☁️ 护眼浅色模式 (全局净化版) ===================== */
-  /* 1. 强制加深底层与极光幕布的灰色 */
+  /* ===================== 6. ☁️ 护眼浅色模式 ===================== */
   body.light-mode { color: #1e293b; background-color: #f8fafc !important; }
   body.light-mode #neuro-ambient-bg { background: #f1f5f9 !important; }
   
-  /* 调整容器，让它在浅色背景下有更清爽的投影 */
   body.light-mode .container { 
     background: rgba(255, 255, 255, 0.8); 
-    box-shadow: 
-        0 20px 50px rgba(148, 163, 184, 0.2), 
-        inset 1px 1px 0px rgba(255, 255, 255, 0.9), 
-        inset -1px -1px 0px rgba(0, 0, 0, 0.05); 
+    box-shadow: 0 20px 50px rgba(148, 163, 184, 0.2), inset 1px 1px 0px rgba(255, 255, 255, 0.9), inset -1px -1px 0px rgba(0, 0, 0, 0.05); 
     border-color: rgba(203, 213, 225, 0.8); 
   }
   
-  /* 2. 浅色极光颜色微调，适配灰色背景 */
   body.light-mode .aurora-1 { background: radial-gradient(circle, rgba(59, 130, 246, 0.20), transparent 70%); }
   body.light-mode .aurora-2 { background: radial-gradient(circle, rgba(147, 197, 253, 0.25), transparent 70%); }
   body.light-mode .aurora-3 { background: radial-gradient(circle, rgba(167, 139, 250, 0.12), transparent 70%); }
 
- /* 3. 浅色模式主卡片：全局冷灰色调 (Apple 磨砂质感)，保持与滚动状态色彩一致 */
   body.light-mode .container { background: rgba(226, 232, 240, 0.85) !important; border-color: rgba(148, 163, 184, 0.4) !important; box-shadow: 0 20px 50px rgba(100, 116, 139, 0.15) !important; backdrop-filter: blur(25px); }
   body.light-mode #rpg-dialogue { background: #ffffff; border-color: #cbd5e1; box-shadow: 0 10px 30px rgba(148, 163, 184, 0.1); }
   body.light-mode #rpg-text { color: #334155; }
@@ -328,14 +278,12 @@
   body.light-mode #bot-speech { background: #ffffff; color: #334155; border-color: #cbd5e1; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
   body.light-mode .typewriter-container { color: #2563eb; }
   
-  /* 3D 模型框的白天磨砂玻璃质感 */
   body.light-mode .custom-model-viewer {
     background: rgba(255, 255, 255, 0.8) !important; 
     border: 1px solid rgba(59, 130, 246, 0.3) !important; 
     box-shadow: 0 10px 30px rgba(148, 163, 184, 0.2), inset 0 0 20px rgba(255,255,255,1) !important; 
   }
   
-  /* 数据表格与按钮适配 */
   body.light-mode #main_content table { background: rgba(255, 255, 255, 0.9); border-color: rgba(148, 163, 184, 0.4); box-shadow: 0 10px 30px rgba(148, 163, 184, 0.15); }
   body.light-mode #main_content th { background: rgba(241, 245, 249, 1); color: #1e40af; border-bottom: 1px solid rgba(148, 163, 184, 0.4); }
   body.light-mode #main_content td { border-bottom: 1px solid rgba(148, 163, 184, 0.2); color: #334155; }
@@ -356,74 +304,56 @@
   body.light-mode .icon-circle { background: #ffffff; border-color: rgba(59, 130, 246, 0.3); }
   .gesture-hidden { opacity: 0 !important; pointer-events: none !important; }
 
-  /* 针对 3D 模型内部标签框的浅色适配 (全面柔化轻量级版本) */
   body.light-mode .Hotspot, 
   body.light-mode .HotspotAnnotation,
   body.light-mode [slot^="hotspot"] {
-    background: rgba(255, 255, 255, 0.85) !important; /* 半透明乳白，增加通透感 */
-    color: #2563eb !important;              /* 核心文字改为清爽的亮蓝色，告别死黑 */
-    border: 1px solid rgba(59, 130, 246, 0.25) !important; /* 极浅的蓝色边框 */
-    backdrop-filter: blur(8px) !important;  /* 加入毛玻璃滤镜 */
+    background: rgba(255, 255, 255, 0.85) !important; 
+    color: #2563eb !important;              
+    border: 1px solid rgba(59, 130, 246, 0.25) !important; 
+    backdrop-filter: blur(8px) !important;  
     -webkit-backdrop-filter: blur(8px) !important;
-    box-shadow: 0 4px 15px rgba(148, 163, 184, 0.15) !important; /* 阴影调得更轻柔 */
-    font-weight: 600 !important;            /* 稍微加粗，保证在浅色下的可读性 */
+    box-shadow: 0 4px 15px rgba(148, 163, 184, 0.15) !important; 
+    font-weight: 600 !important;            
   }
 
-  /* 如果你的标签里有次级文字（比如段落 p 或 span），让它们呈现高级冷灰色 */
   body.light-mode .HotspotAnnotation p,
   body.light-mode .HotspotAnnotation span {
-    color: #64748b !important;              
+    color: #64748b !important;            
     font-weight: 400 !important;
   }
 
-  /* 如果你使用了自定义的标签容器类名，比如 .label-box */
   body.light-mode .label-box {
     background-color: rgba(255, 255, 255, 0.95) !important;
     color: #0f172a !important;
     backdrop-filter: blur(4px);
   }
 
-  /* ===================== 📝 核心正文排版强制浅色覆盖 ===================== */
-  /* 1. 强制覆盖 Markdown 默认段落、列表、文字块的颜色 */
   body.light-mode #main_content,
   body.light-mode #main_content p,
   body.light-mode #main_content li,
-  body.light-mode #main_content div { 
-    color: #334155 !important; 
-  }
+  body.light-mode #main_content div { color: #334155 !important; }
   
-  /* 2. 强制各级标题变深色 (自动排除了你顶部加了特殊流光的 Logo 标题) */
   body.light-mode #main_content h1:not(.header-sync-pulse):not(.header-sync-pulse-zh),
   body.light-mode #main_content h2:not(.sub-title),
   body.light-mode #main_content h3,
-  body.light-mode #main_content h4 { 
-    color: #0f172a !important; 
-  }
+  body.light-mode #main_content h4 { color: #0f172a !important; }
 
-  /* 3. 粗体字强制深黑色，提升阅读对比度 */
   body.light-mode #main_content strong,
-  body.light-mode #main_content b { 
-    color: #1e293b !important; 
-  }
+  body.light-mode #main_content b { color: #1e293b !important; }
 
-  /* 4. GitHub 风格的提示块 (如 [!NOTE]) 浅色适配 */
   body.light-mode #main_content blockquote {
     background: rgba(226, 232, 240, 0.6) !important;
     border-left: 4px solid #3b82f6 !important;
     color: #475569 !important;
   }
-  body.light-mode #main_content blockquote strong {
-    color: #1d4ed8 !important;
-  }
+  body.light-mode #main_content blockquote strong { color: #1d4ed8 !important; }
 
-  /* 5. 强制加深“副标题(sub-title)”的渐变色，使其在白色背景上清晰可见 */
   body.light-mode .sub-title {
     background: linear-gradient(90deg, #1d4ed8 0%, #4338ca 50%, #6d28d9 100%) !important;
     -webkit-background-clip: text !important;
     -webkit-text-fill-color: transparent !important;
   }
 
-  /* 6. 分割线 <hr> 颜色加深 */
   body.light-mode #main_content hr {
     border-color: rgba(148, 163, 184, 0.4) !important;
     background-color: transparent !important;
@@ -462,10 +392,8 @@
     @keyframes point-up { from { transform: translateX(-50%) rotate(-90deg) translateY(0); } to { transform: translateX(-50%) rotate(-90deg) translateY(-15px); } }
     .aurora { filter: none !important; opacity: 0.15 !important; }
     
-    /* 手机端统一关闭高耗能的毛玻璃效果 */
     .container { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
   
-    /* 🚀 专属提亮：手机端黑夜模式的背景，改为高级深蓝灰，告别死黑 */
     body:not(.light-mode) { background-color: #0b1121 !important; }
     
     body:not(.light-mode) #neuro-ambient-bg { 
@@ -473,9 +401,7 @@
       background-image: radial-gradient(circle at 50% 50%, rgba(15, 23, 42, 0.9), #0b1121 100%) !important;
     }
     
-    #neuro-ambient-bg, body.light-mode #neuro-ambient-bg {
-      background-size: 100% 100% !important; 
-    }
+    #neuro-ambient-bg, body.light-mode #neuro-ambient-bg { background-size: 100% 100% !important; }
     
     body:not(.light-mode) .container { 
       background: rgba(26, 35, 53, 0.95) !important; 
@@ -486,38 +412,19 @@
     .layout-wrapper { perspective: none !important; }
   }
 
- /* 🚀 Lenis 滚动专属优化：滚动时关闭所有高耗能的交互检测 */
-  html.lenis-scrolling body * {
-    pointer-events: none !important;
-  }
- /* 🚀 1. 强制光标图层提速：让圆圈渲染完全独立 */
-  .cursor-dot, .cursor-outline {
-    pointer-events: none !important;
-    z-index: 100000 !important;
-    will-change: transform;
-    transform: translateZ(0); /* 开启显卡 3D 加速 */
-  }
+  html.lenis-scrolling body * { pointer-events: none !important; }
+  .cursor-dot, .cursor-outline { pointer-events: none !important; z-index: 100000 !important; will-change: transform; transform: translateZ(0); }
 
-  /* 🚀 2. 事件穿透：防止视频和 Canvas 干扰鼠标移动的响应速度 */
   #ambient-video, 
   #neuro-dust-canvas, 
-  #neuro-ambient-bg {
-    pointer-events: none !important; /* 确保它们对鼠标来说是“透明”的 */
-  }
+  #neuro-ambient-bg { pointer-events: none !important; }
   
-  /* 🛡️ 修复 GLB 触摸断触问题：给 3D 模型及其内部的标签发免死金牌 */
   html.lenis-scrolling model-viewer,
-  html.lenis-scrolling model-viewer * {
-    pointer-events: auto !important; 
-  }
+  html.lenis-scrolling model-viewer * { pointer-events: auto !important; }
   
   html.lenis-scrolling .cursor-outline,
-  html.lenis-scrolling .cursor-dot {
-    opacity: 0 !important; /* 滚动时暂时隐藏自定义磁性光标，防止卡顿脱节 */
-    transition: opacity 0.1s;
-  }
+  html.lenis-scrolling .cursor-dot { opacity: 0 !important; transition: opacity 0.1s; }
   
- /* 🚀 仅限电脑端 (PC)：开启滚动时的毛玻璃动态降级。彻底禁止手机端参与此类重绘！ */
   @media (min-width: 769px) {
     html.lenis-scrolling .container {
       backdrop-filter: blur(4px) !important;
@@ -525,25 +432,21 @@
       background: rgba(15, 23, 42, 0.2) !important; 
       transition: backdrop-filter 0.2s, background 0.2s; 
     }
-    html.light-mode.lenis-scrolling .container {
-      background: rgba(226, 232, 240, 0.85) !important; 
-    }
+    html.light-mode.lenis-scrolling .container { background: rgba(226, 232, 240, 0.85) !important; }
   }
 
-  /* 🛡️ 手机端 (Mobile) 终极防闪退护盾：无论如何滚动，永远保持静态的纯净不透明底色 */
   @media (max-width: 768px) {
     body.light-mode .container {
-      /* 手机端浅色模式：不透明的冷灰色，高级且不消耗显卡 */
       background: rgba(226, 232, 240, 0.98) !important; 
       backdrop-filter: none !important;
       -webkit-backdrop-filter: none !important;
-      transition: none !important; /* 杀掉所有颜色和毛玻璃的过渡动画 */
+      transition: none !important; 
     }
   }
   
 </style>
 
- <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+<script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
  
 </head>
  
@@ -584,13 +487,15 @@
   const linkEn = document.getElementById('mirror-link-en');
   const linkZh = document.getElementById('mirror-link-zh');
 
-  let targetDomain = host.includes("pages.dev") ? siteB : siteA;
-  let fullURL = "https://" + targetDomain;
+  if (linkEn && linkZh) {
+      let targetDomain = host.includes("pages.dev") ? siteB : siteA;
+      let fullURL = "https://" + targetDomain;
 
-  linkEn.href = fullURL;
-  linkEn.innerText = fullURL;
-  linkZh.href = fullURL;
-  linkZh.innerText = fullURL;
+      linkEn.href = fullURL;
+      linkEn.innerText = fullURL;
+      linkZh.href = fullURL;
+      linkZh.innerText = fullURL;
+  }
 })();
 </script>
 
@@ -737,7 +642,7 @@
         if (currentDisplay < 2 && rand > 0.6) { 
           plusEl.textContent = '+1';
           plusEl.classList.remove('animate-plus');
-          void plusEl.offsetWidth; // 触发重绘
+          void plusEl.offsetWidth; 
           plusEl.classList.add('animate-plus');
           
           currentDisplay++;
@@ -750,7 +655,7 @@
           setTimeout(() => {
             if (currentDisplay > 2) {
               currentDisplay--;
-              counterEl.textContent = currentDisplay;
+              if (counterEl) counterEl.textContent = currentDisplay;
             }
           }, Math.random() * 5000 + 5000);
 
@@ -758,7 +663,7 @@
           currentDisplay--;
           counterEl.textContent = currentDisplay;
         }
-      }, 16000); // 16秒判定
+      }, 16000); 
     }
     window.addEventListener('load', initCounter);
   })();
@@ -825,25 +730,32 @@ if (window.innerWidth > 768) {
   document.body.classList.add('js-cursor-enabled');
 }
  
-if (localStorage.getItem('elink_visited') === 'true') {
-    // 已经访问过，彻底隐藏并解除锁定
-    welcomeModal.style.display = 'none'; 
-    document.body.classList.remove('modal-active');
-  } else {
-    // 首次访问，触发动画
-    setTimeout(() => {
-      welcomeModal.classList.add('show');
-      document.body.classList.add('modal-active');
-    }, 10);
-  }
+// 防御性：使用 try...catch 包裹 localStorage 防止浏览器禁用缓存时引发异常
+let hasVisited = false;
+try {
+  hasVisited = localStorage.getItem('elink_visited') === 'true';
+} catch (e) {
+  console.warn("localStorage is blocked or unavailable.", e);
+}
+
+if (welcomeModal) {
+    if (hasVisited) {
+      welcomeModal.style.display = 'none'; 
+      document.body.classList.remove('modal-active');
+    } else {
+      setTimeout(() => {
+        welcomeModal.classList.add('show');
+        document.body.classList.add('modal-active');
+      }, 10);
+    }
+}
  
- // ── 统一 RAF 调度器 (带 FPS 锁定 & 移动端智能识别) ──────────────────────────────────────────
+// ── 统一 RAF 调度器 (带 FPS 锁定 & 移动端智能识别) ──────────────────────────────────────────
 const rafScheduler = {
   tasks: new Map(),
   isRunning: false,
   lastFrameTime: 0,
   
-  // 🎯 智能检测：手机端直接砍到 30FPS (省电/降温)，PC 端维持 45FPS (平衡)
   targetFPS: (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || window.innerWidth < 768) ? 30 : 45, 
   
   add(key, fn) { 
@@ -862,21 +774,18 @@ const rafScheduler = {
         return; 
       }
       
-      // 动态计算间隔时间，确保帧率调整能即时生效
       const fpsInterval = 1000 / this.targetFPS;
       const deltaTime = currentTime - this.lastFrameTime;
       
-      // 🚀 核心：如果时间差未达到目标帧率间隔，则跳过本次物理计算与绘图
       if (deltaTime < fpsInterval) {
         requestAnimationFrame(loop);
         return;
       }
       
-      // 记录当前帧时间戳（减去微小的误差余数，防止长时间运行后的帧漂移）
       this.lastFrameTime = currentTime - (deltaTime % fpsInterval);
       
       this.tasks.forEach(fn => { 
-        try { fn(currentTime); } catch (e) { console.error(e); } 
+        try { fn(currentTime); } catch (e) { console.error("RAF Scheduler Error:", e); } 
       });
       
       requestAnimationFrame(loop);
@@ -886,7 +795,7 @@ const rafScheduler = {
   }
 };
 
-  // ── 光标引擎优化 ─────────────────────────────────────────────────
+// ── 光标引擎优化 ─────────────────────────────────────────────────
 const cursorDot = document.querySelector('.cursor-dot');
 const cursorOutline = document.querySelector('.cursor-outline');
 let mouseX = -100, mouseY = -100;
@@ -895,24 +804,19 @@ let outlineX = -100, outlineY = -100;
 if (window.innerWidth > 768 && cursorDot && cursorOutline) {
   document.addEventListener('mousemove', (e) => {
     mouseX = e.clientX; mouseY = e.clientY;
-    // 🚀 优化 1：小点直接跟随，不设延迟，消除视觉上的第一层延迟
     cursorDot.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0) translate(-50%, -50%)`;
   }, { passive: true });
 
   rafScheduler.add('cursor', () => {
     if (document.body.classList.contains('modal-active')) return;
-
-    // 🚀 优化 2：将跟随系数从 0.12 提高到 0.22。数值越大越跟手，越小越丝滑但越迟钝
     const snappiness = 0.22; 
     outlineX += (mouseX - outlineX) * snappiness;
     outlineY += (mouseY - outlineY) * snappiness;
-
-    cursorOutline.style.transform =
-      `translate3d(${outlineX}px, ${outlineY}px, 0) translate(-50%, -50%)`;
+    cursorOutline.style.transform = `translate3d(${outlineX}px, ${outlineY}px, 0) translate(-50%, -50%)`;
   });
 }
 
-// ── 粒子引擎 (簇群坍缩版：动态吸附成大簇 + 实时寻路长程电流 + 科技风发光大脑底座) ──────────
+// ── 粒子引擎 ────────────────────────────────────────────────────────
   function initNeuralWeb() {
     const canvas = document.getElementById('neuro-dust-canvas');
     if (!canvas) return;
@@ -922,34 +826,32 @@ if (window.innerWidth > 768 && cursorDot && cursorOutline) {
     let width, height, dpr, sideZone;
     let mouse = { x: -1000, y: -1000, active: false };
     window.addEventListener('mousemove', (e) => {
-      mouse.x = e.clientX;
-      mouse.y = e.clientY;
-      mouse.active = true;
+      mouse.x = e.clientX; mouse.y = e.clientY; mouse.active = true;
     }, { passive: true });
     window.addEventListener('mouseout', () => mouse.active = false);
 
     function applyResize() {
       dpr = isMobile ? 1.0 : Math.min(window.devicePixelRatio || 1, 1.5);
       width = window.innerWidth; height = window.innerHeight;
-      canvas.width = Math.floor(width * dpr);
-      canvas.height = Math.floor(height * dpr);
+      canvas.width = Math.floor(width * dpr); canvas.height = Math.floor(height * dpr);
       canvas.style.width = `${width}px`; canvas.style.height = `${height}px`;
       ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.scale(dpr, dpr);
-      // 💡 定义左右侧允许分布的宽度比例 (PC占两侧各20%，移动端各占25%)
       sideZone = width * (isMobile ? 0.25 : 0.2); 
     }
     applyResize();
 
-   // 🚀 优化：锁定移动端滚动时的地址栏高度变化触发重绘
     let lastWidth = window.innerWidth;
+    let resizeTimer; // 防抖增强
     window.addEventListener('resize', () => {
-      // 只有宽度发生实质性改变（如屏幕旋转），才执行重置
-      if (window.innerWidth !== lastWidth) {
-        lastWidth = window.innerWidth;
-        applyResize();}
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+          if (window.innerWidth !== lastWidth) {
+            lastWidth = window.innerWidth;
+            applyResize();
+          }
+      }, 150);
     }, { passive: true });
 
-    // 💡 1. 密度加大：数量整体翻倍
     const count = isMobile ? 38 : 75; 
     const maxDistance = 180; 
     const maxDistSq = maxDistance * maxDistance;
@@ -961,31 +863,22 @@ if (window.innerWidth > 768 && cursorDot && cursorOutline) {
 
     for (let i = 0; i < count; i++) {
       let sizeType = Math.random();
-      let baseR;
-      
-      // 💡 高级功能：定义细胞核心的 RGB 分量
-      let cR, cG, cB;
+      let baseR, cR, cG, cB;
 
       if (sizeType > 0.88) {
-        // 12% 概率：巨型枢纽节点 (类似主神经元，能量最高) -> 【突触金】
         baseR = isMobile ? (Math.random() * 1.5 + 3.5) : (Math.random() * 2.5 + 5.5);
-        // PC/Dark 模式下高亮金 RGB (255, 215, 100)
         cR = 255; cG = 215; cB = 100; 
       } else if (sizeType > 0.35) {
-        // 53% 概率：常规神经元 -> 【常规蓝白】
         baseR = isMobile ? (Math.random() * 1.0 + 2.0) : (Math.random() * 1.5 + 3.0);
-        cR = 180; cG = 240; cB = 255; // 淡淡的青白色
+        cR = 180; cG = 240; cB = 255;
       } else {
-        // 35% 概率：微型节点/胶质细胞 -> 【纯蓝白】
         baseR = isMobile ? (Math.random() * 0.5 + 1.0) : (Math.random() * 0.8 + 1.5);
-        cR = 200; cG = 255; cB = 255; // 更偏白，最细微
+        cR = 200; cG = 255; cB = 255;
       }
 
-      // ... (clusterRand() 和 startX, startY 的生成逻辑保持不变)
       const clusterRand = () => (Math.random() + Math.random() + Math.random()) / 3;
       let isLeft = Math.random() < 0.5;
       let startX = isLeft ? clusterRand() * sideZone : width - clusterRand() * sideZone;
-      
       let startY;
       if (isMobile) {
         if (i < count * 0.6) startY = clusterRand() * TOP_ZONE; 
@@ -994,8 +887,7 @@ if (window.innerWidth > 768 && cursorDot && cursorOutline) {
         let isTopCluster = Math.random() < 0.5;
         let hubY = isTopCluster ? height * 0.3 : height * 0.7; 
         let offsetY = (Math.random() + Math.random() - 1) * (height * 0.25); 
-        startY = hubY + offsetY;
-        startY = Math.max(10, Math.min(height - 10, startY));
+        startY = Math.max(10, Math.min(height - 10, hubY + offsetY));
       }
 
       particles.push({
@@ -1003,10 +895,7 @@ if (window.innerWidth > 768 && cursorDot && cursorOutline) {
         vx: (Math.random() - 0.5) * 0.03, vy: (Math.random() - 0.5) * 0.03,
         baseRadius: baseR, radius: baseR, charge: 0, refractory: 0, 
         pulse: Math.random() * Math.PI * 2, pulseSpeed: 0.015 + Math.random() * 0.015,
-        neighbors: [],
-        isLeft: isLeft,
-        // 🚀 将计算好的 RGB 存入粒子对象中
-        cR: cR, cG: cG, cB: cB 
+        neighbors: [], isLeft: isLeft, cR: cR, cG: cG, cB: cB 
       });
     }
 
@@ -1014,15 +903,10 @@ if (window.innerWidth > 768 && cursorDot && cursorOutline) {
     const py = new Float32Array(count);
 
     rafScheduler.add('particles', () => {
-      // 🚀 防闪退核心：如果检测到页面正在剧烈滑动，立即挂起渲染！
-      if (window.isScrollingIntensely || document.documentElement.classList.contains('lenis-scrolling')) {
-        return;
-      }
+      if (window.isScrollingIntensely || document.documentElement.classList.contains('lenis-scrolling')) return;
       
       ctx.clearRect(0, 0, width, height);
       const isLight = document.body.classList.contains('light-mode');
-      
-      // ⚠️ 已经清理了重复声明的 const
       const sigColor = isLight ? '30, 58, 138' : '0, 255, 255';
       const connectionOpacity = isLight ? 0.25 : 0.12;
       const nR = isLight ? 13 : 96, nG = isLight ? 148 : 165, nB = isLight ? 136 : 250;
@@ -1033,24 +917,18 @@ if (window.innerWidth > 768 && cursorDot && cursorOutline) {
         if (isMobile) { if (py[s.si] < height * 0.5) topAct++; else bottomAct++; }
       });
 
-      // 1. 物理引擎：超簇吸附算法 (Cluster Coalescence)
       for (let i = 0; i < count; i++) {
         const p = particles[i];
         p.neighbors = []; 
         if (p.refractory > 0) p.refractory--;
 
-        // 🌊 修改：更高效的鼠标流体排斥
         if (mouse.active && !isMobile) {
-            const dx = mouse.x - p.x;
-            const dy = mouse.y - p.y;
-            // 🚀 优化：先用平方进行范围预判（避免昂贵的 Math.sqrt 计算）
+            const dx = mouse.x - p.x; const dy = mouse.y - p.y;
             const distSq = dx * dx + dy * dy;
-            if (distSq < 62500) { // 250的平方
+            if (distSq < 62500) { 
                 const dist = Math.sqrt(distSq);
                 const force = (250 - dist) / 250;
-                // 轻轻推开，但力度减小一点点，防止节点抖动太快带来的视觉卡顿感
-                p.vx -= (dx / dist) * force * 0.1; 
-                p.vy -= (dy / dist) * force * 0.1; 
+                p.vx -= (dx / dist) * force * 0.1; p.vy -= (dy / dist) * force * 0.1; 
             }
         }
 
@@ -1078,45 +956,31 @@ if (window.innerWidth > 768 && cursorDot && cursorOutline) {
               if (mY < TOP_ZONE && topAct < 5) canFire = true;
               if (mY > height - BOTTOM_ZONE && bottomAct < 3) canFire = true;
             } else {
-              // 侧边判定范围自适应新的侧边宽度
               const isSide = (mX < sideZone * 1.2 || mX > width - sideZone * 1.2);
               if (isSide && pcTotal < 2) canFire = true;
             }
 
             if (canFire && dist < 75 && Math.random() < 0.012 && p.refractory <= 0) {
               p.charge = 1; p2.charge = 1;
-              
-              // 🚀 新增：根据发射源细胞的大小，计算这道电流的“能量倍率”
               const power = p.baseRadius / (isMobile ? 2.0 : 3.5); 
-
               for(let b=0; b<4; b++) sparks.push({ type: 'bubble', x: mX + (Math.random()-0.5)*15, y: mY + (Math.random()-0.5)*15, radius: 1 * power, life: 1, decay: 0.015 });
               p.refractory = 220;
               signals.push({ 
-                source: p, si: i, ep: p2, ei: j, 
-                progress: 0, 
-                speed: 0.12,  // 🚀 从 0.04 提升到 0.12 (速度提升 3 倍)
-                tail: 0.25,   // ☄️ 从 0.5 缩短到 0.25 (尾迹更短，显得更干脆)
-                hops: isMobile ? 5 : Math.floor(Math.random() * 8) + 10, // 减少跳跃次数防止画面过乱
-                history: [i],
-                power: power
+                source: p, si: i, ep: p2, ei: j, progress: 0, speed: 0.12, tail: 0.25, 
+                hops: isMobile ? 5 : Math.floor(Math.random() * 8) + 10, history: [i], power: power
               });
               if (!isMobile) pcTotal++;
             }
           }
         }
         
-        p.vx *= 0.85; p.vy *= 0.85; 
-        p.x += p.vx; p.y += p.vy;
+        p.vx *= 0.85; p.vy *= 0.85; p.x += p.vx; p.y += p.vy;
 
-        // 💡 3. X轴结界屏障：防止因相互吸附而被拉到中间内容区
         if (p.isLeft) {
-            if (p.x > sideZone) p.vx -= 0.05; // 越过右侧结界，推回左边
-            if (p.x < 0) p.vx += 0.05;        // 越过屏幕最左侧，推回右边
+            if (p.x > sideZone) p.vx -= 0.05; if (p.x < 0) p.vx += 0.05;
         } else {
-            if (p.x < width - sideZone) p.vx += 0.05; // 越过左侧结界，推回右边
-            if (p.x > width) p.vx -= 0.05;            // 越过屏幕最右侧，推回左边
+            if (p.x < width - sideZone) p.vx += 0.05; if (p.x > width) p.vx -= 0.05;
         }
-
         if (isMobile) {
           if (i < count * 0.6 && p.y > TOP_ZONE) p.vy -= 0.02;
           if (i >= count * 0.6 && p.y < height - BOTTOM_ZONE) p.vy += 0.02;
@@ -1124,7 +988,6 @@ if (window.innerWidth > 768 && cursorDot && cursorOutline) {
         px[i] = p.x + Math.sin(p.pulse) * 5; py[i] = p.y + Math.cos(p.pulse * 0.8) * 5;
       }
 
-      // 2. 连线层
       for (let i = 0; i < count; i++) {
         particles[i].neighbors.forEach(ni => {
           if (ni > i) {
@@ -1135,7 +998,6 @@ if (window.innerWidth > 768 && cursorDot && cursorOutline) {
         });
       }
 
-      // 3. 气泡层
       for (let i = sparks.length - 1; i >= 0; i--) {
         const s = sparks[i]; s.life -= s.decay;
         if (s.life <= 0) { sparks.splice(i, 1); continue; }
@@ -1144,7 +1006,6 @@ if (window.innerWidth > 768 && cursorDot && cursorOutline) {
         ctx.arc(s.x, s.y, s.radius, 0, Math.PI * 2); ctx.stroke();
       }
 
-      // 4. 实时长程电流传导 (Real-time Adaptive Routing)
       for (let i = signals.length - 1; i >= 0; i--) {
         const s = signals[i]; s.progress += s.speed;
         if (s.progress > 0.95 && s.progress < 0.95 + s.speed) {
@@ -1156,7 +1017,6 @@ if (window.innerWidth > 768 && cursorDot && cursorOutline) {
                     s.si = s.ei; s.ei = nextId; 
                     s.source = s.ep; s.ep = particles[nextId];
                     s.history.push(nextId); s.progress = 0; s.hops--;
-                    // 传导时的气泡也受到 power 影响
                     for(let nb=0; nb<2; nb++) sparks.push({ type: 'bubble', x: px[s.si], y: py[s.si], radius: 0.8 * s.power, life: 0.8, decay: 0.015 });
                 } else { s.hops = 0; }
             }
@@ -1169,90 +1029,57 @@ if (window.innerWidth > 768 && cursorDot && cursorOutline) {
         const ty = py[s.si] + (py[s.ei] - py[s.si]) * Math.max(0, s.progress - s.tail);
 
         ctx.beginPath(); 
-        // 优化流星的渐变色，让头部（1.0 处）更有爆发力
         const g = ctx.createLinearGradient(tx, ty, hx, hy);
         g.addColorStop(0, `rgba(${sigColor}, 0)`);  
         g.addColorStop(0.2, `rgba(${sigColor}, ${0.1 + s.power * 0.1})`); 
-        g.addColorStop(0.8, `rgba(255, 255, 255, ${0.4 + s.power * 0.3})`); // 增加白光比例
-        g.addColorStop(1, '#ffffff'); // 头部直接给纯白，模拟破空感
+        g.addColorStop(0.8, `rgba(255, 255, 255, ${0.4 + s.power * 0.3})`);
+        g.addColorStop(1, '#ffffff');
 
-        ctx.strokeStyle = g;
-        ctx.lineWidth = (isLight ? 1.5 : 2.0) + s.power * 2.0; // 稍微加粗，防止速度快了看不清
-        ctx.lineCap = 'round';
-        
-        // 🚀 动态外发光效果修复版：只有高能量的电流才附带耀眼光晕
-        ctx.shadowBlur = s.power > 1.3 ? 10 : 0; 
-        ctx.shadowColor = isLight ? '#2563eb' : '#00ffff';
-        
+        ctx.strokeStyle = g; ctx.lineWidth = (isLight ? 1.5 : 2.0) + s.power * 2.0; ctx.lineCap = 'round';
+        ctx.shadowBlur = s.power > 1.3 ? 10 : 0; ctx.shadowColor = isLight ? '#2563eb' : '#00ffff';
         ctx.moveTo(tx, ty); ctx.lineTo(hx, hy); ctx.stroke();
         
-        // 内核电流虚线也跟随粗细变化
-        ctx.beginPath(); 
-        ctx.strokeStyle = `rgba(255,255,255,${0.15 + s.power * 0.1})`; 
-        ctx.lineWidth = 0.5 + s.power * 0.6; 
-        ctx.setLineDash([4, 12]); ctx.lineDashOffset = -s.progress * 30; 
+        ctx.beginPath(); ctx.strokeStyle = `rgba(255,255,255,${0.15 + s.power * 0.1})`; 
+        ctx.lineWidth = 0.5 + s.power * 0.6; ctx.setLineDash([4, 12]); ctx.lineDashOffset = -s.progress * 30; 
         ctx.moveTo(tx, ty); ctx.lineTo(hx, hy); ctx.stroke();
         ctx.setLineDash([]); ctx.shadowBlur = 0;
       }
 
-      // --- 5. 大胞体渲染 (浅色模式下去掉模糊，增加锐度) ---
       for (let i = 0; i < count; i++) {
-        const p = particles[i];
-        p.pulse += p.pulseSpeed;
-        const breathing = Math.sin(p.pulse) * 0.2 + 1;
-        const r = p.baseRadius * breathing;
+        const p = particles[i]; p.pulse += p.pulseSpeed;
+        const breathing = Math.sin(p.pulse) * 0.2 + 1; const r = p.baseRadius * breathing;
 
         if (isLight) {
-            // ☀️ 浅色模式：去掉模糊光晕 (Halo)，改用清晰的描边或实色
-            ctx.shadowBlur = 0; // 强制关闭阴影，解决“糊”的问题
-            
-            // 绘制一个带微弱透明度的深蓝色核心
+            ctx.shadowBlur = 0;
             ctx.fillStyle = `rgba(37, 99, 235, ${0.4 + p.charge * 0.4})`;
-            ctx.beginPath();
-            ctx.arc(px[i], py[i], r * 1.2, 0, Math.PI * 2);
-            ctx.fill();
-
-            // 增加一个极细的深色描边，让节点在白色背景上立起来
-            ctx.strokeStyle = `rgba(30, 58, 138, 0.6)`;
-            ctx.lineWidth = 0.5;
-            ctx.stroke();
+            ctx.beginPath(); ctx.arc(px[i], py[i], r * 1.2, 0, Math.PI * 2); ctx.fill();
+            ctx.strokeStyle = `rgba(30, 58, 138, 0.6)`; ctx.lineWidth = 0.5; ctx.stroke();
         } else {
-            // 🌙 深色模式：保留原来的全息光晕逻辑
             const halo = ctx.createRadialGradient(px[i], py[i], 0, px[i], py[i], r * 4.5);
             halo.addColorStop(0, `rgba(${nR},${nG},${nB},${0.12 + p.charge * 0.3})`);
             halo.addColorStop(1, 'rgba(0,0,0,0)');
-            ctx.fillStyle = halo; 
-            ctx.beginPath(); 
-            ctx.arc(px[i], py[i], r * 4.5, 0, Math.PI * 2); 
-            ctx.fill();
-
+            ctx.fillStyle = halo; ctx.beginPath(); ctx.arc(px[i], py[i], r * 4.5, 0, Math.PI * 2); ctx.fill();
             ctx.fillStyle = `rgba(${p.cR}, ${p.cG}, ${p.cB}, ${0.7 + p.charge * 0.3})`;
-            ctx.beginPath(); 
-            ctx.arc(px[i], py[i], r * 0.6, 0, Math.PI * 2); 
-            ctx.fill();
+            ctx.beginPath(); ctx.arc(px[i], py[i], r * 0.6, 0, Math.PI * 2); ctx.fill();
         }
-
         if (p.charge > 0) p.charge *= 0.9;
       }
     });
   }
-
   setTimeout(initNeuralWeb, 150);
  
   // ── Lenis 平滑滚动 ───────────────────────────────────────────
-  let globalLenis; // 提前在全局层级声明变量
+  let globalLenis; 
   if (typeof Lenis !== 'undefined') {
     globalLenis = new Lenis({
-      duration: 1.1,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      smoothTouch: false, // 🚀 必须为 false！防止劫持移动端原生滚动，这是防闪退的核心配置
-      touchMultiplier: 1.5,
-      wheelMultiplier: window.navigator.platform.includes('Mac') ? 0.8 : 1.2, // 适配 Mac 触控板与 Windows 鼠标滚轮差异
+      duration: 1.1, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      smoothTouch: false, touchMultiplier: 1.5,
+      wheelMultiplier: window.navigator.platform.includes('Mac') ? 0.8 : 1.2,
     });
     rafScheduler.add('lenis', (time) => globalLenis.raf(time));
   }
 
-  // ── 滚动进度条 & 滚动状态防闪退机 ───────────────────────────────────────────────
+  // ── 滚动状态 ───────────────────────────────────────────────
   const progressBar = document.getElementById('progress-bar');
   const botContainer = document.getElementById('bot-container');
   window.isScrollingIntensely = false;
@@ -1260,23 +1087,19 @@ if (window.innerWidth > 768 && cursorDot && cursorOutline) {
   let scrollRAF = null;
 
   window.addEventListener('scroll', () => {
-    // 🛡️ 开启防闪退护盾
     window.isScrollingIntensely = true;
     clearTimeout(scrollIntenseTimeout);
-    scrollIntenseTimeout = setTimeout(() => {
-        window.isScrollingIntensely = false;
-    }, 120);
+    scrollIntenseTimeout = setTimeout(() => { window.isScrollingIntensely = false; }, 120);
 
     if (scrollRAF) return;
     scrollRAF = requestAnimationFrame(() => {
       const pct = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight);
-      if (progressBar) progressBar.style.transform = `scaleX(${pct})`; // 🚀 使用 transform: scaleX 替代 width 避免 Layout Thrashing
+      if (progressBar) progressBar.style.transform = `scaleX(${pct})`; 
       if (botContainer && window.innerWidth > 768)
         botContainer.classList.toggle('fixed-mode', window.scrollY > 200);
       scrollRAF = null;
     });
   }, { passive: true });
-
 
   // ── 图片懒加载 ───────────────────────────────────────────────
   document.querySelectorAll('#main_content img').forEach((img, i) => {
@@ -1288,12 +1111,11 @@ if (window.innerWidth > 768 && cursorDot && cursorOutline) {
   const textsEN = ["Welcome to this webpage!", "Thanks for visiting us!", "Stay tuned!"];
   const textsZH = ["欢迎访问本网页！", "感谢您的关注！", "欢迎常来访问！"];
   let texts = textsEN, textIdx = 0, charIdx = 0, isDeleting = false;
-  let typewriterTimeout; // 新增这一行，用来记录计时器
+  let typewriterTimeout; 
   function type() {
     const cur = texts[textIdx];
     const el = document.getElementById('typewriter-text');
-    if (el) el.textContent = isDeleting
-      ? cur.substring(0, charIdx--) : cur.substring(0, charIdx++);
+    if (el) el.textContent = isDeleting ? cur.substring(0, charIdx--) : cur.substring(0, charIdx++);
     let speed = isDeleting ? 50 : 100;
     if (!isDeleting && charIdx === cur.length + 1) { isDeleting = true; speed = 2000; }
     else if (isDeleting && charIdx === 0) { isDeleting = false; textIdx = (textIdx + 1) % texts.length; speed = 500; }
@@ -1301,7 +1123,7 @@ if (window.innerWidth > 768 && cursorDot && cursorOutline) {
   }
   type();
 
-  // ── 模态框 & 主题 & 语言 ─────────────────────────────────────
+  // ── 模态框 & 主题 & 语言 (带安全校验) ─────────────────────────
   const modalKeepDarkBtn = document.getElementById('modal-keep-dark-btn');
   const modalSwitchLightBtn = document.getElementById('modal-switch-light-btn');
   const modalLangCheckbox = document.getElementById('modal-lang-toggle-checkbox');
@@ -1324,12 +1146,13 @@ if (window.innerWidth > 768 && cursorDot && cursorOutline) {
   }
 
   function closeModal() {
-    welcomeModal.classList.remove('show');
-   document.body.classList.remove('modal-active');
-  // 记录用户已看过欢迎弹窗
-  localStorage.setItem('elink_visited', 'true');
-    if (modalIsZh && currentLang !== 'zh') langToggle.click();
-    else if (!modalIsZh && currentLang === 'zh') langToggle.click();
+    if(welcomeModal) welcomeModal.classList.remove('show');
+    document.body.classList.remove('modal-active');
+    try { localStorage.setItem('elink_visited', 'true'); } catch(e){} // 再次加锁保护
+    
+    if (modalIsZh && currentLang !== 'zh' && langToggle) langToggle.click();
+    else if (!modalIsZh && currentLang === 'zh' && langToggle) langToggle.click();
+    
     setTimeout(() => {
       if (botContainer) {
         botContainer.classList.add('attention-jump');
@@ -1339,65 +1162,81 @@ if (window.innerWidth > 768 && cursorDot && cursorOutline) {
     }, 100);
   }
 
-  modalKeepDarkBtn.addEventListener('click', closeModal);
-  modalSwitchLightBtn.addEventListener('click', () => { themeToggle.click(); closeModal(); });
-  modalLangCheckbox.addEventListener('change', () => {
-    modalIsZh = modalLangCheckbox.checked;
-    const show = modalIsZh ? '.m-zh' : '.m-en', hide = modalIsZh ? '.m-en' : '.m-zh';
-    const showC = modalIsZh ? '.lang-zh' : '.lang-en', hideC = modalIsZh ? '.lang-en' : '.lang-zh';
-    document.querySelectorAll(show).forEach(el => el.style.display = 'inline');
-    document.querySelectorAll(hide).forEach(el => el.style.display = 'none');
-    document.querySelectorAll(showC).forEach(el => el.style.display = 'block');
-    document.querySelectorAll(hideC).forEach(el => el.style.display = 'none');
-  });
+  if (modalKeepDarkBtn) modalKeepDarkBtn.addEventListener('click', closeModal);
+  if (modalSwitchLightBtn) modalSwitchLightBtn.addEventListener('click', () => { if(themeToggle) themeToggle.click(); closeModal(); });
+  
+  if (modalLangCheckbox) {
+      modalLangCheckbox.addEventListener('change', () => {
+        modalIsZh = modalLangCheckbox.checked;
+        const show = modalIsZh ? '.m-zh' : '.m-en', hide = modalIsZh ? '.m-en' : '.m-zh';
+        const showC = modalIsZh ? '.lang-zh' : '.lang-en', hideC = modalIsZh ? '.lang-en' : '.lang-zh';
+        document.querySelectorAll(show).forEach(el => el.style.display = 'inline');
+        document.querySelectorAll(hide).forEach(el => el.style.display = 'none');
+        document.querySelectorAll(showC).forEach(el => el.style.display = 'block');
+        document.querySelectorAll(hideC).forEach(el => el.style.display = 'none');
+      });
+  }
 
-  themeToggle.addEventListener('click', () => {
-    isLight = !isLight;
-    document.body.classList.toggle('light-mode');
-    themeToggle.textContent = isLight ? "🌙" : "☀️";
-  // 新增：动态修改手机状态栏颜色以匹配主题
-    const metaThemeColor = document.getElementById('theme-color-meta');
-    if (metaThemeColor) metaThemeColor.content = isLight ? "#ffffff" : "#0a0a0f";
-  });
+  if (themeToggle) {
+      themeToggle.addEventListener('click', () => {
+        isLight = !isLight;
+        document.body.classList.toggle('light-mode');
+        themeToggle.textContent = isLight ? "🌙" : "☀️";
+        const metaThemeColor = document.getElementById('theme-color-meta');
+        if (metaThemeColor) metaThemeColor.content = isLight ? "#ffffff" : "#0a0a0f";
+      });
+  }
 
-  langToggle.addEventListener('click', () => {
-    const toZh = currentLang === 'en';
-    currentLang = toZh ? 'zh' : 'en';
-    dialogData = toZh ? dialogData_ZH : dialogData_EN;
-    texts = toZh ? textsZH : textsEN;
-    langToggle.textContent = toZh ? "中 / 英" : "EN / CN";
-    document.querySelectorAll(toZh ? '.lang-en' : '.lang-zh')
-      .forEach(el => el.style.display = 'none');
-    document.querySelectorAll(toZh ? '.lang-zh' : '.lang-en')
-     .forEach(el => el.style.display = 'block');
-    textIdx = 0; charIdx = 0; isDeleting = false;
-    clearTimeout(typewriterTimeout); // 杀掉正在运行的打字进程
-   type(); // 立即按新语言重新开始
-      
-      // --- 新增：强制清除机器人气泡缓存 ---
-      if (botContainer.speechTimer) {
-        clearTimeout(botContainer.speechTimer);
-        botSpeech.textContent = ""; 
-        botContainer.classList.remove('speaking');
-      }
-      // -----------------------------------
+  if (langToggle) {
+      langToggle.addEventListener('click', () => {
+        const toZh = currentLang === 'en';
+        currentLang = toZh ? 'zh' : 'en';
+        dialogData = toZh ? dialogData_ZH : dialogData_EN;
+        texts = toZh ? textsZH : textsEN;
+        langToggle.textContent = toZh ? "中 / 英" : "EN / CN";
+        document.querySelectorAll(toZh ? '.lang-en' : '.lang-zh').forEach(el => el.style.display = 'none');
+        document.querySelectorAll(toZh ? '.lang-zh' : '.lang-en').forEach(el => el.style.display = 'block');
+        
+        textIdx = 0; charIdx = 0; isDeleting = false;
+        clearTimeout(typewriterTimeout); 
+        type(); 
+          
+        if (botContainer && botContainer.speechTimer) {
+          clearTimeout(botContainer.speechTimer);
+          if (botSpeech) botSpeech.textContent = ""; 
+          botContainer.classList.remove('speaking');
+        }
 
-      if (rpgDialogue.classList.contains('active')) closeDialogue();
-      if (!rpgDialogue.classList.contains('active') && idleInterval) startIdleTips();
-    });
-
+        if (rpgDialogue && rpgDialogue.classList.contains('active')) closeDialogue();
+        if (rpgDialogue && !rpgDialogue.classList.contains('active') && idleInterval) startIdleTips();
+      });
+  }
  
-  // ── 视频弹窗 ─────────────────────────────────────────────────
+  // ── 视频弹窗 (异常捕获机制) ─────────────────────────────────────────────────
   const videoModal = document.getElementById('video-modal');
   const guardianVideo = document.getElementById('guardian-video');
+  
   window.openVideoModal = () => {
-    videoModal.classList.add('show'); document.body.classList.add('modal-active');
+    if(videoModal) {
+        videoModal.classList.add('show'); 
+        document.body.classList.add('modal-active');
+    }
   };
+  
   window.closeVideoModal = () => {
-    videoModal.classList.remove('show'); document.body.classList.remove('modal-active');
-    if (guardianVideo) guardianVideo.pause();
+    if(videoModal) {
+        videoModal.classList.remove('show'); 
+        document.body.classList.remove('modal-active');
+    }
+    if (guardianVideo) {
+        // 安全调用暂停
+        try { guardianVideo.pause(); } catch(e) {}
+    }
   };
-  videoModal.addEventListener('click', (e) => { if (e.target === videoModal) closeVideoModal(); });
+  
+  if (videoModal) {
+      videoModal.addEventListener('click', (e) => { if (e.target === videoModal) closeVideoModal(); });
+  }
 
   // ── 机器人对话 ───────────────────────────────────────────────
   let typeTimer = null;
@@ -1407,9 +1246,7 @@ if (window.innerWidth > 768 && cursorDot && cursorOutline) {
     botSpeech.textContent = text;
     botContainer.classList.add('speaking');
     if (botContainer.speechTimer) clearTimeout(botContainer.speechTimer);
-    botContainer.speechTimer = setTimeout(
-      () => botContainer.classList.remove('speaking'), duration
-    );
+    botContainer.speechTimer = setTimeout(() => botContainer.classList.remove('speaking'), duration);
   }
 
   function showDialogueNode(nodeKey, isFast = false) {
@@ -1418,12 +1255,17 @@ if (window.innerWidth > 768 && cursorDot && cursorOutline) {
       setTimeout(openVideoModal, 1000); return;
     }
     if (nodeKey === 'close') {
-      closeDialogue(); botContainer.classList.add('interaction-done');
+      closeDialogue(); 
+      if (botContainer) botContainer.classList.add('interaction-done');
       botSay(currentLang === 'en' ? "Nice chatting with you!" : "很高兴与你交谈！", 3000); return;
     }
-    const node = dialogData[nodeKey]; if (!node) return;
+    
+    const node = dialogData[nodeKey]; 
+    if (!node || !rpgOptions || !rpgText) return;
+    
     rpgOptions.innerHTML = '';
     if (typeTimer) clearInterval(typeTimer);
+    
     const showBtns = () => {
       node.options.forEach((opt, idx) => {
         const btn = document.createElement('div');
@@ -1435,8 +1277,10 @@ if (window.innerWidth > 768 && cursorDot && cursorOutline) {
         rpgOptions.appendChild(btn);
       });
     };
-    if (isFast) { rpgText.textContent = node.text; showBtns(); }
-    else {
+    
+    if (isFast) { 
+        rpgText.textContent = node.text; showBtns(); 
+    } else {
       rpgText.textContent = ''; let i = 0;
       typeTimer = setInterval(() => {
         rpgText.textContent += node.text.charAt(i++);
@@ -1446,15 +1290,16 @@ if (window.innerWidth > 768 && cursorDot && cursorOutline) {
   }
 
   function openDialogue() {
-    if (rpgDialogue.classList.contains('active')) return;
+    if (!rpgDialogue || rpgDialogue.classList.contains('active')) return;
     rpgDialogue.classList.add('active');
-    botContainer.classList.add('speaking', 'hint-removed');
+    if(botContainer) botContainer.classList.add('speaking', 'hint-removed');
     showDialogueNode('start');
   }
   function closeDialogue() {
+    if(!rpgDialogue) return;
     rpgDialogue.classList.remove('active');
-    botContainer.classList.remove('speaking');
-    setTimeout(() => { rpgText.textContent = ''; rpgOptions.innerHTML = ''; }, 300);
+    if(botContainer) botContainer.classList.remove('speaking');
+    setTimeout(() => { if(rpgText) rpgText.textContent = ''; if(rpgOptions) rpgOptions.innerHTML = ''; }, 300);
   }
 
   if (botContainer) {
@@ -1462,8 +1307,9 @@ if (window.innerWidth > 768 && cursorDot && cursorOutline) {
       e.stopPropagation();
       if (idleInterval) { clearInterval(idleInterval); idleInterval = null; }
       if (botContainer.speechTimer) clearTimeout(botContainer.speechTimer);
-      botSpeech.textContent = ""; botContainer.classList.remove('speaking');
-      rpgDialogue.classList.contains('active') ? closeDialogue() : openDialogue();
+      if(botSpeech) botSpeech.textContent = ""; 
+      botContainer.classList.remove('speaking');
+      if(rpgDialogue) rpgDialogue.classList.contains('active') ? closeDialogue() : openDialogue();
     });
   }
   if (rpgDialogue) rpgDialogue.addEventListener('click', (e) => e.stopPropagation());
@@ -1480,7 +1326,7 @@ if (window.innerWidth > 768 && cursorDot && cursorOutline) {
     if (e.target.closest(hoverSel)) document.body.classList.remove('hovering');
   });
 
-  // ── 徽章 ─────────────────────────────────────────────────────
+  // ── 徽章链接 (带 URL 解析异常处理) ────────────────────────────
   const badges = document.querySelectorAll('.nav-badges a');
   badges.forEach(b => {
     b.addEventListener('mouseenter', () => {
@@ -1491,7 +1337,7 @@ if (window.innerWidth > 768 && cursorDot && cursorOutline) {
     b.addEventListener('click', function (e) {
       e.preventDefault();
       const url = this.href;
-      const linkTarget = this.target; // 安全缓存 target 属性，防止 setTimeout 内部 this 丢失
+      const linkTarget = this.target; 
       
       badges.forEach((sib, idx) => {
         const img = sib.querySelector('img');
@@ -1504,7 +1350,6 @@ if (window.innerWidth > 768 && cursorDot && cursorOutline) {
             const hash = url.substring(url.indexOf('#'));
             const el = document.querySelector(hash); 
             if (el) { 
-              // ✨ 你要找的修改就在这里：如果存在 globalLenis 实例，用它接管；否则用原生方法
               if (typeof globalLenis !== 'undefined') {
                 globalLenis.scrollTo(el, { duration: 1.2, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)) });
               } else {
@@ -1512,15 +1357,19 @@ if (window.innerWidth > 768 && cursorDot && cursorOutline) {
               }
               return; 
             } 
-          } catch (e) {}
+          } catch (err) { console.warn("Scroll parsing failed:", err); }
         }
-        // 使用安全缓存的 linkTarget 进行判断跳转
-        linkTarget === '_blank' ? window.open(url, '_blank') : (window.location.href = url);
+        
+        try {
+            linkTarget === '_blank' ? window.open(url, '_blank') : (window.location.href = url);
+        } catch(err) {
+            console.error("Navigation failed:", err);
+        }
       }, 500);
     });
   });
 
-  // ── 3D 模型观察器 ────────────────────────────────────────────
+  // ── 3D 模型观察器 (异常捕获版) ─────────────────────────────────
   const models = Array.from(document.querySelectorAll('model-viewer'));
   if (models.length) {
     const obs = new IntersectionObserver((entries) => {
@@ -1530,7 +1379,14 @@ if (window.innerWidth > 768 && cursorDot && cursorOutline) {
           if (v.getAttribute('reveal') === 'manual' && v.dataset.loaded !== "true") {
             v.dataset.loaded = "true"; v.dismissPoster();
           }
-          try { v.play(); } catch (e) {}
+          // Safely attempt to play the 3D animation
+          try { 
+              const playPromise = v.play();
+              if (playPromise !== undefined) {
+                  playPromise.catch(() => { /* Ignore autoplay blocks silently */ });
+              }
+          } catch (e) {}
+          
           if (v.dataset.overlayDisabled !== "true") {
             clearTimeout(v.hudTimer);
             v.hudTimer = setTimeout(() => {
@@ -1538,11 +1394,12 @@ if (window.innerWidth > 768 && cursorDot && cursorOutline) {
             }, 500);
           }
         } else {
-          v.pause();
+          try { v.pause(); } catch(e){}
           v.querySelectorAll('.gesture-overlay').forEach(el => el.classList.remove('gesture-active'));
         }
       });
     }, { threshold: 0.1 });
+    
     models.forEach(v => {
       obs.observe(v);
       v.addEventListener('click', () => {
@@ -1562,16 +1419,19 @@ if (window.innerWidth > 768 && cursorDot && cursorOutline) {
 </script>
 <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 <script>
-
 document.addEventListener('DOMContentLoaded', () => {
-    AOS.init({ 
-        duration: 600, 
-        easing: 'ease-out-cubic', 
-        once: true,
-        offset: 20
-    });
+    // 捕获 AOS 初始化的潜在异常
+    try {
+        if (typeof AOS !== 'undefined') {
+            AOS.init({ 
+                duration: 600, 
+                easing: 'ease-out-cubic', 
+                once: true,
+                offset: 20
+            });
+        }
+    } catch(e) { console.warn("AOS initialization failed:", e); }
 });
- 
 </script>
 
 </body>
