@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <meta id="theme-color-meta" name="theme-color" content="#0a0a0f">
 <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
  
@@ -59,8 +59,7 @@
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: rgba(59, 130, 246, 0.5); border-radius: 10px; }
   ::-webkit-scrollbar-thumb:hover { background: rgba(59, 130, 246, 0.8); }
-  ::selection { background: #3b82f6; color: #ffffff; text-shadow: 0 0 8px rgba(255, 255, 255, 0.8); }
-::-moz-selection { background: #3b82f6; color: #ffffff; text-shadow: 0 0 8px rgba(255, 255, 255, 0.8); }
+  ::-selection { background: #3b82f6; color: #ffffff; text-shadow: 0 0 8px rgba(255, 255, 255, 0.8); }
 
   /* ===================== 2. 核心动态交互特效 ===================== */
   /* --- 🚀 磁性液态光标 --- */
@@ -488,10 +487,9 @@
   }
 
  /* 🚀 Lenis 滚动专属优化：滚动时关闭所有高耗能的交互检测 */
-  html.lenis-scrolling body *:not(model-viewer):not(model-viewer *):not(.controls-container):not(.ctrl-btn):not(#bot-container):not(#bot-container *):not(a):not(button) {
-  pointer-events: none !important;
-}
- 
+  html.lenis-scrolling body * {
+    pointer-events: none !important;
+  }
  /* 🚀 1. 强制光标图层提速：让圆圈渲染完全独立 */
   .cursor-dot, .cursor-outline {
     pointer-events: none !important;
@@ -542,21 +540,6 @@
       transition: none !important; /* 杀掉所有颜色和毛玻璃的过渡动画 */
     }
   }
- 
- /* ✅ 新增：iPhone 刘海/动态岛横屏安全区域 */
-@media (max-width: 768px) {
-  .controls-container {
-    top: max(15px, env(safe-area-inset-top)) !important;
-    right: max(15px, env(safe-area-inset-right)) !important;
-  }
-  .layout-wrapper {
-    padding-left: env(safe-area-inset-left);
-    padding-right: env(safe-area-inset-right);
-  }
-  footer {
-    padding-bottom: env(safe-area-inset-bottom);
-  }
-}
  
 </style>
 
@@ -957,22 +940,14 @@ if (window.innerWidth > 768 && cursorDot && cursorOutline) {
     }
     applyResize();
 
-   // 🚀 优化：锁定移动端滚动时的地址栏高度变化触发重绘;修复：同时检测高度变化（横屏），并加防抖防止连续触发 */
-let lastWidth = window.innerWidth;
-let lastHeight = window.innerHeight;
-let resizeDebounce = null;
-window.addEventListener('resize', () => {
-  clearTimeout(resizeDebounce);
-  resizeDebounce = setTimeout(() => {
-    const newW = window.innerWidth;
-    const newH = window.innerHeight;
-    if (newW !== lastWidth || Math.abs(newH - lastHeight) > 100) {
-      lastWidth = newW;
-      lastHeight = newH;
-      applyResize();
-    }
-  }, 150);
-}, { passive: true });
+   // 🚀 优化：锁定移动端滚动时的地址栏高度变化触发重绘
+    let lastWidth = window.innerWidth;
+    window.addEventListener('resize', () => {
+      // 只有宽度发生实质性改变（如屏幕旋转），才执行重置
+      if (window.innerWidth !== lastWidth) {
+        lastWidth = window.innerWidth;
+        applyResize();}
+    }, { passive: true });
 
     // 💡 1. 密度加大：数量整体翻倍
     const count = isMobile ? 38 : 75; 
@@ -1258,47 +1233,17 @@ if (mouse.active && !isMobile) {
     });
   }
 
-  // ── initNeuralWeb 函数到这里结束 ──
-  } // 这是 initNeuralWeb 函数本身的闭合括号
-
-  // ── 手机端背景视频处理（必须在 initNeuralWeb 外面，DOMContentLoaded 里面）──
-  const ambientVideo = document.getElementById('ambient-video');
-  const isMobileGlobal = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || window.innerWidth <= 768;
-  
-  if (ambientVideo && isMobileGlobal) {
-    // 手机端：不强制 pause()，只是隐藏，避免 DOMException 中断 JS
-    ambientVideo.style.display = 'none';
-  }
-
-  window.addEventListener('orientationchange', () => {
-    setTimeout(() => {
-      if (!ambientVideo) return;
-      if (window.innerWidth <= 768) {
-        ambientVideo.style.display = 'none';
-      } else {
-        ambientVideo.style.display = '';
-      }
-    }, 300);
-  });
-
-  // ── 启动粒子背景（延迟保证 DOM 就绪）──
   setTimeout(initNeuralWeb, 150);
-
-  // ── Lenis 平滑滚动（只初始化一次！）──
-  let globalLenis;
+ 
+  // ── Lenis 平滑滚动 ───────────────────────────────────────────
+  let globalLenis; // 提前在全局层级声明变量
   if (typeof Lenis !== 'undefined') {
     globalLenis = new Lenis({
       duration: 1.1,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      smoothTouch: false,
-      touchMultiplier: 1.5,
-      prevent: (node) => node.tagName === 'MODEL-VIEWER',
+      smoothTouch: false, touchMultiplier: 1.5,
     });
     rafScheduler.add('lenis', (time) => globalLenis.raf(time));
-
-    window.addEventListener('orientationchange', () => {
-      setTimeout(() => { if (globalLenis) globalLenis.resize(); }, 150);
-    });
   }
 
   // ── 滚动进度条 ───────────────────────────────────────────────
