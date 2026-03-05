@@ -504,7 +504,7 @@
   #neuro-ambient-bg {
     pointer-events: none !important; /* 确保它们对鼠标来说是“透明”的 */
   }
- 
+  
   /* 🛡️ 修复 GLB 触摸断触问题：给 3D 模型及其内部的标签发免死金牌 */
   html.lenis-scrolling model-viewer,
   html.lenis-scrolling model-viewer * {
@@ -540,7 +540,7 @@
       transition: none !important; /* 杀掉所有颜色和毛玻璃的过渡动画 */
     }
   }
- 
+  
 </style>
 
  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
@@ -1014,6 +1014,10 @@ if (window.innerWidth > 768 && cursorDot && cursorOutline) {
     const py = new Float32Array(count);
 
     rafScheduler.add('particles', () => {
+      // 🚀 防闪退核心：如果检测到页面正在剧烈滑动，立即挂起渲染！
+      if (window.isScrollingIntensely || document.documentElement.classList.contains('lenis-scrolling')) {
+        return;
+      }
       
       ctx.clearRect(0, 0, width, height);
       const isLight = document.body.classList.contains('light-mode');
@@ -1036,19 +1040,19 @@ if (window.innerWidth > 768 && cursorDot && cursorOutline) {
         if (p.refractory > 0) p.refractory--;
 
         // 🌊 修改：更高效的鼠标流体排斥
-if (mouse.active && !isMobile) {
-    const dx = mouse.x - p.x;
-    const dy = mouse.y - p.y;
-    // 🚀 优化：先用平方进行范围预判（避免昂贵的 Math.sqrt 计算）
-    const distSq = dx * dx + dy * dy;
-    if (distSq < 62500) { // 250的平方
-        const dist = Math.sqrt(distSq);
-        const force = (250 - dist) / 250;
-        // 轻轻推开，但力度减小一点点，防止节点抖动太快带来的视觉卡顿感
-        p.vx -= (dx / dist) * force * 0.1; 
-        p.vy -= (dy / dist) * force * 0.1; 
-    }
-}
+        if (mouse.active && !isMobile) {
+            const dx = mouse.x - p.x;
+            const dy = mouse.y - p.y;
+            // 🚀 优化：先用平方进行范围预判（避免昂贵的 Math.sqrt 计算）
+            const distSq = dx * dx + dy * dy;
+            if (distSq < 62500) { // 250的平方
+                const dist = Math.sqrt(distSq);
+                const force = (250 - dist) / 250;
+                // 轻轻推开，但力度减小一点点，防止节点抖动太快带来的视觉卡顿感
+                p.vx -= (dx / dist) * force * 0.1; 
+                p.vy -= (dy / dist) * force * 0.1; 
+            }
+        }
 
         for (let j = i + 1; j < count; j++) {
           const p2 = particles[j];
@@ -1241,21 +1245,32 @@ if (mouse.active && !isMobile) {
     globalLenis = new Lenis({
       duration: 1.1,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      smoothTouch: false, touchMultiplier: 1.5,
+      smoothTouch: false, // 🚀 必须为 false！防止劫持移动端原生滚动，这是防闪退的核心配置
+      touchMultiplier: 1.5,
+      wheelMultiplier: window.navigator.platform.includes('Mac') ? 0.8 : 1.2, // 适配 Mac 触控板与 Windows 鼠标滚轮差异
     });
     rafScheduler.add('lenis', (time) => globalLenis.raf(time));
   }
 
-  // ── 滚动进度条 ───────────────────────────────────────────────
+  // ── 滚动进度条 & 滚动状态防闪退机 ───────────────────────────────────────────────
   const progressBar = document.getElementById('progress-bar');
   const botContainer = document.getElementById('bot-container');
+  window.isScrollingIntensely = false;
+  let scrollIntenseTimeout = null;
   let scrollRAF = null;
+
   window.addEventListener('scroll', () => {
+    // 🛡️ 开启防闪退护盾
+    window.isScrollingIntensely = true;
+    clearTimeout(scrollIntenseTimeout);
+    scrollIntenseTimeout = setTimeout(() => {
+        window.isScrollingIntensely = false;
+    }, 120);
+
     if (scrollRAF) return;
     scrollRAF = requestAnimationFrame(() => {
-      const pct = window.scrollY /
-        (document.documentElement.scrollHeight - window.innerHeight) * 100;
-      if (progressBar) progressBar.style.width = pct + '%';
+      const pct = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight);
+      if (progressBar) progressBar.style.transform = `scaleX(${pct})`; // 🚀 使用 transform: scaleX 替代 width 避免 Layout Thrashing
       if (botContainer && window.innerWidth > 768)
         botContainer.classList.toggle('fixed-mode', window.scrollY > 200);
       scrollRAF = null;
