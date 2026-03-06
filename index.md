@@ -1086,7 +1086,7 @@ body.light-mode .scope-win-wrapper * { filter: none !important; }
     <div class="scope-sidebar">
       <div class="scope-fieldset">
         <div class="scope-legend">Channel</div>
-        <div style="margin-bottom: 6px;">A-010</div>
+        <div style="margin-bottom: 6px;">A-126</div>
         <label class="scope-row"><input type="checkbox" checked> Lock Plot to Selected</label>
         <div class="scope-btn" style="border-color: #0078d7; background: #e5f1fb; margin-top:2px;">Set to Selected</div>
       </div>
@@ -1128,8 +1128,8 @@ body.light-mode .scope-win-wrapper * { filter: none !important; }
       <div class="scope-overlay-text" style="bottom:5px; left:66.66%; color:#fff; transform:translateX(-50%);">1</div>
       <div class="scope-overlay-text" style="bottom:5px; right:10px; color:#fff;">2 ms</div>
 
-      <div class="scope-overlay-text" style="top:10px; left:34%; color:#fff; font-size: 11px;">A-010</div>
-      <div class="scope-overlay-text" style="top:25px; left:34%; color:#4ade80;">RMS: 9.1 µV  5 spikes/s</div>
+      <div class="scope-overlay-text" style="top:10px; left:34%; color:#fff; font-size: 11px;">A-126</div>
+      <div class="scope-overlay-text scope-dynamic-stats" style="top:25px; left:34%; color:#4ade80;">RMS: 9.1 µV  5 spikes/s</div>
     </div>
   </div>
 </div>
@@ -1947,7 +1947,7 @@ This project is open-source and available under the **MIT License**. Click the b
     <div class="scope-sidebar">
       <div class="scope-fieldset">
         <div class="scope-legend">通道</div>
-        <div style="margin-bottom: 6px;">A-010</div>
+        <div style="margin-bottom: 6px;">A-126</div>
         <label class="scope-row"><input type="checkbox" checked> 锁定绘图至选中通道</label>
         <div class="scope-btn" style="border-color: #0078d7; background: #e5f1fb; margin-top:2px;">设置为选中通道</div>
       </div>
@@ -1989,8 +1989,8 @@ This project is open-source and available under the **MIT License**. Click the b
       <div class="scope-overlay-text" style="bottom:5px; left:66.66%; color:#fff; transform:translateX(-50%);">1</div>
       <div class="scope-overlay-text" style="bottom:5px; right:10px; color:#fff;">2 ms</div>
 
-      <div class="scope-overlay-text" style="top:10px; left:34%; color:#fff; font-size: 11px;">A-010</div>
-      <div class="scope-overlay-text" style="top:25px; left:34%; color:#4ade80;">RMS: 9.1 µV  5 spikes/s</div>
+      <div class="scope-overlay-text" style="top:10px; left:34%; color:#fff; font-size: 11px;">A-126</div>
+      <div class="scope-overlay-text scope-dynamic-stats" style="top:25px; left:34%; color:#4ade80;">RMS: 9.1 µV  5 spikes/s</div>
     </div>
   </div>
 </div>
@@ -2688,35 +2688,71 @@ This project is open-source and available under the **MIT License**. Click the b
      resizeScope();
      new ResizeObserver(resizeScope).observe(wrapper);
 
-     // 生成动作电位轨迹的数学模型 (严格匹配附图中触发点在 -70 的形态)
+     // 生成动作电位轨迹的数学模型 (高度拟合真实的细胞外电位及底噪)
      function generateSpike() {
        const trace = [];
        const points = 250; 
        const tMin = -1, tMax = 2;
        const dt = (tMax - tMin) / points;
-       const ampVariation = 0.85 + Math.random() * 0.3; // 幅度轻微抖动
+       const ampVariation = 0.85 + Math.random() * 0.3; // 动作电位幅度轻微抖动
+
+       // 随机生成低频波动的参数，模拟 LFP 基线漂移和背景细胞放电
+       const wanderAmp1 = (Math.random() - 0.5) * 20;
+       const wanderFreq1 = 1 + Math.random() * 2;
+       const wanderPhase1 = Math.random() * Math.PI * 2;
+       
+       const wanderAmp2 = (Math.random() - 0.5) * 15;
+       const wanderFreq2 = 3 + Math.random() * 3;
+       const wanderPhase2 = Math.random() * Math.PI * 2;
 
        for(let i = 0; i < points; i++) {
          let t = tMin + i * dt;
-         let noise = (Math.random() - 0.5) * 12; // 底噪
-         let val = 0;
          
-         if (t > -0.2) {
-            // 利用多高斯函数拟合真实细胞外电位，对齐 t=0
-            let dip = -320 * Math.exp(-Math.pow((t - 0.15) / 0.12, 2));
-            let peak = 200 * Math.exp(-Math.pow((t - 0.45) / 0.2, 2));
-            val = (dip + peak) * ampVariation;
-         }
-         trace.push(val + noise);
+         // 1. 系统热噪声与高频白噪声
+         let whiteNoise = (Math.random() - 0.5) * 14; 
+         
+         // 2. 动态低频基线漂移 (前后都会有自然的起伏)
+         let baselineWander = wanderAmp1 * Math.sin(t * wanderFreq1 + wanderPhase1) + 
+                              wanderAmp2 * Math.cos(t * wanderFreq2 + wanderPhase2);
+
+         // 3. 神经元动作电位形态 (移除硬截断，使用全域多高斯拟合)
+         // 负相下冲 (Depolarization / Na+ influx equivalent in extracellular)
+         let dip = -320 * Math.exp(-Math.pow((t - 0.15) / 0.12, 2));
+         // 正相回移 (Repolarization / K+ efflux equivalent)
+         let peak = 200 * Math.exp(-Math.pow((t - 0.45) / 0.2, 2));
+         // 后超极化 (After-hyperpolarization, AHP) - 增加真实的尾部小凹陷
+         let ahp = -25 * Math.exp(-Math.pow((t - 0.9) / 0.35, 2)); 
+         
+         let actionPotential = (dip + peak + ahp) * ampVariation;
+
+         // 最终波形 = 动作电位 + 基线漂移 + 高频底噪
+         trace.push(actionPotential + baselineWander + whiteNoise);
        }
        return trace;
      }
 
-     // 初始预填充20个波形
+    // 初始预填充20个波形
      for(let i = 0; i < 20; i++) spikes.push(generateSpike());
 
-     function drawScope() {
+     // 获取我们要动态更新的文字容器，并设置时间戳变量
+     const statsOverlay = wrapper.querySelector('.scope-dynamic-stats');
+     let lastStatsUpdate = 0;
+
+     // 👇 注意这里加上了 timestamp 参数
+     function drawScope(timestamp) {
        if (!window.isPageScrolling) {
+       
+         // --- 新增：每 800ms 动态刷新一次 RMS 和 Spike 数目 ---
+         if (timestamp - lastStatsUpdate > 800) {
+           if (statsOverlay) {
+             // 模拟真实的微小波动：RMS 在 8.5 ~ 9.8 之间跳动，Spike 率在 3 ~ 7 之间跳动
+             const dynamicRms = (8.5 + Math.random() * 1.3).toFixed(1);
+             const dynamicRate = Math.floor(Math.random() * 5) + 3;
+             statsOverlay.innerText = `RMS: ${dynamicRms} µV  ${dynamicRate} spikes/s`;
+           }
+           lastStatsUpdate = timestamp;
+         }
+         
          // 填充纯黑底色
          ctx.fillStyle = '#000000';
          ctx.fillRect(0, 0, sWidth, sHeight);
