@@ -2688,77 +2688,76 @@ This project is open-source and available under the **MIT License**. Click the b
      resizeScope();
      new ResizeObserver(resizeScope).observe(wrapper);
 
-     // 模拟特征的 Spike 生成器
+     // 特征的 Spike 生成器 (包含真实带通底噪与触发点收束)
       function generateSpike() {
         const trace = [];
         const points = 250; 
         const tMin = -1, tMax = 2;
         const dt = (tMax - tMin) / points;
         
-        // 🌟 10% 概率生成尖锐单线，90% 生成主集群
         const isOutlier = Math.random() < 0.1;
-        const ampJitter = 0.9 + Math.random() * 0.2; // 组内整体幅度轻微抖动 (ampJitter)
+        const ampJitter = 0.9 + Math.random() * 0.2; 
         
-        // 🌟 注入 Variant-level Jitter，使拱起处更加噪点丰富和弥散
-        // Unit 1 random variant parameters (The main "Arch" clustering area)
-        // 拱起(波峰)的高度随机变异范围：0.85 ~ 1.2
         const peakAmpJitter1 = 0.85 + Math.random() * 0.35; 
-        
-        // Unit 2 random variant parameters (The outlier sharp single spike)
         const peakAmpJitter2 = 0.8 + Math.random() * 0.4;
+
+        let currentNoise = 0; // 用于生成平滑带通噪声的状态变量
 
         for(let i = 0; i < points; i++) {
           let t = tMin + i * dt;
-          let noise = (Math.random() - 0.5) * 8; // 底噪
+          
+          // 🌟 1. 生成逼真的带通滤波底噪 (毛茸茸的基线厚度)
+          // 结合平滑噪声(模拟电极阻抗低频特性)和白噪声(系统热噪声)
+          currentNoise = currentNoise * 0.5 + (Math.random() - 0.5) * 22; 
+          let pureWhiteNoise = (Math.random() - 0.5) * 12;
+          let totalNoise = currentNoise + pureWhiteNoise;
+
+          // 🌟 2. 模拟真实示波器的“触发点打结”效应
+          // 在 t=0 触发点附近强行收束噪声，让它们完美交汇于 -70，远离触发点则恢复毛躁
+          let noiseSuppression = 1;
+          if (t > -0.06 && t < 0.08) {
+              // 使用次指数平滑衰减，在 t=0 时噪点绝对为 0
+              let dist = t < 0 ? Math.abs(t) / 0.06 : t / 0.08;
+              noiseSuppression = Math.pow(dist, 1.2); 
+          }
+          totalNoise *= noiseSuppression;
+
           let val = 0;
           
           if (!isOutlier) {
-              // 📈 主波形集群 (对应图中较宽、较缓的那一坨)
+              // 📈 主波形集群
               if (t >= -0.2 && t <= 0) {
-                  // 触发前：平滑下降并精准命中 (0, -70)
                   let norm = (t + 0.2) / 0.2; 
                   val = -70 * Math.pow(norm, 2); 
               } else if (t > 0 && t <= 0.12) {
-                  // 下冲谷底：约 0.12ms, 深度约 -160µV
                   let norm = t / 0.12; 
                   val = -70 - 90 * Math.sin(norm * Math.PI / 2); 
               } else if (t > 0.12 && t <= 0.6) {
-                  // 🌟 回升波峰(拱起)：宽缓，约 0.6ms, 高度约 +100µV
                   let norm = (t - 0.12) / 0.48;
-                  // 🌟 核心修复：直接给峰值插值引入大量的 Variant Jitter，
-                  // 这样每个波形回升的高度都不同，形成一个更厚、更弥散、更符合参考图的白线簇。
                   val = -160 + (260 * peakAmpJitter1) * (1 - Math.cos(norm * Math.PI)) / 2; 
               } else if (t > 0.6 && t <= 1.2) {
-                  // 回归 0 点
                   let norm = (t - 0.6) / 0.6;
-                  // Match jitter to maintain continuity
                   val = (100 * peakAmpJitter1) * Math.cos(norm * Math.PI / 2); 
               }
           } else {
-              // 尖锐离群波形 (对应又深又高又尖的单线)
+              // 📉 尖锐离群波形
               if (t >= -0.1 && t <= 0) {
-                  // 触发前：极速下降命中 (0, -70)
                   let norm = (t + 0.1) / 0.1;
                   val = -70 * Math.pow(norm, 2); 
-                } else if (t > 0 && t <= 0.05) {
-                  // 下冲极深：0.05ms，深度 -250µV
+              } else if (t > 0 && t <= 0.05) {
                   let norm = t / 0.05;
                   val = -70 - 180 * Math.sin(norm * Math.PI / 2); 
-                } else if (t > 0.05 && t <= 0.3) {
-                  // 回升极快且高：0.3ms，高度 +220µV
+              } else if (t > 0.05 && t <= 0.3) {
                   let norm = (t - 0.05) / 0.25;
-                  // Introduce jitter to height
                   val = -250 + (470 * peakAmpJitter2) * (1 - Math.cos(norm * Math.PI)) / 2; 
-                } else if (t > 0.3 && t <= 0.6) {
-                  // 极速回归 0 点
+              } else if (t > 0.3 && t <= 0.6) {
                   let norm = (t - 0.3) / 0.3;
-                  // Match jitter
                   val = (220 * peakAmpJitter2) * Math.cos(norm * Math.PI / 2); 
               }
           }
           
-          // 波形整体乘以ampJitter抖动系数，并叠加恒定的小底噪
-          trace.push((val * ampJitter) + noise);
+          // 最终坐标 = (基准波形 * 幅度抖动) + 滤波噪声
+          trace.push((val * ampJitter) + totalNoise);
         }
         return trace;
       }
