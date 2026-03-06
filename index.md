@@ -3117,6 +3117,10 @@ intanSimulators.forEach(sim => {
   let width, height;
   let lastWidth = 0; // 💡 新增：记录上一次的宽度，防止手机端滚动时误触发重绘
   
+  // 🚀 修复点：将常量声明提前到函数调用之前！
+  const NUM_CHANNELS = 20; 
+  const LABEL_WIDTH = 100; 
+  
   function resizeIntanCanvas() {
     if(canvasL.parentElement.clientWidth === 0) return;
     
@@ -3148,9 +3152,6 @@ intanSimulators.forEach(sim => {
   window.addEventListener('resize', resizeIntanCanvas);
   resizeIntanCanvas();
   new ResizeObserver(resizeIntanCanvas).observe(canvasL.parentElement);
-
-  const NUM_CHANNELS = 20; // 💡 优化：通道数20，让波形显示更清爽真实
-  const LABEL_WIDTH = 100; 
   
   // 2. 严格保留原始通道生成逻辑 (含坏道模拟)
   function generateChannels(prefix) {
