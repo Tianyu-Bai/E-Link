@@ -1714,7 +1714,7 @@ body.light-mode #main_content .intan-btn {
     <div class="intan-plots-wrapper">
       <div class="intan-plot-pane">
         <div class="intan-time-axis">
-          <span>0</span><span>400</span><span>800</span><span>1200</span><span>1600</span><span>2000 ms</span>
+          <span>0</span><span>10</span><span>20</span><span>30</span><span>40</span><span>50 ms</span>
         </div>
         <div class="intan-canvas-container">
           <canvas class="intan-canvas canvas-left"></canvas>
@@ -1730,7 +1730,7 @@ body.light-mode #main_content .intan-btn {
       </div>
       <div class="intan-plot-pane">
         <div class="intan-time-axis">
-          <span>0</span><span>400</span><span>800</span><span>1200</span><span>1600</span><span>2000 ms</span>
+          <span>0</span><span>10</span><span>20</span><span>30</span><span>40</span><span>50 ms</span>
         </div>
         <div class="intan-canvas-container">
           <canvas class="intan-canvas canvas-right"></canvas>
@@ -2618,7 +2618,7 @@ This project is open-source and available under the **MIT License**. Click the b
     <div class="intan-plots-wrapper">
       <div class="intan-plot-pane">
         <div class="intan-time-axis">
-          <span>0</span><span>400</span><span>800</span><span>1200</span><span>1600</span><span>2000 ms</span>
+          <span>0</span><span>10</span><span>20</span><span>30</span><span>40</span><span>50 ms</span>
         </div>
         <div class="intan-canvas-container">
           <canvas class="intan-canvas canvas-left"></canvas>
@@ -2634,7 +2634,7 @@ This project is open-source and available under the **MIT License**. Click the b
       </div>
       <div class="intan-plot-pane">
         <div class="intan-time-axis">
-          <span>0</span><span>400</span><span>800</span><span>1200</span><span>1600</span><span>2000 ms</span>
+          <span>0</span><span>10</span><span>20</span><span>30</span><span>40</span><span>50 ms</span>
         </div>
         <div class="intan-canvas-container">
           <canvas class="intan-canvas canvas-right"></canvas>
@@ -3222,8 +3222,8 @@ function drawPane(ctx, channelsData, isLeftPane) {
       // 🚀 终极物理特征分离逻辑：
       if (ch.isBad) {
         ch.isSpiking = false; 
-        const time_sec = scanX / width * 2.0; 
-        const powerLineInterference = Math.sin(time_sec * 60 * Math.PI * 2) * 0.15; 
+        const time_sec = scanX / width * 0.05; // 修改为 0.05 (代表 50ms 满屏)
+        const powerLineInterference = Math.sin(time_sec * 60 * Math.PI * 2) * 0.15;
         ch.currentNoise = ch.currentNoise * 0.3 + (Math.random() - 0.5) * 0.25; 
         signal = powerLineInterference + ch.currentNoise;
       } else {
@@ -3233,17 +3233,23 @@ function drawPane(ctx, channelsData, isLeftPane) {
         if (!ch.isSpiking && Math.random() < ch.firingRate) {
           ch.isSpiking = true; 
           ch.spikeProgress = 0; 
-          ch.spikeAmp = 0.7 + Math.random() * 0.6; 
+          // 增加一点振幅随机性，模拟记录电极附近不同距离神经元的 Spike 大小差异
+          ch.spikeAmp = 0.8 + Math.random() * 0.5; 
         }
 
         if (ch.isSpiking) {
           let t = ch.spikeProgress;
-          let spikeShape = (Math.exp(-Math.pow((t - 0.25) * 15, 2)) * -1.0) + (Math.exp(-Math.pow((t - 0.5) * 10, 2)) * 0.3);
+          
+          // 拟合经典胞外 Spike：极陡峭负峰 + 宽缓正相回弹 + 缓慢平复
+          let spikeShape = 
+            -2.0 * Math.exp(-Math.pow((t - 0.24) * 18, 2)) +  // 极深、锐利的负相主峰 (精确命中 t=0.24 采样点)
+             0.9 * Math.exp(-Math.pow((t - 0.55) * 7, 2)) +   // 宽缓的正相回弹 (越过基线并保持较长时间)
+             0.1 * Math.exp(-Math.pow((t - 0.80) * 4, 2));    // 缓慢的尾部电位恢复
+
           signal += spikeShape * ch.spikeAmp;
           ch.spikeProgress += 0.12; 
           if (ch.spikeProgress >= 1) ch.isSpiking = false;
         }
-      }
 
       const currentY = Math.floor(ch.baseY + signal * maxAmplitude) + 0.5;
       
