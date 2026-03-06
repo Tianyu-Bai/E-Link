@@ -1120,7 +1120,7 @@ body.light-mode .scope-win-wrapper * { filter: none !important; }
       <canvas class="spike-scope-canvas"></canvas>
       <div class="scope-overlay-text" style="top:10px; left:10px; color:#fff;">+500 µV</div>
       <div class="scope-overlay-text" style="top:50%; left:10px; color:#fff; transform:translateY(-50%);">0</div>
-      <div class="scope-overlay-text" style="top:calc(50% + 7%); right:10px; color:#ef4444; transform:translateY(-50%);">-70 µV</div>
+      <div class="scope-overlay-text" style="top:calc(50% + 7%); right:10px; color:#ef4444; transform:translateY(2px);">-70 µV</div>
       <div class="scope-overlay-text" style="bottom:20px; left:10px; color:#fff;">-500 µV</div>
 
       <div class="scope-overlay-text" style="bottom:5px; left:10px; color:#fff;">-1</div>
