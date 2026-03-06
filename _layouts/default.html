@@ -1018,14 +1018,28 @@ if (window.innerWidth > 768 && cursorDot && cursorOutline) {
     }
     applyResize();
 
-   // 🚀 优化：锁定移动端滚动时的地址栏高度变化触发重绘
-    let lastWidth = window.innerWidth;
-    window.addEventListener('resize', () => {
-      // 只有宽度发生实质性改变（如屏幕旋转），才执行重置
-      if (window.innerWidth !== lastWidth) {
-        lastWidth = window.innerWidth;
-        applyResize();}
-    }, { passive: true });
+   // 🚀 终极优化：防抖 + 手机横屏物理断电（防止显存溢出导致自动刷新）
+   let lastWidth = window.innerWidth;
+   let resizeTimeout; // 新增防抖计时器
+   window.addEventListener('resize', () => {
+     if (window.innerWidth !== lastWidth) {
+       lastWidth = window.innerWidth;
+       
+       // 清除上一次的计时，确保转屏过程中不会连续触发
+       clearTimeout(resizeTimeout);
+       resizeTimeout = setTimeout(() => {
+         // 如果是手机/平板的横屏状态 (宽 > 高)
+         if (window.innerWidth <= 1024 && window.innerWidth > window.innerHeight) {
+           // 物理释放内存！直接把 Canvas 尺寸干掉
+           canvas.width = 0;
+           canvas.height = 0;
+         } else {
+           // 竖屏或 PC 端，恢复正常重绘
+           applyResize();
+         }
+       }, 250); // 延迟 250ms，等系统转屏动画完全结束后再执行，避开性能灾难
+     }
+   }, { passive: true });
 
     // 💡 1. 密度加大：数量整体翻倍
     const count = isMobile ? 38 : 75; 
