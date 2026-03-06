@@ -974,8 +974,10 @@ body.light-mode #main_content .intan-btn { color: #000000 !important; }
 .scope-btn:hover { background: #e5f1fb; border-color: #0078d7; }
 .scope-input { border: 1px solid #ccc; padding: 2px; text-align: right; font-size: 11px; background: #fff; color: #000; }
 .scope-plot-area { flex: 1; background: #000; position: relative; overflow: hidden; }
-.scope-canvas { width: 100%; height: 100%; display: block; }
-.scope-overlay-text { position: absolute; font-size: 11px; font-family: 'Segoe UI', sans-serif; pointer-events: none;}
+/* 1. 修复类名为 spike-scope-canvas，加上绝对定位 */
+.spike-scope-canvas { width: 100%; height: 100%; display: block; position: absolute; top: 0; left: 0; z-index: 0; }
+/* 2. 提升文字的 z-index，防止被画布挡住 */
+.scope-overlay-text { position: absolute; font-size: 11px; font-family: 'Segoe UI', sans-serif; pointer-events: none; z-index: 1; }
 
 /* 浅色模式下不要反转示波器背景，强制黑底白字 */
 body.light-mode .scope-win-wrapper, 
@@ -2666,14 +2668,21 @@ This project is open-source and available under the **MIT License**. Click the b
      let animationFrame;
 
      function resizeScope() {
-       if (wrapper.clientWidth === 0) return;
-       const dpr = window.devicePixelRatio || 1;
-       sWidth = wrapper.clientWidth;
-       sHeight = wrapper.clientHeight;
-       canvas.width = sWidth * dpr;
-       canvas.height = sHeight * dpr;
-       ctx.scale(dpr, dpr);
-     }
+        if (wrapper.clientWidth === 0) return;
+        const dpr = window.devicePixelRatio || 1;
+        sWidth = wrapper.clientWidth;
+        sHeight = wrapper.clientHeight;
+        
+        // 设定物理分辨率（高清）
+        canvas.width = sWidth * dpr;
+        canvas.height = sHeight * dpr;
+        
+        // 【关键修复】强制锁定 CSS 逻辑尺寸，不让它挤压父容器
+        canvas.style.width = sWidth + 'px';
+        canvas.style.height = sHeight + 'px';
+        
+        ctx.scale(dpr, dpr);
+      }
      
      window.addEventListener('resize', resizeScope);
      resizeScope();
