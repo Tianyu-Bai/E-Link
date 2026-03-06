@@ -1252,30 +1252,42 @@ if (window.innerWidth > 768 && cursorDot && cursorOutline) {
     rafScheduler.add('lenis', (time) => globalLenis.raf(time));
   }
 
-  // ── 滚动进度条 & 滚动状态防闪退机 ───────────────────────────────────────────────
-  const progressBar = document.getElementById('progress-bar');
-  const botContainer = document.getElementById('bot-container');
-  window.isScrollingIntensely = false;
-  let scrollIntenseTimeout = null;
-  let scrollRAF = null;
+// ── 滚动进度条 & 滚动状态防闪退机 ───────────────────────────────────────────────
+  const progressBar = document.getElementById('progress-bar');
+  const botContainer = document.getElementById('bot-container');
+  window.isScrollingIntensely = false;
+  let scrollIntenseTimeout = null;
+  let scrollRAF = null;
 
-  window.addEventListener('scroll', () => {
-    // 🛡️ 开启防闪退护盾
-    window.isScrollingIntensely = true;
-    clearTimeout(scrollIntenseTimeout);
-    scrollIntenseTimeout = setTimeout(() => {
-        window.isScrollingIntensely = false;
-    }, 120);
+  // 🚀 新增：抽离进度条计算逻辑，改用 width 以完美显示发光头部
+  function updateProgressBar() {
+    const pct = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight);
+    const safePct = Math.max(0, Math.min(1, pct || 0)); // 防止越界或 NaN
+    if (progressBar) progressBar.style.width = `${safePct * 100}%`; 
+  }
 
-    if (scrollRAF) return;
-    scrollRAF = requestAnimationFrame(() => {
-      const pct = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight);
-      if (progressBar) progressBar.style.transform = `scaleX(${pct})`; // 🚀 使用 transform: scaleX 替代 width 避免 Layout Thrashing
-      if (botContainer && window.innerWidth > 768)
-        botContainer.classList.toggle('fixed-mode', window.scrollY > 200);
-      scrollRAF = null;
-    });
-  }, { passive: true });
+  window.addEventListener('scroll', () => {
+    // 🛡️ 开启防闪退护盾
+    window.isScrollingIntensely = true;
+    clearTimeout(scrollIntenseTimeout);
+    scrollIntenseTimeout = setTimeout(() => {
+        window.isScrollingIntensely = false;
+    }, 120);
+
+    if (scrollRAF) return;
+    scrollRAF = requestAnimationFrame(() => {
+      updateProgressBar(); // 实时更新进度条
+      
+      if (botContainer && window.innerWidth > 768)
+        botContainer.classList.toggle('fixed-mode', window.scrollY > 200);
+      scrollRAF = null;
+    });
+  }, { passive: true });
+
+  // 🚀 新增：处理手机转屏或 PC 窗口缩放，强制刷新进度条
+  window.addEventListener('resize', () => {
+    requestAnimationFrame(updateProgressBar);
+  }, { passive: true });
 
 
   // ── 图片懒加载 ───────────────────────────────────────────────
