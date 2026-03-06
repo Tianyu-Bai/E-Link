@@ -17,14 +17,12 @@ title: E-Link Home
 }
 
 /* 2. 【英文版专属】图片遮罩与光束扫过 */
-/* 2. 【英文版专属】图片遮罩与光束扫过 */
 .logo-mask-container {
   position: relative; 
   /* 加上 max-content 强行锁死物理宽度 */
   display: inline-block; 
   width: max-content; 
   max-width: 100%;
-  /* 🚀 核心修复：移除这里的 mask-image，防止由于遮罩失效导致整个 Logo 消失 */
 }
 
 .logo-mask-container::after {
@@ -60,33 +58,27 @@ title: E-Link Home
 
 @keyframes searchlight-sweep {
   0% { transform: translateX(-100%) skewX(-20deg); }
-  75% { transform: translateX(100%) skewX(-20deg); }  /* 75% 扫完，25% 停顿 */
+  75% { transform: translateX(100%) skewX(-20deg); }
   100% { transform: translateX(100%) skewX(-20deg); }
 }
 
 /* 3. SVG 图标与纯文本双层背景扫光 */
 .bi-color-title-sweep {
   background: 
-    /* 1. 把高光区域变宽：修改了 transparent 的比例，让中间的白色光晕范围更大、边缘更柔和 */
     linear-gradient(105deg, transparent 0%, rgba(255, 255, 255, 0.5) 25%, rgba(255, 255, 255, 1) 50%, rgba(255, 255, 255, 0.5) 75%, transparent 100%),
     linear-gradient(90deg, #60a5fa 0%, #a78bfa 55%, #f472b6 100%);
-  
-  /* 2. 扩大光束画布：从 200% 改为 250%，这会让整道光束在绝对尺寸上变得更宽 */
   background-size: 250% auto, 100% auto; 
   background-repeat: no-repeat;
   -webkit-background-clip: text; 
   background-clip: text;
   -webkit-text-fill-color: transparent; 
   color: transparent;
-  
-  /* 3. 动画设置：总时长 6秒，改用 linear (匀速) 让光缓慢滑过时更平滑，不会在文字中间忽快忽慢 */
-   /* 从 6s 缩短为 3s */
   animation: text-searchlight 3s linear infinite;
 }
 
 @keyframes text-searchlight {
   0%  { background-position: -50% center, 0 center; }
-  70% { background-position: 150% center, 0 center; }  /* 70% 扫完，30% 停顿 */
+  70% { background-position: 150% center, 0 center; }
   100% { background-position: 150% center, 0 center; }
 }
 
@@ -101,7 +93,7 @@ title: E-Link Home
 
 /* 5. 新增：专门控制中文“易链”两个字的大小，使其与右侧图片高度协调 */
 .zh-text-logo {
-  font-size: 70px; /* 电脑端大小，配合 100px 的图片 */
+  font-size: 70px;
   font-weight: 800;
   letter-spacing: 4px;
   font-family: 'Inter', 'Noto Sans SC', sans-serif;
@@ -109,10 +101,9 @@ title: E-Link Home
 }
 
 /* 🚀 新增：英文版 Logo 电脑端基础大小控制 */
-
 .main-logo {
   display: block;
-  height: 120px !important;       
+  height: 120px !important;        
   width: auto !important;      
   max-width: 100% !important;     
   object-fit: contain;
@@ -126,7 +117,6 @@ title: E-Link Home
   .sub-title { font-size: 1.2em !important; padding: 0 10px !important; white-space: normal !important; }
   .mobile-br::before { content: "\A"; white-space: pre; }
 } 
-  
 </style>
 
 <div class="lang-en" markdown="1">
@@ -177,57 +167,18 @@ title: E-Link Home
 </div>
 
 <style>
-  
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@400;700&display=swap');
 
 /* 🚀 终极防溢出护盾：彻底锁死横向滚动条，修复手机端触摸失灵 */
-html {
-  overflow-x: hidden;
-  width: 100%;
-  -webkit-text-size-adjust: 100%; /* 防止 iOS 旋屏时字体自动放大 */
-}
-
-body {
-  overflow-x: hidden;
-  width: 100%;
-  position: relative; /* 核心：限制所有绝对定位子元素的边界 */
-  margin: 0;
-  padding: 0;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-}
-
-/* 强制所有容器盒模型包含 padding 和 border */
-*, *::before, *::after {
-  box-sizing: border-box;
-}
+html { overflow-x: hidden; width: 100%; -webkit-text-size-adjust: 100%; }
+body { overflow-x: hidden; width: 100%; position: relative; margin: 0; padding: 0; font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+*, *::before, *::after { box-sizing: border-box; }
 
 /* ✅ 保险方案：占位由父容器负责 */
-.gif-placeholder {
-  width: 100%;
-  max-width: 500px;
-  min-height: 280px;
-  margin: 0 auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(15, 23, 42, 0.15);
-  border-radius: 8px;
-  overflow: hidden;
-}
-.gif-placeholder.narrow {
-  max-width: 460px;
-}
-.lazy-gif {
-  width: 100%;
-  height: auto;
-  display: block;
-  opacity: 0;
-  transition: opacity 0.4s ease;
-  border-radius: 6px;
-}
-.lazy-gif.is-loaded {
-  opacity: 1;
-}
+.gif-placeholder { width: 100%; max-width: 500px; min-height: 280px; margin: 0 auto; display: flex; align-items: center; justify-content: center; background: rgba(15, 23, 42, 0.15); border-radius: 8px; overflow: hidden; }
+.gif-placeholder.narrow { max-width: 460px; }
+.lazy-gif { width: 100%; height: auto; display: block; opacity: 0; transition: opacity 0.4s ease; border-radius: 6px; }
+.lazy-gif.is-loaded { opacity: 1; }
   
 /* ===================== 1. 核心设备感知与显隐逻辑 ===================== */
 .pc-tip, .mobile-tip, .pc-only, .mobile-only { display: none !important; }
@@ -277,210 +228,66 @@ body {
 }
 
 /* ========================================= 3. 容器与图标样式 ========================================= */
-.gesture-overlay {
-  position: absolute; top: 50%; left: 50%;
-  transform: translate(-50%, -50%);
-  pointer-events: none; text-align: center;
-  width: 220px; height: 150px;
-  display: flex; flex-direction: column; justify-content: center; align-items: center;
-}
-
+.gesture-overlay { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); pointer-events: none; text-align: center; width: 220px; height: 150px; display: flex; flex-direction: column; justify-content: center; align-items: center; }
 .mode-drag { animation: timeline-drag-container 48s infinite; }
 .mode-zoom { animation: timeline-zoom-container 48s infinite; }
 .icon-box { position: relative; height: 80px; width: 100%; margin-bottom: 5px; }
 
-.hand-icon {
-  font-size: 50px; position: absolute; top: 20px; left: 50%;
-  text-shadow: 2px 4px 0px rgba(0,0,0,0.8), 0 0 10px rgba(0,0,0,0.5);
-  will-change: transform, opacity;
-}
-
+.hand-icon { font-size: 50px; position: absolute; top: 20px; left: 50%; text-shadow: 2px 4px 0px rgba(0,0,0,0.8), 0 0 10px rgba(0,0,0,0.5); will-change: transform, opacity; }
 .mode-drag .hand-icon { margin-left: -25px; animation: move-drag-hand 1.5s infinite ease-in-out; }
 .mode-zoom .hand-icon { margin-left: -25px; top: 15px; }
 .mode-zoom .hand-left { animation: move-zoom-left-diagonal 1.5s infinite ease-in-out; }
 .mode-zoom .hand-right { animation: move-zoom-right-diagonal 1.5s infinite ease-in-out; }
 
-.gesture-text {
-  color: white; font-family: sans-serif; font-weight: bold; font-size: 16px;
-  text-shadow: 0 2px 4px black; background: rgba(0,0,0,0.4);
-  padding: 4px 12px; border-radius: 12px; white-space: nowrap;
-}
+.gesture-text { color: white; font-family: sans-serif; font-weight: bold; font-size: 16px; text-shadow: 0 2px 4px black; background: rgba(0,0,0,0.4); padding: 4px 12px; border-radius: 12px; white-space: nowrap; }
 
 /* ===================== 4. HUD 与交互反馈 ===================== */
-.gesture-hud {
-  position: absolute; top: 12px; left: 50%;
-  transform: translateX(-50%); display: flex; align-items: center;
-  gap: 25px; font-size: 13px; font-family: system-ui, sans-serif;
-  color: rgba(255, 255, 255, 0.65); background: rgba(15, 23, 42, 0.45);
-  border: 1px solid rgba(59,130,246,0.25); padding: 6px 10px;
-  border-radius: 20px; white-space: nowrap; 
-  backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); 
-  pointer-events: none; transition: opacity 0.4s ease; z-index: 5;
-}
-
+.gesture-hud { position: absolute; top: 12px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 25px; font-size: 13px; font-family: system-ui, sans-serif; color: rgba(255, 255, 255, 0.65); background: rgba(15, 23, 42, 0.45); border: 1px solid rgba(59,130,246,0.25); padding: 6px 10px; border-radius: 20px; white-space: nowrap; backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); pointer-events: none; transition: opacity 0.4s ease; z-index: 5; }
 .gesture-hidden { opacity: 0 !important; visibility: hidden !important; pointer-events: none !important; animation: none !important; }
 .gesture-hidden * { animation: none !important; }
 .gesture-overlay, .gesture-overlay * { animation-play-state: paused !important; }
 .gesture-overlay.gesture-active, .gesture-overlay.gesture-active * { animation-play-state: running !important; }
 
-.reset-btn {
-  position: absolute; bottom: 16px; left: 16px; z-index: 10;
-  background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(59, 130, 246, 0.3);
-  color: rgba(255, 255, 255, 0.8); border-radius: 8px; padding: 6px 12px;
-  font-family: system-ui, sans-serif; font-size: 12px; cursor: pointer;
-  backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
-  transition: all 0.3s ease; display: flex; align-items: center; gap: 6px;
-}
+.reset-btn { position: absolute; bottom: 16px; left: 16px; z-index: 10; background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(59, 130, 246, 0.3); color: rgba(255, 255, 255, 0.8); border-radius: 8px; padding: 6px 12px; font-family: system-ui, sans-serif; font-size: 12px; cursor: pointer; backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); transition: all 0.3s ease; display: flex; align-items: center; gap: 6px; }
 .reset-btn:hover { background: rgba(59, 130, 246, 0.4); color: #fff; transform: scale(1.05); }
 
-kbd {
-  background-color: rgba(255, 255, 255, 0.1); border-radius: 4px;
-  border: 1px solid rgba(255, 255, 255, 0.3); box-shadow: 0 1px 1px rgba(0,0,0,0.2);
-  font-family: inherit; font-size: 0.9em; font-weight: 600; padding: 1px 4px; margin: 0 2px; color: #60a5fa;
-}
+kbd { background-color: rgba(255, 255, 255, 0.1); border-radius: 4px; border: 1px solid rgba(255, 255, 255, 0.3); box-shadow: 0 1px 1px rgba(0,0,0,0.2); font-family: inherit; font-size: 0.9em; font-weight: 600; padding: 1px 4px; margin: 0 2px; color: #60a5fa; }
 
 /* ===================== 5. 模型全局基础样式 ===================== */
-.custom-model-viewer {
-  width: 100%; max-width: 100%; box-sizing: border-box; height: 460px;
-  
-  /* 🚀 核心修改：真正的毛玻璃背景 */
-  background: rgba(15, 23, 42, 0.45); 
-  backdrop-filter: blur(12px); 
-  -webkit-backdrop-filter: blur(12px);
-  
-  border-radius: 16px; border: 1px solid rgba(59,130,246,0.3);
-  /* 增加微弱的纯白内发光，模拟玻璃切边边缘 */
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5), inset 0 0 15px rgba(255,255,255,0.05); 
-  
-  outline: none; overflow: hidden; 
-  transform: translateZ(0); 
-  backface-visibility: hidden; 
-  touch-action: none;
-  will-change: transform;
-  isolation: isolate;
-}
-
-.custom-model-viewer:focus, .custom-model-viewer:active, .custom-model-viewer:focus-visible {
-  outline: none !important; box-shadow: none !important; border: 1px solid rgba(59,130,246,0.3) !important;
-}
-/* 彻底击杀桌面端浏览器为 model-viewer 和其内部 canvas 强制添加的无障碍焦点虚框 */
-model-viewer, model-viewer:focus-within, model-viewer:focus-visible {
-  outline: none !important;
-  -webkit-tap-highlight-color: transparent;
-}
-.model-block { 
-  /* 修复：把 max-width: 100vw 改为 100% */
-  max-width: 100% !important; margin-top: 5px !important;  margin-bottom: 15px !important; 
-}
+.custom-model-viewer { width: 100%; max-width: 100%; box-sizing: border-box; height: 460px; background: rgba(15, 23, 42, 0.45); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-radius: 16px; border: 1px solid rgba(59,130,246,0.3); box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5), inset 0 0 15px rgba(255,255,255,0.05); outline: none; overflow: hidden; transform: translateZ(0); backface-visibility: hidden; touch-action: none; will-change: transform; isolation: isolate; }
+.custom-model-viewer:focus, .custom-model-viewer:active, .custom-model-viewer:focus-visible { outline: none !important; box-shadow: none !important; border: 1px solid rgba(59,130,246,0.3) !important; }
+model-viewer, model-viewer:focus-within, model-viewer:focus-visible { outline: none !important; -webkit-tap-highlight-color: transparent; }
+.model-block { max-width: 100% !important; margin-top: 5px !important;  margin-bottom: 15px !important; }
 model-viewer::part(interaction-prompt), model-viewer::part(default-progress-bar) { display: none !important; }
+model-viewer > [slot="poster"] { width: 100%; height: 100%; position: absolute; top: 0; left: 0; }
 
-/* 修复：确保模型加载前的占位图不会引起高度坍塌计算 */
-model-viewer > [slot="poster"] {
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
-}
-
-.model-watermark-text {
-  position: absolute; bottom: 12px; right: 16px;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 10px; color: rgba(255, 255, 255, 0.25); pointer-events: none; z-index: 5;
-  font-weight: 400;
-}
-  @keyframes text-blink {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.3; }
-}
-
-/* 加一根淡淡的分隔线 */
+.model-watermark-text { position: absolute; bottom: 12px; right: 16px; font-family: 'JetBrains Mono', monospace; font-size: 10px; color: rgba(255, 255, 255, 0.25); pointer-events: none; z-index: 5; font-weight: 400; }
+@keyframes text-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 .gesture-hud span + span { position: relative; padding-left: 5px; }
 .gesture-hud span + span::before { content: ""; position: absolute; left: -12px; top: 20%; height: 60%; width: 1px; background: rgba(255, 255, 255, 0.2); }
 
 /* ===================== 🚀 浅色模式专属：3D 模型 UI 界面适配 ===================== */
-
-/* 1. 修复顶部 HUD (Rotate: Drag / Zoom: Pinch) */
-body.light-mode .gesture-hud {
-  color: #1e293b !important;                  /* 文字变成深蓝灰色 */
-  background: rgba(255, 255, 255, 0.7) !important; /* 背景变成半透明白色 */
-  border-color: rgba(59, 130, 246, 0.3) !important; /* 边框变成浅蓝色 */
-  box-shadow: 0 4px 12px rgba(148, 163, 184, 0.2) !important; /* 加上轻微的浅色阴影 */
-}
-/* HUD 里的分隔线也要变色 */
-body.light-mode .gesture-hud span + span::before {
-  background: rgba(0, 0, 0, 0.15) !important; 
-}
-
-/* 2. 修复中心手势动画提示框 (黑框白字 -> 白框深字) */
-body.light-mode .gesture-text {
-  color: #1e293b !important;
-  text-shadow: none !important; /* 去掉黑色的文字阴影 */
-  background: rgba(255, 255, 255, 0.85) !important;
-  border: 1px solid rgba(59, 130, 246, 0.2) !important;
-  box-shadow: 0 4px 15px rgba(148, 163, 184, 0.2) !important;
-}
-
-/* 3. 修复底部 Reset View 按钮 */
-body.light-mode .reset-btn {
-  background: rgba(255, 255, 255, 0.8) !important;
-  color: #334155 !important;
-  border-color: rgba(148, 163, 184, 0.4) !important;
-  box-shadow: 0 2px 8px rgba(148, 163, 184, 0.15) !important;
-}
-body.light-mode .reset-btn:hover {
-  background: #ffffff !important;
-  color: #2563eb !important;
-  border-color: #60a5fa !important;
-}
-
-/* 4. 修复加载海报 (Poster) 的黑屏问题 */
-/* 我们要覆盖内联样式 style="..."，所以必须用 !important */
-body.light-mode .model-block [slot="poster"] {
-  background: radial-gradient(circle at center, #f8fafc 0%, #e2e8f0 100%) !important;
-}
-/* 海报里的网格变色 */
-body.light-mode .model-block [slot="poster"] > div:nth-child(1) {
-  background-image: linear-gradient(rgba(59, 130, 246, 0.15) 1px, transparent 1px), 
-                    linear-gradient(90deg, rgba(59, 130, 246, 0.15) 1px, transparent 1px) !important;
-}
-/* 初始化文字变深色 */
-body.light-mode .model-block [slot="poster"] p:first-of-type {
-  color: #1e40af !important;
-  text-shadow: 0 0 10px rgba(59, 130, 246, 0.3) !important;
-}
-/* 底部点击提示字变色 */
-body.light-mode .model-block [slot="poster"] .click-to-load-glow {
-  color: #64748b !important;
-}
-body.light-mode .model-block [slot="poster"] .click-to-load-glow:hover {
-  text-shadow: 0 0 10px rgba(59, 130, 246, 0.5) !important;
-}
-
-/* 5. 修复右下角的版权水印水印 */
-body.light-mode .model-watermark-text {
-  color: rgba(71, 85, 105, 0.6) !important; /* 变成高级的冷灰色 */
-}
+body.light-mode .gesture-hud { color: #1e293b !important; background: rgba(255, 255, 255, 0.7) !important; border-color: rgba(59, 130, 246, 0.3) !important; box-shadow: 0 4px 12px rgba(148, 163, 184, 0.2) !important; }
+body.light-mode .gesture-hud span + span::before { background: rgba(0, 0, 0, 0.15) !important; }
+body.light-mode .gesture-text { color: #1e293b !important; text-shadow: none !important; background: rgba(255, 255, 255, 0.85) !important; border: 1px solid rgba(59, 130, 246, 0.2) !important; box-shadow: 0 4px 15px rgba(148, 163, 184, 0.2) !important; }
+body.light-mode .reset-btn { background: rgba(255, 255, 255, 0.8) !important; color: #334155 !important; border-color: rgba(148, 163, 184, 0.4) !important; box-shadow: 0 2px 8px rgba(148, 163, 184, 0.15) !important; }
+body.light-mode .reset-btn:hover { background: #ffffff !important; color: #2563eb !important; border-color: #60a5fa !important; }
+body.light-mode .model-block [slot="poster"] { background: radial-gradient(circle at center, #f8fafc 0%, #e2e8f0 100%) !important; }
+body.light-mode .model-block [slot="poster"] > div:nth-child(1) { background-image: linear-gradient(rgba(59, 130, 246, 0.15) 1px, transparent 1px), linear-gradient(90deg, rgba(59, 130, 246, 0.15) 1px, transparent 1px) !important; }
+body.light-mode .model-block [slot="poster"] p:first-of-type { color: #1e40af !important; text-shadow: 0 0 10px rgba(59, 130, 246, 0.3) !important; }
+body.light-mode .model-block [slot="poster"] .click-to-load-glow { color: #64748b !important; }
+body.light-mode .model-block [slot="poster"] .click-to-load-glow:hover { text-shadow: 0 0 10px rgba(59, 130, 246, 0.5) !important; }
+body.light-mode .model-watermark-text { color: rgba(71, 85, 105, 0.6) !important; }
   
 /* ===================== E-Link 动态仪表盘样式 ===================== */
-.nav-badges img, .github-only img, a img {
-  transform: translateZ(0); backface-visibility: hidden; -webkit-font-smoothing: antialiased;
-}
-
+.nav-badges img, .github-only img, a img { transform: translateZ(0); backface-visibility: hidden; -webkit-font-smoothing: antialiased; }
 .elink-dynamic-dashboard { width: 100%;  max-width: 760px;  margin: 20px auto;  padding: 0 5px; box-sizing: border-box; }
 .metrics-grid { display: flex;  justify-content: space-between;  align-items: center;  flex-wrap: nowrap; gap: 12px;  width: 100%; box-sizing: border-box; }
-.metric-card.glass-panel {
-  flex: 1 1 0; min-width: 0; background: rgba(15, 23, 42, 0.6);
-  border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 12px;
-  padding: 15px 5px; box-sizing: border-box; box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
-  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
-  transition: transform 0.3s ease; text-align: center;
-}
+.metric-card.glass-panel { flex: 1 1 0; min-width: 0; background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 12px; padding: 15px 5px; box-sizing: border-box; box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); transition: transform 0.3s ease; text-align: center; }
 .chart-box { position: relative; width: 145px; height: 145px; margin: 0 auto; }
 .chart-box svg { width: 100%; height: 100%; transform: rotate(-90deg); }
 .bg-ring { fill: none; stroke: rgba(255, 255, 255, 0.1); stroke-width: 6; }
 .fg-ring { fill: none; stroke-width: 6; stroke-linecap: round; stroke-dasharray: 283; stroke-dashoffset: 283; }
-
 .weight-color { stroke: #10b981; filter: drop-shadow(0 0 6px rgba(16, 185, 129, 0.6)); } 
 .channel-color { stroke: #3b82f6; filter: drop-shadow(0 0 6px rgba(59, 130, 246, 0.6)); } 
 .pcb-color { stroke: #f59e0b; filter: drop-shadow(0 0 6px rgba(245, 158, 11, 0.6)); }    
@@ -505,46 +312,24 @@ body.light-mode .model-watermark-text {
 /* ===================== 高级 3D 封面特效 (HUD) ===================== */
 .cyber-loader { position: relative; width: 50px; height: 50px; }
 .cyber-loader::before, .cyber-loader::after { content: ''; position: absolute; border-radius: 50%; }
-.cyber-loader::before {
-  top: 0; left: 0; right: 0; bottom: 0;
-  border: 2.5px solid transparent; border-top-color: #60a5fa; border-bottom-color: #60a5fa;
-  animation: spin 1.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite; box-shadow: 0 0 10px rgba(96, 165, 250, 0.5);
-}
-.cyber-loader::after {
-  top: 8px; left: 8px; right: 8px; bottom: 8px;
-  border: 2px solid transparent; border-left-color: #3b82f6; border-right-color: #3b82f6;
-  animation: spin-reverse 1s linear infinite;
-}
+.cyber-loader::before { top: 0; left: 0; right: 0; bottom: 0; border: 2.5px solid transparent; border-top-color: #60a5fa; border-bottom-color: #60a5fa; animation: spin 1.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite; box-shadow: 0 0 10px rgba(96, 165, 250, 0.5); }
+.cyber-loader::after { top: 8px; left: 8px; right: 8px; bottom: 8px; border: 2px solid transparent; border-left-color: #3b82f6; border-right-color: #3b82f6; animation: spin-reverse 1s linear infinite; }
 @keyframes spin-reverse { to { transform: rotate(-360deg); } }
 
-.hud-corner {
-  position: absolute; width: 25px; height: 25px; border: 2px solid rgba(96, 165, 250, 0.6); box-shadow: 0 0 8px rgba(59, 130, 246, 0.4);
-}
+.hud-corner { position: absolute; width: 25px; height: 25px; border: 2px solid rgba(96, 165, 250, 0.6); box-shadow: 0 0 8px rgba(59, 130, 246, 0.4); }
 .hud-tl { top: 20px; left: 20px; border-right: none; border-bottom: none; }
 .hud-tr { top: 20px; right: 20px; border-left: none; border-bottom: none; }
 .hud-bl { bottom: 20px; left: 20px; border-right: none; border-top: none; }
 .hud-br { bottom: 20px; right: 20px; border-left: none; border-top: none; }
 
-.scanline {
-  position: absolute; top: 0; left: 0; width: 100%; height: 3px;
-  background: linear-gradient(90deg, transparent, rgba(96, 165, 250, 0.8), transparent);
-  box-shadow: 0 0 15px rgba(59, 130, 246, 0.8); animation: scan-sweep 3s linear infinite; opacity: 0.6;
-}
+.scanline { position: absolute; top: 0; left: 0; width: 100%; height: 3px; background: linear-gradient(90deg, transparent, rgba(96, 165, 250, 0.8), transparent); box-shadow: 0 0 15px rgba(59, 130, 246, 0.8); animation: scan-sweep 3s linear infinite; opacity: 0.6; }
 @keyframes scan-sweep { 0% { top: 0; opacity: 0; } 10% { opacity: 0.6; } 90% { opacity: 0.6; } 100% { top: 100%; opacity: 0; } }
 
 .nav-badges a { display: inline-block; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); margin: 0 2px; }
 .nav-badges a:hover { transform: translateY(-3px) scale(1.05); filter: drop-shadow(0 5px 8px rgba(59, 130, 246, 0.4)); }
 .nav-badges a:active { transform: translateY(0) scale(0.98); }
-
-/* 点击加载动画特效 (网络优化新增) */
-.click-to-load-glow {
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-.click-to-load-glow:hover {
-  transform: scale(1.05);
-  text-shadow: 0 0 15px rgba(96, 165, 250, 1);
-}
+.click-to-load-glow { cursor: pointer; transition: all 0.3s ease; }
+.click-to-load-glow:hover { transform: scale(1.05); text-shadow: 0 0 15px rgba(96, 165, 250, 1); }
 </style>
 
 ## 🔬 Interactive 3D Model: E-Link Headstage Integration
@@ -727,84 +512,23 @@ body.light-mode .model-watermark-text {
   </model-viewer>
 </div> 
 
-<!-- ===================== E-Link Dynamic Dashboard V2 ===================== -->
-
 <style>
 /* ====== V2 仪表盘新增样式 ====== */
-.metrics-grid-v2 {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 14px;
-  width: 100%;
-  max-width: 760px;
-  margin: 25px auto;
-  padding: 0 5px;
-  box-sizing: border-box;
-}
+.metrics-grid-v2 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; width: 100%; max-width: 760px; margin: 25px auto; padding: 0 5px; box-sizing: border-box; }
+.metric-card-v2 { background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(59, 130, 246, 0.25); border-radius: 14px; padding: 18px 12px; box-sizing: border-box; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); text-align: center; transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease; position: relative; overflow: hidden; }
+.metric-card-v2:hover { transform: translateY(-4px); border-color: rgba(96, 165, 250, 0.5); box-shadow: 0 12px 40px rgba(59, 130, 246, 0.15); }
+.metric-card-v2::before { content: ''; position: absolute; top: 0; left: 10%; right: 10%; height: 2px; background: var(--card-accent, #3b82f6); border-radius: 0 0 4px 4px; opacity: 0.6; filter: blur(1px); }
+.metric-card-v2 .card-label { font-size: 13px; font-weight: 700; color: #94a3b8; letter-spacing: 2px; margin-bottom: 8px; text-transform: uppercase; }
+.metric-card-v2 .card-value { font-family: 'JetBrains Mono', monospace; font-size: 34px; font-weight: 800; color: #fff; text-shadow: 0 2px 8px rgba(0,0,0,0.4); line-height: 1.1; display: inline-block; vertical-align: baseline; }
+.metric-card-v2 .card-unit { font-size: 15px; font-weight: 600; color: #cbd5e1; margin-left: 2px; }
+.metric-card-v2 .card-sub { font-size: 10px; color: rgba(148, 163, 184, 0.75); margin-top: 4px; }
 
-.metric-card-v2 {
-  background: rgba(15, 23, 42, 0.6);
-  border: 1px solid rgba(59, 130, 246, 0.25);
-  border-radius: 14px;
-  padding: 18px 12px;
-  box-sizing: border-box;
-  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
-  text-align: center;
-  transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
-  position: relative;
-  overflow: hidden;
-}
-.metric-card-v2:hover {
-  transform: translateY(-4px);
-  border-color: rgba(96, 165, 250, 0.5);
-  box-shadow: 0 12px 40px rgba(59, 130, 246, 0.15);
-}
-/* 卡片顶部发光线 */
-.metric-card-v2::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 10%; right: 10%; height: 2px;
-  background: var(--card-accent, #3b82f6);
-  border-radius: 0 0 4px 4px;
-  opacity: 0.6;
-  filter: blur(1px);
-}
-.metric-card-v2 .card-label {
-  font-size: 13px; font-weight: 700; color: #94a3b8;
-  letter-spacing: 2px; margin-bottom: 8px;
-  text-transform: uppercase;
-}
-.metric-card-v2 .card-value {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 34px; font-weight: 800; color: #fff;
-  text-shadow: 0 2px 8px rgba(0,0,0,0.4);
-  line-height: 1.1;
-  display: inline-block; /* 👈 新增：强制内联，防止 div 独占一行换行 */
-  vertical-align: baseline; /* 👈 新增：让数字底部和单位底部完美对齐 */
-}
-.metric-card-v2 .card-unit {
-  font-size: 15px; font-weight: 600; color: #cbd5e1;
-  margin-left: 2px;
-}
-.metric-card-v2 .card-sub {
-  font-size: 10px; color: rgba(148, 163, 184, 0.75);
-  margin-top: 4px;
-}
-
-/* --- 圆环图 (沿用原有样式) --- */
 .v2-chart-box { position: relative; width: 130px; height: 130px; margin: 0 auto 6px; }
 .v2-chart-box svg { width: 100%; height: 100%; transform: rotate(-90deg); }
 .v2-chart-box .bg-ring { fill: none; stroke: rgba(255, 255, 255, 0.08); stroke-width: 6; }
 .v2-chart-box .fg-ring { fill: none; stroke-width: 6; stroke-linecap: round; stroke-dasharray: 283; stroke-dashoffset: 283; transition: filter 0.3s; }
-.v2-chart-box .ring-inner {
-  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-  display: flex; 
-  flex-direction: column;  /* 👈 改回 column，负责绝对居中 */
-  justify-content: center; 
-  align-items: center;     /* 👈 改回 center */
-}
+.v2-chart-box .ring-inner { position: absolute; top: 0; left: 0; right: 0; bottom: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; }
 
-/* --- 温度计可视化 --- */
 .thermo-wrapper { display: flex; flex-direction: column; align-items: center; margin: 5px auto 6px; position: relative; height: 100px; width: 40px; }
 .thermo-track { width: 16px; height: 80px; background: rgba(255,255,255,0.08); border-radius: 8px 8px 0 0; position: relative; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); }
 .thermo-fill { position: absolute; bottom: 0; left: 0; right: 0; height: 0%; background: linear-gradient(to top, #ef4444, #f97316, #fbbf24); border-radius: 6px 6px 0 0; transition: height 0.1s; box-shadow: 0 0 12px rgba(239, 68, 68, 0.4); }
@@ -812,97 +536,17 @@ body.light-mode .model-watermark-text {
 .thermo-safe-line { position: absolute; right: -28px; top: 22%; width: 20px; border-top: 1px dashed rgba(16, 185, 129, 0.6); }
 .thermo-safe-label { position: absolute; right: -52px; top: 18%; font-size: 7px; color: #10b981; font-family: 'JetBrains Mono', monospace; white-space: nowrap; }
 
-/* --- 波形可视化 --- */
 .waveform-box { height: 60px; margin: 8px auto 6px; position: relative; max-width: 140px; }
 .waveform-box canvas { width: 100%; height: 100%; border-radius: 6px; }
 
-/* --- 按压循环可视化 --- */
-.cycles-viz {
-  position: relative;
-  width: 130px;
-  height: 90px;
-  margin: 5px auto 6px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
+.cycles-viz { position: relative; width: 130px; height: 90px; margin: 5px auto 6px; display: flex; align-items: center; justify-content: center; }
+.press-icon { font-size: 36px; animation: press-bounce 1.2s ease-in-out infinite; filter: drop-shadow(0 0 8px rgba(16, 185, 129, 0.5)); }
+@keyframes press-bounce { 0%, 100% { transform: translateY(0) scale(1); filter: drop-shadow(0 0 8px rgba(16, 185, 129, 0.3)); } 15% { transform: translateY(8px) scale(1.05, 0.9); filter: drop-shadow(0 0 15px rgba(16, 185, 129, 0.8)); } 30% { transform: translateY(-4px) scale(0.98, 1.04); } 45% { transform: translateY(0) scale(1); } }
+.press-ripple { position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%); width: 40px; height: 8px; background: radial-gradient(ellipse, rgba(16, 185, 129, 0.4) 0%, transparent 70%); border-radius: 50%; animation: ripple-squash 1.2s ease-in-out infinite; }
+@keyframes ripple-squash { 0%, 100% { transform: translateX(-50%) scaleX(1); opacity: 0.3; } 15% { transform: translateX(-50%) scaleX(1.8); opacity: 0.8; } 45% { transform: translateX(-50%) scaleX(1); opacity: 0.3; } }
+.cycles-counter-flash { position: absolute; top: 2px; right: 10px; font-family: 'JetBrains Mono', monospace; font-size: 9px; color: #10b981; opacity: 0; animation: counter-tick 1.2s ease-in-out infinite; }
+@keyframes counter-tick { 0%, 10% { opacity: 0; transform: translateY(0); } 15%, 25% { opacity: 1; transform: translateY(-2px); } 40%, 100% { opacity: 0; transform: translateY(-8px); } }
 
-.press-icon {
-  font-size: 36px;
-  animation: press-bounce 1.2s ease-in-out infinite;
-  filter: drop-shadow(0 0 8px rgba(16, 185, 129, 0.5));
-}
-
-@keyframes press-bounce {
-  0%, 100% { 
-    transform: translateY(0) scale(1); 
-    filter: drop-shadow(0 0 8px rgba(16, 185, 129, 0.3));
-  }
-  15% { 
-    transform: translateY(8px) scale(1.05, 0.9); 
-    filter: drop-shadow(0 0 15px rgba(16, 185, 129, 0.8));
-  }
-  30% { 
-    transform: translateY(-4px) scale(0.98, 1.04); 
-  }
-  45% { 
-    transform: translateY(0) scale(1); 
-  }
-}
-
-/* 按压时的涟漪波纹 */
-.press-ripple {
-  position: absolute;
-  bottom: 8px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 40px;
-  height: 8px;
-  background: radial-gradient(ellipse, rgba(16, 185, 129, 0.4) 0%, transparent 70%);
-  border-radius: 50%;
-  animation: ripple-squash 1.2s ease-in-out infinite;
-}
-
-@keyframes ripple-squash {
-  0%, 100% { 
-    transform: translateX(-50%) scaleX(1); 
-    opacity: 0.3; 
-  }
-  15% { 
-    transform: translateX(-50%) scaleX(1.8); 
-    opacity: 0.8; 
-  }
-  45% { 
-    transform: translateX(-50%) scaleX(1); 
-    opacity: 0.3; 
-  }
-}
-
-/* 按压计数器闪烁 */
-.cycles-counter-flash {
-  position: absolute;
-  top: 2px;
-  right: 10px;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 9px;
-  color: #10b981;
-  opacity: 0;
-  animation: counter-tick 1.2s ease-in-out infinite;
-}
-
-@keyframes counter-tick {
-  0%, 10% { opacity: 0; transform: translateY(0); }
-  15%, 25% { opacity: 1; transform: translateY(-2px); }
-  40%, 100% { opacity: 0; transform: translateY(-8px); }
-}
-
-@media (max-width: 600px) {
-  .cycles-viz { width: 70px; height: 55px; }
-  .press-icon { font-size: 24px; }
-  .cycles-counter-flash { display: none; }
-}
-
-/* --- 进度条可视化 --- */
 .yield-bar-wrapper { margin: 15px auto 8px; max-width: 140px; }
 .yield-bar-track { height: 10px; background: rgba(255,255,255,0.08); border-radius: 5px; overflow: hidden; position: relative; border: 1px solid rgba(255,255,255,0.06); }
 .yield-bar-fill { height: 100%; width: 0%; background: linear-gradient(90deg, #3b82f6, #10b981); border-radius: 5px; position: relative; transition: width 0.1s; box-shadow: 0 0 10px rgba(16, 185, 129, 0.4); }
@@ -910,7 +554,6 @@ body.light-mode .model-watermark-text {
 .yield-particles { position: relative; height: 20px; overflow: hidden; }
 .yield-particle { position: absolute; width: 3px; height: 3px; background: #10b981; border-radius: 50%; opacity: 0; box-shadow: 0 0 4px #10b981; }
 
-/* --- 手机端适配 --- */
 @media (max-width: 600px) {
   .metrics-grid-v2 { grid-template-columns: repeat(3, 1fr); gap: 6px; }
   .metric-card-v2 { padding: 12px 4px; backdrop-filter: none; -webkit-backdrop-filter: none; background: rgba(15, 23, 42, 0.92); }
@@ -926,9 +569,11 @@ body.light-mode .model-watermark-text {
   .thermo-safe-line, .thermo-safe-label { display: none; }
   .waveform-box { height: 40px; max-width: 90px; }
   .yield-bar-wrapper { max-width: 90px; }
+  .cycles-viz { width: 70px; height: 55px; }
+  .press-icon { font-size: 24px; }
+  .cycles-counter-flash { display: none; }
 }
 
-/* --- 浅色模式适配 --- */
 body.light-mode .metric-card-v2 { background: rgba(241, 245, 249, 0.85); border-color: rgba(148, 163, 184, 0.3); }
 body.light-mode .metric-card-v2:hover { box-shadow: 0 12px 40px rgba(148, 163, 184, 0.15); }
 body.light-mode .metric-card-v2 .card-value { color: #1e293b; text-shadow: none; }
@@ -940,7 +585,6 @@ body.light-mode .yield-bar-track { background: rgba(0,0,0,0.06); border-color: r
 </style>
 
 <div class="metrics-grid-v2" data-aos="fade-up">
-  <!-- Row 1: 圆环类 -->
   <div class="metric-card-v2" style="--card-accent: #10b981;" data-type="ring" data-percent="100" data-value="2.8" data-is-float="true">
     <div class="card-label">WEIGHT</div>
     <div class="v2-chart-box">
@@ -980,7 +624,6 @@ body.light-mode .yield-bar-track { background: rgba(0,0,0,0.06); border-color: r
     <div class="card-sub">Custom Routing</div>
   </div>
   
-  <!-- Row 2: 新增特殊可视化 -->
   <div class="metric-card-v2" style="--card-accent: #ef4444;" data-type="thermo" data-value="30.5" data-max="50">
     <div class="card-label">TEMPERATURE</div>
     <div class="thermo-wrapper">
@@ -1002,190 +645,26 @@ body.light-mode .yield-bar-track { background: rgba(0,0,0,0.06); border-color: r
     <div class="card-sub">Near Chip Limit</div>
   </div>
 
-<div class="metric-card-v2" style="--card-accent: #10b981;" data-type="cycles" data-value="300">
-  <div class="card-label">STRESS TESTED</div>
-  <div class="cycles-viz">
-    
-    <div class="press-icon">
-      <span class="icon-desktop">🫸</span>
-      <span class="icon-mobile">
-        <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M12 3v14"></path>
-          <path d="m7 12 5 5 5-5"></path>
-          <path d="M4 21h16"></path>
-        </svg>
-      </span>
+  <div class="metric-card-v2" style="--card-accent: #10b981;" data-type="cycles" data-value="300">
+    <div class="card-label">STRESS TESTED</div>
+    <div class="cycles-viz">
+      <div class="press-icon">
+        <span class="icon-desktop">🫸</span>
+        <span class="icon-mobile">
+          <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 3v14"></path>
+            <path d="m7 12 5 5 5-5"></path>
+            <path d="M4 21h16"></path>
+          </svg>
+        </span>
+      </div>
+      <div class="press-ripple"></div>
+      <div class="cycles-counter-flash">+1</div>
     </div>
-    
-    <div class="press-ripple"></div>
-    <div class="cycles-counter-flash">+1</div>
+    <div class="card-value v2-count" style="font-size: 28px;">0</div><span class="card-unit">+</span>
+    <div class="card-sub">97%+ Yield Maintained</div>
   </div>
-  <div class="card-value v2-count" style="font-size: 28px;">0</div><span class="card-unit">+</span>
-  <div class="card-sub">97%+ Yield Maintained</div>
 </div>
-</div>
-
-<script>
-document.addEventListener("DOMContentLoaded", function() {
-  // 🚀 全局滚动状态锁 (专门拯救电脑端平滑滚动掉帧)
-  window.isPageScrolling = false;
-  let pageScrollTimer = null;
-  window.addEventListener('scroll', () => {
-    window.isPageScrolling = true;
-    clearTimeout(pageScrollTimer);
-    pageScrollTimer = setTimeout(() => {
-      window.isPageScrolling = false;
-    }, 150); // 停止滚动 150ms 后恢复状态
-  }, { passive: true });
-  
-  // ===================== V2 Dashboard Animation Engine =====================
-  const CIRCUMFERENCE = 2 * Math.PI * 45; // ≈ 283
-  const DURATION = 2200;
-
-  function easeOutExpo(t) {
-    return t === 1 ? 1 : 1 - Math.pow(2, -10 * t);
-  }
-
-  // --- 波形绘制 ---
-  function drawWaveform(canvas, progress, noiseVal) {
-    const ctx = canvas.getContext('2d');
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
-    const w = canvas.clientWidth; const h = canvas.clientHeight;
-    canvas.width = w * dpr; canvas.height = h * dpr;
-    ctx.scale(dpr, dpr);
-    ctx.clearRect(0, 0, w, h);
-
-    // 波形信号
-    const amplitude = (h * 0.35) * progress;
-    const noiseAmp = (noiseVal / 5) * amplitude;
-    const time = Date.now() * 0.003;
-
-    ctx.beginPath();
-    ctx.strokeStyle = `rgba(167, 139, 250, ${0.3 + progress * 0.7})`;
-    ctx.lineWidth = 1.5;
-    ctx.shadowColor = 'rgba(167, 139, 250, 0.6)';
-    ctx.shadowBlur = 6;
-
-    for (let x = 0; x < w; x++) {
-      const t = x / w;
-      const signal = Math.sin(t * 12 + time) * amplitude * 0.5
-                   + Math.sin(t * 25 + time * 1.5) * noiseAmp * 0.3
-                   + (Math.random() - 0.5) * noiseAmp * progress * 0.4;
-      const y = h / 2 + signal;
-      x === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
-    }
-    ctx.stroke();
-    ctx.shadowBlur = 0;
-  }
-
-  // --- 粒子爆发 ---
-  function spawnParticles(container, count) {
-    for (let i = 0; i < count; i++) {
-      const p = document.createElement('div');
-      p.className = 'yield-particle';
-      p.style.left = (Math.random() * 100) + '%';
-      p.style.bottom = '0';
-      p.style.opacity = '1';
-      p.style.transition = `all ${0.6 + Math.random() * 0.8}s ease-out`;
-      container.appendChild(p);
-      requestAnimationFrame(() => {
-        p.style.transform = `translateY(-${10 + Math.random() * 20}px) translateX(${(Math.random() - 0.5) * 20}px)`;
-        p.style.opacity = '0';
-      });
-      setTimeout(() => p.remove(), 1500);
-    }
-  }
-
-  // --- 主观察器 ---
-  const v2Observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      const card = entry.target;
-      const type = card.dataset.type;
-      const targetValue = parseFloat(card.dataset.value);
-      const isFloat = card.dataset.isFloat === "true";
-      const numberEl = card.querySelector('.v2-count');
-
-      if (entry.isIntersecting) {
-        if (card.dataset.v2Active === "true") return;
-        card.dataset.v2Active = "true";
-
-        let startTs = null;
-        let waveformRunning = true;
-
-        const animate = (ts) => {
-          if (card.dataset.v2Active !== "true") { waveformRunning = false; return; }
-          if (!startTs) startTs = ts;
-          const elapsed = ts - startTs;
-          const progress = Math.min(elapsed / DURATION, 1);
-          const ease = easeOutExpo(progress);
-          const currentVal = ease * targetValue;
-
-          // 数字更新 — 支持自定义小数位数
-          const decimals = parseInt(card.dataset.decimals) || 1;
-          if (numberEl) numberEl.innerText = isFloat ? currentVal.toFixed(decimals) : Math.round(currentVal);
-
-          // 类型特化
-          if (type === 'ring') {
-            const ring = card.querySelector('.fg-ring');
-            if (ring) ring.style.strokeDashoffset = CIRCUMFERENCE - (CIRCUMFERENCE * ease);
-          }
-          else if (type === 'thermo') {
-            const fill = card.querySelector('.thermo-fill');
-            const maxTemp = parseFloat(card.dataset.max) || 50;
-            if (fill) fill.style.height = ((currentVal / maxTemp) * 100) + '%';
-          }
-          else if (type === 'waveform') {
-            const canvas = card.querySelector('.waveform-canvas');
-            if (canvas) drawWaveform(canvas, ease, targetValue);
-          }
-          else if (type === 'yield') {
-            const bar = card.querySelector('.yield-bar-fill');
-            if (bar) bar.style.width = currentVal + '%';
-            // 在动画末段爆发粒子
-            if (progress > 0.85 && !card.dataset.particlesDone) {
-              card.dataset.particlesDone = "true";
-              spawnParticles(card.querySelector('.yield-particles'), 12);
-            }
-          }
-          else if (type === 'cycles') {
-          // cycles 类型只做数字递增，按压动画由 CSS 自动循环
-           // 可选：在动画完成时爆发粒子
-          const particles = card.querySelector('.yield-particles');
-           if (particles && progress > 0.85 && !card.dataset.particlesDone) {
-            card.dataset.particlesDone = "true";
-             spawnParticles(particles, 12);
-               } 
-              }
-
-          if (progress < 1) {
-            card._v2Raf = requestAnimationFrame(animate);
-          } else if (type === 'waveform') {
-            // 数字到位后，波形持续动态运行
-            const loopWave = () => {
-              if (!waveformRunning) return;
-              const canvas = card.querySelector('.waveform-canvas');
-              if (canvas) drawWaveform(canvas, 1, targetValue);
-              card._v2Raf = requestAnimationFrame(loopWave);
-            };
-            card._v2Raf = requestAnimationFrame(loopWave);
-          }
-        };
-
-        if (card._v2Raf) cancelAnimationFrame(card._v2Raf);
-        card._v2Raf = requestAnimationFrame(animate);
-
-      } else {
-        card.dataset.v2Active = "false";
-        card.dataset.particlesDone = "";
-        if (card._v2Raf) { cancelAnimationFrame(card._v2Raf); card._v2Raf = null; }
-      }
-    });
-  }, { threshold: 0.2, rootMargin: "0px 0px -5% 0px" });
-
-  // 💡 修复核心：现在它会一次性抓取网页里所有的 .metric-card-v2 (中英双语共 12 个)
-  document.querySelectorAll('.metric-card-v2').forEach(c => v2Observer.observe(c));
-});
-</script>
 
 <span id="en-overview"></span>
 
@@ -1305,145 +784,52 @@ document.addEventListener("DOMContentLoaded", function() {
 </div>
 
 <style>
-/* ===================== 跨物种拓扑动画 CSS - 居中与性能优化版 ===================== */
-.species-glass-box {
-  position: relative;
-  background: rgba(15, 23, 42, 0.4);
-  border: 1px solid rgba(59, 130, 246, 0.2);
-  border-radius: 16px;
-  padding: 30px 20px 40px 20px; /* 🚨 修改点：底部增加到 40px 内边距，防止文字贴底 */
-  min-height: 380px;            /* 🚨 修改点：从 320px 增加到 380px，给大鼠腾出空间 */
-  overflow: hidden;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-  transform: translateZ(0); 
-  backface-visibility: hidden;
-  perspective: 1000;
-  will-change: transform;
-}
-
-.connection-lines {
-  position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none;
-}
+.species-glass-box { position: relative; background: rgba(15, 23, 42, 0.4); border: 1px solid rgba(59, 130, 246, 0.2); border-radius: 16px; padding: 30px 20px 40px 20px; min-height: 380px; overflow: hidden; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2); transform: translateZ(0); backface-visibility: hidden; perspective: 1000; will-change: transform; }
+.connection-lines { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
 .base-line { fill: none; stroke: rgba(255, 255, 255, 0.1); stroke-width: 2; }
-.pulse-line {
-  fill: none; 
-  stroke: #60a5fa; 
-  stroke-width: 3; 
-  stroke-linecap: round; /* ✨ 修复1：让光波两头变圆滑，像一颗流星 */
-  stroke-dasharray: 15 125; /* ✨ 修复2：光波长度15，间距125，总周期正好是 140 */
-  animation: data-flow 2.8s linear infinite; /* ✨ 修复3：稍微放慢一点点，显得更沉稳高级 */
-  filter: drop-shadow(0 0 6px rgba(96, 165, 250, 0.8));
-}
+.pulse-line { fill: none; stroke: #60a5fa; stroke-width: 3; stroke-linecap: round; stroke-dasharray: 15 125; animation: data-flow 2.8s linear infinite; filter: drop-shadow(0 0 6px rgba(96, 165, 250, 0.8)); }
 .line-to-monkey { stroke: #f59e0b !important; filter: drop-shadow(0 0 6px rgba(245, 158, 11, 0.8)) !important;}
 .line-to-mouse { stroke: #10b981 !important; filter: drop-shadow(0 0 6px rgba(16, 185, 129, 0.8)) !important; }
-/* 🚀 核心修复：单独按比例缩短中间大鼠线的流光长度，使其与斜线视觉统一 */
-.line-to-rat {
-  stroke-dasharray: 9 106 !important; /* 光长缩短为 9，间距 106，总和 115 */
-  animation: data-flow-mid 2.3s linear infinite !important; /* 动画时间等比例缩短为 2.3s，保持流速一致 */
-}
+.line-to-rat { stroke-dasharray: 9 106 !important; animation: data-flow-mid 2.3s linear infinite !important; }
+@keyframes data-flow-mid { from { stroke-dashoffset: 115; } to { stroke-dashoffset: 0; } }
+@keyframes data-flow { from { stroke-dashoffset: 140; } to { stroke-dashoffset: 0; } }
 
-@keyframes data-flow-mid { 
-  from { stroke-dashoffset: 115; } /* 与上方的总和 115 完美咬合 */
-  to { stroke-dashoffset: 0; } 
-}
-
-/* 🚀 核心修复：起始值 140 必须和上面 dasharray 的和 (15+125) 完全相等，实现完美无缝循环！ */
-@keyframes data-flow { 
-  from { stroke-dashoffset: 140; } 
-  to { stroke-dashoffset: 0; } 
-}
-
-.node {
-  position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center;
-  flex: 1; min-width: 0; /* 强制三等分，绝对居中 */
-}
-
+.node { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; flex: 1; min-width: 0; }
 .center-node { margin-bottom: 20px; flex: none; width: 100%; }
-
-.hex-border {
-  width: 70px; height: 70px; background: radial-gradient(circle, rgba(59,130,246,0.3) 0%, transparent 70%);
-  border: 2px solid #3b82f6; border-radius: 12px; display: flex; justify-content: center; align-items: center;
-  box-shadow: 0 0 15px rgba(59, 130, 246, 0.5); animation: float 3s ease-in-out infinite;
-}
-
+.hex-border { width: 70px; height: 70px; background: radial-gradient(circle, rgba(59,130,246,0.3) 0%, transparent 70%); border: 2px solid #3b82f6; border-radius: 12px; display: flex; justify-content: center; align-items: center; box-shadow: 0 0 15px rgba(59, 130, 246, 0.5); animation: float 3s ease-in-out infinite; }
 @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
-
 .node-text { margin-top: 10px; font-weight: bold; color: #fff; font-family: 'JetBrains Mono', monospace; font-size: 14px; }
 .pulse-text { text-shadow: 0 0 8px rgba(96, 165, 250, 0.8); }
 
-.animal-nodes {
-  display: flex; 
-  justify-content: space-between; 
-  width: 100%; 
-  align-items: flex-start; 
-  margin-top: 60px; /* 👈圆圈整体下移 */
-}
-
-/* 核心修复：使用 transform 代替 margin-top */
+.animal-nodes { display: flex; justify-content: space-between; width: 100%; align-items: flex-start; margin-top: 60px; }
 .rat-node-adjust { transform: translateY(30px) translateZ(0); }
-
-.icon-circle {
-  width: 60px; height: 60px; border-radius: 50%; background: #0f172a; isolation: isolate; 
-  border: 1px solid rgba(255,255,255,0.2); display: flex; justify-content: center; align-items: center;
-  position: relative; z-index: 5; transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease;
-}
-
+.icon-circle { width: 60px; height: 60px; border-radius: 50%; background: #0f172a; isolation: isolate; border: 1px solid rgba(255,255,255,0.2); display: flex; justify-content: center; align-items: center; position: relative; z-index: 5; transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease; }
 .icon-circle:hover { transform: scale(1.1); border-color: #60a5fa; background: rgba(96, 165, 250, 0.1); }
-
 .mouse-glow { box-shadow: 0 0 10px rgba(16, 185, 129, 0.5); }
 .rat-glow { box-shadow: 0 0 10px rgba(59, 130, 246, 0.5); }
 .monkey-glow { box-shadow: 0 0 15px rgba(245, 158, 11, 0.6); border-color: rgba(245, 158, 11, 0.5) !important; }
-
 .node-title { margin-top: 8px; font-weight: bold; color: #e2e8f0; font-size: 14px; }
 .node-desc { margin-top: 4px; color: #94a3b8; font-size: 11px; text-align: center; line-height: 1.4; font-family: sans-serif; }
 
 @media (max-width: 600px) {
-  /* 🚀 手机端布局校准：裤子往下挪（增加底部 padding），整体更协调 */
-  .species-glass-box { 
-    padding: 25px 5px 30px 5px; /* 👈 底部 padding 从 15px 恢复到 30px，增加留白 */
-    min-height: 350px;           /* 👈 高度微调，防止压缩 */
-  } 
-  
-  /* 🚀 E-Link 文字上调：减小与上方图标的间距 */
-  .center-node .node-text { 
-    margin-top: 2px !important;  /* 👈 从 10px 降到 2px，实现“文字上调” */
-    font-size: 13px; 
-  }
-  
+  .species-glass-box { padding: 25px 5px 30px 5px; min-height: 350px; } 
+  .center-node .node-text { margin-top: 2px !important; font-size: 13px; }
   .icon-circle { width: 45px; height: 45px; }
   .icon-circle span { font-size: 24px !important; }
   .node-title { font-size: 12px; }
   .node-desc { font-size: 9px; }
   .connection-lines { opacity: 0.8; }
   .pulse-line { stroke-width: 2; }
-  
-  /* 🚀 补偿：让三个动物节点的文字离圆圈更近一点，整体往框中心缩 */
   .animal-nodes { margin-top: 50px; } 
   .rat-node-adjust { transform: translateY(25px) translateZ(0); }
 }
 </style> 
 
 <style> 
-/* --- 🚀 高级动态特征列表 --- */
-.watermark-features { 
-  color: rgba(148, 163, 184, 0.4); 
-  font-size: 0.95em; 
-  line-height: 1.7; 
-  font-weight: 400; 
-  letter-spacing: 0.3px; 
-}
+.watermark-features { color: rgba(148, 163, 184, 0.4); font-size: 0.95em; line-height: 1.7; font-weight: 400; letter-spacing: 0.3px; }
 .watermark-features ul { padding-left: 10px; list-style: none; }
-.watermark-features li { 
-  margin-bottom: 35px; 
-  padding-left: 20px;
-  position: relative;
-  transition: all 0.8s cubic-bezier(0.22, 1, 0.36, 1);
-  border-left: 2px solid rgba(59, 130, 246, 0); 
-}
-.watermark-features li.aos-animate { 
-  color: rgba(241, 245, 249, 0.95); 
-  border-left: 2px solid #3b82f6; 
-}
+.watermark-features li { margin-bottom: 35px; padding-left: 20px; position: relative; transition: all 0.8s cubic-bezier(0.22, 1, 0.36, 1); border-left: 2px solid rgba(59, 130, 246, 0); }
+.watermark-features li.aos-animate { color: rgba(241, 245, 249, 0.95); border-left: 2px solid #3b82f6; }
 body.light-mode .watermark-features { color: rgba(71, 85, 105, 0.3); }
 body.light-mode .watermark-features li.aos-animate { color: #1e293b; border-left-color: #2563eb; }
 body.light-mode .watermark-features strong { color: #2563eb; text-shadow: none; }
@@ -1455,32 +841,26 @@ body.light-mode .watermark-features strong { color: #2563eb; text-shadow: none; 
       <strong>⚡ 256-Channel High-Density & Scalable Interface</strong><br>
       Compact pedestal footprint supporting 256-ch acquisition. The elastomer-based design offers a clear scaling roadmap (up to 1024-ch) without increasing physical size.
     </li>
-
     <li data-aos="fade-up" data-aos-delay="100">
       <strong>🔌 Zero-Force "Soft" Interconnect</strong><br>
       By replacing rigid pins with Anisotropic Conductive Elastomer, the system shifts from "insertion" to "compression," eliminating common "bent pin" failure modes.
     </li>
-
     <li data-aos="fade-up" data-aos-delay="200">
       <strong>🎯 Self-Aligning & High Tolerance</strong><br>
       Features high-precision mechanical guidance with "Structural Redundancy," naturally forgiving minor manual misalignments without microscopic assistance.
     </li>
-
     <li data-aos="fade-up" data-aos-delay="300">
       <strong>🛠️ Modular Maintenance & On-Demand Assembly</strong><br>
       Separable "Sandwich" structure allows independent replacement of damaged modules and supports on-demand chip soldering to save research costs.
     </li>
-
     <li data-aos="fade-up" data-aos-delay="400">
       <strong>🪶 Detachable Active Electronics</strong><br>
       Easily separate heavy electronics from the implanted pedestal during rest, leaving only a lightweight passive interface to promote natural animal behavior.
     </li>
-
     <li data-aos="fade-up" data-aos-delay="500">
       <strong>🐭 Optimized for Chronic In-Vivo Research</strong><br>
       Lightweight core (2.8g) and low-profile design compatible with commutators, ensuring robust long-term recording in freely moving animals.
     </li>
-
     <li data-aos="fade-up" data-aos-delay="600">
       <strong>🧪 Surgical-Grade Integration</strong><br>
       Textured sidewalls for superior adhesion and customizable base curvature to match specific cranial profiles, creating a rock-solid isolation chamber.
@@ -1491,11 +871,11 @@ body.light-mode .watermark-features strong { color: #2563eb; text-shadow: none; 
 <div align="center" data-aos="zoom-in-up" data-aos-duration="1000">
  <br>
  <div class="gif-placeholder">
-   <img data-src="Videos/Animation%20repeat.gif" 
-         src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
-         alt="ELINK-256 Animation GIF"
-         class="lazy-gif white-bg-gif" 
-         decoding="async">
+  <img data-src="Videos/Animation%20repeat.gif" 
+        src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+        alt="ELINK-256 Animation GIF"
+        class="lazy-gif white-bg-gif" 
+        decoding="async">
  </div>
 </div>
 
@@ -1510,97 +890,31 @@ body.light-mode .watermark-features strong { color: #2563eb; text-shadow: none; 
 
 <style>
 /* ===================== Intan RHX 像素级复刻 (双屏优化) ===================== */
-.intan-simulator-wrapper {
-  width: 100%; max-width: 860px; margin: 40px auto;
-  background: #2b2b2b; border: 1px solid #1a1a1a; border-radius: 6px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.1) inset;
-  overflow: hidden; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; user-select: none;
-  transform: translateZ(0); 
-}
-.intan-title-bar {
-  background: linear-gradient(to bottom, #4a4a4a, #333333); padding: 5px 12px;
-  display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #111;
-}
-.intan-title-text { 
-  color: #e0e0e0; font-size: 12px; font-weight: 600; 
-  display: flex; align-items: center; gap: 6px; letter-spacing: 0.5px; 
-  line-height: 1.3; /* 增加一点行高，两行文字看起来更舒服 */
-}
-.intan-title-text svg { 
-  flex-shrink: 0; /* 保护左侧的 SVG 小图标在文字折行时不会被压扁 */
-}
-.intan-window-controls { 
-  display: flex; align-items: center; flex-shrink: 0; /* 保护三个圆圈永远不换行且不被压缩 */
-}
-.intan-window-controls span { 
-  display: block; width: 12px; height: 12px; border-radius: 50%; margin-left: 6px; background: #555; flex-shrink: 0; 
-}
+.intan-simulator-wrapper { width: 100%; max-width: 860px; margin: 40px auto; background: #2b2b2b; border: 1px solid #1a1a1a; border-radius: 6px; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.1) inset; overflow: hidden; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; user-select: none; transform: translateZ(0); }
+.intan-title-bar { background: linear-gradient(to bottom, #4a4a4a, #333333); padding: 5px 12px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #111; }
+.intan-title-text { color: #e0e0e0; font-size: 12px; font-weight: 600; display: flex; align-items: center; gap: 6px; letter-spacing: 0.5px; line-height: 1.3; }
+.intan-title-text svg { flex-shrink: 0; }
+.intan-window-controls { display: flex; align-items: center; flex-shrink: 0; }
+.intan-window-controls span { display: block; width: 12px; height: 12px; border-radius: 50%; margin-left: 6px; background: #555; flex-shrink: 0; }
 .intan-window-controls span.close { background: #ff5f56; } .intan-window-controls span.min { background: #ffbd2e; } .intan-window-controls span.max { background: #27c93f; }
 
 .intan-body { display: flex; height: 420px; background: #000; }
-
-/* 双屏核心布局 */
 .intan-plots-wrapper { flex: 1; display: flex; border-top: 1px solid #222; min-height: 0; }
-.intan-plot-pane {
-  flex: 1 1 0%; /* 🚀 核心修复：允许缩放，基准为0 */
-  display: flex; flex-direction: column; position: relative;
-  background: #000000; border-right: 2px solid #333;
-  min-height: 0; /* 🚀 核心修复：防止内部 canvas 把父级撑破 */
-}
+.intan-plot-pane { flex: 1 1 0%; display: flex; flex-direction: column; position: relative; background: #000000; border-right: 2px solid #333; min-height: 0; }
 
-/* 顶部时间轴 (0 - 2000 ms) */
-.intan-time-axis {
-  height: 20px; display: flex; justify-content: space-between; align-items: flex-end;
-  padding: 0 10px 0 100px; 
-  border-bottom: 1px solid #444; color: #aaa; font-family: 'JetBrains Mono', monospace; font-size: 10px;
-  background: #000; z-index: 10;
-  /* 🚀 核心修复：防止顶部被压缩 */
-  flex-shrink: 0; 
-}
+.intan-time-axis { height: 20px; display: flex; justify-content: space-between; align-items: flex-end; padding: 0 10px 0 100px; border-bottom: 1px solid #444; color: #aaa; font-family: 'JetBrains Mono', monospace; font-size: 10px; background: #000; z-index: 10; flex-shrink: 0; }
 .intan-time-axis span { position: relative; }
-.intan-time-axis span::after {
-  content: ''; position: absolute; bottom: -5px; left: 50%; transform: translateX(-50%);
-  width: 1px; height: 5px; background: #888;
-}
+.intan-time-axis span::after { content: ''; position: absolute; bottom: -5px; left: 50%; transform: translateX(-50%); width: 1px; height: 5px; background: #888; }
 
-/* 绘图区背景：仅保留垂直对齐线 */
-.intan-canvas-container {
-  flex: 1 1 0%; 
-  position: relative;
-  overflow: hidden;
-  background: #000000;
-  min-height: 0; 
-}
-.intan-canvas { 
-  position: absolute; 
-  top: 0; left: 0;
-  width: 100%; height: 100%; 
-  display: block; 
-}
+.intan-canvas-container { flex: 1 1 0%; position: relative; overflow: hidden; background: #000000; min-height: 0; }
+.intan-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: block; }
 
-/* 底部状态栏 */
-.intan-pane-footer {
-  height: 24px; 
-  background: #e0e0e0; display: flex; justify-content: space-between; align-items: center;
-  padding: 0 8px; font-size: 11px; color: #333; font-weight: 500; border-top: 1px solid #111;
-  flex-shrink: 0;
-  white-space: nowrap; /* 🚀 核心修复2：强行防折行 */
-  overflow: hidden;    
-}
-.intan-footer-tools { 
-  display: flex; align-items: center; gap: 6px; color: #555; 
-  white-space: nowrap;
-}
-/* 🚀 核心修复3：屏蔽外部博客主题对 checkbox 和 label 元素的全局排版干扰 */
-.intan-footer-tools label {
-  display: inline-flex; align-items: center; gap: 3px; margin: 0; padding: 0; font-weight: normal; cursor: pointer;
-}
-.intan-footer-tools input[type="checkbox"] { 
-  margin: 0; width: 12px; height: 12px; flex-shrink: 0;
-}
+.intan-pane-footer { height: 24px; background: #e0e0e0; display: flex; justify-content: space-between; align-items: center; padding: 0 8px; font-size: 11px; color: #333; font-weight: 500; border-top: 1px solid #111; flex-shrink: 0; white-space: nowrap; overflow: hidden;    }
+.intan-footer-tools { display: flex; align-items: center; gap: 6px; color: #555; white-space: nowrap; }
+.intan-footer-tools label { display: inline-flex; align-items: center; gap: 3px; margin: 0; padding: 0; font-weight: normal; cursor: pointer; }
+.intan-footer-tools input[type="checkbox"] { margin: 0; width: 12px; height: 12px; flex-shrink: 0; }
 
-/* 右侧控制面板 (保留原样并加防溢出保护) */
-.intan-sidebar {width: 180px; background: #d4d0c8; padding: 10px; display: flex; flex-direction: column; gap: 10px; box-shadow: inset 1px 0 0 rgba(255,255,255,0.5); border-left: 1px solid #111; overflow-y: auto; /* 🚀 防御性设置：防止如果屏幕过矮导致右侧栏被切 */}
+.intan-sidebar {width: 180px; background: #d4d0c8; padding: 10px; display: flex; flex-direction: column; gap: 10px; box-shadow: inset 1px 0 0 rgba(255,255,255,0.5); border-left: 1px solid #111; overflow-y: auto; }
 .intan-btn-group { display: flex; gap: 8px; }
 .intan-btn { flex: 1; background: linear-gradient(to bottom, #f0f0f0, #dcdcdc); border: 1px solid #888; border-radius: 3px; padding: 6px 0; font-size: 11px; font-weight: bold; color: #333; cursor: pointer; box-shadow: inset 1px 1px 0 #fff, 1px 1px 2px rgba(0,0,0,0.1); text-align: center;}
 .intan-btn:active { background: #d0d0d0; box-shadow: inset 1px 1px 3px rgba(0,0,0,0.2); }
@@ -1616,99 +930,61 @@ body.light-mode .watermark-features strong { color: #2563eb; text-shadow: none; 
 .port-led.on { background: #27c93f; border: 1px solid #1a8a29; box-shadow: inset -1px -1px 2px rgba(0,0,0,0.3), 0 0 5px #27c93f; }
 .port-led.off { background: #666; border: 1px solid #444; box-shadow: inset 1px 1px 2px rgba(0,0,0,0.5); }
 
-/* ===================== 🚀 Intan 模拟器浅色模式专项修复 (权重增强版) ===================== */
-
-/* 1. 标题栏：强制文字变白 */
-body.light-mode #main_content .intan-title-text {
-  color: #ffffff !important;
-}
-body.light-mode #main_content .intan-title-text svg {
-  stroke: #ffffff !important;
-}
-
-/* 2. 侧边栏所有标签文字：强制改为纯黑 (覆盖掉深蓝色) */
-body.light-mode #main_content .intan-sidebar .intan-setting-row span,
-body.light-mode #main_content .intan-sidebar .intan-panel-title {
-  color: #000000 !important;
-  opacity: 1 !important;
-}
-
-/* 3. 重点：System Status 中的绿色状态文字修复 */
-/* 强制让带有颜色定义的 span 恢复原本的逻辑色彩，或者深绿色 */
-body.light-mode #main_content .intan-sidebar .intan-setting-row[style*="color: #27c93f"],
-body.light-mode #main_content .intan-sidebar .intan-setting-row[style*="color: #27c93f"] span {
-  color: #15803d !important; /* 墨绿色，在灰底上更清晰 */
-  font-weight: bold !important;
-}
-
-/* 4. 数值框 (300 Hz / 7.5 kHz) */
-body.light-mode #main_content .intan-value-box {
-  color: #000000 !important;
-  background-color: #ffffff !important;
-  border: 1px solid #999999 !important;
-}
-
-/* 5. 底部 Port A / Port B 状态条文字 */
-body.light-mode #main_content .intan-pane-footer span,
-body.light-mode #main_content .intan-pane-footer div {
-  color: #1a1a1a !important;
-}
-
-/* 6. 按钮文字颜色 */
-body.light-mode #main_content .intan-btn {
-  color: #000000 !important;
-}
+/* ===================== 🚀 Intan 模拟器浅色模式专项修复 ===================== */
+body.light-mode #main_content .intan-title-text { color: #ffffff !important; }
+body.light-mode #main_content .intan-title-text svg { stroke: #ffffff !important; }
+body.light-mode #main_content .intan-sidebar .intan-setting-row span, body.light-mode #main_content .intan-sidebar .intan-panel-title { color: #000000 !important; opacity: 1 !important; }
+body.light-mode #main_content .intan-sidebar .intan-setting-row[style*="color: #27c93f"], body.light-mode #main_content .intan-sidebar .intan-setting-row[style*="color: #27c93f"] span { color: #15803d !important; font-weight: bold !important; }
+body.light-mode #main_content .intan-value-box { color: #000000 !important; background-color: #ffffff !important; border: 1px solid #999999 !important; }
+body.light-mode #main_content .intan-pane-footer span, body.light-mode #main_content .intan-pane-footer div { color: #1a1a1a !important; }
+body.light-mode #main_content .intan-btn { color: #000000 !important; }
   
 @media (max-width: 768px) {
   .intan-body { flex-direction: column; height: auto; }
   .intan-plots-wrapper { flex-direction: column; height: auto; min-height: 0; border-right: none; }
   .intan-plot-pane { flex: none; height: 220px; border-right: none; border-bottom: 2px solid #333; }
   .intan-plot-pane:last-child { border-bottom: none; }
-  /* 🚀 核心修复：同步左侧 80px 的缩进，让波形和 0ms 刻度完美对齐！ */
   .intan-time-axis { padding: 0 10px 0 80px; } 
-  /* 🚀 控制面板防挤压排版 */
   .intan-sidebar { width: 100%; flex-direction: row; flex-wrap: wrap; border-left: none; border-top: 1px solid #111; padding: 10px; gap: 8px; }
   .intan-btn-group { width: 100%; flex: none; }
   .intan-panel { flex: 1 1 40%; min-width: 130px; margin: 0; }
 }
 
-/* ================= 新增：Intan 物理硬件前面板复刻 ================= */
 .hw-ports-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 2px; }
-.hw-port-box {
-  border: 1.5px solid #522e8a; /* Intan 标志性紫色 */
-  border-radius: 4px; background: #fff;
-  display: flex; justify-content: space-between; align-items: center;
-  padding: 4px 6px; box-shadow: 1px 1px 2px rgba(0,0,0,0.1);
-}
+.hw-port-box { border: 1.5px solid #522e8a; border-radius: 4px; background: #fff; display: flex; justify-content: space-between; align-items: center; padding: 4px 6px; box-shadow: 1px 1px 2px rgba(0,0,0,0.1); }
 .hw-port-left { display: flex; flex-direction: column; align-items: center; gap: 3px; }
 .hw-port-label { font-family: Arial, sans-serif; font-size: 13px; font-weight: 800; color: #222; line-height: 1; margin-left: 2px;}
-.hw-port-connector {
-  width: 14px; height: 5px; background: #111; border-radius: 1px;
-  border-top: 1px solid #d4af37; /* 模拟接口的金手指反光 */
-}
+.hw-port-connector { width: 14px; height: 5px; background: #111; border-radius: 1px; border-top: 1px solid #d4af37; }
 .hw-port-leds { display: flex; flex-direction: column; gap: 2px; }
-.hw-led {
-  width: 4px; height: 4px; border-radius: 50%; background: #444; /* 默认熄灭状态 */
-  border: 0.5px solid #222; box-shadow: inset 0.5px 0.5px 1px rgba(0,0,0,0.5);
-}
-/* A和B端口的最下方绿色灯点亮 */
-.hw-port-box.active .hw-led.green {
-  background: #27c93f; border-color: #1a8a29;
-  box-shadow: 0 0 5px #27c93f, inset -0.5px -0.5px 1px rgba(0,0,0,0.2);
-}
-/* C和D端口整体稍微变暗，表示未连接 */
+.hw-led { width: 4px; height: 4px; border-radius: 50%; background: #444; border: 0.5px solid #222; box-shadow: inset 0.5px 0.5px 1px rgba(0,0,0,0.5); }
+.hw-port-box.active .hw-led.green { background: #27c93f; border-color: #1a8a29; box-shadow: 0 0 5px #27c93f, inset -0.5px -0.5px 1px rgba(0,0,0,0.2); }
 .hw-port-box.inactive { opacity: 0.45; filter: grayscale(80%); }
 
-/* ====== Spike Scope 专属样式 ====== */
-body.light-mode .spike-scope-container canvas {
-  filter: invert(1) hue-rotate(180deg); /* 浅色模式下反转颜色，保证背景变白，同时保留蓝绿黄的彩色特征 */
-}
-body.light-mode .intan-simulator-wrapper .intan-pane-footer {
-  background: #f0f0f0 !important;
-  color: #333 !important;
-}
-body.light-mode .spike-counter-text {
-  color: #000 !important;
+/* ====== Spike Scope Win32 Style Replica ====== */
+.scope-win-wrapper { width: 100%; max-width: 760px; margin: 40px auto; background: #f0f0f0; border: 1px solid #999; border-radius: 4px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); font-family: 'Segoe UI', Arial, sans-serif; overflow: hidden; user-select: none; color: #000; }
+.scope-title-bar { background: #fff; padding: 6px 10px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #ccc; font-size: 13px; font-weight: 500; }
+.scope-title-left { display: flex; align-items: center; gap: 6px; }
+.scope-body { display: flex; height: 440px; background: #f0f0f0; }
+.scope-sidebar { width: 240px; padding: 12px 10px; border-right: 1px solid #ccc; display: flex; flex-direction: column; gap: 14px; box-sizing: border-box; overflow-y: auto; color: #000; font-size: 11px; }
+.scope-fieldset { border: 1px solid #ccc; border-radius: 2px; padding: 10px 8px 8px 8px; margin: 0; position: relative; }
+.scope-legend { font-size: 11px; color: #000; padding: 0 4px; position: absolute; top: -8px; left: 8px; background: #f0f0f0; }
+.scope-row { display: flex; align-items: center; margin-bottom: 6px; gap: 6px; color:#000; font-weight: normal; margin-top:0;}
+.scope-row input[type="checkbox"] { margin:0; }
+.scope-btn { background: #e1e1e1; border: 1px solid #adadad; padding: 4px; text-align: center; cursor: pointer; border-radius: 2px; color:#000; }
+.scope-btn:hover { background: #e5f1fb; border-color: #0078d7; }
+.scope-input { border: 1px solid #ccc; padding: 2px; text-align: right; font-size: 11px; background: #fff; color: #000; }
+.scope-plot-area { flex: 1; background: #000; position: relative; overflow: hidden; }
+.scope-canvas { width: 100%; height: 100%; display: block; }
+.scope-overlay-text { position: absolute; font-size: 11px; font-family: 'Segoe UI', sans-serif; pointer-events: none;}
+
+/* 浅色模式下不要反转示波器背景，强制黑底白字 */
+body.light-mode .scope-win-wrapper, 
+body.light-mode .scope-win-wrapper * { filter: none !important; }
+
+@media (max-width: 768px) {
+  .scope-body { flex-direction: column-reverse; height: auto; }
+  .scope-sidebar { width: 100%; border-right: none; border-top: 1px solid #ccc; }
+  .scope-plot-area { height: 250px; flex: none; }
 }
 </style>
 
@@ -1795,199 +1071,209 @@ body.light-mode .spike-counter-text {
   </div>
 </div>
 
-<div class="intan-simulator-wrapper" data-aos="fade-up" style="margin-top: 20px;">
-  <div class="intan-title-bar">
-    <div class="intan-title-text">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/></svg>
-      Spike Scope - Online PCA Clustering (Simulated)
+<div class="scope-win-wrapper" data-aos="fade-up" style="margin-top: 20px;">
+  <div class="scope-title-bar">
+    <div class="scope-title-left">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="3"><polygon points="12 2 22 22 2 22"/></svg>
+      Spike Scope
     </div>
     <div class="intan-window-controls"><span class="close"></span><span class="min"></span><span class="max"></span></div>
   </div>
   
-  <div class="intan-body" style="height: 320px;">
-    <div class="intan-plot-pane" style="flex: 1; border-right: 1px solid #222; display: flex; flex-direction: column;">
-      <div class="intan-time-axis" style="padding: 0 10px; justify-content: space-between;">
-        <span>-0.5</span><span>0.0</span><span>0.5</span><span>1.0</span><span>1.5 ms</span>
-      </div>
-      <div class="intan-canvas-container spike-scope-container" style="flex: 1; position: relative;">
-        <canvas class="spike-scope-canvas" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></canvas>
-      </div>
-      <div class="intan-pane-footer" style="border-top: 1px solid #222; background: #1a1a1a; color: #aaa;">
-        <span>⛶ Trigger: -45 µV (Falling Edge)</span>
-        <div class="intan-footer-tools">
-          <span>Total Spikes: <span class="spike-counter-text" style="color:#fff; font-weight:bold;">0</span></span>
-        </div>
-      </div>
-    </div>
-    
-    <div class="intan-sidebar" style="width: 160px; background: #2b2b2b; color: #eee; border-left: none;">
-      <div class="intan-panel" style="background: #1a1a1a; border-color: #333; box-shadow: none;">
-        <div class="intan-panel-title" style="color: #888; border-bottom-color: #444;">Sorted Units (3)</div>
-        <div class="intan-setting-row" style="color: #facc15; font-weight: bold;">
-          <span>■ Unit 1</span><span>18.4 Hz</span>
-        </div>
-        <div class="intan-setting-row" style="color: #4ade80; font-weight: bold;">
-          <span>■ Unit 2</span><span>12.1 Hz</span>
-        </div>
-        <div class="intan-setting-row" style="color: #3b82f6; font-weight: bold;">
-          <span>■ Unit 3</span><span>5.8 Hz</span>
-        </div>
-        <div class="intan-setting-row" style="color: #888;">
-          <span>□ Unsorted</span><span>1.2 Hz</span>
-        </div>
+  <div class="scope-body">
+    <div class="scope-sidebar">
+      <div class="scope-fieldset">
+        <div class="scope-legend">Channel</div>
+        <div style="margin-bottom: 6px;">A-010</div>
+        <label class="scope-row"><input type="checkbox" checked> Lock Plot to Selected</label>
+        <div class="scope-btn" style="border-color: #0078d7; background: #e5f1fb; margin-top:2px;">Set to Selected</div>
       </div>
       
-      <div class="intan-panel" style="background: #1a1a1a; border-color: #333; box-shadow: none;">
-        <div class="intan-panel-title" style="color: #888; border-bottom-color: #444;">Alignment</div>
-        <div class="intan-setting-row" style="color: #ccc;"><span>Method</span><span>Min Peak</span></div>
-        <div class="intan-setting-row" style="color: #ccc;"><span>Window</span><span>2.0 ms</span></div>
+      <div class="scope-fieldset">
+        <div class="scope-legend">Display Settings</div>
+        <div class="scope-row" style="justify-content: space-between;">Voltage Scale <select class="scope-input" style="width:65px"><option>500 µV</option></select></div>
+        <div class="scope-row" style="justify-content: space-between;">Time Scale <select class="scope-input" style="width:65px"><option>2 ms</option></select></div>
+        <div class="scope-row" style="justify-content: space-between;">Show <select class="scope-input" style="width:45px"><option>20</option></select> spikes</div>
+        <div class="scope-btn" style="margin-bottom: 6px;">Clear Scope</div>
+        <div class="scope-row" style="margin-bottom:0;"><div class="scope-btn" style="flex:1">Take Snapshot</div><div class="scope-btn" style="flex:1">Clear Snapshot</div></div>
       </div>
+
+      <div class="scope-fieldset">
+        <div class="scope-legend">Spike Detection Settings</div>
+        <div class="scope-row" style="justify-content: space-between; margin-bottom:0;">Detection Threshold <input type="text" class="scope-input" value="-70 µV" style="width:55px;"></div>
+      </div>
+
+      <div class="scope-fieldset">
+        <div class="scope-legend">Artifact Suppression</div>
+        <label class="scope-row"><input type="checkbox" checked> Enable Suppression</label>
+        <label class="scope-row"><input type="checkbox" checked> Show Artifacts</label>
+        <div class="scope-row" style="justify-content: space-between; margin-bottom:0;">Artifact Threshold <input type="text" class="scope-input" value="2500 µV" style="width:55px;"></div>
+      </div>
+
+      <div class="scope-btn" style="margin-top: -2px;">Load Detection Parameters</div>
+      <div class="scope-btn" style="margin-top: -6px;">Save Detection Parameters</div>
+    </div>
+    
+    <div class="scope-plot-area">
+      <canvas class="spike-scope-canvas"></canvas>
+      <div class="scope-overlay-text" style="top:10px; left:10px; color:#fff;">+500 µV</div>
+      <div class="scope-overlay-text" style="top:50%; left:10px; color:#fff; transform:translateY(-50%);">0</div>
+      <div class="scope-overlay-text" style="top:calc(50% + 7%); left:10px; color:#ef4444; transform:translateY(-50%);">-70</div>
+      <div class="scope-overlay-text" style="bottom:20px; left:10px; color:#fff;">-500 µV</div>
+
+      <div class="scope-overlay-text" style="bottom:5px; left:10px; color:#fff;">-1</div>
+      <div class="scope-overlay-text" style="bottom:5px; left:33.33%; color:#fff; transform:translateX(-50%);">0</div>
+      <div class="scope-overlay-text" style="bottom:5px; left:66.66%; color:#fff; transform:translateX(-50%);">1</div>
+      <div class="scope-overlay-text" style="bottom:5px; right:10px; color:#fff;">2 ms</div>
+
+      <div class="scope-overlay-text" style="top:10px; left:34%; color:#fff; font-size: 11px;">A-010</div>
+      <div class="scope-overlay-text" style="top:25px; left:34%; color:#4ade80;">RMS: 9.1 µV  5 spikes/s</div>
     </div>
   </div>
 </div>
 
 <span id="en-components"></span>
 ## 🧩 System Components
-
+ 
 <div align="center">
  <table border="1" style="border-collapse: collapse; width: 90%; text-align: center;">
-   <thead>
-     <tr style="background-color: #f2f2f2;">
-       <th>Component</th>
-       <th>Description</th>
-     </tr>
-   </thead>
-   <tbody>
-     <tr>
-       <td><b>Pedestal Housing</b></td>
-       <td>3D-printed/machined pedestal providing structural support and cranial fixation</td>
-     </tr>
-     <tr>
-       <td><b>Customized 256Ch Headstage</b></td>
-       <td>Form-factor optimized recording interface for high-density 128/256-channel signal acquisition</td>
-     </tr>
-     <tr>
-       <td><b>Foam Washer</b></td>
-       <td>Provides compliant compression to ensure uniform electrical contact across the elastomeric interface</td>
-     </tr>
-     <tr>
-       <td><b>Adapter PCB</b></td>
-       <td>High-density 4-layer PCB for routing signals from thin-film probes to headstage ball array pattern</td>
-     </tr>
-     <tr>
-       <td><b>Surgical Cap</b></td>
-       <td>Protective enclosure preserving electrical and mechanical integrity throughout chronic experiments</td>
-     </tr>
-   </tbody>
+  <thead>
+    <tr style="background-color: #f2f2f2;">
+      <th>Component</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><b>Pedestal Housing</b></td>
+      <td>3D-printed/machined pedestal providing structural support and cranial fixation</td>
+    </tr>
+    <tr>
+      <td><b>Customized 256Ch Headstage</b></td>
+      <td>Form-factor optimized recording interface for high-density 128/256-channel signal acquisition</td>
+    </tr>
+    <tr>
+      <td><b>Foam Washer</b></td>
+      <td>Provides compliant compression to ensure uniform electrical contact across the elastomeric interface</td>
+    </tr>
+    <tr>
+      <td><b>Adapter PCB</b></td>
+      <td>High-density 4-layer PCB for routing signals from thin-film probes to headstage ball array pattern</td>
+    </tr>
+    <tr>
+      <td><b>Surgical Cap</b></td>
+      <td>Protective enclosure preserving electrical and mechanical integrity throughout chronic experiments</td>
+    </tr>
+  </tbody>
  </table>
 </div>
-
+ 
 ---
-
+ 
 <span id="en-bom"></span>
 ### 🛠 Bill of Materials (BOM) of the headstage
-
+ 
 <div align="center">
-  <img src="Images/256HD.png" 
-       alt="256Ch Headstage PCBA Assembly" 
-       width="460" 
-       loading="lazy" decoding="async"
-       style="border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 20px;">
-  <p style="margin-top: 5px; font-size: 0.9em; color: #64748b;">
-    <b>Assembled 256-Channel Headstage (Top View)</b>
-  </p>
+ <img src="Images/256HD.png" 
+      alt="256Ch Headstage PCBA Assembly" 
+      width="460" 
+      loading="lazy" decoding="async"
+      style="border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 20px;">
+ <p style="margin-top: 5px; font-size: 0.9em; color: #64748b;">
+   <b>Assembled 256-Channel Headstage (Top View)</b>
+ </p>
 </div>
-
+ 
 <div align="center" data-aos="zoom-in-up" data-aos-duration="1000">
  <br>
  <div class="gif-placeholder narrow">
-   <img data-src="Videos/Top PCB explosive new.gif" 
-         src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
-         alt="4-Layer PCB Stackup Explosion"
-         class="lazy-gif white-bg-gif" 
-         decoding="async">
+  <img data-src="Videos/Top PCB explosive new.gif" 
+        src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+        alt="4-Layer PCB Stackup Explosion"
+        class="lazy-gif white-bg-gif" 
+        decoding="async">
  </div>
-   <p style="margin-top: 5px; font-size: 0.9em; color: #64748b;">
-    <b> 4-Layer Routing Structure (Top to Bottom)</b>
-  </p>
+  <p style="margin-top: 5px; font-size: 0.9em; color: #64748b;">
+   <b> 4-Layer Routing Structure (Top to Bottom)</b>
+ </p>
 </div>
-
+ 
 <div style="width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 10px;">
-  <table style="margin-left: auto; margin-right: auto; width: 90%; min-width: 600px; text-align: center; border-collapse: collapse; border: 1px solid #e1e4e8;">
-   <thead>
-     <tr style="background-color: #f6f8fa; border-bottom: 2px solid #e1e4e8;">
-       <th style="padding: 10px; border: 1px solid #e1e4e8; text-align: center;">Component</th>
-       <th style="padding: 10px; border: 1px solid #e1e4e8; text-align: center;">Description</th>
-       <th style="padding: 10px; border: 1px solid #e1e4e8; text-align: center;">Qty</th>
-       <th style="padding: 10px; border: 1px solid #e1e4e8; text-align: center;">Package</th>
-       <th style="padding: 10px; border: 1px solid #e1e4e8; text-align: center;">Notes</th>
-     </tr>
-   </thead>
-   <tbody>
-     <tr>
-       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;"><b>Amplifier IC</b></td>
-       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">Intan RHD2164</td>
-       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">4</td>
-       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">BGA</td>
-       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;"><b>💡 Tip:</b> Ensure correct orientation</td>
-     </tr>
-     <tr>
-       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;"><b>SPI Connector</b></td>
-       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">Omnetics A7621</td>
-       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">2</td>
-       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">-</td>
-       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">12-wire cable harness (32 AWG)</td>
-     </tr>
-     <tr>
-       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;"><b>Resistors</b></td>
-       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">Standard SMD</td>
-       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">7</td>
-       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">0402</td>
-       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">LVDS Configuration</td>
-     </tr>
-     <tr>
-       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;"><b>Capacitors</b></td>
-       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">Standard SMD</td>
-       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">8</td>
-       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">0603</td>
-       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">LVDS Configuration</td>
-     </tr>
-     <tr>
-       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;"><b>Power LED</b></td>
-       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">Green LED</td>
-       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">1</td>
-       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">0402</td>
-       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">Power Indicator</td>
-     </tr>
-     <tr>
-       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;"><b>Solder Balls</b></td>
-       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">0.4 mm Lead-free</td>
-       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">~300</td>
-       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">-</td>
-       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">For BGA rework/assembly</td>
-     </tr>
-   </tbody>
+ <table style="margin-left: auto; margin-right: auto; width: 90%; min-width: 600px; text-align: center; border-collapse: collapse; border: 1px solid #e1e4e8;">
+  <thead>
+    <tr style="background-color: #f6f8fa; border-bottom: 2px solid #e1e4e8;">
+      <th style="padding: 10px; border: 1px solid #e1e4e8; text-align: center;">Component</th>
+      <th style="padding: 10px; border: 1px solid #e1e4e8; text-align: center;">Description</th>
+      <th style="padding: 10px; border: 1px solid #e1e4e8; text-align: center;">Qty</th>
+      <th style="padding: 10px; border: 1px solid #e1e4e8; text-align: center;">Package</th>
+      <th style="padding: 10px; border: 1px solid #e1e4e8; text-align: center;">Notes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;"><b>Amplifier IC</b></td>
+      <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">Intan RHD2164</td>
+      <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">4</td>
+      <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">BGA</td>
+      <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;"><b>💡 Tip:</b> Ensure correct orientation</td>
+    </tr>
+    <tr>
+      <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;"><b>SPI Connector</b></td>
+      <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">Omnetics A7621</td>
+      <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">2</td>
+      <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">-</td>
+      <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">12-wire cable harness (32 AWG)</td>
+    </tr>
+    <tr>
+      <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;"><b>Resistors</b></td>
+      <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">Standard SMD</td>
+      <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">7</td>
+      <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">0402</td>
+      <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">LVDS Configuration</td>
+    </tr>
+    <tr>
+      <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;"><b>Capacitors</b></td>
+      <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">Standard SMD</td>
+      <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">8</td>
+      <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">0603</td>
+      <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">LVDS Configuration</td>
+    </tr>
+    <tr>
+      <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;"><b>Power LED</b></td>
+      <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">Green LED</td>
+      <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">1</td>
+      <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">0402</td>
+      <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">Power Indicator</td>
+    </tr>
+    <tr>
+      <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;"><b>Solder Balls</b></td>
+      <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">0.4 mm Lead-free</td>
+      <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">~300</td>
+      <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">-</td>
+      <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">For BGA rework/assembly</td>
+    </tr>
+  </tbody>
  </table>
 </div>
-
+ 
 ---
-
+ 
 ## 👥 Developers and Lab
-
+ 
 * **Tianyu Bai** (Lead Designer) <a href="https://tianyu-bai.github.io/"><img src="https://img.shields.io/badge/Website-Tianyu%20Bai-0077B5?style=flat-square&logo=github&logoColor=white" alt="Website"></a>
 * **Gen Li, Ph.D.**
 * **Hui Fang, Ph.D.** <a href="https://engineering.dartmouth.edu/community/faculty/hui-fang"><img src="https://img.shields.io/badge/Principal%20Investigator-444444?style=flat-square&logoColor=white" />
-
+ 
 This project is developed by the **MINE Lab** at Dartmouth College. <a href="https://sites.dartmouth.edu/fang-group/"><img src="https://img.shields.io/badge/VISIT_WEBSITE_%E2%86%97-MINE_Lab-00693E?style=flat-square" alt="MINE Lab"></a>
-
+ 
 ---
-
+ 
 ## 📄 Publication
-
+ 
 This work is currently **under review** at the *IEEE Journal on Flexible Electronics (JFLEX)*.
-
+ 
 The hardware designs and visual assets in this repository correspond directly to the system described in the submitted manuscript. To maintain the integrity of the peer-review process:
-
+ 
 * **Full Citation**: A permanent link to the final paper will be updated here immediately upon formal acceptance.
 * **Preprint/Full Paper**: *Coming Soon.*
   
@@ -1995,1574 +1281,1492 @@ The hardware designs and visual assets in this repository correspond directly to
  
 * **Inquiries**: Thinking about using E-Link in your lab? We know setting up a new system can be tricky. If you have questions about the PCB design or 3D printing, drop us an email or open an issue. We'd love to help you get started!
   * **Support**: [<font color="#60a5fa">support@ephys.tech</font>](mailto:support@ephys.tech)
-  * **Developer (Tianyu)**: [<font color="#60a5fa">tianyu@ephys.tech</font>](mailto:tianyu@ephys.tech) 
-
+  * **Developer (Tianyu)**: [<font color="#60a5fa">tianyu@ephys.tech</font>](mailto:tianyu@ephys.tech)
+ 
 ---
-
+ 
 ## 📑 Citation & DOI
-
+ 
 If you utilize these designs, code, or assets in your research, please cite this repository using the persistent DOI provided by Zenodo:
-
+ 
 **Current Reference:**
 > T. Bai, et al., "E-Link GitHub Repository," v1.0, MINE Lab, Dartmouth College, 2026. [![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.18440104-007EC6?style=flat-square)](https://doi.org/10.5281/zenodo.18440104)
-
+ 
 ---
-
+ 
 <span id="en-downloads"></span>
 ## 🔗 Repository & Downloads
-
+ 
 This project is fully open-source. Upon acceptance of the associated paper, the complete dataset comprising **PCB fabrication files (Gerber/NC Drill)**, **BOM**, and **Mechanical CAD** will be accessible via the link below.
-
+ 
 <div align="center">
  <p><b>👇 Bookmark the repository for future downloads:</b></p>
-
+ 
 <div align="center">
  <a href="https://github.com/Tianyu-Bai/ELINK"><img src="https://img.shields.io/badge/GitHub-View_Source_Repository-181717?style=for-the-badge&logo=github&logoColor=white" alt="View on GitHub"></a>
  <img src="https://img.shields.io/badge/Status-Locked_until_Publication-A31F34?style=for-the-badge&logo=private" alt="Status Locked">
 </div>
 </div>
-
+ 
 ---
-
+ 
 ## 🤝 Acknowledgments
-
+ 
 The developers gratefully acknowledge support from the **NIH (R01MH139342)** and the **Dartmouth PhD Innovation Fellowship**. 
-
+ 
 Special thanks to the members of the **MINE Lab** and the **Thayer School of Engineering** for their technical support and feedback throughout the development of the E-Link (256) system.
-
+ 
 ---
-
+ 
 ## 📜 License
-
+ 
 Copyright © 2026 Tianyu Bai <a href="https://tianyu-bai.github.io/"><img src="https://img.shields.io/badge/Website-Tianyu%20Bai-0077B5?style=flat-square&logo=github&logoColor=white" alt="Website"></a>
-
+ 
 This project is open-source and available under the **MIT License**. Click the badge below for full license details.
-
+ 
 <div align="center">
  <a href="https://github.com/tianyu-bai/E-Link/blob/main/LICENSE">
-   <img src="https://img.shields.io/badge/License-MIT-A31F34?style=flat-square&logo=opensourceinitiative&logoColor=white" alt="License">
+  <img src="https://img.shields.io/badge/License-MIT-A31F34?style=flat-square&logo=opensourceinitiative&logoColor=white" alt="License">
  </a>
 </div>
-
+ 
 <div class="github-only">
-  <br>
-  <hr>
-  <p align="center" style="font-size: 1.5em; font-weight: bold; margin: 20px 0;">
+ <br>
+ <hr>
+ <p align="center" style="font-size: 1.5em; font-weight: bold; margin: 20px 0;">
     👇 🇨🇳 Chinese Version / 中文版 👇
-  </p>
-  <hr>
-  <br>
+ </p>
+ <hr>
+ <br>
 </div>
-
+ 
 </div> 
-
+ 
 <div class="lang-zh" markdown="1">
-
+ 
 <div class="github-only">
-  <p align="center">
-    <a href="https://tianyu-bai.github.io/E-Link">
-      🌐 点击此处进入交互式网站
-    </a>
-  </p>
+ <p align="center">
+   <a href="https://tianyu-bai.github.io/E-Link">
+     🌐 点击此处进入交互式网站
+   </a>
+ </p>
 </div>
-
+ 
 <div align="center" class="nav-badges">
-  <a href="#cn-overview"><img src="https://img.shields.io/badge/📖_概览-3b82f6?style=flat-square&logoColor=white" alt="Overview"></a>
-  <a href="#cn-features"><img src="https://img.shields.io/badge/✨_特性-3b82f6?style=flat-square&logoColor=white" alt="Features"></a>
-  <a href="#cn-specs"><img src="https://img.shields.io/badge/📊_规格-3b82f6?style=flat-square&logoColor=white" alt="Specs"></a>
-  <a href="#cn-components"><img src="https://img.shields.io/badge/🧩_组件-3b82f6?style=flat-square&logoColor=white" alt="Components"></a>
-  <a href="#cn-bom"><img src="https://img.shields.io/badge/🛠_物料清单-3b82f6?style=flat-square&logoColor=white" alt="BOM"></a>
-  <a href="#cn-downloads"><img src="https://img.shields.io/badge/🔗_下载-3b82f6?style=flat-square&logoColor=white" alt="Downloads"></a>
+ <a href="#cn-overview"><img src="https://img.shields.io/badge/📖_概览-3b82f6?style=flat-square&logoColor=white" alt="Overview"></a>
+ <a href="#cn-features"><img src="https://img.shields.io/badge/✨_特性-3b82f6?style=flat-square&logoColor=white" alt="Features"></a>
+ <a href="#cn-specs"><img src="https://img.shields.io/badge/📊_规格-3b82f6?style=flat-square&logoColor=white" alt="Specs"></a>
+ <a href="#cn-components"><img src="https://img.shields.io/badge/🧩_组件-3b82f6?style=flat-square&logoColor=white" alt="Components"></a>
+ <a href="#cn-bom"><img src="https://img.shields.io/badge/🛠_物料清单-3b82f6?style=flat-square&logoColor=white" alt="BOM"></a>
+ <a href="#cn-downloads"><img src="https://img.shields.io/badge/🔗_下载-3b82f6?style=flat-square&logoColor=white" alt="Downloads"></a>
 </div>
-
+ 
 <style>
 /* 1. 强制重命名的中文专属父容器类 */
-.header-sync-pulse-zh {
-  margin: 0;
-  display: flex; 
-  align-items: center; 
-  justify-content: center; 
-  gap: 15px; 
-  margin-bottom: 5px;
-  filter: drop-shadow(0 0 8px rgba(96, 165, 250, 0.3)); 
-}
-
+.header-sync-pulse-zh { margin: 0; display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 5px; filter: drop-shadow(0 0 8px rgba(96, 165, 250, 0.3)); }
 /* 2. 中文版专属图片遮罩扫光 */
-.logo-mask-zh {
-  position: relative; 
-  display: inline-block; /* 🚀 核心修复1：放弃 flex，改用紧密贴合的 inline-block */
-  line-height: 0; /* 🚀 核心修复2：杀掉所有不可见的幽灵行高间隙 */
-}
-
-.logo-mask-zh::after {
-  content: ""; 
-  position: absolute; 
-  inset: 0;
-  
-  /* 🚀 把遮罩仅应用于光束层 */
-  -webkit-mask-image: var(--logo-url); 
-  mask-image: var(--logo-url);
-  -webkit-mask-size: contain;
-  -webkit-mask-position: center;
-  -webkit-mask-repeat: no-repeat;
-
-  background: linear-gradient(
-    105deg, 
-    transparent 0%, 
-    transparent 20%,
-    rgba(96, 165, 250, 0.4) 35%, 
-    rgba(167, 139, 250, 0.95) 50%, 
-    rgba(167, 139, 250, 0.95) 60%, 
-    rgba(96, 165, 250, 0.4) 75%, 
-    transparent 90%,
-    transparent 100%
-  );
-  background-size: 250% 100%;
-  background-repeat: no-repeat;
-  mix-blend-mode: screen; 
-  pointer-events: none; 
-  animation: safe-sweep-anim 3s linear infinite;
-}
-
-/* 🚀 统一的高性能扫光动画 (通过移动背景而不是形变 DOM) */
-@keyframes safe-sweep-anim {
-  0%   { background-position: 200% 0; }
-  75%  { background-position: -100% 0; }  
-  100% { background-position: -100% 0; }
-}
-
+.logo-mask-zh { position: relative; display: inline-block; line-height: 0; }
+.logo-mask-zh::after { content: ""; position: absolute; inset: 0; -webkit-mask-image: var(--logo-url); mask-image: var(--logo-url); -webkit-mask-size: contain; -webkit-mask-position: center; -webkit-mask-repeat: no-repeat; background: linear-gradient( 105deg, transparent 0%, transparent 20%, rgba(96, 165, 250, 0.4) 35%, rgba(167, 139, 250, 0.95) 50%, rgba(167, 139, 250, 0.95) 60%, rgba(96, 165, 250, 0.4) 75%, transparent 90%, transparent 100% ); background-size: 250% 100%; background-repeat: no-repeat; mix-blend-mode: screen; pointer-events: none; animation: safe-sweep-anim 3s linear infinite; }
+@keyframes safe-sweep-anim { 0%   { background-position: 200% 0; } 75%  { background-position: -100% 0; }   100% { background-position: -100% 0; } }
 /* 3. 中文纯文本渐变扫光 */
-.bi-color-title-sweep-zh {
-  background: 
-    linear-gradient(105deg, transparent 0%, rgba(255, 255, 255, 0.5) 25%, rgba(255, 255, 255, 1) 50%, rgba(255, 255, 255, 0.5) 75%, transparent 100%),
-    linear-gradient(90deg, #60a5fa 0%, #a78bfa 55%, #f472b6 100%);
-  background-size: 250% auto, 100% auto;
-  background-repeat: no-repeat;
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: transparent;
-  animation: text-searchlight-zh 3s linear infinite;
-}
-
-@keyframes text-searchlight-zh {
-  0%    { background-position: -50% center, 0 center; }
-  70%   { background-position: 150% center, 0 center; }  
-  100%  { background-position: 150% center, 0 center; }
-}
-
+.bi-color-title-sweep-zh { background: linear-gradient(105deg, transparent 0%, rgba(255, 255, 255, 0.5) 25%, rgba(255, 255, 255, 1) 50%, rgba(255, 255, 255, 0.5) 75%, transparent 100%), linear-gradient(90deg, #60a5fa 0%, #a78bfa 55%, #f472b6 100%); background-size: 250% auto, 100% auto; background-repeat: no-repeat; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: transparent; animation: text-searchlight-zh 3s linear infinite; }
+@keyframes text-searchlight-zh { 0%    { background-position: -50% center, 0 center; } 70%   { background-position: 150% center, 0 center; }   100%  { background-position: 150% center, 0 center; } }
 /* 4. 中文 Logo 图片与文字排版精准控制 */
-.main-logo-zh {
-  height: 80px !important; /* 调整至与右侧中文大小比例更加协调 */
-  width: auto !important; 
-  max-width: 100% !important;
-  object-fit: contain; 
-  display: block; 
-  filter: brightness(0.95); 
-}
-
-.zh-text-logo-zh {
-  font-size: 55px; 
-  font-weight: 800;
-  letter-spacing: 4px;
-  font-family: 'Inter', 'Noto Sans SC', sans-serif;
-  line-height: 1;
-  margin: 0;
-  padding-bottom: 5px; /* 修正汉字字体内置基线导致的垂直偏移 */
-}
+.main-logo-zh { height: 80px !important; width: auto !important; max-width: 100% !important; object-fit: contain; display: block; filter: brightness(0.95); }
+.zh-text-logo-zh { font-size: 55px; font-weight: 800; letter-spacing: 4px; font-family: 'Inter', 'Noto Sans SC', sans-serif; line-height: 1; margin: 0; padding-bottom: 5px; }
 
 /* 手机端适配 */
 @media (max-width: 768px) {
-  .main-logo-zh { height: 60px !important; } 
-  .zh-text-logo-zh { font-size: 40px !important; } 
-  .header-sync-pulse-zh { gap: 10px; }
+ .main-logo-zh { height: 60px !important; } 
+ .zh-text-logo-zh { font-size: 40px !important; } 
+ .header-sync-pulse-zh { gap: 10px; }
 }
 </style>
-
+ 
 <div align="center" style="margin-bottom: 20px;" data-aos="fade-up">
-  <h1 class="header-sync-pulse-zh">
-    <span class="logo-mask-zh" style="--logo-url: url('{{ "/Images/ELink Logo color.png" | relative_url }}');">
-      <img src="{{ '/Images/ELink Logo color.png' | relative_url }}" alt="E-Link Logo color" class="main-logo-zh">
-    </span>
-    <span class="bi-color-title-sweep-zh zh-text-logo-zh">易链</span>
-  </h1>
+ <h1 class="header-sync-pulse-zh">
+   <span class="logo-mask-zh" style="--logo-url: url('{{ "/Images/ELink Logo color.png" | relative_url }}');">
+     <img src="{{ '/Images/ELink Logo color.png' | relative_url }}" alt="E-Link Logo color" class="main-logo-zh">
+   </span>
+   <span class="bi-color-title-sweep-zh zh-text-logo-zh">易链</span>
+ </h1>
 </div>
-
+ 
 <h2 class="sub-title" data-aos="fade-up" data-aos-delay="200">
   一种基于弹性导电体互连技术的<br class="mobile-only-br">高密度柔性神经接口连接器
 </h2>
-
-
-  <div align="center" style="margin-top: 15px;">
-    <a href="https://sites.dartmouth.edu/fang-group/"><img src="https://img.shields.io/badge/达特茅斯学院-00693E?style=flat-square" alt="方辉组"></a>
-    <img src="https://img.shields.io/badge/已验证-256通道-FFA500?style=flat-square" alt="Verified" />
-    <a href="https://tianyu-bai.github.io/"><img src="https://img.shields.io/badge/个人主页-Tianyu%20Bai-0077B5?style=flat-square&logo=github&logoColor=white" alt="Website"></a>
-    <a href="https://www.linkedin.com/in/tianyubai/"><img src="https://img.shields.io/badge/领英-主页-0A66C2?style=flat-square&logo=linkedin&logoColor=white" alt="LinkedIn"></a>
-     <a href="https://github.com/tianyu-bai/E-Link/blob/main/LICENSE"><img src="https://img.shields.io/badge/开源协议-MIT-A31F34?style=flat-square&logo=opensourceinitiative&logoColor=white" alt="License"></a>
-  </div>
-  <div align="center">
-  <br>
-  <img src="Images/001_CN.png" alt="E-Link_256 分解图" width="750" loading="lazy" decoding="async">
-  <p style="margin-top: 5px; font-size: 0.95em; color: #3b82f6;">
-    <b>E-Link易链(256) 的插拔动态（左）和结构分解（右）</b>
-  </p>
+ 
+ <div align="center" style="margin-top: 15px;">
+   <a href="https://sites.dartmouth.edu/fang-group/"><img src="https://img.shields.io/badge/达特茅斯学院-00693E?style=flat-square" alt="方辉组"></a>
+   <img src="https://img.shields.io/badge/已验证-256通道-FFA500?style=flat-square" alt="Verified" />
+   <a href="https://tianyu-bai.github.io/"><img src="https://img.shields.io/badge/个人主页-Tianyu%20Bai-0077B5?style=flat-square&logo=github&logoColor=white" alt="Website"></a>
+   <a href="https://www.linkedin.com/in/tianyubai/"><img src="https://img.shields.io/badge/领英-主页-0A66C2?style=flat-square&logo=linkedin&logoColor=white" alt="LinkedIn"></a>
+    <a href="https://github.com/tianyu-bai/E-Link/blob/main/LICENSE"><img src="https://img.shields.io/badge/开源协议-MIT-A31F34?style=flat-square&logo=opensourceinitiative&logoColor=white" alt="License"></a>
+ </div>
+ <div align="center">
+ <br>
+ <img src="Images/001_CN.png" alt="E-Link_256 分解图" width="750" loading="lazy" decoding="async">
+ <p style="margin-top: 5px; font-size: 0.95em; color: #3b82f6;">
+   <b>E-Link易链(256) 的插拔动态（左）和结构分解（右）</b>
+ </p>
 </div>
-
+ 
 ## 🔬 **E-Link ：3D 交互式集成视图**
  
 <div class="model-block" data-lenis-prevent align="center" style="position: relative; max-width: 760px; margin: 0 auto; min-height: 460px;">
-  <model-viewer
-    class="custom-model-viewer"
-    src="{{ '/Videos/On skull_3.16MB.glb' | relative_url }}"
-    alt="E Link on Skull 3D Model"
-    loading="lazy"   reveal="manual"
-    poster="{{ '/Images/poster.webp' | relative_url }}"
-    camera-controls interpolation-decay="200" bounds="tight" field-of-view="30deg" auto-rotate  rotation-per-second="15deg"
-    interaction-prompt="none" environment-image="neutral" exposure="0.75" shadow-intensity="0" tone-mapping="commerce">
-
-    <div slot="poster" style="position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; width: 100%; background: radial-gradient(circle at center, #111827 0%, #020617 100%); font-family: 'JetBrains Mono', monospace; overflow: hidden; border-radius: 16px; cursor: pointer;">
-      <div style="position: absolute; inset: 0; background-image: linear-gradient(rgba(59, 130, 246, 0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(59, 130, 246, 0.08) 1px, transparent 1px); background-size: 25px 25px; z-index: 0;"></div>
-      <div class="scanline" style="z-index: 1;"></div>
-      <div class="hud-corner hud-tl" style="z-index: 1;"></div>
-      <div class="hud-corner hud-tr" style="z-index: 1;"></div>
-      <div class="hud-corner hud-bl" style="z-index: 1;"></div>
-      <div class="hud-corner hud-br" style="z-index: 1;"></div>
-      <div style="z-index: 2; display: flex; flex-direction: column; align-items: center;">
-        <div class="cyber-loader"></div>
-        <p style="margin-top: 25px; margin-bottom: 5px; font-size: 0.95rem; font-weight: 600; letter-spacing: 3px; color: #93c5fd; text-shadow: 0 0 10px rgba(96, 165, 250, 0.8); animation: text-blink 1.5s ease-in-out infinite;">正在初始化 3D 信号...</p>
-        <p class="click-to-load-glow" style="margin: 0; font-size: 0.65rem; color: #a78bfa; letter-spacing: 1px; font-weight: bold;">[ 滑动或点击接入引擎 ]</p>
-      </div>
-    </div>
+ <model-viewer
+   class="custom-model-viewer"
+   src="{{ '/Videos/On skull_3.16MB.glb' | relative_url }}"
+   alt="E Link on Skull 3D Model"
+   loading="lazy"  reveal="manual"
+   poster="{{ '/Images/poster.webp' | relative_url }}"
+   camera-controls interpolation-decay="200" bounds="tight" field-of-view="30deg" auto-rotate  rotation-per-second="15deg"
+   interaction-prompt="none" environment-image="neutral" exposure="0.75" shadow-intensity="0" tone-mapping="commerce">
+ 
+   <div slot="poster" style="position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; width: 100%; background: radial-gradient(circle at center, #111827 0%, #020617 100%); font-family: 'JetBrains Mono', monospace; overflow: hidden; border-radius: 16px; cursor: pointer;">
+     <div style="position: absolute; inset: 0; background-image: linear-gradient(rgba(59, 130, 246, 0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(59, 130, 246, 0.08) 1px, transparent 1px); background-size: 25px 25px; z-index: 0;"></div>
+     <div class="scanline" style="z-index: 1;"></div>
+     <div class="hud-corner hud-tl" style="z-index: 1;"></div>
+     <div class="hud-corner hud-tr" style="z-index: 1;"></div>
+     <div class="hud-corner hud-bl" style="z-index: 1;"></div>
+     <div class="hud-corner hud-br" style="z-index: 1;"></div>
+     <div style="z-index: 2; display: flex; flex-direction: column; align-items: center;">
+       <div class="cyber-loader"></div>
+       <p style="margin-top: 25px; margin-bottom: 5px; font-size: 0.95rem; font-weight: 600; letter-spacing: 3px; color: #93c5fd; text-shadow: 0 0 10px rgba(96, 165, 250, 0.8); animation: text-blink 1.5s ease-in-out infinite;">正在初始化 3D 信号...</p>
+       <p class="click-to-load-glow" style="margin: 0; font-size: 0.65rem; color: #a78bfa; letter-spacing: 1px; font-weight: bold;">[ 滑动或点击接入引擎 ]</p>
+     </div>
+   </div>
     
-    <div class="model-watermark-text">版权所有 © 2026 Tianyu Bai</div>
+   <div class="model-watermark-text">版权所有 © 2026 Tianyu Bai</div>
     
-    <div class="gesture-hud">
-      <span>↺ 旋转：拖拽</span>
-  <span class="pc-only">缩放：Ctrl键 + 鼠标滚轮/触控板捏合</span>
-  <span class="mobile-only">缩放：双指捏合</span>
+   <div class="gesture-hud">
+     <span>↺ 旋转：拖拽</span>
+ <span class="pc-only">缩放：Ctrl键 + 鼠标滚轮/触控板捏合</span>
+ <span class="mobile-only">缩放：双指捏合</span>
 </div>
-
-    <div class="gesture-overlay mode-drag">
-      <div class="icon-box"><div class="hand-icon">👆</div></div>
-      <div class="gesture-text">拖拽以旋转</div>
-    </div>
-
-    <div class="gesture-overlay mode-zoom">
-  <div class="icon-box">
-    <div class="hand-icon hand-left">👉</div>
-    <div class="hand-icon hand-right">👈</div>
-  </div>
-  <div class="gesture-text">
-    <span class="pc-tip">Ctrl键 + 鼠标滚轮以缩放</span>
-    <span class="mobile-tip">双指捏合屏幕以缩放</span>
-  </div>
+ 
+   <div class="gesture-overlay mode-drag">
+     <div class="icon-box"><div class="hand-icon">👆</div></div>
+     <div class="gesture-text">拖拽以旋转</div>
+   </div>
+ 
+   <div class="gesture-overlay mode-zoom">
+ <div class="icon-box">
+   <div class="hand-icon hand-left">👉</div>
+   <div class="hand-icon hand-right">👈</div>
+ </div>
+ <div class="gesture-text">
+   <span class="pc-tip">Ctrl键 + 鼠标滚轮以缩放</span>
+   <span class="mobile-tip">双指捏合屏幕以缩放</span>
+ </div>
 </div>
     
-    <button class="reset-btn"
-  onclick="
-    const mv = this.closest('model-viewer');
-    mv.setAttribute('camera-orbit','45deg 55deg auto');
-    mv.setAttribute('field-of-view','30deg');
-  ">
-      ⟲ 重置视角
-    </button>
-  </model-viewer>
+   <button class="reset-btn"
+ onclick="
+   const mv = this.closest('model-viewer');
+   mv.setAttribute('camera-orbit','45deg 55deg auto');
+   mv.setAttribute('field-of-view','30deg');
+ ">
+     ⟲ 重置视角
+   </button>
+ </model-viewer>
 </div>
-
+ 
 ## 🔬 E-Link 三维交互模型
-
+ 
 <div class="model-block" data-lenis-prevent align="center" style="position: relative; max-width: 760px; margin: 0 auto; min-height: 460px;">
-  <model-viewer
-    class="custom-model-viewer"
-    src="{{ '/Videos/Whole_2.34MB.glb' | relative_url }}"
-    alt="E Link 3D Model" 
-    loading="lazy"       reveal="manual"
-    poster="{{ '/Images/poster.webp' | relative_url }}"
-    camera-controls interpolation-decay="200" bounds="tight" field-of-view="30deg" auto-rotate  rotation-per-second="15deg"
-    interaction-prompt="none" environment-image="neutral" exposure="0.75" shadow-intensity="0" tone-mapping="commerce">
-
-    <div slot="poster" style="position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; width: 100%; background: radial-gradient(circle at center, #111827 0%, #020617 100%); font-family: 'JetBrains Mono', monospace; overflow: hidden; border-radius: 16px; cursor: pointer;">
-      <div style="position: absolute; inset: 0; background-image: linear-gradient(rgba(59, 130, 246, 0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(59, 130, 246, 0.08) 1px, transparent 1px); background-size: 25px 25px; z-index: 0;"></div>
-      <div class="scanline" style="z-index: 1;"></div>
-      <div class="hud-corner hud-tl" style="z-index: 1;"></div>
-      <div class="hud-corner hud-tr" style="z-index: 1;"></div>
-      <div class="hud-corner hud-bl" style="z-index: 1;"></div>
-      <div class="hud-corner hud-br" style="z-index: 1;"></div>
-      <div style="z-index: 2; display: flex; flex-direction: column; align-items: center;">
-        <div class="cyber-loader"></div>
-        <p style="margin-top: 25px; margin-bottom: 5px; font-size: 0.95rem; font-weight: 600; letter-spacing: 3px; color: #93c5fd; text-shadow: 0 0 10px rgba(96, 165, 250, 0.8); animation: text-blink 1.5s ease-in-out infinite;">正在初始化 3D 信号...</p>
-        <p class="click-to-load-glow" style="margin: 0; font-size: 0.65rem; color: #a78bfa; letter-spacing: 1px; font-weight: bold;">[ 滑动或点击接入引擎 ]</p>
-      </div>
-    </div>
+ <model-viewer
+   class="custom-model-viewer"
+   src="{{ '/Videos/Whole_2.34MB.glb' | relative_url }}"
+   alt="E Link 3D Model" 
+   loading="lazy"      reveal="manual"
+   poster="{{ '/Images/poster.webp' | relative_url }}"
+   camera-controls interpolation-decay="200" bounds="tight" field-of-view="30deg" auto-rotate  rotation-per-second="15deg"
+   interaction-prompt="none" environment-image="neutral" exposure="0.75" shadow-intensity="0" tone-mapping="commerce">
+ 
+   <div slot="poster" style="position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; width: 100%; background: radial-gradient(circle at center, #111827 0%, #020617 100%); font-family: 'JetBrains Mono', monospace; overflow: hidden; border-radius: 16px; cursor: pointer;">
+     <div style="position: absolute; inset: 0; background-image: linear-gradient(rgba(59, 130, 246, 0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(59, 130, 246, 0.08) 1px, transparent 1px); background-size: 25px 25px; z-index: 0;"></div>
+     <div class="scanline" style="z-index: 1;"></div>
+     <div class="hud-corner hud-tl" style="z-index: 1;"></div>
+     <div class="hud-corner hud-tr" style="z-index: 1;"></div>
+     <div class="hud-corner hud-bl" style="z-index: 1;"></div>
+     <div class="hud-corner hud-br" style="z-index: 1;"></div>
+     <div style="z-index: 2; display: flex; flex-direction: column; align-items: center;">
+       <div class="cyber-loader"></div>
+       <p style="margin-top: 25px; margin-bottom: 5px; font-size: 0.95rem; font-weight: 600; letter-spacing: 3px; color: #93c5fd; text-shadow: 0 0 10px rgba(96, 165, 250, 0.8); animation: text-blink 1.5s ease-in-out infinite;">正在初始化 3D 信号...</p>
+       <p class="click-to-load-glow" style="margin: 0; font-size: 0.65rem; color: #a78bfa; letter-spacing: 1px; font-weight: bold;">[ 滑动或点击接入引擎 ]</p>
+     </div>
+   </div>
     
-    <div class="model-watermark-text">版权所有 © 2026 Tianyu Bai</div>
+   <div class="model-watermark-text">版权所有 © 2026 Tianyu Bai</div>
     
-    <div class="gesture-hud">
-        <span>↺ 旋转：拖拽</span>
-  <span class="pc-only">缩放：Ctrl键 + 鼠标滚轮/触控板捏合</span>
-  <span class="mobile-only">缩放：双指捏合</span>
+   <div class="gesture-hud">
+       <span>↺ 旋转：拖拽</span>
+ <span class="pc-only">缩放：Ctrl键 + 鼠标滚轮/触控板捏合</span>
+ <span class="mobile-only">缩放：双指捏合</span>
 </div>
-
-    <div class="gesture-overlay mode-drag">
-      <div class="icon-box"><div class="hand-icon">👆</div></div>
-      <div class="gesture-text">拖拽以旋转</div>
-    </div>
-
-    <div class="gesture-overlay mode-zoom">
-  <div class="icon-box">
-    <div class="hand-icon hand-left">👉</div>
-    <div class="hand-icon hand-right">👈</div>
-  </div>
-  <div class="gesture-text">
-    <span class="pc-tip">Ctrl键 + 鼠标滚轮以缩放</span>
-    <span class="mobile-tip">双指捏合屏幕以缩放</span>
-  </div>
+ 
+   <div class="gesture-overlay mode-drag">
+     <div class="icon-box"><div class="hand-icon">👆</div></div>
+     <div class="gesture-text">拖拽以旋转</div>
+   </div>
+ 
+   <div class="gesture-overlay mode-zoom">
+ <div class="icon-box">
+   <div class="hand-icon hand-left">👉</div>
+   <div class="hand-icon hand-right">👈</div>
+ </div>
+ <div class="gesture-text">
+   <span class="pc-tip">Ctrl键 + 鼠标滚轮以缩放</span>
+   <span class="mobile-tip">双指捏合屏幕以缩放</span>
+ </div>
 </div>
-    
-    <button class="reset-btn"
-  onclick="
-    const mv = this.closest('model-viewer');
-    mv.setAttribute('camera-orbit','45deg 55deg auto');
-    mv.setAttribute('field-of-view','30deg');
-  ">
-      ⟲ 重置视角
-    </button>
-  </model-viewer>
+   <div class="gesture-overlay mode-drag">
+     <div class="icon-box"><div class="hand-icon">👆</div></div>
+     <div class="gesture-text">Drag to Rotate</div>
+ </div>
+  <button class="reset-btn"
+ onclick="
+   const mv = this.closest('model-viewer');
+   mv.setAttribute('camera-orbit','45deg 55deg auto');
+   mv.setAttribute('field-of-view','30deg');
+ ">
+     ⟲ 重置视角
+   </button>
+ </model-viewer>
 </div> 
-
+ 
 ## 🔬 256通道定制放大器 – 三维交互模型
-
+ 
 <div class="model-block" data-lenis-prevent align="center" style="position: relative; max-width: 760px; margin: 0 auto; min-height: 460px;">
-  <model-viewer
-    class="custom-model-viewer"
-    src="{{ '/Videos/3D_1.85MB.glb' | relative_url }}"
-    alt="E-Link 256-Channel Custom Headstage 3D Model"
-    loading="lazy"       reveal="manual"
-    poster="{{ '/Images/poster.webp' | relative_url }}"
-    camera-controls interpolation-decay="200" bounds="tight" field-of-view="30deg" auto-rotate  rotation-per-second="15deg"
-    interaction-prompt="none" environment-image="neutral" exposure="0.75" shadow-intensity="0" tone-mapping="commerce">
-
-    <div slot="poster" style="position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; width: 100%; background: radial-gradient(circle at center, #111827 0%, #020617 100%); font-family: 'JetBrains Mono', monospace; overflow: hidden; border-radius: 16px; cursor: pointer;">
-      <div style="position: absolute; inset: 0; background-image: linear-gradient(rgba(59, 130, 246, 0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(59, 130, 246, 0.08) 1px, transparent 1px); background-size: 25px 25px; z-index: 0;"></div>
-      <div class="scanline" style="z-index: 1;"></div>
-      <div class="hud-corner hud-tl" style="z-index: 1;"></div>
-      <div class="hud-corner hud-tr" style="z-index: 1;"></div>
-      <div class="hud-corner hud-bl" style="z-index: 1;"></div>
-      <div class="hud-corner hud-br" style="z-index: 1;"></div>
-      <div style="z-index: 2; display: flex; flex-direction: column; align-items: center;">
-        <div class="cyber-loader"></div>
-        <p style="margin-top: 25px; margin-bottom: 5px; font-size: 0.95rem; font-weight: 600; letter-spacing: 3px; color: #93c5fd; text-shadow: 0 0 10px rgba(96, 165, 250, 0.8); animation: text-blink 1.5s ease-in-out infinite;">正在初始化 3D 信号...</p>
-        <p class="click-to-load-glow" style="margin: 0; font-size: 0.65rem; color: #a78bfa; letter-spacing: 1px; font-weight: bold;">[ 滑动或点击接入引擎 ]</p>
-      </div>
-    </div>
+ <model-viewer
+   class="custom-model-viewer"
+   src="{{ '/Videos/3D_1.85MB.glb' | relative_url }}"
+   alt="E-Link 256-Channel Custom Headstage 3D Model"
+   loading="lazy"      reveal="manual"
+   poster="{{ '/Images/poster.webp' | relative_url }}"
+   camera-controls interpolation-decay="200" bounds="tight" field-of-view="30deg" auto-rotate  rotation-per-second="15deg"
+   interaction-prompt="none" environment-image="neutral" exposure="0.75" shadow-intensity="0" tone-mapping="commerce">
+ 
+   <div slot="poster" style="position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; width: 100%; background: radial-gradient(circle at center, #111827 0%, #020617 100%); font-family: 'JetBrains Mono', monospace; overflow: hidden; border-radius: 16px; cursor: pointer;">
+     <div style="position: absolute; inset: 0; background-image: linear-gradient(rgba(59, 130, 246, 0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(59, 130, 246, 0.08) 1px, transparent 1px); background-size: 25px 25px; z-index: 0;"></div>
+     <div class="scanline" style="z-index: 1;"></div>
+     <div class="hud-corner hud-tl" style="z-index: 1;"></div>
+     <div class="hud-corner hud-tr" style="z-index: 1;"></div>
+     <div class="hud-corner hud-bl" style="z-index: 1;"></div>
+     <div class="hud-corner hud-br" style="z-index: 1;"></div>
+     <div style="z-index: 2; display: flex; flex-direction: column; align-items: center;">
+       <div class="cyber-loader"></div>
+       <p style="margin-top: 25px; margin-bottom: 5px; font-size: 0.95rem; font-weight: 600; letter-spacing: 3px; color: #93c5fd; text-shadow: 0 0 10px rgba(96, 165, 250, 0.8); animation: text-blink 1.5s ease-in-out infinite;">正在初始化 3D 信号...</p>
+       <p class="click-to-load-glow" style="margin: 0; font-size: 0.65rem; color: #a78bfa; letter-spacing: 1px; font-weight: bold;">[ 滑动或点击接入引擎 ]</p>
+     </div>
+   </div>
     
-    <div class="model-watermark-text">版权所有 © 2026 Tianyu Bai </div>
+   <div class="model-watermark-text">版权所有 © 2026 Tianyu Bai </div>
     
-    <div class="gesture-hud">
-      <span>↺ 旋转：拖拽</span>
-  <span class="pc-only">缩放：Ctrl键 + 鼠标滚轮/触控板捏合</span>
-  <span class="mobile-only">缩放：双指捏合</span>
+   <div class="gesture-hud">
+     <span>↺ 旋转：拖拽</span>
+ <span class="pc-only">缩放：Ctrl键 + 鼠标滚轮/触控板捏合</span>
+ <span class="mobile-only">缩放：双指捏合</span>
 </div>
-
-    <div class="gesture-overlay mode-drag">
-      <div class="icon-box"><div class="hand-icon">👆</div></div>
-      <div class="gesture-text">拖拽以旋转</div>
-    </div>
-
-    <div class="gesture-overlay mode-zoom">
-  <div class="icon-box">
-    <div class="hand-icon hand-left">👉</div>
-    <div class="hand-icon hand-right">👈</div>
-  </div>
-  <div class="gesture-text">
-    <span class="pc-tip">Ctrl键 + 鼠标滚轮以缩放</span>
-    <span class="mobile-tip">双指捏合屏幕以缩放</span>
-  </div>
+ 
+   <div class="gesture-overlay mode-drag">
+     <div class="icon-box"><div class="hand-icon">👆</div></div>
+     <div class="gesture-text">拖拽以旋转</div>
+   </div>
+ 
+   <div class="gesture-overlay mode-zoom">
+ <div class="icon-box">
+   <div class="hand-icon hand-left">👉</div>
+   <div class="hand-icon hand-right">👈</div>
+ </div>
+ <div class="gesture-text">
+   <span class="pc-tip">Ctrl键 + 鼠标滚轮以缩放</span>
+   <span class="mobile-tip">双指捏合屏幕以缩放</span>
+ </div>
 </div>
-
-    <button class="reset-btn"
-  onclick="
-    const mv = this.closest('model-viewer');
-    mv.setAttribute('camera-orbit','45deg 55deg auto');
-    mv.setAttribute('field-of-view','30deg');
-  ">
-      ⟲ 重置视角
-    </button>
-  </model-viewer>
+ 
+   <button class="reset-btn"
+ onclick="
+   const mv = this.closest('model-viewer');
+   mv.setAttribute('camera-orbit','45deg 55deg auto');
+   mv.setAttribute('field-of-view','30deg');
+ ">
+     ⟲ 重置视角
+   </button>
+ </model-viewer>
 </div>
-
-<style>
-  /* 🚀 新增：专门修复底部排版不折行 & 手机端字体响应式缩放 */
-  .v2-val-wrap { 
-    display: flex; 
-    justify-content: center; 
-    align-items: baseline; 
-    white-space: nowrap; /* 绝对禁止折行 */
-  }
-  .v2-val-sm { 
-    font-size: 28px !important; 
-  }
-  @media (max-width: 600px) {
-    .v2-val-sm { 
-      font-size: 20px !important; /* 手机端强制缩小，防止撑爆卡片 */
-    }
-  }
-</style>
-
+ 
 <div class="metrics-grid-v2" data-aos="fade-up">
-  <div class="metric-card-v2" style="--card-accent: #10b981;" data-type="ring" data-percent="100" data-value="2.8" data-is-float="true">
-    <div class="card-label">重量</div>
-    <div class="v2-chart-box">
-      <svg viewBox="0 0 100 100"><circle class="bg-ring" cx="50" cy="50" r="45"></circle><circle class="fg-ring weight-color" cx="50" cy="50" r="45"></circle></svg>
-      <div class="ring-inner">
-        <div class="v2-val-wrap">
-          <span class="card-value v2-count v2-val-sm">0</span><span class="card-unit">克</span>
-        </div>
-      </div>
-    </div>
-    <div class="card-sub">轻量化</div>
-  </div>
-
-  <div class="metric-card-v2" style="--card-accent: #3b82f6;" data-type="ring" data-percent="100" data-value="256" data-is-float="false">
-    <div class="card-label">通道数</div>
-    <div class="v2-chart-box">
-      <svg viewBox="0 0 100 100"><circle class="bg-ring" cx="50" cy="50" r="45"></circle><circle class="fg-ring channel-color" cx="50" cy="50" r="45"></circle></svg>
-      <div class="ring-inner">
-        <div class="v2-val-wrap">
-          <span class="card-value v2-count v2-val-sm">0</span>
-        </div>
-      </div>
-    </div>
-    <div class="card-sub">高密度采集</div>
-  </div>
-
-  <div class="metric-card-v2" style="--card-accent: #f59e0b;" data-type="ring" data-percent="100" data-value="4" data-is-float="false">
-    <div class="card-label">PCB 层数</div>
-    <div class="v2-chart-box">
-      <svg viewBox="0 0 100 100"><circle class="bg-ring" cx="50" cy="50" r="45"></circle><circle class="fg-ring pcb-color" cx="50" cy="50" r="45"></circle></svg>
-      <div class="ring-inner">
-        <div class="v2-val-wrap">
-          <span class="card-value v2-count v2-val-sm">0</span>
-        </div>
-      </div>
-    </div>
-    <div class="card-sub">定制化布线</div>
-  </div>
-
-  <div class="metric-card-v2" style="--card-accent: #ef4444;" data-type="thermo" data-value="30.5" data-max="50">
-    <div class="card-label">工作温度</div>
-    <div class="thermo-wrapper">
-      <div class="thermo-track">
-        <div class="thermo-fill"></div>
-        <div class="thermo-safe-line"></div>
-        <div class="thermo-safe-label">37°C</div>
-      </div>
-      <div class="thermo-bulb"></div>
-    </div>
-    <div class="v2-val-wrap">
-      <div class="card-value v2-count v2-val-sm">0</div><span class="card-unit">°C</span>
-    </div>
-    <div class="card-sub">低于生物阈值</div>
-  </div>
-
-  <div class="metric-card-v2" style="--card-accent: #a78bfa;" data-type="waveform" data-value="2.68" data-is-float="true" data-decimals="2">
-    <div class="card-label">系统底噪</div>
-    <div class="waveform-box"><canvas class="waveform-canvas"></canvas></div>
-    <div class="v2-val-wrap">
-      <div class="card-value v2-count v2-val-sm">0</div><span class="card-unit">微伏</span>
-    </div>
-    <div class="card-sub">接近芯片性能极值</div>
-  </div>
-
-  <div class="metric-card-v2" style="--card-accent: #10b981;" data-type="cycles" data-value="300">
-  <div class="card-label">按压连接测试</div>
-  <div class="cycles-viz">
-    <div class="press-icon">🫸</div>
-    <div class="press-ripple"></div>
-    <div class="cycles-counter-flash">+1</div>
-  </div>
-  <div class="v2-val-wrap">
-    <span class="card-value v2-val-sm" style="margin-right: 4px;">&gt;</span>
-    <div class="card-value v2-count v2-val-sm">0</div><span class="card-unit">次</span>
-  </div>
-  <div class="card-sub">保持 97%+ 连接良率</div>
+ <div class="metric-card-v2" style="--card-accent: #10b981;" data-type="ring" data-percent="100" data-value="2.8" data-is-float="true">
+   <div class="card-label">重量</div>
+   <div class="v2-chart-box">
+     <svg viewBox="0 0 100 100"><circle class="bg-ring" cx="50" cy="50" r="45"></circle><circle class="fg-ring weight-color" cx="50" cy="50" r="45"></circle></svg>
+     <div class="ring-inner">
+       <div class="v2-val-wrap">
+         <span class="card-value v2-count v2-val-sm">0</span><span class="card-unit">克</span>
+       </div>
+     </div>
+   </div>
+   <div class="card-sub">轻量化</div>
+ </div>
+ 
+ <div class="metric-card-v2" style="--card-accent: #3b82f6;" data-type="ring" data-percent="100" data-value="256" data-is-float="false">
+   <div class="card-label">通道数</div>
+   <div class="v2-chart-box">
+     <svg viewBox="0 0 100 100"><circle class="bg-ring" cx="50" cy="50" r="45"></circle><circle class="fg-ring channel-color" cx="50" cy="50" r="45"></circle></svg>
+     <div class="ring-inner">
+       <div class="v2-val-wrap">
+         <span class="card-value v2-count v2-val-sm">0</span>
+       </div>
+     </div>
+   </div>
+   <div class="card-sub">高密度采集</div>
+ </div>
+ 
+ <div class="metric-card-v2" style="--card-accent: #f59e0b;" data-type="ring" data-percent="100" data-value="4" data-is-float="false">
+   <div class="card-label">PCB 层数</div>
+   <div class="v2-chart-box">
+     <svg viewBox="0 0 100 100"><circle class="bg-ring" cx="50" cy="50" r="45"></circle><circle class="fg-ring pcb-color" cx="50" cy="50" r="45"></circle></svg>
+     <div class="ring-inner">
+       <div class="v2-val-wrap">
+         <span class="card-value v2-count v2-val-sm">0</span>
+       </div>
+     </div>
+   </div>
+   <div class="card-sub">定制化布线</div>
+ </div>
+ 
+ <div class="metric-card-v2" style="--card-accent: #ef4444;" data-type="thermo" data-value="30.5" data-max="50">
+   <div class="card-label">工作温度</div>
+   <div class="thermo-wrapper">
+     <div class="thermo-track">
+       <div class="thermo-fill"></div>
+       <div class="thermo-safe-line"></div>
+       <div class="thermo-safe-label">37°C</div>
+     </div>
+     <div class="thermo-bulb"></div>
+   </div>
+   <div class="v2-val-wrap">
+     <div class="card-value v2-count v2-val-sm">0</div><span class="card-unit">°C</span>
+   </div>
+   <div class="card-sub">低于生物阈值</div>
+ </div>
+ 
+ <div class="metric-card-v2" style="--card-accent: #a78bfa;" data-type="waveform" data-value="2.68" data-is-float="true" data-decimals="2">
+   <div class="card-label">系统底噪</div>
+   <div class="waveform-box"><canvas class="waveform-canvas"></canvas></div>
+   <div class="v2-val-wrap">
+     <div class="card-value v2-count v2-val-sm">0</div><span class="card-unit">微伏</span>
+   </div>
+   <div class="card-sub">接近芯片性能极值</div>
+ </div>
+ 
+ <div class="metric-card-v2" style="--card-accent: #10b981;" data-type="cycles" data-value="300">
+ <div class="card-label">按压连接测试</div>
+ <div class="cycles-viz">
+   <div class="press-icon">🫸</div>
+   <div class="press-ripple"></div>
+   <div class="cycles-counter-flash">+1</div>
+ </div>
+ <div class="v2-val-wrap">
+   <span class="card-value v2-val-sm" style="margin-right: 4px;">&gt;</span>
+   <div class="card-value v2-count v2-val-sm">0</div><span class="card-unit">次</span>
+ </div>
+ <div class="card-sub">保持 97%+ 连接良率</div>
 </div>
 </div>
-
+ 
 <br> <span id="cn-overview"></span>
-
+ 
 ## 📖 概览
-
+ 
 **E-Link易链**，是一款基于弹性体互连技术（Elastomer Interconnection）的开源微型基座连接系统。它为柔性神经探针提供了稳固且可扩展的接口，专为自由活动动物的长期实验而优化设计
-
+ 
 <div align="center" data-aos="zoom-in-up" data-aos-duration="1000">
  <br>
  <div class="gif-placeholder">
-   <img data-src="Videos/Demo%20new%20new.gif" 
-         src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
-         alt="ELINK-256 组装演示 GIF"
-         class="lazy-gif white-bg-gif" 
-         decoding="async">
+  <img data-src="Videos/Demo%20new%20new.gif" 
+        src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+        alt="ELINK-256 组装演示 GIF"
+        class="lazy-gif white-bg-gif" 
+        decoding="async">
  </div>
 </div>
-
+ 
 ---
-
+ 
 > [!NOTE]
 > **核心创新：** 我们打造了一种完全一体化的 “即拧即用” 数据采集方案。该系统利用弹性导电介质连接高密度 PCB，并封装于轻量级基座中。其最大的突破在于实现了“零力插拔”。免去使用者用力插拔的动作，有效规避了高密度引脚连接器常见的断针和弯针风险。
-
+ 
 ---
-
+ 
 <span id="cn-specs"></span>
-
+ 
 ### 📊 规格参数
-
+ 
 <div style="width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 10px;">
-  <table style="margin-left: auto; margin-right: auto; width: 90%; min-width: 600px; text-align: center; border-collapse: collapse; border: 1px solid #e1e4e8;">
-    <thead>
-      <tr style="background-color: #f6f8fa; border-bottom: 2px solid #e1e4e8;">
-        <th style="padding: 10px; border: 1px solid #e1e4e8;">规格项目</th>
-        <th style="padding: 10px; border: 1px solid #e1e4e8;">E-Link(256)_V1.0</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td style="padding: 8px; border: 1px solid #e1e4e8;"><b>通道数</b></td>
-        <td style="padding: 8px; border: 1px solid #e1e4e8;">128 或 256 通道 (支持单/双 SPI 端口)</td>
-      </tr>
-      <tr>
-        <td style="padding: 8px; border: 1px solid #e1e4e8;"><b>总质量</b></td>
-        <td style="padding: 8px; border: 1px solid #e1e4e8;">6.6 g (含外壳)<br>2.8 g (不含外壳)</td>
-      </tr>
-      <tr>
-        <td style="padding: 8px; border: 1px solid #e1e4e8;"><b>互连类型</b></td>
-        <td style="padding: 8px; border: 1px solid #e1e4e8;">免焊各向异性弹性体</td>
-      </tr>
-      <tr>
-        <td style="padding: 8px; border: 1px solid #e1e4e8;"><b>兼容采集系统</b></td>
-        <td style="padding: 8px; border: 1px solid #e1e4e8;">Intan Recording Controller (512ch/1024ch)<br>Open-Ephys DAQ box<br>NeuroNexus Smartbox<br>OmniPlex DAQ box</td>
-      </tr>
-      <tr>
-        <td style="padding: 8px; border: 1px solid #e1e4e8;"><b>外壳材料</b></td>
-        <td style="padding: 8px; border: 1px solid #e1e4e8;">3D 打印 PEEK / 手术级树脂</td>
-      </tr>
-    </tbody>
-  </table>
+ <table style="margin-left: auto; margin-right: auto; width: 90%; min-width: 600px; text-align: center; border-collapse: collapse; border: 1px solid #e1e4e8;">
+   <thead>
+     <tr style="background-color: #f6f8fa; border-bottom: 2px solid #e1e4e8;">
+       <th style="padding: 10px; border: 1px solid #e1e4e8;">规格项目</th>
+       <th style="padding: 10px; border: 1px solid #e1e4e8;">E-Link(256)_V1.0</th>
+     </tr>
+   </thead>
+   <tbody>
+     <tr>
+       <td style="padding: 8px; border: 1px solid #e1e4e8;"><b>通道数</b></td>
+       <td style="padding: 8px; border: 1px solid #e1e4e8;">128或 256 通道 (支持单/双 SPI 端口)</td>
+     </tr>
+     <tr>
+       <td style="padding: 8px; border: 1px solid #e1e4e8;"><b>总质量</b></td>
+       <td style="padding: 8px; border: 1px solid #e1e4e8;">6.6 g (含外壳)<br>2.8 g (不含外壳)</td>
+     </tr>
+     <tr>
+       <td style="padding: 8px; border: 1px solid #e1e4e8;"><b>互连类型</b></td>
+       <td style="padding: 8px; border: 1px solid #e1e4e8;">免焊各向异性弹性体</td>
+     </tr>
+     <tr>
+       <td style="padding: 8px; border: 1px solid #e1e4e8;"><b>兼容采集系统</b></td>
+       <td style="padding: 8px; border: 1px solid #e1e4e8;">Intan Recording Controller (512ch/1024ch)<br>Open-Ephys DAQ box<br>NeuroNexus Smartbox<br>OmniPlex DAQ box</td>
+     </tr>
+     <tr>
+       <td style="padding: 8px; border: 1px solid #e1e4e8;"><b>外壳材料</b></td>
+       <td style="padding: 8px; border: 1px solid #e1e4e8;">3D 打印 PEEK / 手术级树脂</td>
+     </tr>
+   </tbody>
+ </table>
 </div>
-
+ 
 ---
-
+ 
 <span id="cn-features"></span>
-
+ 
 ## ✨ 核心特性
 <div class="species-compatibility-container" align="center" style="margin: 40px auto; max-width: 760px;">
-  <h3 style="color: #60a5fa; margin-bottom: 20px; font-family: sans-serif;">🌍 跨物种适用性展望 </h3>
+ <h3 style="color: #60a5fa; margin-bottom: 20px; font-family: sans-serif;">🌍 跨物种适用性展望 </h3>
   
-  <div class="species-glass-box">
-  <svg class="connection-lines" viewBox="0 0 600 380" preserveAspectRatio="none" style="z-index: 1;">
-    <path class="base-line" d="M300,141 L100,225" stroke="rgba(255,255,255,0.1)" fill="none" /> 
-    <path class="base-line" d="M300,141 L300,255" stroke="rgba(255,255,255,0.1)" fill="none" /> 
-    <path class="base-line" d="M300,141 L500,225" stroke="rgba(255,255,255,0.1)" fill="none" /> 
+ <div class="species-glass-box">
+ <svg class="connection-lines" viewBox="0 0 600 380" preserveAspectRatio="none" style="z-index: 1;">
+   <path class="base-line" d="M300,141 L100,225" stroke="rgba(255,255,255,0.1)" fill="none" /> 
+   <path class="base-line" d="M300,141 L300,255" stroke="rgba(255,255,255,0.1)" fill="none" /> 
+   <path class="base-line" d="M300,141 L500,225" stroke="rgba(255,255,255,0.1)" fill="none" /> 
     
-    <path class="pulse-line line-to-mouse" d="M300,141 L100,225" />
-    <path class="pulse-line line-to-rat" d="M300,141 L300,255" />
-    <path class="pulse-line line-to-monkey" d="M300,141 L500,225" />
-  </svg>
-
-    <div class="node center-node">
-      <div class="hex-border">
-        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M7 2V4M12 2V4M17 2V4M22 7H20M22 12H20M22 17H20M17 22V20M12 22V20M7 22V20M2 17H4M2 12H4M2 7H4M6 6H18V18H6V6ZM9 9V15H15V9H9Z" stroke="#60a5fa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </div>
-      <div class="node-text pulse-text">E-Link (256)</div>
-    </div>
-
-    <div class="animal-nodes">
-      
-      <div class="node sub-node">
-        <div class="icon-circle mouse-glow">
-          <span style="font-size: 30px;">🐁</span>
-        </div>
-        <div class="node-title"><i>小鼠</i></div>
-        <div class="node-desc">顶盖移除后<br><b><font color="#10b981">2.8g</font> 载荷</b></div>
-      </div>
-
-      <div class="node sub-node rat-node-adjust">
-        <div class="icon-circle rat-glow">
-          <span style="font-size: 30px;">🐀</span>
-        </div>
-        <div class="node-title"><i>大鼠</i></div>
-        <div class="node-desc">长期佩戴<br><b><font color="#3b82f6">6.6g</font> 共计</b></div>
-      </div>
-
-      <div class="node sub-node">
-        <div class="icon-circle monkey-glow">
-          <span style="font-size: 30px;">🐒</span>
-        </div>
-        <div class="node-title"><i>灵长类</i></div>
-        <div class="node-desc">高耐久性<br><b><font color="#f59e0b">可拓展矩阵</font></b></div>
-      </div>
-
-    </div>
-  </div>
+   <path class="pulse-line line-to-mouse" d="M300,141 L100,225" />
+   <path class="pulse-line line-to-rat" d="M300,141 L300,255" />
+   <path class="pulse-line line-to-monkey" d="M300,141 L500,225" />
+ </svg>
+ 
+   <div class="node center-node">
+     <div class="hex-border">
+       <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+         <path d="M7 2V4M12 2V4M17 2V4M22 7H20M22 12H20M22 17H20M17 22V20M12 22V20M7 22V20M2 17H4M2 12H4M2 7H4M6 6H18V18H6V6ZM9 9V15H15V9H9Z" stroke="#60a5fa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+       </svg>
+     </div>
+     <div class="node-text pulse-text">E-Link (256)</div>
+   </div>
+ 
+   <div class="animal-nodes">
+     
+     <div class="node sub-node">
+       <div class="icon-circle mouse-glow">
+         <span style="font-size: 30px;">🐁</span>
+       </div>
+       <div class="node-title"><i>小鼠</i></div>
+       <div class="node-desc">顶盖移除后<br><b><font color="#10b981">2.8g</font> 载荷</b></div>
+     </div>
+ 
+     <div class="node sub-node rat-node-adjust">
+       <div class="icon-circle rat-glow">
+         <span style="font-size: 30px;">🐀</span>
+       </div>
+       <div class="node-title"><i>大鼠</i></div>
+       <div class="node-desc">长期佩戴<br><b><font color="#3b82f6">6.6g</font> 共计</b></div>
+     </div>
+ 
+     <div class="node sub-node">
+       <div class="icon-circle monkey-glow">
+         <span style="font-size: 30px;">🐒</span>
+       </div>
+       <div class="node-title"><i>灵长类</i></div>
+       <div class="node-desc">高耐久性<br><b><font color="#f59e0b">可拓展矩阵</font></b></div>
+     </div>
+ 
+   </div>
+ </div>
 </div>
-
+ 
 <div class="watermark-features">
-  <ul>
-    <li data-aos="fade-up" data-aos-delay="0">
-      <strong>⚡ 256通道高密度与可扩展接口</strong><br>
-      在有限基座占地面积内实现256通道数据采集。得益于弹性体互连的高集成度，该系统提供了清晰的扩展路径（可达1024通道），且不会增加额外的手术复杂度。
-    </li>
-
-    <li data-aos="fade-up" data-aos-delay="100">
-      <strong>🔌 零插拔力，以柔克刚</strong><br>
-      利用各向异性导电弹性体取代传统刚性插针。通过“旋紧结构”将扭矩转化为均匀压力，从物理层面彻底规避了高密度连接器常见的断针、弯针等失效模式。
-    </li>
-
-    <li data-aos="fade-up" data-aos-delay="200">
-      <strong>🎯 自对准与高容错连接</strong><br>
-      系统具备优异的机械限位与电气容错率。无需微米级精密对齐，只需简单旋紧即可实现稳定连接，极大降低了手动操作的难度和失败风险。
-    </li>
-
-    <li data-aos="fade-up" data-aos-delay="300">
-      <strong>🛠️ 模块化维护与按需组装</strong><br>
-      采用“三明治”式分离结构（外壳、适配板、放大器板）。支持损坏模块的单独更换，并允许根据实验需求灵活焊接芯片，显著降低了科研成本。
-    </li>
-
-    <li data-aos="fade-up" data-aos-delay="400">
-      <strong>🪶 电子模块即插即拆，释放头部负担</strong><br>
-      在非记录期间，有源电路可与底座快速分离，仅在颅骨留下极轻量的无源接口。这大幅减轻了动物的物理载荷，保障其在实验间隙的自然活动状态。
-    </li>
-
-    <li data-aos="fade-up" data-aos-delay="500">
-      <strong>🐭 专为自由活动动物实验优化</strong><br>
-      核心组件仅重 2.8g。低剖面设计完美适配换向器 (Commutator)，有效管理线缆并确保动物在长期慢性实验中的自然行为，提升动物福利。
-    </li>
-
-    <li data-aos="fade-up" data-aos-delay="600">
-      <strong>🧪 手术级一体化与解剖结构适配</strong><br>
-      侧壁纹理增强了与牙科水泥的附着力。基座底部的打印弧度可根据不同动物头部曲线进行定制调整，实现完美贴合，构建出全封闭的防护舱。
-    </li>
-  </ul>
+ <ul>
+   <li data-aos="fade-up" data-aos-delay="0">
+     <strong>⚡ 256通道高密度与可扩展接口</strong><br>
+     在有限基座占地面积内实现256通道数据采集。得益于弹性体互连的高集成度，该系统提供了清晰的扩展路径（可达1024通道），且不会增加额外的手术复杂度。
+   </li>
+   <li data-aos="fade-up" data-aos-delay="100">
+     <strong>🔌 零插拔力，以柔克刚</strong><br>
+     利用各向异性导电弹性体取代传统刚性插针。通过“旋紧结构”将扭矩转化为均匀压力，从物理层面彻底规避了高密度连接器常见的断针、弯针等失效模式。
+   </li>
+   <li data-aos="fade-up" data-aos-delay="200">
+     <strong>🎯 自对准与高容错连接</strong><br>
+     系统具备优异的机械限位与电气容错率。无需微米级精密对齐，只需简单旋紧即可实现稳定连接，极大降低了手动操作的难度和失败风险。
+   </li>
+   <li data-aos="fade-up" data-aos-delay="300">
+     <strong>🛠️ 模块化维护与按需组装</strong><br>
+     采用“三明治”式分离结构（外壳、适配板、放大器板）。支持损坏模块的单独更换，并允许根据实验需求灵活焊接芯片，显著降低了科研成本。
+   </li>
+   <li data-aos="fade-up" data-aos-delay="400">
+     <strong>🪶 电子模块即插即拆，释放头部负担</strong><br>
+     在非记录期间，有源电路可与底座快速分离，仅在颅骨留下极轻量的无源接口。这大幅减轻了动物的物理载荷，保障其在实验间隙的自然活动状态。
+   </li>
+   <li data-aos="fade-up" data-aos-delay="500">
+     <strong>🐭 专为自由活动动物实验优化</strong><br>
+     核心组件仅重 2.8g。低剖面设计完美适配换向器 (Commutator)，有效管理线缆并确保动物在长期慢性实验中的自然行为，提升动物福利。
+   </li>
+   <li data-aos="fade-up" data-aos-delay="600">
+     <strong>🧪 手术级一体化与解剖结构适配</strong><br>
+     侧壁纹理增强了与牙科水泥的附着力。基座底部的打印弧度可根据不同动物头部曲线进行定制调整，实现完美贴合，构建出全封闭的防护舱。
+   </li>
+ </ul>
 </div>
-
+ 
 <div align="center" data-aos="zoom-in-up" data-aos-duration="1000">
  <br>
  <div class="gif-placeholder">
-   <img data-src="Videos/Animation%20repeat.gif" 
-         src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
-         alt="ELINK-256 动画演示 GIF"
-         class="lazy-gif white-bg-gif" 
-         decoding="async">
+  <img data-src="Videos/Animation%20repeat.gif" 
+        src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+        alt="ELINK-256 动画演示 GIF"
+        class="lazy-gif white-bg-gif" 
+        decoding="async">
  </div>
 </div>
-
+ 
 ---
-
+ 
 <span id="cn-signal-demo"></span>
 ### ⚡ 代表性 Spike 信号采集示意
-
+ 
 <p style="color: #64748b; font-size: 0.95em; margin-bottom: 20px;">
   本交互模块为模拟演示，展示了系统在标准 Spike 频段（300 Hz – 7.5 kHz）下的胞外动作电位采集能力。该模型以 30 kS/s 的采样率，直观呈现了使用 E-Link 系统进行高密度记录时预期的波形动力学特征、系统热噪声底噪以及信噪比 (SNR) 表现。
 </p>
-
+ 
 <div class="intan-simulator-wrapper" data-aos="fade-up">
-  <div class="intan-title-bar">
-    <div class="intan-title-text">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12h4l3-9 5 18 3-9h5"/></svg>
-      Intan RHX Interface - Simulated E-Link (256-ch) Stream
+ <div class="intan-title-bar">
+   <div class="intan-title-text">
+     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12h4l3-9 5 18 3-9h5"/></svg>
+     Intan RHX Interface - Simulated E-Link (256-ch) Stream
+   </div>
+   <div class="intan-window-controls"><span class="close"></span><span class="min"></span><span class="max"></span></div>
+ </div>
+  
+ <div class="intan-body">
+   <div class="intan-plots-wrapper">
+     <div class="intan-plot-pane">
+       <div class="intan-time-axis">
+         <span>0</span><span>10</span><span>20</span><span>30</span><span>40</span><span>50 ms</span>
+       </div>
+       <div class="intan-canvas-container">
+         <canvas class="intan-canvas canvas-left"></canvas>
+       </div>
+       <div class="intan-pane-footer">
+         <span>⛶ Port A (128 ch)</span>
+         <div class="intan-footer-tools">
+           <span>➕ ➖ ⭱</span>
+           <label><input type="checkbox" checked> show pinned</label>
+           <span>▤ 🗗</span>
+         </div>
+       </div>
+     </div>
+     <div class="intan-plot-pane">
+       <div class="intan-time-axis">
+         <span>0</span><span>10</span><span>20</span><span>30</span><span>40</span><span>50 ms</span>
+       </div>
+       <div class="intan-canvas-container">
+         <canvas class="intan-canvas canvas-right"></canvas>
+       </div>
+       <div class="intan-pane-footer">
+         <span>⛶ Port B (128 ch)</span>
+         <div class="intan-footer-tools">
+           <span>➕ ➖ ⭱</span>
+           <label><input type="checkbox" checked> show pinned</label>
+           <span>▤ 🗗</span>
+         </div>
+       </div>
+     </div>
+   </div>
+    
+   <div class="intan-sidebar">
+     <div class="intan-btn-group"><div class="intan-btn">Run</div><div class="intan-btn record">Record</div></div>
+    <div class="intan-panel">
+       <div class="intan-panel-title">Hardware Ports</div>
+       <div class="hw-ports-grid">
+         <div class="hw-port-box active">
+           <div class="hw-port-left"><span class="hw-port-label">A</span><div class="hw-port-connector"></div></div>
+           <div class="hw-port-leds"><div class="hw-led"></div><div class="hw-led"></div><div class="hw-led green"></div></div>
+         </div>
+         <div class="hw-port-box active">
+           <div class="hw-port-left"><span class="hw-port-label">B</span><div class="hw-port-connector"></div></div>
+           <div class="hw-port-leds"><div class="hw-led"></div><div class="hw-led"></div><div class="hw-led green"></div></div>
+         </div>
+         <div class="hw-port-box inactive">
+           <div class="hw-port-left"><span class="hw-port-label">C</span><div class="hw-port-connector"></div></div>
+           <div class="hw-port-leds"><div class="hw-led"></div><div class="hw-led"></div><div class="hw-led"></div></div>
+         </div>
+         <div class="hw-port-box inactive">
+           <div class="hw-port-left"><span class="hw-port-label">D</span><div class="hw-port-connector"></div></div>
+           <div class="hw-port-leds"><div class="hw-led"></div><div class="hw-led"></div><div class="hw-led"></div></div>
+         </div>
+       </div>
+     </div>
+     <div class="intan-panel">
+       <div class="intan-panel-title">Filter Bandwidth</div>
+       <div class="intan-setting-row"><span>High-pass</span><div class="intan-value-box">300 Hz</div></div>
+       <div class="intan-setting-row"><span>Low-pass</span><div class="intan-value-box">7.5 kHz</div></div>
+     </div>
+     <div class="intan-panel">
+       <div class="intan-panel-title">System Status</div>
+       <div class="intan-setting-row" style="color: #27c93f; font-weight: bold;"><span>SPI Links</span><span>A, B Locked</span></div>
+       <div class="intan-setting-row" style="color: #777;"><span>Unused</span><span>C, D</span></div>
+       <div class="intan-setting-row"><span>Sampling</span><div class="intan-value-box" style="border:none;box-shadow:none;background:transparent;text-align:right;">30 kS/s</div></div>
+     </div>
+   </div>
+ </div>
+</div>
+
+<div class="scope-win-wrapper" data-aos="fade-up" style="margin-top: 20px;">
+  <div class="scope-title-bar">
+    <div class="scope-title-left">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="3"><polygon points="12 2 22 22 2 22"/></svg>
+      Spike Scope
     </div>
     <div class="intan-window-controls"><span class="close"></span><span class="min"></span><span class="max"></span></div>
   </div>
   
-  <div class="intan-body">
-    <div class="intan-plots-wrapper">
-      <div class="intan-plot-pane">
-        <div class="intan-time-axis">
-          <span>0</span><span>10</span><span>20</span><span>30</span><span>40</span><span>50 ms</span>
-        </div>
-        <div class="intan-canvas-container">
-          <canvas class="intan-canvas canvas-left"></canvas>
-        </div>
-        <div class="intan-pane-footer">
-          <span>⛶ Port A (128 ch)</span>
-          <div class="intan-footer-tools">
-            <span>➕ ➖ ⭱</span>
-            <label><input type="checkbox" checked> show pinned</label>
-            <span>▤ 🗗</span>
-          </div>
-        </div>
+  <div class="scope-body">
+    <div class="scope-sidebar">
+      <div class="scope-fieldset">
+        <div class="scope-legend">通道</div>
+        <div style="margin-bottom: 6px;">A-010</div>
+        <label class="scope-row"><input type="checkbox" checked> 锁定绘图至选中通道</label>
+        <div class="scope-btn" style="border-color: #0078d7; background: #e5f1fb; margin-top:2px;">设置为选中通道</div>
       </div>
-      <div class="intan-plot-pane">
-        <div class="intan-time-axis">
-          <span>0</span><span>10</span><span>20</span><span>30</span><span>40</span><span>50 ms</span>
-        </div>
-        <div class="intan-canvas-container">
-          <canvas class="intan-canvas canvas-right"></canvas>
-        </div>
-        <div class="intan-pane-footer">
-          <span>⛶ Port B (128 ch)</span>
-          <div class="intan-footer-tools">
-            <span>➕ ➖ ⭱</span>
-            <label><input type="checkbox" checked> show pinned</label>
-            <span>▤ 🗗</span>
-          </div>
-        </div>
+      
+      <div class="scope-fieldset">
+        <div class="scope-legend">显示设置</div>
+        <div class="scope-row" style="justify-content: space-between;">电压量程 <select class="scope-input" style="width:65px"><option>500 µV</option></select></div>
+        <div class="scope-row" style="justify-content: space-between;">时间刻度 <select class="scope-input" style="width:65px"><option>2 ms</option></select></div>
+        <div class="scope-row" style="justify-content: space-between;">显示 <select class="scope-input" style="width:45px"><option>20</option></select> 个波形</div>
+        <div class="scope-btn" style="margin-bottom: 6px;">清除画面</div>
+        <div class="scope-row" style="margin-bottom:0;"><div class="scope-btn" style="flex:1">截取快照</div><div class="scope-btn" style="flex:1">清除快照</div></div>
       </div>
+
+      <div class="scope-fieldset">
+        <div class="scope-legend">动作电位检测设置</div>
+        <div class="scope-row" style="justify-content: space-between; margin-bottom:0;">检测阈值 <input type="text" class="scope-input" value="-70 µV" style="width:55px;"></div>
+      </div>
+
+      <div class="scope-fieldset">
+        <div class="scope-legend">伪影抑制</div>
+        <label class="scope-row"><input type="checkbox" checked> 启用抑制</label>
+        <label class="scope-row"><input type="checkbox" checked> 显示伪影</label>
+        <div class="scope-row" style="justify-content: space-between; margin-bottom:0;">伪影阈值 <input type="text" class="scope-input" value="2500 µV" style="width:55px;"></div>
+      </div>
+
+      <div class="scope-btn" style="margin-top: -2px;">加载检测参数</div>
+      <div class="scope-btn" style="margin-top: -6px;">保存检测参数</div>
     </div>
     
-    <div class="intan-sidebar">
-      <div class="intan-btn-group"><div class="intan-btn">Run</div><div class="intan-btn record">Record</div></div>
-     <div class="intan-panel">
-        <div class="intan-panel-title">Hardware Ports</div>
-        <div class="hw-ports-grid">
-          <div class="hw-port-box active">
-            <div class="hw-port-left"><span class="hw-port-label">A</span><div class="hw-port-connector"></div></div>
-            <div class="hw-port-leds"><div class="hw-led"></div><div class="hw-led"></div><div class="hw-led green"></div></div>
-          </div>
-          <div class="hw-port-box active">
-            <div class="hw-port-left"><span class="hw-port-label">B</span><div class="hw-port-connector"></div></div>
-            <div class="hw-port-leds"><div class="hw-led"></div><div class="hw-led"></div><div class="hw-led green"></div></div>
-          </div>
-          <div class="hw-port-box inactive">
-            <div class="hw-port-left"><span class="hw-port-label">C</span><div class="hw-port-connector"></div></div>
-            <div class="hw-port-leds"><div class="hw-led"></div><div class="hw-led"></div><div class="hw-led"></div></div>
-          </div>
-          <div class="hw-port-box inactive">
-            <div class="hw-port-left"><span class="hw-port-label">D</span><div class="hw-port-connector"></div></div>
-            <div class="hw-port-leds"><div class="hw-led"></div><div class="hw-led"></div><div class="hw-led"></div></div>
-          </div>
-        </div>
-      </div>
-      <div class="intan-panel">
-        <div class="intan-panel-title">Filter Bandwidth</div>
-        <div class="intan-setting-row"><span>High-pass</span><div class="intan-value-box">300 Hz</div></div>
-        <div class="intan-setting-row"><span>Low-pass</span><div class="intan-value-box">7.5 kHz</div></div>
-      </div>
-      <div class="intan-panel">
-        <div class="intan-panel-title">System Status</div>
-        <div class="intan-setting-row" style="color: #27c93f; font-weight: bold;"><span>SPI Links</span><span>A, B Locked</span></div>
-        <div class="intan-setting-row" style="color: #777;"><span>Unused</span><span>C, D</span></div>
-        <div class="intan-setting-row"><span>Sampling</span><div class="intan-value-box" style="border:none;box-shadow:none;background:transparent;text-align:right;">30 kS/s</div></div>
-      </div>
+    <div class="scope-plot-area">
+      <canvas class="spike-scope-canvas"></canvas>
+      <div class="scope-overlay-text" style="top:10px; left:10px; color:#fff;">+500 µV</div>
+      <div class="scope-overlay-text" style="top:50%; left:10px; color:#fff; transform:translateY(-50%);">0</div>
+      <div class="scope-overlay-text" style="top:calc(50% + 7%); left:10px; color:#ef4444; transform:translateY(-50%);">-70</div>
+      <div class="scope-overlay-text" style="bottom:20px; left:10px; color:#fff;">-500 µV</div>
+
+      <div class="scope-overlay-text" style="bottom:5px; left:10px; color:#fff;">-1</div>
+      <div class="scope-overlay-text" style="bottom:5px; left:33.33%; color:#fff; transform:translateX(-50%);">0</div>
+      <div class="scope-overlay-text" style="bottom:5px; left:66.66%; color:#fff; transform:translateX(-50%);">1</div>
+      <div class="scope-overlay-text" style="bottom:5px; right:10px; color:#fff;">2 ms</div>
+
+      <div class="scope-overlay-text" style="top:10px; left:34%; color:#fff; font-size: 11px;">A-010</div>
+      <div class="scope-overlay-text" style="top:25px; left:34%; color:#4ade80;">RMS: 9.1 µV  5 spikes/s</div>
     </div>
   </div>
 </div>
-
+ 
 <span id="cn-components"></span>
-
+ 
 ## 🧩 系统组件
-
+ 
 <div align="center">
-  <table border="1" style="border-collapse: collapse; width: 90%; text-align: center;">
-    <thead>
-      <tr style="background-color: #f2f2f2;">
-        <th>组件</th>
-        <th>描述</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><b>基座外壳</b></td>
-        <td>3D 打印/机械加工的基座，提供结构支撑和颅骨固定</td>
-      </tr>
-      <tr>
-        <td><b>定制化 256Ch 头部放大器</b></td>
-        <td>针对高密度 128/256 通道信号采集优化的记录接口</td>
-      </tr>
-      <tr>
-        <td><b>泡沫垫圈</b></td>
-        <td>提供柔性压缩层，确保弹性导电基体上方的电气接触均匀</td>
-      </tr>
-      <tr>
-        <td><b>转接PCB</b></td>
-        <td>高密度 4 层 PCB，用于将信号从薄膜探针放大器的球栅阵列图案转换</td>
-      </tr>
-      <tr>
-        <td><b>手术保护盖</b></td>
-        <td>保护性外壳，在长期慢性实验中保持电气和机械完整性</td>
-      </tr>
-    </tbody>
-  </table>
+ <table border="1" style="border-collapse: collapse; width: 90%; text-align: center;">
+   <thead>
+     <tr style="background-color: #f2f2f2;">
+       <th>组件</th>
+       <th>描述</th>
+     </tr>
+   </thead>
+   <tbody>
+     <tr>
+       <td><b>基座外壳</b></td>
+       <td>3D 打印/机械加工的基座，提供结构支撑和颅骨固定</td>
+     </tr>
+     <tr>
+       <td><b>定制化 256Ch 头部放大器</b></td>
+       <td>针对高密度 128/256 通道信号采集优化的记录接口</td>
+     </tr>
+     <tr>
+       <td><b>泡沫垫圈</b></td>
+       <td>提供柔性压缩层，确保弹性导电基体上方的电气接触均匀</td>
+     </tr>
+     <tr>
+       <td><b>转接PCB</b></td>
+       <td>高密度 4 层 PCB，用于将信号从薄膜探针放大器的球栅阵列图案转换</td>
+     </tr>
+     <tr>
+       <td><b>手术保护盖</b></td>
+       <td>保护性外壳，在长期慢性实验中保持电气和机械完整性</td>
+     </tr>
+   </tbody>
+ </table>
 </div>
-
+ 
 ---
-
+ 
 <span id="cn-bom"></span>
-
+ 
 ### 🛠 放大器物料清单 (BOM)
-
+ 
 <div align="center">
-  <img src="Images/256HD.png" 
-       alt="256通道放大器组装实物图" 
-       width="460" 
-       loading="lazy" decoding="async"
-       style="border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 20px;">
-  <p style="margin-top: 5px; font-size: 0.9em; color: #64748b;">
-    <b>已组装的 256 通道前置放大器 (顶视图)</b>
-  </p>
+ <img src="Images/256HD.png" 
+      alt="256通道放大器组装实物图" 
+      width="460" 
+      loading="lazy" decoding="async"
+      style="border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 20px;">
+ <p style="margin-top: 5px; font-size: 0.9em; color: #64748b;">
+   <b>已组装的 256 通道前置放大器 (顶视图)</b>
+ </p>
 </div>
-
+ 
 <div align="center" data-aos="zoom-in-up" data-aos-duration="1000">
  <br>
  <div class="gif-placeholder narrow">
-   <img data-src="Videos/Top PCB explosive new.gif" 
-         src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
-         alt="顶部4层电路板的设计爆炸动图"
-         class="lazy-gif white-bg-gif" 
-         decoding="async">
+  <img data-src="Videos/Top PCB explosive new.gif" 
+        src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+        alt="顶部4层电路板的设计爆炸动图"
+        class="lazy-gif white-bg-gif" 
+        decoding="async">
  </div>
 </div>
-      
+     
 <div style="width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 10px;">
-  <table style="margin-left: auto; margin-right: auto; width: 90%; min-width: 600px; text-align: center; border-collapse: collapse; border: 1px solid #e1e4e8;">
-    <thead>
-      <tr style="background-color: #f6f8fa; border-bottom: 2px solid #e1e4e8;">
-        <th style="padding: 10px; border: 1px solid #e1e4e8; text-align: center;">组件</th>
-        <th style="padding: 10px; border: 1px solid #e1e4e8; text-align: center;">描述</th>
-        <th style="padding: 10px; border: 1px solid #e1e4e8; text-align: center;">数量</th>
-        <th style="padding: 10px; border: 1px solid #e1e4e8; text-align: center;">封装</th>
-        <th style="padding: 10px; border: 1px solid #e1e4e8; text-align: center;">备注</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;"><b>放大器 IC</b></td>
-        <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">Intan RHD2164</td>
-        <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">4</td>
-        <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">BGA</td>
-        <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;"><b>关键：</b> 确保方向正确</td>
-      </tr>
-      <tr>
-        <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;"><b>SPI 连接器</b></td>
-        <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">Omnetics A7621</td>
-        <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">2</td>
-        <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">-</td>
-        <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">12 线线束 (32 AWG)</td>
-      </tr>
-      <tr>
-        <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;"><b>电阻</b></td>
-        <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">标准贴片</td>
-        <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">7</td>
-        <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">0402</td>
-        <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">LVDS 配置</td>
-      </tr>
-      <tr>
-        <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;"><b>电容</b></td>
-        <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">标准贴片</td>
-        <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">8</td>
-        <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">0603</td>
-        <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">LVDS 配置</td>
-      </tr>
-      <tr>
-        <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;"><b>电源 LED</b></td>
-        <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">绿色 LED</td>
-        <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">1</td>
-        <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">0402</td>
-        <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">自检状态灯</td>
-      </tr>
-      <tr>
-        <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;"><b> BGA锡球 </b></td>
-        <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">0.4 mm 无铅</td>
-        <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">约300</td>
-        <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">-</td>
-        <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">用于 BGA 组装</td>
-      </tr>
-    </tbody>
-  </table>
+ <table style="margin-left: auto; margin-right: auto; width: 90%; min-width: 600px; text-align: center; border-collapse: collapse; border: 1px solid #e1e4e8;">
+   <thead>
+     <tr style="background-color: #f6f8fa; border-bottom: 2px solid #e1e4e8;">
+       <th style="padding: 10px; border: 1px solid #e1e4e8; text-align: center;">组件</th>
+       <th style="padding: 10px; border: 1px solid #e1e4e8; text-align: center;">描述</th>
+       <th style="padding: 10px; border: 1px solid #e1e4e8; text-align: center;">数量</th>
+       <th style="padding: 10px; border: 1px solid #e1e4e8; text-align: center;">封装</th>
+       <th style="padding: 10px; border: 1px solid #e1e4e8; text-align: center;">备注</th>
+     </tr>
+   </thead>
+   <tbody>
+     <tr>
+       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;"><b>放大器 IC</b></td>
+       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">Intan RHD2164</td>
+       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">4</td>
+       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">BGA</td>
+       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;"><b>关键：</b> 确保方向正确</td>
+     </tr>
+     <tr>
+       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;"><b>SPI 连接器</b></td>
+       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">Omnetics A7621</td>
+       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">2</td>
+       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">-</td>
+       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">12 线线束 (32 AWG)</td>
+     </tr>
+     <tr>
+       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;"><b>电阻</b></td>
+       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">标准贴片</td>
+       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">7</td>
+       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">0402</td>
+       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">LVDS 配置</td>
+     </tr>
+     <tr>
+       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;"><b>电容</b></td>
+       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">标准贴片</td>
+       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">8</td>
+       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">0603</td>
+       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">LVDS 配置</td>
+     </tr>
+     <tr>
+       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;"><b>电源 LED</b></td>
+       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">绿色 LED</td>
+       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">1</td>
+       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">0402</td>
+       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">自检状态灯</td>
+     </tr>
+     <tr>
+       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;"><b> BGA锡球 </b></td>
+       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">0.4 mm 无铅</td>
+       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">约300</td>
+       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">-</td>
+       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">用于 BGA 组装</td>
+     </tr>
+   </tbody>
+ </table>
 </div>
-
+ 
 ---
-
+ 
 ## 👥 开发者与实验室
-
+ 
 * **白天宇** (主导研发及设计) <a href="https://tianyu-bai.github.io/"><img src="https://img.shields.io/badge/个人主页-Tianyu%20Bai-0077B5?style=flat-square&logo=github&logoColor=white" alt="Website"></a>
 * **李根**
 * **方辉教授** <a href="https://engineering.dartmouth.edu/community/faculty/hui-fang"><img src="https://img.shields.io/badge/首席研究员_(PI)-444444?style=flat-square&logoColor=white" />
-
+ 
 本项目由达特茅斯学院的 **MINE Lab**团队开发。<a href="https://sites.dartmouth.edu/fang-group/"><img src="https://img.shields.io/badge/访问网站_%E2%86%97-MINE_Lab-00693E?style=flat-square" alt="MINE Lab"></a>
-
+ 
 ---
-
+ 
 ## 📄 出版物
-
+ 
 相关工作目前正在 **IEEE Journal on Flexible Electronics (JFLEX)** 审稿中。
-
+ 
 本仓库中的硬件设计和视觉资产直接对应于投稿中描述的系统。
-
+ 
 * **完整引用**：正式录用后，最终论文的永久链接将立即在此处更新。
 * **预印本/全文**：*即将推出。*
   
 * 🤝 **我们诚挚欢迎神经工程科研同行的反馈与合作！**
-
+ 
 * **技术咨询**：有意部署 E-Link易链？作为开发者深知从零搭建一套新系统往往伴随诸多挑战。无论您在 PCB 设计、3D 打印制造，还是系统组装方面遇到任何问题，都欢迎随时通过邮件与我们取得联系。将为您提供技术支持！
   * **技术支持**: [<font color="#60a5fa">support@ephys.tech</font>](mailto:support@ephys.tech)
   * **留言**: [<font color="#60a5fa">tianyu@ephys.tech</font>](mailto:tianyu@ephys.tech)
-
+ 
 ---
-
+ 
 ## 📑 引用与 DOI
-
+ 
 如果您在研究中使用了这些设计、代码或资产，需使用 Zenodo 提供的永久 DOI 引用本仓库：
-
+ 
 **当前引用源：**
 > T. Bai, et al., "E-Link GitHub Repository," v1.0, MINE Lab, Dartmouth College, 2026. [![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.18440104-007EC6?style=flat-square)](https://doi.org/10.5281/zenodo.18440104)
-
+ 
 ---
-
+ 
 <span id="cn-downloads"></span>
-
+ 
 ## 🔗 仓库与下载
-
+ 
 本项目完全开源。相关论文录用后，包含 **PCB 制造文件 (Gerber)** 和 **3D打印文件** 的完整数据集将通过以下链接提供访问。
-
+ 
 <div align="center">
-  <p><b>👇 欢迎收藏本仓库以便未来下载：</b></p>
-
+ <p><b>👇 欢迎收藏本仓库以便未来下载：</b></p>
+ 
 <div align="center">
-  <a href="https://github.com/Tianyu-Bai/ELINK"><img src="https://img.shields.io/badge/GitHub-查看源仓库-181717?style=for-the-badge&logo=github&logoColor=white" alt="View on GitHub"></a>
-  <img src="https://img.shields.io/badge/状态-锁定中，直到发表-A31F34?style=for-the-badge&logo=private" alt="Status Locked">
+ <a href="https://github.com/Tianyu-Bai/ELINK"><img src="https://img.shields.io/badge/GitHub-查看源仓库-181717?style=for-the-badge&logo=github&logoColor=white" alt="View on GitHub"></a>
+ <img src="https://img.shields.io/badge/状态-锁定中，直到发表-A31F34?style=for-the-badge&logo=private" alt="Status Locked">
 </div>
 </div>
-
+ 
 ---
-
+ 
 ## 🤝 致谢
-
+ 
 开发者感谢 **美国国立卫生研究院 NIH R01MH139342** 和 **达特茅斯博士生创新奖学金 (Dartmouth PhD Innovation Fellowship)** 的支持。
-
+ 
 特别感谢 **达特茅斯Thayer工学院** 的相关成员在易链系统开发过程中提供的技术支持和反馈。
-
+ 
 ---
-
+ 
 ## 📜 许可协议
-
+ 
 版权所有 © 2026 Tianyu Bai <a href="https://tianyu-bai.github.io/"><img src="https://img.shields.io/badge/个人主页-Tianyu%20Bai-0077B5?style=flat-square&logo=github&logoColor=white" alt="Website"></a>
-
+ 
 本项目为开源硬件，在以下许可下可用。点击下方徽章查看完整许可详情。
-
+ 
 * **硬件源文件** (KiCad/Gerbers/STL 文件)：在 **MIT 许可** 下授权。
 * **文档、原理图 (PDF) 和图像**：在 **CC BY 4.0 国际许可** 下授权。
-
+ 
 <div align="center">
-  <a href="https://github.com/tianyu-bai/E-Link/blob/main/LICENSE">
-    <img src="https://img.shields.io/badge/开源协议-MIT-A31F34?style=flat-square&logo=opensourceinitiative&logoColor=white" alt="License">
-  </a>
+ <a href="https://github.com/tianyu-bai/E-Link/blob/main/LICENSE">
+   <img src="https://img.shields.io/badge/开源协议-MIT-A31F34?style=flat-square&logo=opensourceinitiative&logoColor=white" alt="License">
+ </a>
 </div>
-
+ 
 </div> 
-
+ 
 <script>
-  document.addEventListener("DOMContentLoaded", () => {
-
-    // ===================== E-Link 动态数据面板 =====================
-    const dashboardObserver = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        const card = entry.target;
-        const fgRing = card.querySelector('.fg-ring');
-        const numberEl = card.querySelector('.count-up') || card.querySelector('.v2-count');
-        if (!numberEl) return;
-
-        const targetValue = parseFloat(card.dataset.value);
-        const isFloat = card.dataset.isFloat === "true";
-        const decimals = parseInt(card.dataset.decimals) || 1;
-        const circumference = 283;
-        const duration = 2000;
-
-        if (entry.isIntersecting) {
-          if (card.dataset.dashboardInView === "true") return;
-          card.dataset.dashboardInView = "true";
-
-          let startTimestamp = null;
-          const animate = (timestamp) => {
-            if (card.dataset.dashboardInView !== "true") return;
-            if (!startTimestamp) startTimestamp = timestamp;
-            const elapsed = timestamp - startTimestamp;
-            const progress = Math.min(elapsed / duration, 1);
-            const easeProgress = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
-            const currentValue = easeProgress * targetValue;
-            
-            numberEl.innerText = isFloat ? currentValue.toFixed(decimals) : Math.round(currentValue);
-            
-            if (card.dataset.type === 'ring' && fgRing) {
+ document.addEventListener("DOMContentLoaded", () => {
+ 
+   // ===================== E-Link 动态数据面板 =====================
+   const dashboardObserver = new IntersectionObserver((entries) => {
+     entries.forEach(entry => {
+       const card = entry.target;
+       const fgRing = card.querySelector('.fg-ring');
+       const numberEl = card.querySelector('.count-up') || card.querySelector('.v2-count');
+       if (!numberEl) return;
+ 
+       const targetValue = parseFloat(card.dataset.value);
+       const isFloat = card.dataset.isFloat === "true";
+       const decimals = parseInt(card.dataset.decimals) || 1;
+       const circumference = 283;
+       const duration = 2000;
+ 
+       if (entry.isIntersecting) {
+         if (card.dataset.dashboardInView === "true") return;
+         card.dataset.dashboardInView = "true";
+ 
+         let startTimestamp = null;
+         const animate = (timestamp) => {
+           if (card.dataset.dashboardInView !== "true") return;
+           if (!startTimestamp) startTimestamp = timestamp;
+           const elapsed = timestamp - startTimestamp;
+           const progress = Math.min(elapsed / duration, 1);
+           const easeProgress = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
+           const currentValue = easeProgress * targetValue;
+           
+           numberEl.innerText = isFloat ? currentValue.toFixed(decimals) : Math.round(currentValue);
+           
+           if (card.dataset.type === 'ring' && fgRing) {
                fgRing.style.strokeDashoffset = circumference - (circumference * easeProgress);
-            } else if (card.dataset.type === 'thermo') {
+           } else if (card.dataset.type === 'thermo') {
                const fill = card.querySelector('.thermo-fill');
                const maxTemp = parseFloat(card.dataset.max) || 50;
                if (fill) fill.style.height = ((currentValue / maxTemp) * 100) + '%';
-            }
-
-            if (progress < 1) {
+           }
+ 
+           if (progress < 1) {
               card.dashboardAnimFrame = requestAnimationFrame(animate);
-            }
-          };
-          cancelAnimationFrame(card.dashboardAnimFrame);
-          card.dashboardAnimFrame = requestAnimationFrame(animate);
-
-        } else {
-          card.dataset.dashboardInView = "false";
-          if (card.dashboardAnimFrame) {
-            cancelAnimationFrame(card.dashboardAnimFrame);
-            card.dashboardAnimFrame = null;
-          }
-        }
-      });
-    }, { threshold: 0.25, rootMargin: "0px 0px -5% 0px" });
-
-    document.querySelectorAll('.metric-card, .metric-card-v2').forEach(card => dashboardObserver.observe(card));
-
-    // ===================== 3D 模型交互（修复显存溢出与闪退）=====================
-    const models = Array.from(document.querySelectorAll('model-viewer'));
-    if (models.length > 0) {
-      let isScrolling = false;
-      let scrollEndTimer = null;
-      
-      function isSlowNetwork() {
-        const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
-        if (!conn) return false;
-        return ['slow-2g', '2g'].includes(conn.effectiveType);
-      }
-      
-      const MAX_LIVE_CONTEXTS = 2; 
-      const liveContextQueue = [];
-
-      function reclaimContext(viewer) {
-        if (viewer.dataset.loaded === "true") {
-          viewer.pause();
-          viewer._cachedSrc = viewer._cachedSrc || viewer.src;
-          viewer.src = '';
-          viewer.dataset.loaded = "reclaimed";
-        }
-      }
-
-      function ensureContextSlot(viewer) {
-        const idx = liveContextQueue.indexOf(viewer);
-        if (idx !== -1) liveContextQueue.splice(idx, 1);
-        liveContextQueue.push(viewer);
-
-        while (liveContextQueue.length > MAX_LIVE_CONTEXTS) {
-          const victim = liveContextQueue.shift();
-          if (victim !== viewer) {
-            reclaimContext(victim);
-          }
-        }
-      }
-
-      const activateViewer = async (viewer, force = false) => {
-        if (isScrolling && !force) return;
-        ensureContextSlot(viewer);
-
-        if (viewer.getAttribute('reveal') === 'manual' && viewer.dataset.loaded !== "true") {
-          if (viewer.dataset.loaded === "reclaimed" && viewer._cachedSrc) {
-            viewer.src = viewer._cachedSrc;
-          } else if (viewer.dataset.src) {
-            viewer.src = viewer.dataset.src; 
-          }
-          viewer.dataset.loaded = "true";
-          const loadHandler = () => {
-            viewer.removeEventListener('load', loadHandler);
-            try { viewer.play(); } catch(e) {}
-          };
-          viewer.addEventListener('load', loadHandler);
-          await new Promise(resolve => requestAnimationFrame(resolve));
-          viewer.dismissPoster();
-          return;
-        }
-
-        if (viewer.dataset.loaded === "reclaimed" && viewer._cachedSrc) {
-          viewer.src = viewer._cachedSrc;
-          viewer.dataset.loaded = "true";
-          const reloadHandler = () => {
-            viewer.removeEventListener('load', reloadHandler);
-            try { viewer.play(); } catch(e) {}
-          };
-          viewer.addEventListener('load', reloadHandler);
-          return;
-        }
-
-        if (viewer.paused) {
-          try { viewer.play(); } catch(e) {}
-        }
-
-        if (viewer.dataset.overlayDisabled !== "true") {
-          clearTimeout(viewer.hudTimer);
-          viewer.hudTimer = setTimeout(() => {
-            viewer.querySelectorAll('.gesture-overlay').forEach(el => el.classList.add('gesture-active'));
-          }, 500);
-        }
-      };
-
-      const checkAndActivateBestModel = () => {
-        if (isSlowNetwork()) return;
-        models.forEach(viewer => {
-          if (viewer.dataset.inView === "true") {
-            activateViewer(viewer);
-          }
-        });
-      };
-
-      window.addEventListener('scroll', () => {
-        isScrolling = true;
-        clearTimeout(scrollEndTimer);
-        scrollEndTimer = setTimeout(() => {
-          isScrolling = false;
-          checkAndActivateBestModel();
-        }, 150);
-      }, { passive: true });
-
-      models.forEach(viewer => {
-        viewer.addEventListener('click', () => {
-          activateViewer(viewer, true);
-        });
-
-        viewer.addEventListener('error', (e) => {
-          console.warn('[E-Link] model-viewer GL error triggered.');
-          viewer._cachedSrc = viewer._cachedSrc || viewer.src;
-          viewer.src = '';
-          viewer.dataset.loaded = "reclaimed";
-        });
-
-        const handleCameraChange = (event) => {
-          if (event.detail.source === 'user-interaction' && viewer.dataset.overlayDisabled !== "true") {
-            viewer.querySelectorAll('.gesture-overlay, .gesture-hud').forEach(el => {
-              el.classList.add('gesture-hidden');
-            });
-            viewer.dataset.overlayDisabled = "true";
-            viewer.removeEventListener('camera-change', handleCameraChange);
-          }
-        };
-        viewer.addEventListener('camera-change', handleCameraChange);
-      });
-
-      const modelObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          const viewer = entry.target;
-          if (entry.isIntersecting) {
-            viewer.dataset.inView = "true";
-            if (!isScrolling) checkAndActivateBestModel();
-          } else {
-            viewer.dataset.inView = "false";
-            viewer.pause();
-            viewer.querySelectorAll('.gesture-overlay').forEach(el => el.classList.remove('gesture-active'));
-          }
-        });
-      }, { threshold: 0.1 });
-
-      models.forEach(model => modelObserver.observe(model));
-    }
-
-    // ===================== Intan 示波器引擎 =====================
-    const intanSimulators = document.querySelectorAll('.intan-simulator-wrapper');
-
-    const intanColors = [
-      '#e04a4a', '#d49b38', '#3dc94d', '#3dc98b', '#3da1c9', '#3d61c9', '#573dc9',
-      '#993dc9', '#c93d9e', '#c93d5a', '#d47238', '#b8c93d', '#70c93d', '#3dc9c7', '#3d94c9',
-      '#3d51c9', '#6d3dc9', '#b53dc9', '#c93da6', '#c93d4a', '#d48838', '#d4b338', '#99c93d',
-      '#3dc958', '#3dc99e', '#3dbbc9', '#3d6ec9', '#4d3dc9', '#8b3dc9', '#c93dbb', '#c93d70'
-    ];
-
-    intanSimulators.forEach(sim => {
-      const canvasL = sim.querySelector('.canvas-left');
-      const canvasR = sim.querySelector('.canvas-right');
-      if (!canvasL || !canvasR) return;
-
-      const ctxL = canvasL.getContext('2d', { alpha: false });
-      const ctxR = canvasR.getContext('2d', { alpha: false });
-      
-      let width, height;
-      let lastWidth = 0; 
-      const NUM_CHANNELS = 20; 
-      const LABEL_WIDTH = 100; 
-      let scanX = LABEL_WIDTH;  
-      const scanSpeed = 1.2; 
-      let animationFrame;
-      
-      function resizeIntanCanvas() {
-        if(canvasL.parentElement.clientWidth === 0) return;
-        
-        const newWidth = canvasL.parentElement.clientWidth;
-        const newHeight = canvasL.parentElement.clientHeight;
-        
-        if (lastWidth === newWidth) return; 
-        lastWidth = newWidth;
-
-        const dpr = Math.min(window.devicePixelRatio || 1, 2);
-        width = newWidth;
-        height = newHeight;
-        
-        [canvasL, canvasR].forEach(canvas => {
-          canvas.width = width * dpr;
-          canvas.height = height * dpr;
-          const ctx = canvas.getContext('2d');
-          ctx.scale(dpr, dpr);
-          ctx.fillStyle = '#000000';
-          ctx.fillRect(0, 0, width, height);
-        });
-
-        scanX = window.innerWidth <= 768 ? 80 : LABEL_WIDTH;
-      }
-        
-      window.addEventListener('resize', resizeIntanCanvas);
-      resizeIntanCanvas();
-      new ResizeObserver(resizeIntanCanvas).observe(canvasL.parentElement);
-
-      function generateChannels(prefix) {
-        const arr = [];
-        for (let i = 0; i < NUM_CHANNELS; i++) {
-          let isBad = false;
-          let imp = (316 + Math.random() * 100).toFixed(0) + " kΩ";
-          
-          if ((prefix === 'A' && i === 2) || (prefix === 'B' && i === 8)) {
-            isBad = true;
-            imp = (15 + Math.random() * 5).toFixed(1) + " MΩ"; 
-          }
-
-          let chColor = isBad ? '#6b6b6b' : intanColors[i % intanColors.length];
-          let idStr = (i + 108).toString().padStart(3, '0');
-          
-          arr.push({
-            id: `${prefix}-${idStr}`, 
-            imp: imp,                 
-            color: chColor, 
-            isBad: isBad,
-            baseY: 0, 
-            lastY: 0, 
-            currentNoise: 0, 
-            isSpiking: false, 
-            spikeProgress: 0, 
-            spikeAmp: 0,
-            firingRate: isBad ? 0 : (0.001 + Math.random() * 0.006) 
-          });
-        }
-        return arr;
-      }
-      
-      const channelsL = generateChannels('A');
-      const channelsR = generateChannels('B');
-
-      function drawPane(ctx, channelsData, isLeftPane) {
-        const isMobile = window.innerWidth <= 768;
-        const currentLabelWidth = isMobile ? 80 : LABEL_WIDTH; 
-        const eraseWidth = 2; 
-        ctx.fillStyle = '#000000';
-        
-        if (scanX + eraseWidth > width) {
-          ctx.fillRect(scanX, 0, width - scanX, height);
-          ctx.fillRect(currentLabelWidth, 0, eraseWidth - (width - scanX), height);
-        } else {
-          ctx.fillRect(scanX, 0, eraseWidth, height);
-        }
-
-        const gap = height / (NUM_CHANNELS + 0.5);
-        const maxAmplitude = gap * 0.9; 
-
-        for (let i = 0; i < NUM_CHANNELS; i++) {
-          const ch = channelsData[i];
-          ch.baseY = Math.floor(gap * (i + 0.5)) + 0.5;
-          let signal = 0;
-
-          if (ch.isBad) {
-            ch.isSpiking = false; 
-            const time_sec = scanX / width * 0.05; 
-            const powerLineInterference = Math.sin(time_sec * 60 * Math.PI * 2) * 0.15;
-            ch.currentNoise = ch.currentNoise * 0.3 + (Math.random() - 0.5) * 0.25; 
-            signal = powerLineInterference + ch.currentNoise;
-          } else {
-            ch.currentNoise = ch.currentNoise * 0.65 + (Math.random() - 0.5) * 0.06;
-            signal = ch.currentNoise; 
-            
-            if (!ch.isSpiking && Math.random() < ch.firingRate) {
+           }
+         };
+         cancelAnimationFrame(card.dashboardAnimFrame);
+         card.dashboardAnimFrame = requestAnimationFrame(animate);
+ 
+       } else {
+         card.dataset.dashboardInView = "false";
+         if (card.dashboardAnimFrame) {
+           cancelAnimationFrame(card.dashboardAnimFrame);
+           card.dashboardAnimFrame = null;
+         }
+       }
+     });
+   }, { threshold: 0.25, rootMargin: "0px 0px -5% 0px" });
+ 
+   document.querySelectorAll('.metric-card, .metric-card-v2').forEach(card => dashboardObserver.observe(card));
+ 
+   // ===================== 3D 模型交互（修复显存溢出与闪退）=====================
+   const models = Array.from(document.querySelectorAll('model-viewer'));
+   if (models.length > 0) {
+     let isScrolling = false;
+     let scrollEndTimer = null;
+     
+     function isSlowNetwork() {
+       const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+       if (!conn) return false;
+       return ['slow-2g', '2g'].includes(conn.effectiveType);
+     }
+     
+     const MAX_LIVE_CONTEXTS = 2; 
+     const liveContextQueue = [];
+ 
+     function reclaimContext(viewer) {
+       if (viewer.dataset.loaded === "true") {
+         viewer.pause();
+         viewer._cachedSrc = viewer._cachedSrc || viewer.src;
+         viewer.src = '';
+         viewer.dataset.loaded = "reclaimed";
+       }
+     }
+ 
+     function ensureContextSlot(viewer) {
+       const idx = liveContextQueue.indexOf(viewer);
+       if (idx !== -1) liveContextQueue.splice(idx, 1);
+       liveContextQueue.push(viewer);
+ 
+       while (liveContextQueue.length > MAX_LIVE_CONTEXTS) {
+         const victim = liveContextQueue.shift();
+         if (victim !== viewer) {
+           reclaimContext(victim);
+         }
+       }
+     }
+ 
+     const activateViewer = async (viewer, force = false) => {
+       if (isScrolling && !force) return;
+       ensureContextSlot(viewer);
+ 
+       if (viewer.getAttribute('reveal') === 'manual' && viewer.dataset.loaded !== "true") {
+         if (viewer.dataset.loaded === "reclaimed" && viewer._cachedSrc) {
+           viewer.src = viewer._cachedSrc;
+         } else if (viewer.dataset.src) {
+           viewer.src = viewer.dataset.src; 
+         }
+         viewer.dataset.loaded = "true";
+         const loadHandler = () => {
+           viewer.removeEventListener('load', loadHandler);
+           try { viewer.play(); } catch(e) {}
+         };
+         viewer.addEventListener('load', loadHandler);
+         await new Promise(resolve => requestAnimationFrame(resolve));
+         viewer.dismissPoster();
+         return;
+       }
+ 
+       if (viewer.dataset.loaded === "reclaimed" && viewer._cachedSrc) {
+         viewer.src = viewer._cachedSrc;
+         viewer.dataset.loaded = "true";
+         const reloadHandler = () => {
+           viewer.removeEventListener('load', reloadHandler);
+           try { viewer.play(); } catch(e) {}
+         };
+         viewer.addEventListener('load', reloadHandler);
+         return;
+       }
+ 
+       if (viewer.paused) {
+         try { viewer.play(); } catch(e) {}
+       }
+ 
+       if (viewer.dataset.overlayDisabled !== "true") {
+         clearTimeout(viewer.hudTimer);
+         viewer.hudTimer = setTimeout(() => {
+           viewer.querySelectorAll('.gesture-overlay').forEach(el => el.classList.add('gesture-active'));
+         }, 500);
+       }
+     };
+ 
+     const checkAndActivateBestModel = () => {
+       if (isSlowNetwork()) return;
+       models.forEach(viewer => {
+         if (viewer.dataset.inView === "true") {
+           activateViewer(viewer);
+         }
+       });
+     };
+ 
+     window.addEventListener('scroll', () => {
+       isScrolling = true;
+       clearTimeout(scrollEndTimer);
+       scrollEndTimer = setTimeout(() => {
+         isScrolling = false;
+         checkAndActivateBestModel();
+       }, 150);
+     }, { passive: true });
+ 
+     models.forEach(viewer => {
+       viewer.addEventListener('click', () => {
+         activateViewer(viewer, true);
+       });
+ 
+       viewer.addEventListener('error', (e) => {
+         console.warn('[E-Link] model-viewer GL error triggered.');
+         viewer._cachedSrc = viewer._cachedSrc || viewer.src;
+         viewer.src = '';
+         viewer.dataset.loaded = "reclaimed";
+       });
+ 
+       const handleCameraChange = (event) => {
+         if (event.detail.source === 'user-interaction' && viewer.dataset.overlayDisabled !== "true") {
+           viewer.querySelectorAll('.gesture-overlay, .gesture-hud').forEach(el => {
+             el.classList.add('gesture-hidden');
+           });
+           viewer.dataset.overlayDisabled = "true";
+           viewer.removeEventListener('camera-change', handleCameraChange);
+         }
+       };
+       viewer.addEventListener('camera-change', handleCameraChange);
+     });
+ 
+     const modelObserver = new IntersectionObserver((entries) => {
+       entries.forEach(entry => {
+         const viewer = entry.target;
+         if (entry.isIntersecting) {
+           viewer.dataset.inView = "true";
+           if (!isScrolling) checkAndActivateBestModel();
+         } else {
+           viewer.dataset.inView = "false";
+           viewer.pause();
+           viewer.querySelectorAll('.gesture-overlay').forEach(el => el.classList.remove('gesture-active'));
+         }
+       });
+     }, { threshold: 0.1 });
+ 
+     models.forEach(model => modelObserver.observe(model));
+   }
+ 
+   // ===================== Intan 双屏示波器引擎 =====================
+   const intanSimulators = document.querySelectorAll('.intan-simulator-wrapper');
+ 
+   const intanColors = [
+     '#e04a4a', '#d49b38', '#3dc94d', '#3dc98b', '#3da1c9', '#3d61c9', '#573dc9',
+     '#993dc9', '#c93d9e', '#c93d5a', '#d47238', '#b8c93d', '#70c93d', '#3dc9c7', '#3d94c9',
+     '#3d51c9', '#6d3dc9', '#b53dc9', '#c93da6', '#c93d4a', '#d48838', '#d4b338', '#99c93d',
+     '#3dc958', '#3dc99e', '#3dbbc9', '#3d6ec9', '#4d3dc9', '#8b3dc9', '#c93dbb', '#c93d70'
+   ];
+ 
+   intanSimulators.forEach(sim => {
+     const canvasL = sim.querySelector('.canvas-left');
+     const canvasR = sim.querySelector('.canvas-right');
+     if (!canvasL || !canvasR) return;
+ 
+     const ctxL = canvasL.getContext('2d', { alpha: false });
+     const ctxR = canvasR.getContext('2d', { alpha: false });
+     
+     let width, height;
+     let lastWidth = 0; 
+     const NUM_CHANNELS = 20; 
+     const LABEL_WIDTH = 100; 
+     let scanX = LABEL_WIDTH;  
+     const scanSpeed = 1.2; 
+     let animationFrame;
+     
+     function resizeIntanCanvas() {
+       if(canvasL.parentElement.clientWidth === 0) return;
+       const newWidth = canvasL.parentElement.clientWidth;
+       const newHeight = canvasL.parentElement.clientHeight;
+       
+       if (lastWidth === newWidth) return; 
+       lastWidth = newWidth;
+ 
+       const dpr = Math.min(window.devicePixelRatio || 1, 2);
+       width = newWidth;
+       height = newHeight;
+       
+       [canvasL, canvasR].forEach(canvas => {
+         canvas.width = width * dpr;
+         canvas.height = height * dpr;
+         const ctx = canvas.getContext('2d');
+         ctx.scale(dpr, dpr);
+         ctx.fillStyle = '#000000';
+         ctx.fillRect(0, 0, width, height);
+       });
+ 
+       scanX = window.innerWidth <= 768 ? 80 : LABEL_WIDTH;
+     }
+       
+     window.addEventListener('resize', resizeIntanCanvas);
+     resizeIntanCanvas();
+     new ResizeObserver(resizeIntanCanvas).observe(canvasL.parentElement);
+ 
+     function generateChannels(prefix) {
+       const arr = [];
+       for (let i = 0; i < NUM_CHANNELS; i++) {
+         let isBad = false;
+         let imp = (316 + Math.random() * 100).toFixed(0) + " kΩ";
+         
+         if ((prefix === 'A' && i === 2) || (prefix === 'B' && i === 8)) {
+           isBad = true;
+           imp = (15 + Math.random() * 5).toFixed(1) + " MΩ"; 
+         }
+ 
+         let chColor = isBad ? '#6b6b6b' : intanColors[i % intanColors.length];
+         let idStr = (i + 108).toString().padStart(3, '0');
+         
+         arr.push({
+           id: `${prefix}-${idStr}`, 
+           imp: imp,                 
+           color: chColor, 
+           isBad: isBad,
+           baseY: 0, 
+           lastY: 0, 
+           currentNoise: 0, 
+           isSpiking: false, 
+           spikeProgress: 0, 
+           spikeAmp: 0,
+           firingRate: isBad ? 0 : (0.001 + Math.random() * 0.006) 
+         });
+       }
+       return arr;
+     }
+     
+     const channelsL = generateChannels('A');
+     const channelsR = generateChannels('B');
+ 
+     function drawPane(ctx, channelsData, isLeftPane) {
+       const isMobile = window.innerWidth <= 768;
+       const currentLabelWidth = isMobile ? 80 : LABEL_WIDTH; 
+       const eraseWidth = 2; 
+       ctx.fillStyle = '#000000';
+       
+       if (scanX + eraseWidth > width) {
+         ctx.fillRect(scanX, 0, width - scanX, height);
+         ctx.fillRect(currentLabelWidth, 0, eraseWidth - (width - scanX), height);
+       } else {
+         ctx.fillRect(scanX, 0, eraseWidth, height);
+       }
+ 
+       const gap = height / (NUM_CHANNELS + 0.5);
+       const maxAmplitude = gap * 0.9; 
+ 
+       for (let i = 0; i < NUM_CHANNELS; i++) {
+         const ch = channelsData[i];
+         ch.baseY = Math.floor(gap * (i + 0.5)) + 0.5;
+         let signal = 0;
+ 
+         if (ch.isBad) {
+           ch.isSpiking = false; 
+           const time_sec = scanX / width * 0.05; 
+           const powerLineInterference = Math.sin(time_sec * 60 * Math.PI * 2) * 0.15;
+           ch.currentNoise = ch.currentNoise * 0.3 + (Math.random() - 0.5) * 0.25; 
+           signal = powerLineInterference + ch.currentNoise;
+         } else {
+           ch.currentNoise = ch.currentNoise * 0.65 + (Math.random() - 0.5) * 0.06;
+           signal = ch.currentNoise; 
+           
+           if (!ch.isSpiking && Math.random() < ch.firingRate) {
               ch.isSpiking = true; 
               ch.spikeProgress = 0; 
               ch.spikeAmp = 0.8 + Math.random() * 0.5; 
-            }
-
-            if (ch.isSpiking) {
+           }
+ 
+           if (ch.isSpiking) {
               let t = ch.spikeProgress;
               let spikeShape = 
                 -2.0 * Math.exp(-Math.pow((t - 0.24) * 18, 2)) +  
                  0.9 * Math.exp(-Math.pow((t - 0.55) * 7, 2)) +   
                  0.1 * Math.exp(-Math.pow((t - 0.80) * 4, 2));    
-
+ 
               signal += spikeShape * ch.spikeAmp;
               ch.spikeProgress += 0.12; 
               if (ch.spikeProgress >= 1) ch.isSpiking = false;
-            }
-          } // 🚀 漏掉的括号已经补上！
-
-          const currentY = Math.floor(ch.baseY + signal * maxAmplitude) + 0.5;
-          
-          if (scanX > currentLabelWidth + scanSpeed) {
-            ctx.beginPath();
-            ctx.strokeStyle = ch.color; 
-            ctx.lineWidth = 1.2;
-            ctx.lineJoin = 'round'; 
-            ctx.lineCap = 'round';
-            ctx.moveTo(scanX - scanSpeed, ch.lastY);
-            ctx.lineTo(scanX, currentY);
-            ctx.stroke();
-          }
-          ch.lastY = currentY;
-        }
-
-        ctx.fillStyle = '#000000';
-        ctx.fillRect(0, 0, currentLabelWidth, height);
-        
-        const fontSize = isMobile ? 7.5 : 10;
-        const blockHeight = isMobile ? 8 : 11;
-        const blockOffsetY = blockHeight / 2;
-        
-        ctx.font = `${fontSize}px "Segoe UI", "Arial", sans-serif`;
-        ctx.textBaseline = 'middle';
-        
-        const padding = isMobile ? 3 : 4; 
-        const iconSize = isMobile ? 7 : 7; 
-        const idOffsetX = padding + iconSize + (isMobile ? 3 : 4); 
-        const rightEdge = currentLabelWidth - padding - 1;
-
-        for (let i = 0; i < NUM_CHANNELS; i++) {
-          const ch = channelsData[i];
-          const textY = ch.baseY + (isMobile ? 0.5 : 1); 
-          
-          ctx.fillStyle = ch.color;
-          ctx.fillRect(0, ch.baseY - blockOffsetY, currentLabelWidth - 3, blockHeight);
-          
-          const themeColor = ch.isBad ? 'rgba(0,0,0,0.7)' : '#fff';
-          ctx.fillStyle = themeColor;
-
-          const iconY = textY - iconSize / 2;
-          ctx.fillRect(padding, iconY, iconSize, iconSize);
-          ctx.fillStyle = ch.color;
-          ctx.fillRect(padding + iconSize * 0.2, iconY + iconSize * 0.1, iconSize * 0.6, iconSize * 0.3);
-          ctx.fillStyle = themeColor;
-
-          ctx.textAlign = 'left';
-          ctx.fillText(ch.id, idOffsetX, textY);
-          
-          ctx.textAlign = 'right';
-          ctx.fillText(ch.imp, rightEdge, textY);
-        }
-
-        if (isLeftPane) {
-          const scaleY = channelsData[3].baseY + (gap * 0.3); 
-          const lineHeight = 6; 
-          const scaleX = currentLabelWidth + (isMobile ? 25 : 50);
-          
-          ctx.strokeStyle = 'rgba(255, 255, 255, 0.8)'; 
-          ctx.lineWidth = 1;
-          ctx.beginPath();
-          ctx.moveTo(scaleX, scaleY - lineHeight); 
-          ctx.lineTo(scaleX, scaleY + lineHeight);
-          ctx.stroke();
-
-          ctx.textAlign = 'left'; 
-          ctx.fillStyle = '#fff';
-          ctx.font = `${isMobile ? 7 : 9}px "Segoe UI", sans-serif`;
-          ctx.fillText("50 µV", scaleX + 6, scaleY + 1);
-        }
-      }
-
-      function renderDualSweep() {
-        if (!window.isPageScrolling) {
-          drawPane(ctxL, channelsL, true);
-          drawPane(ctxR, channelsR, false);
-
-          scanX += scanSpeed;
-          if (scanX >= width) {
-            scanX = window.innerWidth <= 768 ? 80 : LABEL_WIDTH;
-          }
-        }
-        animationFrame = requestAnimationFrame(renderDualSweep);
-      }
-
-      const observer = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting && canvasL.offsetParent !== null) {
-          if (!animationFrame) renderDualSweep();
-        } else {
-          if (animationFrame) cancelAnimationFrame(animationFrame);
-          animationFrame = null;
-        }
-      }, { threshold: 0.1 });
-      observer.observe(sim);
-    });
-
-    // ===================== GIF 懒加载 =====================
-    const gifObserver = new IntersectionObserver((entries, observer) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          const img = entry.target;
-          observer.unobserve(img); 
-
-          const markLoaded = () => {
-            requestAnimationFrame(() => {
+           }
+         }
+ 
+         const currentY = Math.floor(ch.baseY + signal * maxAmplitude) + 0.5;
+         
+         if (scanX > currentLabelWidth + scanSpeed) {
+           ctx.beginPath();
+           ctx.strokeStyle = ch.color; 
+           ctx.lineWidth = 1.2;
+           ctx.lineJoin = 'round'; 
+           ctx.lineCap = 'round';
+           ctx.moveTo(scanX - scanSpeed, ch.lastY);
+           ctx.lineTo(scanX, currentY);
+           ctx.stroke();
+         }
+         ch.lastY = currentY;
+       }
+ 
+       ctx.fillStyle = '#000000';
+       ctx.fillRect(0, 0, currentLabelWidth, height);
+       
+       const fontSize = isMobile ? 7.5 : 10;
+       const blockHeight = isMobile ? 8 : 11;
+       const blockOffsetY = blockHeight / 2;
+       
+       ctx.font = `${fontSize}px "Segoe UI", "Arial", sans-serif`;
+       ctx.textBaseline = 'middle';
+       
+       const padding = isMobile ? 3 : 4; 
+       const iconSize = isMobile ? 7 : 7; 
+       const idOffsetX = padding + iconSize + (isMobile ? 3 : 4); 
+       const rightEdge = currentLabelWidth - padding - 1;
+ 
+       for (let i = 0; i < NUM_CHANNELS; i++) {
+         const ch = channelsData[i];
+         const textY = ch.baseY + (isMobile ? 0.5 : 1); 
+         
+         ctx.fillStyle = ch.color;
+         ctx.fillRect(0, ch.baseY - blockOffsetY, currentLabelWidth - 3, blockHeight);
+         
+         const themeColor = ch.isBad ? 'rgba(0,0,0,0.7)' : '#fff';
+         ctx.fillStyle = themeColor;
+ 
+         const iconY = textY - iconSize / 2;
+         ctx.fillRect(padding, iconY, iconSize, iconSize);
+         ctx.fillStyle = ch.color;
+         ctx.fillRect(padding + iconSize * 0.2, iconY + iconSize * 0.1, iconSize * 0.6, iconSize * 0.3);
+         ctx.fillStyle = themeColor;
+ 
+         ctx.textAlign = 'left';
+         ctx.fillText(ch.id, idOffsetX, textY);
+         
+         ctx.textAlign = 'right';
+         ctx.fillText(ch.imp, rightEdge, textY);
+       }
+ 
+       if (isLeftPane) {
+         const scaleY = channelsData[3].baseY + (gap * 0.3); 
+         const lineHeight = 6; 
+         const scaleX = currentLabelWidth + (isMobile ? 25 : 50);
+         
+         ctx.strokeStyle = 'rgba(255, 255, 255, 0.8)'; 
+         ctx.lineWidth = 1;
+         ctx.beginPath();
+         ctx.moveTo(scaleX, scaleY - lineHeight); 
+         ctx.lineTo(scaleX, scaleY + lineHeight);
+         ctx.stroke();
+ 
+         ctx.textAlign = 'left'; 
+         ctx.fillStyle = '#fff';
+         ctx.font = `${isMobile ? 7 : 9}px "Segoe UI", sans-serif`;
+         ctx.fillText("50 µV", scaleX + 6, scaleY + 1);
+       }
+     }
+ 
+     function renderDualSweep() {
+       if (!window.isPageScrolling) {
+         drawPane(ctxL, channelsL, true);
+         drawPane(ctxR, channelsR, false);
+ 
+         scanX += scanSpeed;
+         if (scanX >= width) {
+           scanX = window.innerWidth <= 768 ? 80 : LABEL_WIDTH;
+         }
+       }
+       animationFrame = requestAnimationFrame(renderDualSweep);
+     }
+ 
+     const observer = new IntersectionObserver((entries) => {
+       if (entries[0].isIntersecting && canvasL.offsetParent !== null) {
+         if (!animationFrame) renderDualSweep();
+       } else {
+         if (animationFrame) cancelAnimationFrame(animationFrame);
+         animationFrame = null;
+       }
+     }, { threshold: 0.1 });
+     observer.observe(sim);
+   });
+ 
+   // ===================== GIF 懒加载 =====================
+   const gifObserver = new IntersectionObserver((entries, observer) => {
+     entries.forEach(entry => {
+       if (entry.isIntersecting) {
+         const img = entry.target;
+         observer.unobserve(img); 
+ 
+         const markLoaded = () => {
+           requestAnimationFrame(() => {
               img.classList.add('is-loaded'); 
-            });
-          };
+           });
+         };
+ 
+         img.addEventListener('load', markLoaded, { once: true });
+         img.src = img.dataset.src;
+ 
+         if (img.complete && img.naturalWidth > 1) {
+           markLoaded();
+         }
+       }
+     });
+   }, { threshold: 0.1, rootMargin: "50px 0px" });
+ 
+   document.querySelectorAll('img.lazy-gif').forEach(gif => {
+     gifObserver.observe(gif);
+   });
 
-          img.addEventListener('load', markLoaded, { once: true });
-          img.src = img.dataset.src;
+   // ===================== 全新重写的 Spike Scope 波形引擎 =====================
+   const scopeWrappers = document.querySelectorAll('.scope-plot-area');
+   scopeWrappers.forEach(wrapper => {
+     const canvas = wrapper.querySelector('.spike-scope-canvas');
+     const ctx = canvas.getContext('2d');
+     let sWidth, sHeight;
+     let spikes = [];
+     let animationFrame;
 
-          if (img.complete && img.naturalWidth > 1) {
-            markLoaded();
-          }
-        }
-      });
-    }, { threshold: 0.1, rootMargin: "50px 0px" });
+     function resizeScope() {
+       if (wrapper.clientWidth === 0) return;
+       const dpr = window.devicePixelRatio || 1;
+       sWidth = wrapper.clientWidth;
+       sHeight = wrapper.clientHeight;
+       canvas.width = sWidth * dpr;
+       canvas.height = sHeight * dpr;
+       ctx.scale(dpr, dpr);
+     }
+     
+     window.addEventListener('resize', resizeScope);
+     resizeScope();
+     new ResizeObserver(resizeScope).observe(wrapper);
 
-    document.querySelectorAll('img.lazy-gif').forEach(gif => {
-      gifObserver.observe(gif);
-    });
+     // 生成动作电位轨迹的数学模型 (严格匹配附图中触发点在 -70 的形态)
+     function generateSpike() {
+       const trace = [];
+       const points = 250; 
+       const tMin = -1, tMax = 2;
+       const dt = (tMax - tMin) / points;
+       const ampVariation = 0.85 + Math.random() * 0.3; // 幅度轻微抖动
 
-    // ===================== 新增：Spike Scope 聚类视图引擎 =====================
-    const spikeScopeWrapper = document.querySelector('.spike-scope-container');
-    if (spikeScopeWrapper) {
-      const scopeCanvas = spikeScopeWrapper.querySelector('.spike-scope-canvas');
-      const counterEl = document.querySelector('.spike-counter-text');
-      const scopeCtx = scopeCanvas.getContext('2d', { alpha: false });
-      
-      let sWidth, sHeight;
-      let spikeBuffer = []; // 存储当前屏幕上的尖峰 (自带寿命/透明度)
-      let totalSpikeCount = 4280; // 模拟初始积累量
-      let scopeAnimationFrame;
+       for(let i = 0; i < points; i++) {
+         let t = tMin + i * dt;
+         let noise = (Math.random() - 0.5) * 12; // 底噪
+         let val = 0;
+         
+         if (t > -0.2) {
+            // 利用多高斯函数拟合真实细胞外电位，对齐 t=0
+            let dip = -320 * Math.exp(-Math.pow((t - 0.15) / 0.12, 2));
+            let peak = 200 * Math.exp(-Math.pow((t - 0.45) / 0.2, 2));
+            val = (dip + peak) * ampVariation;
+         }
+         trace.push(val + noise);
+       }
+       return trace;
+     }
 
-      // 聚类定义：颜色 与 数学模板参数
-      const clusters = [
-        { id: 1, color: '250, 204, 21',  prob: 0.50, amp: 1.0,  width1: 22, width2: 10, posPeak: 0.8 }, // 黄色 (占比最大，标准波形)
-        { id: 2, color: '74, 222, 128',  prob: 0.35, amp: 0.65, width1: 18, width2: 7,  posPeak: 0.4 }, // 绿色 (较浅，正峰较宽)
-        { id: 3, color: '59, 130, 246',  prob: 0.15, amp: 1.3,  width1: 28, width2: 15, posPeak: 1.5 }  // 蓝色 (极深，极高回弹)
-      ];
+     // 初始预填充20个波形
+     for(let i = 0; i < 20; i++) spikes.push(generateSpike());
 
-      function resizeScopeCanvas() {
-        if(spikeScopeWrapper.clientWidth === 0) return;
-        const dpr = Math.min(window.devicePixelRatio || 1, 2);
-        sWidth = spikeScopeWrapper.clientWidth;
-        sHeight = spikeScopeWrapper.clientHeight;
-        scopeCanvas.width = sWidth * dpr;
-        scopeCanvas.height = sHeight * dpr;
-        scopeCtx.scale(dpr, dpr);
-      }
-      
-      window.addEventListener('resize', resizeScopeCanvas);
-      resizeScopeCanvas();
-      new ResizeObserver(resizeScopeCanvas).observe(spikeScopeWrapper);
+     function drawScope() {
+       if (!window.isPageScrolling) {
+         // 填充纯黑底色
+         ctx.fillStyle = '#000000';
+         ctx.fillRect(0, 0, sWidth, sHeight);
 
-      // 生成一条带有随机抖动和噪声的 Spike 轨迹
-      function createSpikeTrace() {
-        const rand = Math.random();
-        let selectedCluster = clusters[0];
-        let cumulativeProb = 0;
-        for (let c of clusters) {
-          cumulativeProb += c.prob;
-          if (rand <= cumulativeProb) { selectedCluster = c; break; }
-        }
+         // 绘制网格与参考线
+         const x0 = sWidth / 3;
+         const x1 = 2 * sWidth / 3;
+         const y0 = sHeight / 2;
+         const yThresh = y0 + (70 / 500) * (sHeight / 2);
 
-        const trace = [];
-        const numPoints = 60; // 60个采样点足以画出平滑曲线
-        const jitterY = (Math.random() - 0.5) * 0.15; // 振幅抖动
-        const jitterX = (Math.random() - 0.5) * 0.03; // 时间轴对齐抖动
+         ctx.lineWidth = 1;
+         ctx.strokeStyle = '#333333';
+         
+         // 纵向参考线 (0 和 1ms)
+         ctx.beginPath(); ctx.moveTo(x0, 0); ctx.lineTo(x0, sHeight); ctx.stroke();
+         ctx.beginPath(); ctx.moveTo(x1, 0); ctx.lineTo(x1, sHeight); ctx.stroke();
+         
+         // 零点横向线 (0µV)
+         ctx.strokeStyle = '#444444';
+         ctx.beginPath(); ctx.moveTo(0, y0); ctx.lineTo(sWidth, y0); ctx.stroke();
 
-        for (let i = 0; i < numPoints; i++) {
-          let t = i / numPoints;
-          t += jitterX; 
-          
-          // 基于选定聚类的数学模板生成波形 (对齐在 t=0.25 处)
-          let signal = 
-            -2.5 * Math.exp(-Math.pow((t - 0.25) * selectedCluster.width1, 2)) +  
-             selectedCluster.posPeak * Math.exp(-Math.pow((t - 0.45) * selectedCluster.width2, 2)) - 
-             0.1 * Math.exp(-Math.pow((t - 0.7) * 5, 2));
-             
-          signal *= (selectedCluster.amp * (1 + jitterY));
-          
-          // 叠加高频白噪声
-          const noise = (Math.random() - 0.5) * 0.18;
-          trace.push(signal + noise);
-        }
+         // 红色阈值线 (-70µV)
+         ctx.strokeStyle = '#ef4444';
+         ctx.beginPath(); ctx.moveTo(0, yThresh); ctx.lineTo(sWidth, yThresh); ctx.stroke();
 
-        return {
-          path: trace,
-          colorRGB: selectedCluster.color,
-          age: 1.0 // 寿命 1.0 (最新) -> 0.0 (消失)
-        };
-      }
+         // 偶尔抓取新的 Spike 进缓冲区
+         if (Math.random() < 0.15) { 
+           spikes.push(generateSpike());
+           if (spikes.length > 20) spikes.shift();
+         }
 
-      function drawSpikeScope() {
-        if (!window.isPageScrolling) {
-          // 1. 绘制纯黑背景
-          scopeCtx.fillStyle = '#0b0b0b';
-          scopeCtx.fillRect(0, 0, sWidth, sHeight);
+         // 叠加绘制波形
+         ctx.lineWidth = 1.2;
+         ctx.lineJoin = 'round';
+         spikes.forEach((spike, idx) => {
+           // 老的波形透明度更低
+           ctx.strokeStyle = `rgba(255, 255, 255, ${0.2 + (idx / 20) * 0.6})`;
+           ctx.beginPath();
+           for(let i = 0; i < spike.length; i++) {
+             let px = (i / (spike.length - 1)) * sWidth;
+             let py = y0 - (spike[i] / 500) * (sHeight / 2);
+             i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
+           }
+           ctx.stroke();
+         });
+       }
+       animationFrame = requestAnimationFrame(drawScope);
+     }
 
-          // 2. 绘制示波器网格 (浅灰色虚线)
-          scopeCtx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
-          scopeCtx.lineWidth = 1;
-          scopeCtx.setLineDash([2, 4]);
-          scopeCtx.beginPath();
-          // 纵向网格
-          for (let i = 1; i < 10; i++) {
-            let x = (sWidth / 10) * i;
-            scopeCtx.moveTo(x, 0); scopeCtx.lineTo(x, sHeight);
-          }
-          // 阈值触发线 (实线)
-          scopeCtx.stroke();
-          scopeCtx.setLineDash([]);
-          scopeCtx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
-          scopeCtx.beginPath();
-          scopeCtx.moveTo(0, sHeight * 0.5);
-          scopeCtx.lineTo(sWidth, sHeight * 0.5);
-          scopeCtx.stroke();
-
-          // 3. 随机概率触发新的 Spike 抓取
-          if (Math.random() < 0.6) { // 每帧有 60% 概率抓到一个新的 Spike
-            spikeBuffer.push(createSpikeTrace());
-            totalSpikeCount++;
-            if(totalSpikeCount % 5 === 0) counterEl.innerText = totalSpikeCount.toLocaleString();
-          }
-
-          // 4. 渲染波形叠加 (荧光余辉效果)
-          const baseAmp = sHeight * 0.25;
-          const stepX = sWidth / 59; // 60个点，59个间隔
-
-          for (let i = spikeBuffer.length - 1; i >= 0; i--) {
-            let spike = spikeBuffer[i];
-            
-            // 使用 source-over 混合模拟荧光管
-            scopeCtx.globalCompositeOperation = 'lighter';
-            // 越老的线条越透明，模拟余辉消散
-            scopeCtx.strokeStyle = `rgba(${spike.colorRGB}, ${spike.age * 0.6})`; 
-            scopeCtx.lineWidth = 1.5;
-            scopeCtx.lineJoin = 'round';
-
-            scopeCtx.beginPath();
-            for (let j = 0; j < spike.path.length; j++) {
-              let px = j * stepX;
-              let py = sHeight * 0.5 + spike.path[j] * baseAmp;
-              j === 0 ? scopeCtx.moveTo(px, py) : scopeCtx.lineTo(px, py);
-            }
-            scopeCtx.stroke();
-
-            // 衰减寿命
-            spike.age -= 0.015; 
-            if (spike.age <= 0) {
-              spikeBuffer.splice(i, 1);
-            }
-          }
-          
-          scopeCtx.globalCompositeOperation = 'source-over';
-        }
-        scopeAnimationFrame = requestAnimationFrame(drawSpikeScope);
-      }
-
-      // 只有面板进入视口时才执行动画，节省性能
-      const scopeObserver = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting && spikeScopeWrapper.offsetParent !== null) {
-          if (!scopeAnimationFrame) drawSpikeScope();
-        } else {
-          if (scopeAnimationFrame) cancelAnimationFrame(scopeAnimationFrame);
-          scopeAnimationFrame = null;
-        }
-      }, { threshold: 0.1 });
-      scopeObserver.observe(spikeScopeWrapper);
-    }
-  });
+     const scopeObserver = new IntersectionObserver((entries) => {
+       if (entries[0].isIntersecting && wrapper.offsetParent !== null) {
+         if (!animationFrame) drawScope();
+       } else {
+         if (animationFrame) cancelAnimationFrame(animationFrame);
+         animationFrame = null;
+       }
+     }, { threshold: 0.1 });
+     
+     scopeObserver.observe(wrapper);
+   });
+ });
 </script>
-  
