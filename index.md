@@ -3117,9 +3117,12 @@ intanSimulators.forEach(sim => {
   let width, height;
   let lastWidth = 0; // 💡 新增：记录上一次的宽度，防止手机端滚动时误触发重绘
   
-  // 🚀 修复点：将常量声明提前到函数调用之前！
+  // 🚀 终极修复：把所有波形动画相关的基础变量全部置顶！
   const NUM_CHANNELS = 20; 
   const LABEL_WIDTH = 100; 
+  let scanX = LABEL_WIDTH;   // 把这个也提上来！
+  const scanSpeed = 1.2;     // 把这个提上来！
+  let animationFrame;        // 把这个提上来！
   
   function resizeIntanCanvas() {
     if(canvasL.parentElement.clientWidth === 0) return;
@@ -3191,10 +3194,6 @@ intanSimulators.forEach(sim => {
   
   const channelsL = generateChannels('A');
   const channelsR = generateChannels('B');
-
-  let scanX = LABEL_WIDTH; 
-  const scanSpeed = 1.2; // 保持原始扫描感
-  let animationFrame;
 
 function drawPane(ctx, channelsData, isLeftPane) {
     // 🚀 1. 新增：动态判断手机端，并设定专属尺寸 (同步为 768px)
