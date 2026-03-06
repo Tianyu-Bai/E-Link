@@ -2890,36 +2890,47 @@ This project is open-source and available under the **MIT License**. Click the b
 </div>
 
 </div> 
+
 <script>
   document.addEventListener("DOMContentLoaded", () => {
 
     // ===================== E-Link 动态数据面板 =====================
-      const dashboardObserver = new IntersectionObserver((entries) => {
+    const dashboardObserver = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         const card = entry.target;
         const fgRing = card.querySelector('.fg-ring');
-        const numberEl = card.querySelector('.count-up');
+        const numberEl = card.querySelector('.count-up') || card.querySelector('.v2-count');
+        if (!numberEl) return;
+
         const targetValue = parseFloat(card.dataset.value);
         const isFloat = card.dataset.isFloat === "true";
         const decimals = parseInt(card.dataset.decimals) || 1;
         const circumference = 283;
+        const duration = 2000;
 
         if (entry.isIntersecting) {
           if (card.dataset.dashboardInView === "true") return;
           card.dataset.dashboardInView = "true";
 
           let startTimestamp = null;
-          const duration = 2000;
-
           const animate = (timestamp) => {
-            if (card.dataset.dashboardInView !== "true") return;  // ✅ 已有的安全检查
+            if (card.dataset.dashboardInView !== "true") return;
             if (!startTimestamp) startTimestamp = timestamp;
             const elapsed = timestamp - startTimestamp;
             const progress = Math.min(elapsed / duration, 1);
             const easeProgress = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
             const currentValue = easeProgress * targetValue;
-            numberEl.innerText = isFloat ? currentValue.toFixed(1) : Math.round(currentValue);
-            fgRing.style.strokeDashoffset = circumference - (circumference * easeProgress);
+            
+            numberEl.innerText = isFloat ? currentValue.toFixed(decimals) : Math.round(currentValue);
+            
+            if (card.dataset.type === 'ring' && fgRing) {
+               fgRing.style.strokeDashoffset = circumference - (circumference * easeProgress);
+            } else if (card.dataset.type === 'thermo') {
+               const fill = card.querySelector('.thermo-fill');
+               const maxTemp = parseFloat(card.dataset.max) || 50;
+               if (fill) fill.style.height = ((currentValue / maxTemp) * 100) + '%';
+            }
+
             if (progress < 1) {
               card.dashboardAnimFrame = requestAnimationFrame(animate);
             }
@@ -2928,7 +2939,6 @@ This project is open-source and available under the **MIT License**. Click the b
           card.dashboardAnimFrame = requestAnimationFrame(animate);
 
         } else {
-          // ✅ 新增：离开视口时取消动画帧
           card.dataset.dashboardInView = "false";
           if (card.dashboardAnimFrame) {
             cancelAnimationFrame(card.dashboardAnimFrame);
@@ -2938,458 +2948,399 @@ This project is open-source and available under the **MIT License**. Click the b
       });
     }, { threshold: 0.25, rootMargin: "0px 0px -5% 0px" });
 
-    document.querySelectorAll('.metric-card').forEach(card => dashboardObserver.observe(card));
+    document.querySelectorAll('.metric-card, .metric-card-v2').forEach(card => dashboardObserver.observe(card));
 
-    // ===================== 3D 模型交互（已修复竞态问题）=====================
+    // ===================== 3D 模型交互（修复显存溢出与闪退）=====================
     const models = Array.from(document.querySelectorAll('model-viewer'));
-    if (!models.length) return;
-
-    let isScrolling = false;
-    let scrollEndTimer = null;
-    
-    
-    
-    // ===================== 3D 模型交互（彻底修复 WebGL 上下文过载）=====================
-    function isSlowNetwork() {
-      const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
-      if (!conn) return false;
-      // 2G / slow-2g 才算慢网络
-      return ['slow-2g', '2g'].includes(conn.effectiveType);
-    }
-    
-    const MAX_LIVE_CONTEXTS = 3;
-
-    // ✅ 追踪哪些 viewer 当前持有活跃 WebGL 上下文
-    const liveContextQueue = [];
-
-    function reclaimContext(viewer) {
-      // 把这个 viewer 的 WebGL 上下文释放掉
-      if (viewer.dataset.loaded === "true") {
-        viewer.pause();
-        viewer._cachedSrc = viewer._cachedSrc || viewer.src;
-        viewer.src = '';           // ✅ 核心：清空 src 才会真正释放 GL 上下文
-        viewer.dataset.loaded = "reclaimed";
+    if (models.length > 0) {
+      let isScrolling = false;
+      let scrollEndTimer = null;
+      
+      function isSlowNetwork() {
+        const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+        if (!conn) return false;
+        return ['slow-2g', '2g'].includes(conn.effectiveType);
       }
-    }
+      
+      const MAX_LIVE_CONTEXTS = 2; 
+      const liveContextQueue = [];
 
-    function ensureContextSlot(viewer) {
-      // 如果这个 viewer 已经在队列里，移到队尾（最近使用）
-      const idx = liveContextQueue.indexOf(viewer);
-      if (idx !== -1) liveContextQueue.splice(idx, 1);
-      liveContextQueue.push(viewer);
-
-      // 如果超出上限，淘汰最久未使用的（队首）
-      while (liveContextQueue.length > MAX_LIVE_CONTEXTS) {
-        const victim = liveContextQueue.shift();
-        if (victim !== viewer) {
-          reclaimContext(victim);
-        }
-      }
-    }
-
-   const activateViewer = async (viewer, force = false) => {
-      if (isScrolling && !force) return;
-
-      ensureContextSlot(viewer);
-
-      if (viewer.getAttribute('reveal') === 'manual' && viewer.dataset.loaded !== "true") {
-        if (viewer.dataset.loaded === "reclaimed" && viewer._cachedSrc) {
-          viewer.src = viewer._cachedSrc;
-        }
-        viewer.dataset.loaded = "true";
-        const loadHandler = () => {
-          viewer.removeEventListener('load', loadHandler);
-          try { viewer.play(); } catch(e) {}
-        };
-        viewer.addEventListener('load', loadHandler);
-        await new Promise(resolve => requestAnimationFrame(resolve));
-        viewer.dismissPoster();
-        return;
-      }
-
-      if (viewer.dataset.loaded === "reclaimed" && viewer._cachedSrc) {
-        viewer.src = viewer._cachedSrc;
-        viewer.dataset.loaded = "true";
-        const reloadHandler = () => {
-          viewer.removeEventListener('load', reloadHandler);
-          try { viewer.play(); } catch(e) {}
-        };
-        viewer.addEventListener('load', reloadHandler);
-        return;
-      }
-
-      if (viewer.paused) {
-        try { viewer.play(); } catch(e) {}
-      }
-
-      if (viewer.dataset.overlayDisabled !== "true") {
-        clearTimeout(viewer.hudTimer);
-        viewer.hudTimer = setTimeout(() => {
-          viewer.querySelectorAll('.gesture-overlay').forEach(el => el.classList.add('gesture-active'));
-        }, 500);
-      }
-    };
-
-    const checkAndActivateBestModel = () => {
-      if (isSlowNetwork()) return;
-      models.forEach(viewer => {
-        if (viewer.dataset.inView === "true") {
-          activateViewer(viewer);
-        }
-      });
-    };
-
-    window.addEventListener('scroll', () => {
-      isScrolling = true;
-      clearTimeout(scrollEndTimer);
-      scrollEndTimer = setTimeout(() => {
-        isScrolling = false;
-        checkAndActivateBestModel();
-      }, 150);
-    }, { passive: true });
-
-    models.forEach(viewer => {
-      viewer.addEventListener('click', () => {
-        activateViewer(viewer, true);
-      });
-
-      // ✅ 监听 WebGL 上下文丢失，自动恢复
-      viewer.addEventListener('error', (e) => {
-        console.warn('[E-Link] model-viewer GL error, attempting recovery');
-        if (viewer._cachedSrc) {
+      function reclaimContext(viewer) {
+        if (viewer.dataset.loaded === "true") {
+          viewer.pause();
+          viewer._cachedSrc = viewer._cachedSrc || viewer.src;
           viewer.src = '';
           viewer.dataset.loaded = "reclaimed";
-          // 如果当前在视口内，延迟后重新加载
-          if (viewer.dataset.inView === "true") {
-            setTimeout(() => activateViewer(viewer, true), 500);
+        }
+      }
+
+      function ensureContextSlot(viewer) {
+        const idx = liveContextQueue.indexOf(viewer);
+        if (idx !== -1) liveContextQueue.splice(idx, 1);
+        liveContextQueue.push(viewer);
+
+        while (liveContextQueue.length > MAX_LIVE_CONTEXTS) {
+          const victim = liveContextQueue.shift();
+          if (victim !== viewer) {
+            reclaimContext(victim);
           }
         }
-      });
+      }
 
-      const handleCameraChange = (event) => {
-        if (event.detail.source === 'user-interaction' && viewer.dataset.overlayDisabled !== "true") {
-          viewer.querySelectorAll('.gesture-overlay, .gesture-hud').forEach(el => {
-            el.classList.add('gesture-hidden');
-          });
-          viewer.dataset.overlayDisabled = "true";
-          viewer.removeEventListener('camera-change', handleCameraChange);
+      const activateViewer = async (viewer, force = false) => {
+        if (isScrolling && !force) return;
+        ensureContextSlot(viewer);
+
+        if (viewer.getAttribute('reveal') === 'manual' && viewer.dataset.loaded !== "true") {
+          if (viewer.dataset.loaded === "reclaimed" && viewer._cachedSrc) {
+            viewer.src = viewer._cachedSrc;
+          } else if (viewer.dataset.src) {
+            viewer.src = viewer.dataset.src; 
+          }
+          viewer.dataset.loaded = "true";
+          const loadHandler = () => {
+            viewer.removeEventListener('load', loadHandler);
+            try { viewer.play(); } catch(e) {}
+          };
+          viewer.addEventListener('load', loadHandler);
+          await new Promise(resolve => requestAnimationFrame(resolve));
+          viewer.dismissPoster();
+          return;
+        }
+
+        if (viewer.dataset.loaded === "reclaimed" && viewer._cachedSrc) {
+          viewer.src = viewer._cachedSrc;
+          viewer.dataset.loaded = "true";
+          const reloadHandler = () => {
+            viewer.removeEventListener('load', reloadHandler);
+            try { viewer.play(); } catch(e) {}
+          };
+          viewer.addEventListener('load', reloadHandler);
+          return;
+        }
+
+        if (viewer.paused) {
+          try { viewer.play(); } catch(e) {}
+        }
+
+        if (viewer.dataset.overlayDisabled !== "true") {
+          clearTimeout(viewer.hudTimer);
+          viewer.hudTimer = setTimeout(() => {
+            viewer.querySelectorAll('.gesture-overlay').forEach(el => el.classList.add('gesture-active'));
+          }, 500);
         }
       };
-      viewer.addEventListener('camera-change', handleCameraChange);
-    });
 
-    const modelObserver = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        const viewer = entry.target;
-        if (entry.isIntersecting) {
-          viewer.dataset.inView = "true";
-          if (!isScrolling) checkAndActivateBestModel();
-        } else {
-          viewer.dataset.inView = "false";
-          viewer.pause();
-          viewer.querySelectorAll('.gesture-overlay').forEach(el => el.classList.remove('gesture-active'));
-          // ✅ 离开视口的模型不立即回收，而是由 ensureContextSlot 按需淘汰
-        }
-      });
-    }, { threshold: 0.1 });
+      const checkAndActivateBestModel = () => {
+        if (isSlowNetwork()) return;
+        models.forEach(viewer => {
+          if (viewer.dataset.inView === "true") {
+            activateViewer(viewer);
+          }
+        });
+      };
 
-    models.forEach(model => modelObserver.observe(model));
-    
-// 👇 插入开始：Intan 像素级覆盖式示波器引擎 (更真实、高连续性版) 👇
-const intanSimulators = document.querySelectorAll('.intan-simulator-wrapper');
+      window.addEventListener('scroll', () => {
+        isScrolling = true;
+        clearTimeout(scrollEndTimer);
+        scrollEndTimer = setTimeout(() => {
+          isScrolling = false;
+          checkAndActivateBestModel();
+        }, 150);
+      }, { passive: true });
 
-// 1. 保留原始颜色序列
-const intanColors = [
-  '#e04a4a', '#d49b38', '#3dc94d', '#3dc98b', '#3da1c9', '#3d61c9', '#573dc9',
-  '#993dc9', '#c93d9e', '#c93d5a', '#d47238', '#b8c93d', '#70c93d', '#3dc9c7', '#3d94c9',
-  '#3d51c9', '#6d3dc9', '#b53dc9', '#c93da6', '#c93d4a', '#d48838', '#d4b338', '#99c93d',
-  '#3dc958', '#3dc99e', '#3dbbc9', '#3d6ec9', '#4d3dc9', '#8b3dc9', '#c93dbb', '#c93d70'
-];
+      models.forEach(viewer => {
+        viewer.addEventListener('click', () => {
+          activateViewer(viewer, true);
+        });
 
-intanSimulators.forEach(sim => {
-  const canvasL = sim.querySelector('.canvas-left');
-  const canvasR = sim.querySelector('.canvas-right');
-  if (!canvasL || !canvasR) return;
+        viewer.addEventListener('error', (e) => {
+          console.warn('[E-Link] model-viewer GL error triggered.');
+          viewer._cachedSrc = viewer._cachedSrc || viewer.src;
+          viewer.src = '';
+          viewer.dataset.loaded = "reclaimed";
+        });
 
-  // 强制关闭 alpha 通道，确保背景纯黑无蒙层
-  const ctxL = canvasL.getContext('2d', { alpha: false });
-  const ctxR = canvasR.getContext('2d', { alpha: false });
-  let width, height;
-  let lastWidth = 0; // 💡 新增：记录上一次的宽度，防止手机端滚动时误触发重绘
-  
-  // 🚀 终极修复：把所有波形动画相关的基础变量全部置顶！
-  const NUM_CHANNELS = 20; 
-  const LABEL_WIDTH = 100; 
-  let scanX = LABEL_WIDTH;   // 把这个也提上来！
-  const scanSpeed = 1.2;     // 把这个提上来！
-  let animationFrame;        // 把这个提上来！
-  
-  function resizeIntanCanvas() {
-    if(canvasL.parentElement.clientWidth === 0) return;
-    
-    const newWidth = canvasL.parentElement.clientWidth;
-    const newHeight = canvasL.parentElement.clientHeight;
-    
-    // 🚀 核心修复：如果仅仅是高度变化（手机端上下滑动引起的地址栏缩放），直接退出，绝不清空画布！
-    if (lastWidth === newWidth) return; 
-    lastWidth = newWidth;
-
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
-    width = newWidth;
-    height = newHeight;
-    
-   [canvasL, canvasR].forEach(canvas => {
-        canvas.width = width * dpr;
-        canvas.height = height * dpr;
-        const ctx = canvas.getContext('2d');
-        ctx.scale(dpr, dpr);
-        // 初始化全屏纯黑
-        ctx.fillStyle = '#000000';
-        ctx.fillRect(0, 0, width, height);
+        const handleCameraChange = (event) => {
+          if (event.detail.source === 'user-interaction' && viewer.dataset.overlayDisabled !== "true") {
+            viewer.querySelectorAll('.gesture-overlay, .gesture-hud').forEach(el => {
+              el.classList.add('gesture-hidden');
+            });
+            viewer.dataset.overlayDisabled = "true";
+            viewer.removeEventListener('camera-change', handleCameraChange);
+          }
+        };
+        viewer.addEventListener('camera-change', handleCameraChange);
       });
 
-      // 🚀 核心修复：每次画布被重置清空时，强制把扫描线拉回最左侧起点！
-      scanX = window.innerWidth <= 768 ? 80 : LABEL_WIDTH;
-    }
-    
-  window.addEventListener('resize', resizeIntanCanvas);
-  resizeIntanCanvas();
-  new ResizeObserver(resizeIntanCanvas).observe(canvasL.parentElement);
-  
-  // 2. 严格保留原始通道生成逻辑 (含坏道模拟)
-  function generateChannels(prefix) {
-    const arr = [];
-    for (let i = 0; i < NUM_CHANNELS; i++) {
-      let isBad = false;
-      // 1. 正常 ECoG 通道阻抗设定为 316-416 kΩ
-      let imp = (316 + Math.random() * 100).toFixed(0) + " kΩ";
-      
-      // 2. 判定坏通道
-      if ((prefix === 'A' && i === 2) || (prefix === 'B' && i === 8)) {
-        isBad = true;
-        imp = (15 + Math.random() * 5).toFixed(1) + " MΩ"; // 坏通道巨大阻抗
-      }
+      const modelObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          const viewer = entry.target;
+          if (entry.isIntersecting) {
+            viewer.dataset.inView = "true";
+            if (!isScrolling) checkAndActivateBestModel();
+          } else {
+            viewer.dataset.inView = "false";
+            viewer.pause();
+            viewer.querySelectorAll('.gesture-overlay').forEach(el => el.classList.remove('gesture-active'));
+          }
+        });
+      }, { threshold: 0.1 });
 
-      // 3. 核心修复：坏通道强行上锁为灰色 '#6b6b6b'，好通道循环取彩色
-      let chColor = isBad ? '#6b6b6b' : intanColors[i % intanColors.length];
-
-      let idStr = (i + 108).toString().padStart(3, '0');
-      
-      arr.push({
-        id: `${prefix}-${idStr}`, // ✅ 存储通道号：A-108
-        imp: imp,                 // ✅ 存储阻抗值：466 kΩ
-        color: chColor, // 直接使用判定好的颜色
-        isBad: isBad,
-        baseY: 0, 
-        lastY: 0, 
-        currentNoise: 0, 
-        isSpiking: false, 
-        spikeProgress: 0, 
-        spikeAmp: 0,
-        firingRate: isBad ? 0 : (0.001 + Math.random() * 0.006) 
-      });
-    }
-    return arr;
-  }
-  
-  const channelsL = generateChannels('A');
-  const channelsR = generateChannels('B');
-
-function drawPane(ctx, channelsData, isLeftPane) {
-    // 🚀 1. 新增：动态判断手机端，并设定专属尺寸 (同步为 768px)
-    const isMobile = window.innerWidth <= 768;
-    
-    // 手机端彩色框宽度设为80（原本是 95），腾出 20px 给波形
-    const currentLabelWidth = isMobile ? 80 : LABEL_WIDTH; 
-    
-    // 扫描刷新逻辑：擦除当前位置前方的一小条区域
-    const eraseWidth = 2; 
-    ctx.fillStyle = '#000000';
-    
-    // 处理回绕时的擦除 (注意这里改用 currentLabelWidth)
-    if (scanX + eraseWidth > width) {
-      ctx.fillRect(scanX, 0, width - scanX, height);
-      ctx.fillRect(currentLabelWidth, 0, eraseWidth - (width - scanX), height);
-    } else {
-      ctx.fillRect(scanX, 0, eraseWidth, height);
+      models.forEach(model => modelObserver.observe(model));
     }
 
-    const gap = height / (NUM_CHANNELS + 0.5);
-    const maxAmplitude = gap * 0.9; 
+    // ===================== Intan 示波器引擎 =====================
+    const intanSimulators = document.querySelectorAll('.intan-simulator-wrapper');
 
-    for (let i = 0; i < NUM_CHANNELS; i++) {
-      const ch = channelsData[i];
-      ch.baseY = Math.floor(gap * (i + 0.5)) + 0.5;
+    const intanColors = [
+      '#e04a4a', '#d49b38', '#3dc94d', '#3dc98b', '#3da1c9', '#3d61c9', '#573dc9',
+      '#993dc9', '#c93d9e', '#c93d5a', '#d47238', '#b8c93d', '#70c93d', '#3dc9c7', '#3d94c9',
+      '#3d51c9', '#6d3dc9', '#b53dc9', '#c93da6', '#c93d4a', '#d48838', '#d4b338', '#99c93d',
+      '#3dc958', '#3dc99e', '#3dbbc9', '#3d6ec9', '#4d3dc9', '#8b3dc9', '#c93dbb', '#c93d70'
+    ];
+
+    intanSimulators.forEach(sim => {
+      const canvasL = sim.querySelector('.canvas-left');
+      const canvasR = sim.querySelector('.canvas-right');
+      if (!canvasL || !canvasR) return;
+
+      const ctxL = canvasL.getContext('2d', { alpha: false });
+      const ctxR = canvasR.getContext('2d', { alpha: false });
       
-      let signal = 0;
-
-      // 🚀 终极物理特征分离逻辑：
-      if (ch.isBad) {
-        ch.isSpiking = false; 
-        const time_sec = scanX / width * 0.05; // 修改为 0.05 (代表 50ms 满屏)
-        const powerLineInterference = Math.sin(time_sec * 60 * Math.PI * 2) * 0.15;
-        ch.currentNoise = ch.currentNoise * 0.3 + (Math.random() - 0.5) * 0.25; 
-        signal = powerLineInterference + ch.currentNoise;
-      } else {
-        ch.currentNoise = ch.currentNoise * 0.65 + (Math.random() - 0.5) * 0.06;
-        signal = ch.currentNoise; 
+      let width, height;
+      let lastWidth = 0; 
+      const NUM_CHANNELS = 20; 
+      const LABEL_WIDTH = 100; 
+      let scanX = LABEL_WIDTH;  
+      const scanSpeed = 1.2; 
+      let animationFrame;
+      
+      function resizeIntanCanvas() {
+        if(canvasL.parentElement.clientWidth === 0) return;
         
-        if (!ch.isSpiking && Math.random() < ch.firingRate) {
-          ch.isSpiking = true; 
-          ch.spikeProgress = 0; 
-          // 增加一点振幅随机性，模拟记录电极附近不同距离神经元的 Spike 大小差异
-          ch.spikeAmp = 0.8 + Math.random() * 0.5; 
-        }
+        const newWidth = canvasL.parentElement.clientWidth;
+        const newHeight = canvasL.parentElement.clientHeight;
+        
+        if (lastWidth === newWidth) return; 
+        lastWidth = newWidth;
 
-        if (ch.isSpiking) {
-          let t = ch.spikeProgress;
-          
-          // 拟合经典胞外 Spike：极陡峭负峰 + 宽缓正相回弹 + 缓慢平复
-          let spikeShape = 
-            -2.0 * Math.exp(-Math.pow((t - 0.24) * 18, 2)) +  // 极深、锐利的负相主峰 (精确命中 t=0.24 采样点)
-             0.9 * Math.exp(-Math.pow((t - 0.55) * 7, 2)) +   // 宽缓的正相回弹 (越过基线并保持较长时间)
-             0.1 * Math.exp(-Math.pow((t - 0.80) * 4, 2));    // 缓慢的尾部电位恢复
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        width = newWidth;
+        height = newHeight;
+        
+        [canvasL, canvasR].forEach(canvas => {
+          canvas.width = width * dpr;
+          canvas.height = height * dpr;
+          const ctx = canvas.getContext('2d');
+          ctx.scale(dpr, dpr);
+          ctx.fillStyle = '#000000';
+          ctx.fillRect(0, 0, width, height);
+        });
 
-          signal += spikeShape * ch.spikeAmp;
-          ch.spikeProgress += 0.12; 
-          if (ch.spikeProgress >= 1) ch.isSpiking = false;
-        }
-
-      const currentY = Math.floor(ch.baseY + signal * maxAmplitude) + 0.5;
-      
-      // 只有在非起始点时才画线 (注意这里改用 currentLabelWidth)
-      if (scanX > currentLabelWidth + scanSpeed) {
-        ctx.beginPath();
-        ctx.strokeStyle = ch.color; 
-        ctx.lineWidth = 1.2;
-        ctx.lineJoin = 'round'; 
-        ctx.lineCap = 'round';
-        ctx.moveTo(scanX - scanSpeed, ch.lastY);
-        ctx.lineTo(scanX, currentY);
-        ctx.stroke();
-      }
-      ch.lastY = currentY;
-    }
-
-    // 重绘左侧标签区域 (注意这里改用 currentLabelWidth)
-    ctx.fillStyle = '#000000';
-    ctx.fillRect(0, 0, currentLabelWidth, height);
-    
-    // 🚀 2. 字体极限压缩：手机端改到 7.5px (为了塞进更窄的框)
-    const fontSize = isMobile ? 7.5 : 10;
-    // 🚀 3. 彩色框高度压缩：手机端色块高度变矮 (8px)，电脑端保持 11px
-    const blockHeight = isMobile ? 8 : 11;
-    // 计算 Y 轴偏移，让色块始终居中对齐波形基准线
-    const blockOffsetY = blockHeight / 2;
-    
-   ctx.font = `${fontSize}px "Segoe UI", "Arial", sans-serif`; // 保持非加粗，还原工业感
-    ctx.textBaseline = 'middle';
-    
-    // 1. 设置边距布局
-    const padding = isMobile ? 3 : 4; 
-    const iconSize = isMobile ? 7 : 7; // 保存图标的大小
-    const idOffsetX = padding + iconSize + (isMobile ? 3 : 4); // 通道号要避开图标
-    const rightEdge = currentLabelWidth - padding - 1;
-
-    for (let i = 0; i < NUM_CHANNELS; i++) {
-      const ch = channelsData[i];
-      const textY = ch.baseY + (isMobile ? 0.5 : 1); // 统一的文字/图标中心线
-      
-      // 2. 绘制背景框
-      ctx.fillStyle = ch.color;
-      ctx.fillRect(0, ch.baseY - blockOffsetY, currentLabelWidth - 3, blockHeight);
-      
-      // 3. 准备绘制颜色（坏通道用半透明黑，好通道用纯白）
-      const themeColor = ch.isBad ? 'rgba(0,0,0,0.7)' : '#fff';
-      ctx.fillStyle = themeColor;
-
-      // --- 🚀 绘制“保存”图标 (软盘形状) ---
-      const iconY = textY - iconSize / 2;
-      // 画软盘主体
-      ctx.fillRect(padding, iconY, iconSize, iconSize);
-      // 挖掉软盘顶部的写保护标签区 (涂上底色)
-      ctx.fillStyle = ch.color;
-      ctx.fillRect(padding + iconSize * 0.2, iconY + iconSize * 0.1, iconSize * 0.6, iconSize * 0.3);
-      // 恢复颜色画文字
-      ctx.fillStyle = themeColor;
-
-      // --- 绘制通道号 (靠左) ---
-      ctx.textAlign = 'left';
-      ctx.fillText(ch.id, idOffsetX, textY);
-      
-      // --- 绘制阻抗值 (靠右) ---
-      ctx.textAlign = 'right';
-      ctx.fillText(ch.imp, rightEdge, textY);
-    }
-
-    if (isLeftPane) {
-      // 1. 垂直位移：将 scaleY 向下移动 gap 的 30%，使其处于两个通道中间的空隙
-      const scaleY = channelsData[3].baseY + (gap * 0.3); 
-      
-      // 2. 缩短竖线：将原本的 +/-10 缩短为 +/-6 像素
-      const lineHeight = 6; 
-      const scaleX = currentLabelWidth + (isMobile ? 25 : 50);
-      
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.8)'; // 稍微降低一点亮度，更高级
-      ctx.lineWidth = 1;
-      ctx.beginPath();
-      ctx.moveTo(scaleX, scaleY - lineHeight); 
-      ctx.lineTo(scaleX, scaleY + lineHeight);
-      ctx.stroke();
-
-      // 3. 文字对齐：由于之前设置了 textAlign='center'，这里要改回 'left' 避免影响数字
-      ctx.textAlign = 'left'; 
-      ctx.fillStyle = '#fff';
-      ctx.font = `${isMobile ? 7 : 9}px "Segoe UI", sans-serif`;
-      ctx.fillText("50 µV", scaleX + 6, scaleY + 1);
-    }
-  }
-
- function renderDualSweep() {
-    if (!window.isPageScrolling) {
-      drawPane(ctxL, channelsL, true);
-      drawPane(ctxR, channelsR, false);
-
-      scanX += scanSpeed;
-      if (scanX >= width) {
-        // 🚀 核心修复：回到左侧时，如果是手机则回到 80，否则回到原本的 LABEL_WIDTH
         scanX = window.innerWidth <= 768 ? 80 : LABEL_WIDTH;
       }
-    }
-    animationFrame = requestAnimationFrame(renderDualSweep);
-  }
+        
+      window.addEventListener('resize', resizeIntanCanvas);
+      resizeIntanCanvas();
+      new ResizeObserver(resizeIntanCanvas).observe(canvasL.parentElement);
 
-  const observer = new IntersectionObserver((entries) => {
-    if (entries[0].isIntersecting && canvasL.offsetParent !== null) {
-      if (!animationFrame) renderDualSweep();
-    } else {
-      if (animationFrame) cancelAnimationFrame(animationFrame);
-      animationFrame = null;
-    }
-  }, { threshold: 0.1 });
-  observer.observe(sim);
-});
-// 👆 插入结束 👆
+      function generateChannels(prefix) {
+        const arr = [];
+        for (let i = 0; i < NUM_CHANNELS; i++) {
+          let isBad = false;
+          let imp = (316 + Math.random() * 100).toFixed(0) + " kΩ";
+          
+          if ((prefix === 'A' && i === 2) || (prefix === 'B' && i === 8)) {
+            isBad = true;
+            imp = (15 + Math.random() * 5).toFixed(1) + " MΩ"; 
+          }
 
-    
+          let chColor = isBad ? '#6b6b6b' : intanColors[i % intanColors.length];
+          let idStr = (i + 108).toString().padStart(3, '0');
+          
+          arr.push({
+            id: `${prefix}-${idStr}`, 
+            imp: imp,                 
+            color: chColor, 
+            isBad: isBad,
+            baseY: 0, 
+            lastY: 0, 
+            currentNoise: 0, 
+            isSpiking: false, 
+            spikeProgress: 0, 
+            spikeAmp: 0,
+            firingRate: isBad ? 0 : (0.001 + Math.random() * 0.006) 
+          });
+        }
+        return arr;
+      }
+      
+      const channelsL = generateChannels('A');
+      const channelsR = generateChannels('B');
+
+      function drawPane(ctx, channelsData, isLeftPane) {
+        const isMobile = window.innerWidth <= 768;
+        const currentLabelWidth = isMobile ? 80 : LABEL_WIDTH; 
+        const eraseWidth = 2; 
+        ctx.fillStyle = '#000000';
+        
+        if (scanX + eraseWidth > width) {
+          ctx.fillRect(scanX, 0, width - scanX, height);
+          ctx.fillRect(currentLabelWidth, 0, eraseWidth - (width - scanX), height);
+        } else {
+          ctx.fillRect(scanX, 0, eraseWidth, height);
+        }
+
+        const gap = height / (NUM_CHANNELS + 0.5);
+        const maxAmplitude = gap * 0.9; 
+
+        for (let i = 0; i < NUM_CHANNELS; i++) {
+          const ch = channelsData[i];
+          ch.baseY = Math.floor(gap * (i + 0.5)) + 0.5;
+          let signal = 0;
+
+          if (ch.isBad) {
+            ch.isSpiking = false; 
+            const time_sec = scanX / width * 0.05; 
+            const powerLineInterference = Math.sin(time_sec * 60 * Math.PI * 2) * 0.15;
+            ch.currentNoise = ch.currentNoise * 0.3 + (Math.random() - 0.5) * 0.25; 
+            signal = powerLineInterference + ch.currentNoise;
+          } else {
+            ch.currentNoise = ch.currentNoise * 0.65 + (Math.random() - 0.5) * 0.06;
+            signal = ch.currentNoise; 
+            
+            if (!ch.isSpiking && Math.random() < ch.firingRate) {
+              ch.isSpiking = true; 
+              ch.spikeProgress = 0; 
+              ch.spikeAmp = 0.8 + Math.random() * 0.5; 
+            }
+
+            if (ch.isSpiking) {
+              let t = ch.spikeProgress;
+              let spikeShape = 
+                -2.0 * Math.exp(-Math.pow((t - 0.24) * 18, 2)) +  
+                 0.9 * Math.exp(-Math.pow((t - 0.55) * 7, 2)) +   
+                 0.1 * Math.exp(-Math.pow((t - 0.80) * 4, 2));    
+
+              signal += spikeShape * ch.spikeAmp;
+              ch.spikeProgress += 0.12; 
+              if (ch.spikeProgress >= 1) ch.isSpiking = false;
+            }
+          } // 🚀 漏掉的括号已经补上！
+
+          const currentY = Math.floor(ch.baseY + signal * maxAmplitude) + 0.5;
+          
+          if (scanX > currentLabelWidth + scanSpeed) {
+            ctx.beginPath();
+            ctx.strokeStyle = ch.color; 
+            ctx.lineWidth = 1.2;
+            ctx.lineJoin = 'round'; 
+            ctx.lineCap = 'round';
+            ctx.moveTo(scanX - scanSpeed, ch.lastY);
+            ctx.lineTo(scanX, currentY);
+            ctx.stroke();
+          }
+          ch.lastY = currentY;
+        }
+
+        ctx.fillStyle = '#000000';
+        ctx.fillRect(0, 0, currentLabelWidth, height);
+        
+        const fontSize = isMobile ? 7.5 : 10;
+        const blockHeight = isMobile ? 8 : 11;
+        const blockOffsetY = blockHeight / 2;
+        
+        ctx.font = `${fontSize}px "Segoe UI", "Arial", sans-serif`;
+        ctx.textBaseline = 'middle';
+        
+        const padding = isMobile ? 3 : 4; 
+        const iconSize = isMobile ? 7 : 7; 
+        const idOffsetX = padding + iconSize + (isMobile ? 3 : 4); 
+        const rightEdge = currentLabelWidth - padding - 1;
+
+        for (let i = 0; i < NUM_CHANNELS; i++) {
+          const ch = channelsData[i];
+          const textY = ch.baseY + (isMobile ? 0.5 : 1); 
+          
+          ctx.fillStyle = ch.color;
+          ctx.fillRect(0, ch.baseY - blockOffsetY, currentLabelWidth - 3, blockHeight);
+          
+          const themeColor = ch.isBad ? 'rgba(0,0,0,0.7)' : '#fff';
+          ctx.fillStyle = themeColor;
+
+          const iconY = textY - iconSize / 2;
+          ctx.fillRect(padding, iconY, iconSize, iconSize);
+          ctx.fillStyle = ch.color;
+          ctx.fillRect(padding + iconSize * 0.2, iconY + iconSize * 0.1, iconSize * 0.6, iconSize * 0.3);
+          ctx.fillStyle = themeColor;
+
+          ctx.textAlign = 'left';
+          ctx.fillText(ch.id, idOffsetX, textY);
+          
+          ctx.textAlign = 'right';
+          ctx.fillText(ch.imp, rightEdge, textY);
+        }
+
+        if (isLeftPane) {
+          const scaleY = channelsData[3].baseY + (gap * 0.3); 
+          const lineHeight = 6; 
+          const scaleX = currentLabelWidth + (isMobile ? 25 : 50);
+          
+          ctx.strokeStyle = 'rgba(255, 255, 255, 0.8)'; 
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.moveTo(scaleX, scaleY - lineHeight); 
+          ctx.lineTo(scaleX, scaleY + lineHeight);
+          ctx.stroke();
+
+          ctx.textAlign = 'left'; 
+          ctx.fillStyle = '#fff';
+          ctx.font = `${isMobile ? 7 : 9}px "Segoe UI", sans-serif`;
+          ctx.fillText("50 µV", scaleX + 6, scaleY + 1);
+        }
+      }
+
+      function renderDualSweep() {
+        if (!window.isPageScrolling) {
+          drawPane(ctxL, channelsL, true);
+          drawPane(ctxR, channelsR, false);
+
+          scanX += scanSpeed;
+          if (scanX >= width) {
+            scanX = window.innerWidth <= 768 ? 80 : LABEL_WIDTH;
+          }
+        }
+        animationFrame = requestAnimationFrame(renderDualSweep);
+      }
+
+      const observer = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && canvasL.offsetParent !== null) {
+          if (!animationFrame) renderDualSweep();
+        } else {
+          if (animationFrame) cancelAnimationFrame(animationFrame);
+          animationFrame = null;
+        }
+      }, { threshold: 0.1 });
+      observer.observe(sim);
+    });
+
     // ===================== GIF 懒加载 =====================
-  const gifObserver = new IntersectionObserver((entries, observer) => {
+    const gifObserver = new IntersectionObserver((entries, observer) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           const img = entry.target;
-          observer.unobserve(img); // ✅ 先 unobserve，防止重复触发
+          observer.unobserve(img); 
 
           const markLoaded = () => {
             requestAnimationFrame(() => {
-              img.classList.add('is-loaded'); // ✅ 延一帧再显示，避免白帧闪烁
+              img.classList.add('is-loaded'); 
             });
           };
 
-          // ✅ 先绑事件再赋 src，防止缓存命中时 onload 丢失
           img.addEventListener('load', markLoaded, { once: true });
           img.src = img.dataset.src;
 
-          // ✅ 兼容已缓存图片（src 赋值后 complete 立即为 true）
           if (img.complete && img.naturalWidth > 1) {
             markLoaded();
           }
@@ -3403,3 +3354,4 @@ function drawPane(ctx, channelsData, isLeftPane) {
 
   });
 </script>
+  
