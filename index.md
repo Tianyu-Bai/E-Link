@@ -1120,7 +1120,7 @@ body.light-mode .scope-win-wrapper * { filter: none !important; }
       <canvas class="spike-scope-canvas"></canvas>
       <div class="scope-overlay-text" style="top:10px; left:10px; color:#fff;">+500 µV</div>
       <div class="scope-overlay-text" style="top:50%; left:10px; color:#fff; transform:translateY(-50%);">0</div>
-      <div class="scope-overlay-text" style="top:calc(50% + 7%); left:10px; color:#ef4444; transform:translateY(-50%);">-70</div>
+      <div class="scope-overlay-text" style="top:calc(50% + 7%); right:10px; color:#ef4444; transform:translateY(-50%);">-70 µV</div>
       <div class="scope-overlay-text" style="bottom:20px; left:10px; color:#fff;">-500 µV</div>
 
       <div class="scope-overlay-text" style="bottom:5px; left:10px; color:#fff;">-1</div>
@@ -2688,48 +2688,67 @@ This project is open-source and available under the **MIT License**. Click the b
      resizeScope();
      new ResizeObserver(resizeScope).observe(wrapper);
 
-     // 生成动作电位轨迹的数学模型 (高度拟合真实的细胞外电位及底噪)
-     function generateSpike() {
-       const trace = [];
-       const points = 250; 
-       const tMin = -1, tMax = 2;
-       const dt = (tMax - tMin) / points;
-       const ampVariation = 0.85 + Math.random() * 0.3; // 动作电位幅度轻微抖动
+     // 特征的 Spike 生成器
+      function generateSpike() {
+        const trace = [];
+        const points = 250; 
+        const tMin = -1, tMax = 2;
+        const dt = (tMax - tMin) / points;
+        
+        // 🌟 10% 概率生成图中那根尖锐的单线 (Unit 2)，90% 概率生成较宽的主波形集群 (Unit 1)
+        const isOutlier = Math.random() < 0.1;
+        const ampJitter = 0.9 + Math.random() * 0.2; // 组内微小的幅度抖动
 
-       // 随机生成低频波动的参数，模拟 LFP 基线漂移和背景细胞放电
-       const wanderAmp1 = (Math.random() - 0.5) * 20;
-       const wanderFreq1 = 1 + Math.random() * 2;
-       const wanderPhase1 = Math.random() * Math.PI * 2;
-       
-       const wanderAmp2 = (Math.random() - 0.5) * 15;
-       const wanderFreq2 = 3 + Math.random() * 3;
-       const wanderPhase2 = Math.random() * Math.PI * 2;
-
-       for(let i = 0; i < points; i++) {
-         let t = tMin + i * dt;
-         
-         // 1. 系统热噪声与高频白噪声
-         let whiteNoise = (Math.random() - 0.5) * 14; 
-         
-         // 2. 动态低频基线漂移 (前后都会有自然的起伏)
-         let baselineWander = wanderAmp1 * Math.sin(t * wanderFreq1 + wanderPhase1) + 
-                              wanderAmp2 * Math.cos(t * wanderFreq2 + wanderPhase2);
-
-         // 3. 神经元动作电位形态 (移除硬截断，使用全域多高斯拟合)
-         // 负相下冲 (Depolarization / Na+ influx equivalent in extracellular)
-         let dip = -320 * Math.exp(-Math.pow((t - 0.15) / 0.12, 2));
-         // 正相回移 (Repolarization / K+ efflux equivalent)
-         let peak = 200 * Math.exp(-Math.pow((t - 0.45) / 0.2, 2));
-         // 后超极化 (After-hyperpolarization, AHP) - 增加真实的尾部小凹陷
-         let ahp = -25 * Math.exp(-Math.pow((t - 0.9) / 0.35, 2)); 
-         
-         let actionPotential = (dip + peak + ahp) * ampVariation;
-
-         // 最终波形 = 动作电位 + 基线漂移 + 高频底噪
-         trace.push(actionPotential + baselineWander + whiteNoise);
-       }
-       return trace;
-     }
+        for(let i = 0; i < points; i++) {
+          let t = tMin + i * dt;
+          let noise = (Math.random() - 0.5) * 8; // 只有高频白噪，没有低频漂移！
+          let val = 0;
+          
+          if (!isOutlier) {
+              // 📈 主波形集群 (对应图中较宽、较缓的那一坨)
+              if (t >= -0.2 && t <= 0) {
+                  // 触发前：平滑下降并【完美命中 (0, -70)】
+                  let norm = (t + 0.2) / 0.2; 
+                  val = -70 * Math.pow(norm, 2); 
+              } else if (t > 0 && t <= 0.12) {
+                  // 下冲谷底：约 0.12ms, 深度约 -160µV
+                  let norm = t / 0.12; 
+                  val = -70 - 90 * Math.sin(norm * Math.PI / 2); 
+              } else if (t > 0.12 && t <= 0.6) {
+                  // 回升波峰：宽缓，约 0.6ms, 高度约 +100µV
+                  let norm = (t - 0.12) / 0.48;
+                  val = -160 + 260 * (1 - Math.cos(norm * Math.PI)) / 2; 
+              } else if (t > 0.6 && t <= 1.2) {
+                  // 回归 0 点
+                  let norm = (t - 0.6) / 0.6;
+                  val = 100 * Math.cos(norm * Math.PI / 2); 
+              }
+          } else {
+              // 📉 尖锐离群波形 (对应图中那根又深又高又尖的单线)
+              if (t >= -0.1 && t <= 0) {
+                  // 触发前：极速下降命中 (0, -70)
+                  let norm = (t + 0.1) / 0.1;
+                  val = -70 * Math.pow(norm, 2); 
+              } else if (t > 0 && t <= 0.05) {
+                  // 下冲极深：0.05ms，深度 -250µV
+                  let norm = t / 0.05;
+                  val = -70 - 180 * Math.sin(norm * Math.PI / 2); 
+              } else if (t > 0.05 && t <= 0.3) {
+                  // 回升极快且高：0.3ms，高度 +220µV
+                  let norm = (t - 0.05) / 0.25;
+                  val = -250 + 470 * (1 - Math.cos(norm * Math.PI)) / 2; 
+              } else if (t > 0.3 && t <= 0.6) {
+                  // 极速回归 0 点
+                  let norm = (t - 0.3) / 0.3;
+                  val = 220 * Math.cos(norm * Math.PI / 2); 
+              }
+          }
+          
+          // 波形乘以抖动系数，并叠加恒定的小底噪
+          trace.push((val * ampJitter) + noise);
+        }
+        return trace;
+      }
 
     // 初始预填充20个波形
      for(let i = 0; i < 20; i++) spikes.push(generateSpike());
