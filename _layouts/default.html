@@ -540,41 +540,46 @@
       transition: none !important; /* 杀掉所有颜色和毛玻璃的过渡动画 */
     }
   }
-/* ===================== 🚀 手机横屏终极救援包 ===================== */
-  @media (max-width: 1024px) and (max-height: 500px) and (orientation: landscape) {
-    /* 1. 强制在横屏时触发手机版精简底层布局 */
-    .cursor-dot, .cursor-outline { display: none !important; } 
-    .container { padding: 20px !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
-    
-    /* 2. 拯救被卡死的欢迎弹窗：解除重叠与绝对定位，把按钮救出来 */
-    .modal-content {
-      padding: 15px !important;
-      max-height: 95vh !important;
-      overflow-y: auto !important;
-      display: flex; flex-direction: column; gap: 8px;
+/* ===================== 🚀 移动端显存溢出防闪退装甲 ===================== */
+  @media (max-width: 1024px) {
+    /* 1. 强制关闭所有高耗能毛玻璃。这是导致手机端横屏 GPU 瞬间爆炸的绝对元凶 */
+    .welcome-modal, 
+    .modal-content, 
+    .video-modal, 
+    .video-content,
+    .controls-container .ctrl-btn {
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
     }
     
-    /* 3. 极度压缩内部元素的间距 */
+    /* 2. 移除极度消耗显存的图层混合模式 */
+    #ambient-video {
+      mix-blend-mode: normal !important;
+      opacity: 0.15 !important; 
+    }
+    
+    /* 3. 为弹窗提供不透明的深色底板，防止失去毛玻璃后文字看不清 */
+    .welcome-modal { background: rgba(5, 10, 20, 0.98) !important; }
+    .modal-content { background: #0f172a !important; border: 1px solid rgba(59, 130, 246, 0.4) !important; box-shadow: 0 10px 30px rgba(0,0,0,0.8) !important; }
+  }
+
+  /* 4. 横屏专属极限降级：隐藏视频并重新排列拥挤的按钮 */
+  @media (max-width: 1024px) and (orientation: landscape) {
+    /* 横屏时直接隐藏视频画布，省下大量渲染资源 */
+    #ambient-video { display: none !important; }
+    .cursor-dot, .cursor-outline { display: none !important; } 
+    .container { padding: 20px !important; }
+    
+    /* 拯救被卡死的欢迎弹窗：解除重叠与绝对定位 */
+    .modal-content { padding: 15px !important; max-height: 95vh !important; overflow-y: auto !important; display: flex; flex-direction: column; gap: 8px; }
     .modal-title { margin-top: 0 !important; font-size: 1.1rem !important; margin-bottom: 5px !important; }
     .modal-body { margin-bottom: 5px !important; font-size: 0.85rem !important; line-height: 1.3 !important; }
-    
-    /* 4. 按钮改为并排显示以节省垂直空间 */
     .modal-btns { flex-direction: row !important; gap: 10px !important; justify-content: center !important; }
     .btn-primary, .btn-secondary { padding: 8px 16px !important; font-size: 0.85rem !important; flex: 1; }
-    
-    /* 5. 解除绝对定位，让语言切换栏回归正常的文档流 */
-    .modal-lang-switch-container {
-      position: relative !important;
-      bottom: auto !important;
-      transform: none !important;
-      left: auto !important;
-      margin-top: 5px !important;
-    }
+    .modal-lang-switch-container { position: relative !important; bottom: auto !important; transform: none !important; left: auto !important; margin-top: 5px !important; }
     #dynamic-mirror-bar { position: relative !important; top: 0 !important; margin-bottom: 5px !important; }
-    
-    /* 6. 横屏空间太挤，直接隐藏底部的版权水印防遮挡 */
     .modal-watermark { display: none !important; } 
-  } 
+  }
 </style>
 
  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
@@ -1617,6 +1622,21 @@ document.addEventListener('DOMContentLoaded', () => {
         offset: 20
     });
 });
+
+// 🚀 移动端横屏防闪退：彻底挂起背景视频解码
+const ambientVideo = document.getElementById('ambient-video');
+if (ambientVideo) {
+  const checkVideoPlayback = () => {
+    // 如果是平板/手机尺寸，且处于横屏状态 (宽 > 高)
+    if (window.innerWidth <= 1024 && window.innerWidth > window.innerHeight) {
+      ambientVideo.pause(); // 彻底暂停播放，释放解码器内存
+    } else {
+      ambientVideo.play().catch(()=>{}); // 竖屏或 PC 端恢复播放
+    }
+  };
+  window.addEventListener('resize', checkVideoPlayback, { passive: true });
+  checkVideoPlayback(); // 页面加载时立刻执行一次初始化检查
+}
  
 </script>
 
