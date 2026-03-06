@@ -1303,8 +1303,8 @@ document.addEventListener("DOMContentLoaded", function() {
     </div>
   </div>
 </div>
+
 <style>
-  
 /* ===================== 跨物种拓扑动画 CSS - 居中与性能优化版 ===================== */
 .species-glass-box {
   position: relative;
@@ -1421,8 +1421,7 @@ document.addEventListener("DOMContentLoaded", function() {
   .animal-nodes { margin-top: 50px; } 
   .rat-node-adjust { transform: translateY(25px) translateZ(0); }
 }
-
-</style>
+</style> 
 
 <style> 
 /* --- 🚀 高级动态特征列表 --- */
@@ -1699,6 +1698,18 @@ body.light-mode #main_content .intan-btn {
 }
 /* C和D端口整体稍微变暗，表示未连接 */
 .hw-port-box.inactive { opacity: 0.45; filter: grayscale(80%); }
+
+/* ====== Spike Scope 专属样式 ====== */
+body.light-mode .spike-scope-container canvas {
+  filter: invert(1) hue-rotate(180deg); /* 浅色模式下反转颜色，保证背景变白，同时保留蓝绿黄的彩色特征 */
+}
+body.light-mode .intan-simulator-wrapper .intan-pane-footer {
+  background: #f0f0f0 !important;
+  color: #333 !important;
+}
+body.light-mode .spike-counter-text {
+  color: #000 !important;
+}
 </style>
 
 <div class="intan-simulator-wrapper" data-aos="fade-up">
@@ -1779,6 +1790,57 @@ body.light-mode #main_content .intan-btn {
         <div class="intan-setting-row" style="color: #27c93f;"><span>Ports Status</span><span> 2 Detected</span></div>
         <div class="intan-setting-row" style="color: #777;"><span>Unused</span><span>C, D</span></div>
         <div class="intan-setting-row"><span>Sampling Rate</span><div class="intan-value-box" style="border:none;box-shadow:none;background:transparent;text-align:right;">30 kS/s</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="intan-simulator-wrapper" data-aos="fade-up" style="margin-top: 20px;">
+  <div class="intan-title-bar">
+    <div class="intan-title-text">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/></svg>
+      Spike Scope - Online PCA Clustering (Simulated)
+    </div>
+    <div class="intan-window-controls"><span class="close"></span><span class="min"></span><span class="max"></span></div>
+  </div>
+  
+  <div class="intan-body" style="height: 320px;">
+    <div class="intan-plot-pane" style="flex: 1; border-right: 1px solid #222; display: flex; flex-direction: column;">
+      <div class="intan-time-axis" style="padding: 0 10px; justify-content: space-between;">
+        <span>-0.5</span><span>0.0</span><span>0.5</span><span>1.0</span><span>1.5 ms</span>
+      </div>
+      <div class="intan-canvas-container spike-scope-container" style="flex: 1; position: relative;">
+        <canvas class="spike-scope-canvas" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></canvas>
+      </div>
+      <div class="intan-pane-footer" style="border-top: 1px solid #222; background: #1a1a1a; color: #aaa;">
+        <span>⛶ Trigger: -45 µV (Falling Edge)</span>
+        <div class="intan-footer-tools">
+          <span>Total Spikes: <span class="spike-counter-text" style="color:#fff; font-weight:bold;">0</span></span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="intan-sidebar" style="width: 160px; background: #2b2b2b; color: #eee; border-left: none;">
+      <div class="intan-panel" style="background: #1a1a1a; border-color: #333; box-shadow: none;">
+        <div class="intan-panel-title" style="color: #888; border-bottom-color: #444;">Sorted Units (3)</div>
+        <div class="intan-setting-row" style="color: #facc15; font-weight: bold;">
+          <span>■ Unit 1</span><span>18.4 Hz</span>
+        </div>
+        <div class="intan-setting-row" style="color: #4ade80; font-weight: bold;">
+          <span>■ Unit 2</span><span>12.1 Hz</span>
+        </div>
+        <div class="intan-setting-row" style="color: #3b82f6; font-weight: bold;">
+          <span>■ Unit 3</span><span>5.8 Hz</span>
+        </div>
+        <div class="intan-setting-row" style="color: #888;">
+          <span>□ Unsorted</span><span>1.2 Hz</span>
+        </div>
+      </div>
+      
+      <div class="intan-panel" style="background: #1a1a1a; border-color: #333; box-shadow: none;">
+        <div class="intan-panel-title" style="color: #888; border-bottom-color: #444;">Alignment</div>
+        <div class="intan-setting-row" style="color: #ccc;"><span>Method</span><span>Min Peak</span></div>
+        <div class="intan-setting-row" style="color: #ccc;"><span>Window</span><span>2.0 ms</span></div>
       </div>
     </div>
   </div>
@@ -3352,6 +3414,155 @@ This project is open-source and available under the **MIT License**. Click the b
       gifObserver.observe(gif);
     });
 
+    // ===================== 新增：Spike Scope 聚类视图引擎 =====================
+    const spikeScopeWrapper = document.querySelector('.spike-scope-container');
+    if (spikeScopeWrapper) {
+      const scopeCanvas = spikeScopeWrapper.querySelector('.spike-scope-canvas');
+      const counterEl = document.querySelector('.spike-counter-text');
+      const scopeCtx = scopeCanvas.getContext('2d', { alpha: false });
+      
+      let sWidth, sHeight;
+      let spikeBuffer = []; // 存储当前屏幕上的尖峰 (自带寿命/透明度)
+      let totalSpikeCount = 4280; // 模拟初始积累量
+      let scopeAnimationFrame;
+
+      // 聚类定义：颜色 与 数学模板参数
+      const clusters = [
+        { id: 1, color: '250, 204, 21',  prob: 0.50, amp: 1.0,  width1: 22, width2: 10, posPeak: 0.8 }, // 黄色 (占比最大，标准波形)
+        { id: 2, color: '74, 222, 128',  prob: 0.35, amp: 0.65, width1: 18, width2: 7,  posPeak: 0.4 }, // 绿色 (较浅，正峰较宽)
+        { id: 3, color: '59, 130, 246',  prob: 0.15, amp: 1.3,  width1: 28, width2: 15, posPeak: 1.5 }  // 蓝色 (极深，极高回弹)
+      ];
+
+      function resizeScopeCanvas() {
+        if(spikeScopeWrapper.clientWidth === 0) return;
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        sWidth = spikeScopeWrapper.clientWidth;
+        sHeight = spikeScopeWrapper.clientHeight;
+        scopeCanvas.width = sWidth * dpr;
+        scopeCanvas.height = sHeight * dpr;
+        scopeCtx.scale(dpr, dpr);
+      }
+      
+      window.addEventListener('resize', resizeScopeCanvas);
+      resizeScopeCanvas();
+      new ResizeObserver(resizeScopeCanvas).observe(spikeScopeWrapper);
+
+      // 生成一条带有随机抖动和噪声的 Spike 轨迹
+      function createSpikeTrace() {
+        const rand = Math.random();
+        let selectedCluster = clusters[0];
+        let cumulativeProb = 0;
+        for (let c of clusters) {
+          cumulativeProb += c.prob;
+          if (rand <= cumulativeProb) { selectedCluster = c; break; }
+        }
+
+        const trace = [];
+        const numPoints = 60; // 60个采样点足以画出平滑曲线
+        const jitterY = (Math.random() - 0.5) * 0.15; // 振幅抖动
+        const jitterX = (Math.random() - 0.5) * 0.03; // 时间轴对齐抖动
+
+        for (let i = 0; i < numPoints; i++) {
+          let t = i / numPoints;
+          t += jitterX; 
+          
+          // 基于选定聚类的数学模板生成波形 (对齐在 t=0.25 处)
+          let signal = 
+            -2.5 * Math.exp(-Math.pow((t - 0.25) * selectedCluster.width1, 2)) +  
+             selectedCluster.posPeak * Math.exp(-Math.pow((t - 0.45) * selectedCluster.width2, 2)) - 
+             0.1 * Math.exp(-Math.pow((t - 0.7) * 5, 2));
+             
+          signal *= (selectedCluster.amp * (1 + jitterY));
+          
+          // 叠加高频白噪声
+          const noise = (Math.random() - 0.5) * 0.18;
+          trace.push(signal + noise);
+        }
+
+        return {
+          path: trace,
+          colorRGB: selectedCluster.color,
+          age: 1.0 // 寿命 1.0 (最新) -> 0.0 (消失)
+        };
+      }
+
+      function drawSpikeScope() {
+        if (!window.isPageScrolling) {
+          // 1. 绘制纯黑背景
+          scopeCtx.fillStyle = '#0b0b0b';
+          scopeCtx.fillRect(0, 0, sWidth, sHeight);
+
+          // 2. 绘制示波器网格 (浅灰色虚线)
+          scopeCtx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+          scopeCtx.lineWidth = 1;
+          scopeCtx.setLineDash([2, 4]);
+          scopeCtx.beginPath();
+          // 纵向网格
+          for (let i = 1; i < 10; i++) {
+            let x = (sWidth / 10) * i;
+            scopeCtx.moveTo(x, 0); scopeCtx.lineTo(x, sHeight);
+          }
+          // 阈值触发线 (实线)
+          scopeCtx.stroke();
+          scopeCtx.setLineDash([]);
+          scopeCtx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+          scopeCtx.beginPath();
+          scopeCtx.moveTo(0, sHeight * 0.5);
+          scopeCtx.lineTo(sWidth, sHeight * 0.5);
+          scopeCtx.stroke();
+
+          // 3. 随机概率触发新的 Spike 抓取
+          if (Math.random() < 0.6) { // 每帧有 60% 概率抓到一个新的 Spike
+            spikeBuffer.push(createSpikeTrace());
+            totalSpikeCount++;
+            if(totalSpikeCount % 5 === 0) counterEl.innerText = totalSpikeCount.toLocaleString();
+          }
+
+          // 4. 渲染波形叠加 (荧光余辉效果)
+          const baseAmp = sHeight * 0.25;
+          const stepX = sWidth / 59; // 60个点，59个间隔
+
+          for (let i = spikeBuffer.length - 1; i >= 0; i--) {
+            let spike = spikeBuffer[i];
+            
+            // 使用 source-over 混合模拟荧光管
+            scopeCtx.globalCompositeOperation = 'lighter';
+            // 越老的线条越透明，模拟余辉消散
+            scopeCtx.strokeStyle = `rgba(${spike.colorRGB}, ${spike.age * 0.6})`; 
+            scopeCtx.lineWidth = 1.5;
+            scopeCtx.lineJoin = 'round';
+
+            scopeCtx.beginPath();
+            for (let j = 0; j < spike.path.length; j++) {
+              let px = j * stepX;
+              let py = sHeight * 0.5 + spike.path[j] * baseAmp;
+              j === 0 ? scopeCtx.moveTo(px, py) : scopeCtx.lineTo(px, py);
+            }
+            scopeCtx.stroke();
+
+            // 衰减寿命
+            spike.age -= 0.015; 
+            if (spike.age <= 0) {
+              spikeBuffer.splice(i, 1);
+            }
+          }
+          
+          scopeCtx.globalCompositeOperation = 'source-over';
+        }
+        scopeAnimationFrame = requestAnimationFrame(drawSpikeScope);
+      }
+
+      // 只有面板进入视口时才执行动画，节省性能
+      const scopeObserver = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && spikeScopeWrapper.offsetParent !== null) {
+          if (!scopeAnimationFrame) drawSpikeScope();
+        } else {
+          if (scopeAnimationFrame) cancelAnimationFrame(scopeAnimationFrame);
+          scopeAnimationFrame = null;
+        }
+      }, { threshold: 0.1 });
+      scopeObserver.observe(spikeScopeWrapper);
+    }
   });
 </script>
   
