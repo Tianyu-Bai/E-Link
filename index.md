@@ -3131,16 +3131,20 @@ intanSimulators.forEach(sim => {
     width = newWidth;
     height = newHeight;
     
-    [canvasL, canvasR].forEach(canvas => {
-      canvas.width = width * dpr;
-      canvas.height = height * dpr;
-      const ctx = canvas.getContext('2d');
-      ctx.scale(dpr, dpr);
-      // 初始化全屏纯黑
-      ctx.fillStyle = '#000000';
-      ctx.fillRect(0, 0, width, height);
-    });
-  }
+   [canvasL, canvasR].forEach(canvas => {
+        canvas.width = width * dpr;
+        canvas.height = height * dpr;
+        const ctx = canvas.getContext('2d');
+        ctx.scale(dpr, dpr);
+        // 初始化全屏纯黑
+        ctx.fillStyle = '#000000';
+        ctx.fillRect(0, 0, width, height);
+      });
+
+      // 🚀 核心修复：每次画布被重置清空时，强制把扫描线拉回最左侧起点！
+      scanX = window.innerWidth <= 768 ? 80 : LABEL_WIDTH;
+    }
+    
   window.addEventListener('resize', resizeIntanCanvas);
   resizeIntanCanvas();
   new ResizeObserver(resizeIntanCanvas).observe(canvasL.parentElement);
