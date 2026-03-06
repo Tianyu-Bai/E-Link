@@ -172,26 +172,36 @@
     transform: translateY(-4px) scale(1.005); 
   }
 
- /* --- 🚀 高级玻璃拟态数据表格 --- */
-  /* 新增：响应式表格滑动外壳 */
-  .table-responsive-wrapper {
-    width: 100%;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch; /* 开启 iOS 顺滑回弹滚动 */
-    margin: 30px 0;
-    background: rgba(15, 23, 42, 0.4); 
-    border-radius: 12px; 
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); 
-    border: 1px solid rgba(59, 130, 246, 0.2); 
-    backdrop-filter: blur(10px);
-  }
-  /* 修改：剥离 table 自身的边距，交给外壳处理，强制不换行以支持滑动 */
-  #main_content table { width: 100% !important; border-collapse: separate; border-spacing: 0; margin: 0; white-space: nowrap; }
-  #main_content th, #main_content td { padding: 15px 12px; border: none; border-bottom: 1px solid rgba(255, 255, 255, 0.05); text-align: left; }
-  #main_content tr:last-child td { border-bottom: none; }
-  #main_content tr { transition: background 0.3s ease; background: transparent !important; }
-  #main_content tbody tr:hover { background: rgba(59, 130, 246, 0.05) !important; }
-  #main_content th { background: rgba(59, 130, 246, 0.1); color: #93c5fd; font-weight: 600; text-transform: uppercase; font-size: 0.85em; letter-spacing: 1px; }
+/* --- 🚀 高级玻璃拟态数据表格 --- */
+  /* 1. 滑动外壳：彻底透明，只负责横向滚动功能 */
+  .table-responsive-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch; 
+    margin: 30px 0; /* 外边距交给外壳 */
+  }
+  
+  /* 2. 表格本体：恢复原版的神仙颜值，增加不换行和最小宽度触发滚动 */
+  #main_content table { 
+    width: 100% !important; 
+    min-width: 600px; /* 核心：在手机上强制撑宽，触发外壳横向滑动 */
+    border-collapse: separate; 
+    border-spacing: 0; 
+    margin: 0; 
+    white-space: nowrap; 
+    /* 👇 恢复原来的圆角、背景和玻璃拟态 👇 */
+    background: rgba(15, 23, 42, 0.4); 
+    border-radius: 12px; 
+    overflow: hidden; 
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); 
+    border: 1px solid rgba(59, 130, 246, 0.2); 
+    backdrop-filter: blur(10px); 
+  }
+  #main_content th, #main_content td { padding: 15px 12px; border: none; border-bottom: 1px solid rgba(255, 255, 255, 0.05); text-align: left; }
+  #main_content tr:last-child td { border-bottom: none; }
+  #main_content tr { transition: background 0.3s ease; background: transparent !important; }
+  #main_content tbody tr:hover { background: rgba(59, 130, 246, 0.05) !important; }
+  #main_content th { background: rgba(59, 130, 246, 0.1); color: #93c5fd; font-weight: 600; text-transform: uppercase; font-size: 0.85em; letter-spacing: 1px; }
  
   /* --- 🚀 导航徽章 (磁性吸附) --- */
   .nav-badges { margin: 2.5rem 0 1.5rem 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
