@@ -540,7 +540,41 @@
       transition: none !important; /* 杀掉所有颜色和毛玻璃的过渡动画 */
     }
   }
-  
+/* ===================== 🚀 手机横屏终极救援包 ===================== */
+  @media (max-width: 1024px) and (max-height: 500px) and (orientation: landscape) {
+    /* 1. 强制在横屏时触发手机版精简底层布局 */
+    .cursor-dot, .cursor-outline { display: none !important; } 
+    .container { padding: 20px !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
+    
+    /* 2. 拯救被卡死的欢迎弹窗：解除重叠与绝对定位，把按钮救出来 */
+    .modal-content {
+      padding: 15px !important;
+      max-height: 95vh !important;
+      overflow-y: auto !important;
+      display: flex; flex-direction: column; gap: 8px;
+    }
+    
+    /* 3. 极度压缩内部元素的间距 */
+    .modal-title { margin-top: 0 !important; font-size: 1.1rem !important; margin-bottom: 5px !important; }
+    .modal-body { margin-bottom: 5px !important; font-size: 0.85rem !important; line-height: 1.3 !important; }
+    
+    /* 4. 按钮改为并排显示以节省垂直空间 */
+    .modal-btns { flex-direction: row !important; gap: 10px !important; justify-content: center !important; }
+    .btn-primary, .btn-secondary { padding: 8px 16px !important; font-size: 0.85rem !important; flex: 1; }
+    
+    /* 5. 解除绝对定位，让语言切换栏回归正常的文档流 */
+    .modal-lang-switch-container {
+      position: relative !important;
+      bottom: auto !important;
+      transform: none !important;
+      left: auto !important;
+      margin-top: 5px !important;
+    }
+    #dynamic-mirror-bar { position: relative !important; top: 0 !important; margin-bottom: 5px !important; }
+    
+    /* 6. 横屏空间太挤，直接隐藏底部的版权水印防遮挡 */
+    .modal-watermark { display: none !important; } 
+  } 
 </style>
 
  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
