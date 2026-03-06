@@ -2688,26 +2688,34 @@ This project is open-source and available under the **MIT License**. Click the b
      resizeScope();
      new ResizeObserver(resizeScope).observe(wrapper);
 
-     // 特征的 Spike 生成器
+     // 模拟特征的 Spike 生成器
       function generateSpike() {
         const trace = [];
         const points = 250; 
         const tMin = -1, tMax = 2;
         const dt = (tMax - tMin) / points;
         
-        // 🌟 10% 概率生成图中那根尖锐的单线 (Unit 2)，90% 概率生成较宽的主波形集群 (Unit 1)
+        // 🌟 10% 概率生成尖锐单线，90% 生成主集群
         const isOutlier = Math.random() < 0.1;
-        const ampJitter = 0.9 + Math.random() * 0.2; // 组内微小的幅度抖动
+        const ampJitter = 0.9 + Math.random() * 0.2; // 组内整体幅度轻微抖动 (ampJitter)
+        
+        // 🌟 注入 Variant-level Jitter，使拱起处更加噪点丰富和弥散
+        // Unit 1 random variant parameters (The main "Arch" clustering area)
+        // 拱起(波峰)的高度随机变异范围：0.85 ~ 1.2
+        const peakAmpJitter1 = 0.85 + Math.random() * 0.35; 
+        
+        // Unit 2 random variant parameters (The outlier sharp single spike)
+        const peakAmpJitter2 = 0.8 + Math.random() * 0.4;
 
         for(let i = 0; i < points; i++) {
           let t = tMin + i * dt;
-          let noise = (Math.random() - 0.5) * 8; // 只有高频白噪，没有低频漂移！
+          let noise = (Math.random() - 0.5) * 8; // 底噪
           let val = 0;
           
           if (!isOutlier) {
               // 📈 主波形集群 (对应图中较宽、较缓的那一坨)
               if (t >= -0.2 && t <= 0) {
-                  // 触发前：平滑下降并【完美命中 (0, -70)】
+                  // 触发前：平滑下降并精准命中 (0, -70)
                   let norm = (t + 0.2) / 0.2; 
                   val = -70 * Math.pow(norm, 2); 
               } else if (t > 0 && t <= 0.12) {
@@ -2715,43 +2723,48 @@ This project is open-source and available under the **MIT License**. Click the b
                   let norm = t / 0.12; 
                   val = -70 - 90 * Math.sin(norm * Math.PI / 2); 
               } else if (t > 0.12 && t <= 0.6) {
-                  // 回升波峰：宽缓，约 0.6ms, 高度约 +100µV
+                  // 🌟 回升波峰(拱起)：宽缓，约 0.6ms, 高度约 +100µV
                   let norm = (t - 0.12) / 0.48;
-                  val = -160 + 260 * (1 - Math.cos(norm * Math.PI)) / 2; 
+                  // 🌟 核心修复：直接给峰值插值引入大量的 Variant Jitter，
+                  // 这样每个波形回升的高度都不同，形成一个更厚、更弥散、更符合参考图的白线簇。
+                  val = -160 + (260 * peakAmpJitter1) * (1 - Math.cos(norm * Math.PI)) / 2; 
               } else if (t > 0.6 && t <= 1.2) {
                   // 回归 0 点
                   let norm = (t - 0.6) / 0.6;
-                  val = 100 * Math.cos(norm * Math.PI / 2); 
+                  // Match jitter to maintain continuity
+                  val = (100 * peakAmpJitter1) * Math.cos(norm * Math.PI / 2); 
               }
           } else {
-              // 📉 尖锐离群波形 (对应图中那根又深又高又尖的单线)
+              // 尖锐离群波形 (对应又深又高又尖的单线)
               if (t >= -0.1 && t <= 0) {
                   // 触发前：极速下降命中 (0, -70)
                   let norm = (t + 0.1) / 0.1;
                   val = -70 * Math.pow(norm, 2); 
-              } else if (t > 0 && t <= 0.05) {
+                } else if (t > 0 && t <= 0.05) {
                   // 下冲极深：0.05ms，深度 -250µV
                   let norm = t / 0.05;
                   val = -70 - 180 * Math.sin(norm * Math.PI / 2); 
-              } else if (t > 0.05 && t <= 0.3) {
+                } else if (t > 0.05 && t <= 0.3) {
                   // 回升极快且高：0.3ms，高度 +220µV
                   let norm = (t - 0.05) / 0.25;
-                  val = -250 + 470 * (1 - Math.cos(norm * Math.PI)) / 2; 
-              } else if (t > 0.3 && t <= 0.6) {
+                  // Introduce jitter to height
+                  val = -250 + (470 * peakAmpJitter2) * (1 - Math.cos(norm * Math.PI)) / 2; 
+                } else if (t > 0.3 && t <= 0.6) {
                   // 极速回归 0 点
                   let norm = (t - 0.3) / 0.3;
-                  val = 220 * Math.cos(norm * Math.PI / 2); 
+                  // Match jitter
+                  val = (220 * peakAmpJitter2) * Math.cos(norm * Math.PI / 2); 
               }
           }
           
-          // 波形乘以抖动系数，并叠加恒定的小底噪
+          // 波形整体乘以ampJitter抖动系数，并叠加恒定的小底噪
           trace.push((val * ampJitter) + noise);
         }
         return trace;
       }
 
-    // 初始预填充20个波形
-     for(let i = 0; i < 20; i++) spikes.push(generateSpike());
+    // 初始预填充50个波形 (Pixel-perfect thickness)
+for(let i = 0; i < 50; i++) spikes.push(generateSpike());
 
      // 获取我们要动态更新的文字容器，并设置时间戳变量
      const statsOverlay = wrapper.querySelector('.scope-dynamic-stats');
@@ -2797,11 +2810,11 @@ This project is open-source and available under the **MIT License**. Click the b
          ctx.strokeStyle = '#ef4444';
          ctx.beginPath(); ctx.moveTo(0, yThresh); ctx.lineTo(sWidth, yThresh); ctx.stroke();
 
-         // 偶尔抓取新的 Spike 进缓冲区
-         if (Math.random() < 0.15) { 
-           spikes.push(generateSpike());
-           if (spikes.length > 20) spikes.shift();
-         }
+         // 偶尔抓取新的 Spike 进缓冲区 (Maintain Pixel-perfect thickness)
+            if (Math.random() < 0.25) { 
+            spikes.push(generateSpike());
+            if (spikes.length > 50) spikes.shift();
+              }
 
          // 叠加绘制波形
          ctx.lineWidth = 1.2;
