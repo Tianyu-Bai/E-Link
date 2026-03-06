@@ -171,14 +171,28 @@
         inset 1px 1px 2px rgba(255, 255, 255, 0.5); /* 强化高光边缘 */
     transform: translateY(-4px) scale(1.005); 
   }
-  /* --- 🚀 高级玻璃拟态数据表格 --- */
-  #main_content table { width: 100% !important; border-collapse: separate; border-spacing: 0; margin: 30px 0; background: rgba(15, 23, 42, 0.4); border-radius: 12px; overflow: hidden; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); border: 1px solid rgba(59, 130, 246, 0.2); backdrop-filter: blur(10px); }
-  #main_content th, #main_content td { padding: 15px 12px; border: none; border-bottom: 1px solid rgba(255, 255, 255, 0.05); text-align: left; }
-  #main_content tr:last-child td { border-bottom: none; }
-  #main_content tr { transition: background 0.3s ease; background: transparent !important; }
-  #main_content tbody tr:hover { background: rgba(59, 130, 246, 0.05) !important; }
-  #main_content th { background: rgba(59, 130, 246, 0.1); color: #93c5fd; font-weight: 600; text-transform: uppercase; font-size: 0.85em; letter-spacing: 1px; }
 
+ /* --- 🚀 高级玻璃拟态数据表格 --- */
+  /* 新增：响应式表格滑动外壳 */
+  .table-responsive-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch; /* 开启 iOS 顺滑回弹滚动 */
+    margin: 30px 0;
+    background: rgba(15, 23, 42, 0.4); 
+    border-radius: 12px; 
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); 
+    border: 1px solid rgba(59, 130, 246, 0.2); 
+    backdrop-filter: blur(10px);
+  }
+  /* 修改：剥离 table 自身的边距，交给外壳处理，强制不换行以支持滑动 */
+  #main_content table { width: 100% !important; border-collapse: separate; border-spacing: 0; margin: 0; white-space: nowrap; }
+  #main_content th, #main_content td { padding: 15px 12px; border: none; border-bottom: 1px solid rgba(255, 255, 255, 0.05); text-align: left; }
+  #main_content tr:last-child td { border-bottom: none; }
+  #main_content tr { transition: background 0.3s ease; background: transparent !important; }
+  #main_content tbody tr:hover { background: rgba(59, 130, 246, 0.05) !important; }
+  #main_content th { background: rgba(59, 130, 246, 0.1); color: #93c5fd; font-weight: 600; text-transform: uppercase; font-size: 0.85em; letter-spacing: 1px; }
+ 
   /* --- 🚀 导航徽章 (磁性吸附) --- */
   .nav-badges { margin: 2.5rem 0 1.5rem 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
   .nav-badges a { opacity: 0; animation: fadeUp 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; position: relative; z-index: 2; border-radius: 4px; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
@@ -563,23 +577,23 @@
     .modal-content { background: #0f172a !important; border: 1px solid rgba(59, 130, 246, 0.4) !important; box-shadow: 0 10px 30px rgba(0,0,0,0.8) !important; }
   }
 
-  /* 4. 横屏专属极限降级：隐藏视频并重新排列拥挤的按钮 */
-  @media (max-width: 1024px) and (orientation: landscape) {
-    /* 横屏时直接隐藏视频画布，省下大量渲染资源 */
-    #ambient-video { display: none !important; }
-    .cursor-dot, .cursor-outline { display: none !important; } 
-    .container { padding: 20px !important; }
-    
-    /* 拯救被卡死的欢迎弹窗：解除重叠与绝对定位 */
-    .modal-content { padding: 15px !important; max-height: 95vh !important; overflow-y: auto !important; display: flex; flex-direction: column; gap: 8px; }
-    .modal-title { margin-top: 0 !important; font-size: 1.1rem !important; margin-bottom: 5px !important; }
-    .modal-body { margin-bottom: 5px !important; font-size: 0.85rem !important; line-height: 1.3 !important; }
-    .modal-btns { flex-direction: row !important; gap: 10px !important; justify-content: center !important; }
-    .btn-primary, .btn-secondary { padding: 8px 16px !important; font-size: 0.85rem !important; flex: 1; }
-    .modal-lang-switch-container { position: relative !important; bottom: auto !important; transform: none !important; left: auto !important; margin-top: 5px !important; }
-    #dynamic-mirror-bar { position: relative !important; top: 0 !important; margin-bottom: 5px !important; }
-    .modal-watermark { display: none !important; } 
-  }
+  /* 4. 横屏专属极限降级：隐藏视频和粒子，解开 Flex 封印 */
+  @media (max-width: 1024px) and (orientation: landscape) {
+    /* 彻底切断显存杀手 */
+    #ambient-video, #neuro-dust-canvas { display: none !important; }
+    .cursor-dot, .cursor-outline { display: none !important; } 
+    .container { padding: 15px !important; }
+    
+    /* 拯救被卡死的欢迎弹窗：放弃 flex，使用 block 恢复原生滚动 */
+    .modal-content { display: block !important; padding: 15px !important; max-height: 85vh !important; overflow-y: auto !important; -webkit-overflow-scrolling: touch; }
+    .modal-title { margin-top: 0 !important; font-size: 1.1rem !important; margin-bottom: 5px !important; }
+    .modal-body { margin-bottom: 15px !important; font-size: 0.85rem !important; line-height: 1.3 !important; }
+    .modal-btns { display: flex !important; flex-direction: row !important; gap: 10px !important; justify-content: center !important; margin-bottom: 15px; }
+    .btn-primary, .btn-secondary { padding: 8px 16px !important; font-size: 0.85rem !important; flex: 1; }
+    .modal-lang-switch-container { position: relative !important; bottom: auto !important; transform: none !important; left: auto !important; margin-top: 5px !important; }
+    #dynamic-mirror-bar { position: relative !important; top: 0 !important; margin-bottom: 5px !important; }
+    .modal-watermark { display: none !important; } 
+  }
 </style>
 
  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
@@ -860,6 +874,16 @@
 document.addEventListener("DOMContentLoaded", function () {
  
 const welcomeModal = document.getElementById('welcome-modal');
+
+ // 🚀 自动包裹 Markdown 表格，并阻止 Lenis 劫持横向滑动
+  document.querySelectorAll('#main_content table').forEach(table => {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'table-responsive-wrapper';
+    wrapper.setAttribute('data-lenis-prevent', 'true'); // 核心：明确告诉 Lenis 这个区域允许原生滑动
+    table.parentNode.insertBefore(wrapper, table);
+    wrapper.appendChild(table);
+  });
+ 
 if (window.innerWidth > 768) {
   document.body.classList.add('js-cursor-enabled');
 }
@@ -1053,6 +1077,8 @@ if (window.innerWidth > 768 && cursorDot && cursorOutline) {
     const py = new Float32Array(count);
 
     rafScheduler.add('particles', () => {
+     // 🚀 手机横屏终极防闪退：后台直接挂起粒子坐标计算
+      if (window.innerWidth <= 1024 && window.innerWidth > window.innerHeight) return;
       // 🚀 防闪退核心：如果检测到页面正在剧烈滑动，立即挂起渲染！
       if (window.isScrollingIntensely || document.documentElement.classList.contains('lenis-scrolling')) {
         return;
