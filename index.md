@@ -2200,7 +2200,17 @@ This project is open-source and available under the **MIT License**. Click the b
  
 <script>
  document.addEventListener("DOMContentLoaded", () => {
- 
+
+   // 🚀 Problem G：确保 window.isPageScrolling 在 index.md 中有 fallback（layout 中也会设置）
+   if (typeof window.isPageScrolling === 'undefined') {
+     window.isPageScrolling = false;
+     window.addEventListener('scroll', () => {
+       window.isPageScrolling = true;
+       clearTimeout(window._scrollEndTimer);
+       window._scrollEndTimer = setTimeout(() => { window.isPageScrolling = false; }, 150);
+     }, { passive: true });
+   }
+
    // ===================== E-Link 动态数据面板 =====================
    const dashboardObserver = new IntersectionObserver((entries) => {
      entries.forEach(entry => {
@@ -2295,9 +2305,12 @@ This project is open-source and available under the **MIT License**. Click the b
      }
  
      const activateViewer = async (viewer, force = false) => {
+       if (viewer._activating) return; // 🚀 Problem K：防止快速滚动时重入
        if (isScrolling && !force) return;
+       viewer._activating = true;
+       try {
        ensureContextSlot(viewer);
- 
+
        if (viewer.getAttribute('reveal') === 'manual' && viewer.dataset.loaded !== "true") {
          if (viewer.dataset.loaded === "reclaimed" && viewer._cachedSrc) {
            viewer.src = viewer._cachedSrc;
@@ -2314,7 +2327,7 @@ This project is open-source and available under the **MIT License**. Click the b
          viewer.dismissPoster();
          return;
        }
- 
+
        if (viewer.dataset.loaded === "reclaimed" && viewer._cachedSrc) {
          viewer.src = viewer._cachedSrc;
          viewer.dataset.loaded = "true";
@@ -2325,16 +2338,19 @@ This project is open-source and available under the **MIT License**. Click the b
          viewer.addEventListener('load', reloadHandler);
          return;
        }
- 
+
        if (viewer.paused) {
          try { viewer.play(); } catch(e) {}
        }
- 
+
        if (viewer.dataset.overlayDisabled !== "true") {
          clearTimeout(viewer.hudTimer);
          viewer.hudTimer = setTimeout(() => {
            viewer.querySelectorAll('.gesture-overlay').forEach(el => el.classList.add('gesture-active'));
          }, 500);
+       }
+       } finally {
+         viewer._activating = false; // 🚀 Problem K：无论成功或异常，都释放锁
        }
      };
  
@@ -2830,14 +2846,16 @@ for(let i = 0; i < 50; i++) spikes.push(generateSpike());
            ctx.stroke();
          });
        }
-       animationFrame = requestAnimationFrame(drawScope);
+        // 🚀 Problem H：用 setTimeout(33ms)+RAF 替代直接 RAF 递归，将 Spike Scope 限速在约 30fps
+        animationFrame = setTimeout(() => requestAnimationFrame(drawScope), 33);
      }
 
      const scopeObserver = new IntersectionObserver((entries) => {
        if (entries[0].isIntersecting && wrapper.offsetParent !== null) {
          if (!animationFrame) drawScope();
        } else {
-         if (animationFrame) cancelAnimationFrame(animationFrame);
+         // 🚀 Problem H：animationFrame 现在是 setTimeout ID，只需 clearTimeout
+         if (animationFrame) { clearTimeout(animationFrame); }
          animationFrame = null;
        }
      }, { threshold: 0.1 });
@@ -2855,6 +2873,8 @@ for(let i = 0; i < 50; i++) spikes.push(generateSpike());
       let inView = false;
 
       function resizeWaveform() {
+        // 🚀 Problem I：resize 时先停止已有动画循环，防止产生多个并行 RAF 循环
+        if (animFrame) { cancelAnimationFrame(animFrame); animFrame = null; }
         const parent = canvas.parentElement;
         if (!parent || parent.clientWidth === 0) return;
         const dpr = window.devicePixelRatio || 1;
