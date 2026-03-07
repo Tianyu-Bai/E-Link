@@ -2199,501 +2199,650 @@ This project is open-source and available under the **MIT License**. Click the b
 </div> 
  
 <script>
-  document.addEventListener("DOMContentLoaded", () => {
-  
-    // ===================== E-Link 动态数据面板 =====================
-    const dashboardObserver = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        const card = entry.target;
-        const fgRing = card.querySelector('.fg-ring');
-        const numberEl = card.querySelector('.count-up') || card.querySelector('.v2-count');
-        if (!numberEl) return;
+ document.addEventListener("DOMContentLoaded", () => {
+ 
+   // ===================== E-Link 动态数据面板 =====================
+   const dashboardObserver = new IntersectionObserver((entries) => {
+     entries.forEach(entry => {
+       const card = entry.target;
+       const fgRing = card.querySelector('.fg-ring');
+       const numberEl = card.querySelector('.count-up') || card.querySelector('.v2-count');
+       if (!numberEl) return;
+ 
+       const targetValue = parseFloat(card.dataset.value);
+       const isFloat = card.dataset.isFloat === "true";
+       const decimals = parseInt(card.dataset.decimals) || 1;
+       const circumference = 283;
+       const duration = 2000;
+ 
+       if (entry.isIntersecting) {
+         if (card.dataset.dashboardInView === "true") return;
+         card.dataset.dashboardInView = "true";
+ 
+         let startTimestamp = null;
+         const animate = (timestamp) => {
+           if (card.dataset.dashboardInView !== "true") return;
+           if (!startTimestamp) startTimestamp = timestamp;
+           const elapsed = timestamp - startTimestamp;
+           const progress = Math.min(elapsed / duration, 1);
+           const easeProgress = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
+           const currentValue = easeProgress * targetValue;
+           
+           numberEl.innerText = isFloat ? currentValue.toFixed(decimals) : Math.round(currentValue);
+           
+           if (card.dataset.type === 'ring' && fgRing) {
+               fgRing.style.strokeDashoffset = circumference - (circumference * easeProgress);
+           } else if (card.dataset.type === 'thermo') {
+               const fill = card.querySelector('.thermo-fill');
+               const maxTemp = parseFloat(card.dataset.max) || 50;
+               if (fill) fill.style.height = ((currentValue / maxTemp) * 100) + '%';
+           }
+ 
+           if (progress < 1) {
+              card.dashboardAnimFrame = requestAnimationFrame(animate);
+           }
+         };
+         cancelAnimationFrame(card.dashboardAnimFrame);
+         card.dashboardAnimFrame = requestAnimationFrame(animate);
+ 
+       } else {
+         card.dataset.dashboardInView = "false";
+         if (card.dashboardAnimFrame) {
+           cancelAnimationFrame(card.dashboardAnimFrame);
+           card.dashboardAnimFrame = null;
+         }
+       }
+     });
+   }, { threshold: 0.25, rootMargin: "0px 0px -5% 0px" });
+ 
+   document.querySelectorAll('.metric-card, .metric-card-v2').forEach(card => dashboardObserver.observe(card));
+ 
+   // ===================== 3D 模型交互（修复显存溢出与闪退）=====================
+   const models = Array.from(document.querySelectorAll('model-viewer'));
+   if (models.length > 0) {
+     let isScrolling = false;
+     let scrollEndTimer = null;
+     
+     function isSlowNetwork() {
+       const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+       if (!conn) return false;
+       return ['slow-2g', '2g'].includes(conn.effectiveType);
+     }
+     
+     const MAX_LIVE_CONTEXTS = 2; 
+     const liveContextQueue = [];
+ 
+     function reclaimContext(viewer) {
+       if (viewer.dataset.loaded === "true") {
+         viewer.pause();
+         viewer._cachedSrc = viewer._cachedSrc || viewer.src;
+         viewer.src = '';
+         viewer.dataset.loaded = "reclaimed";
+       }
+     }
+ 
+     function ensureContextSlot(viewer) {
+       const idx = liveContextQueue.indexOf(viewer);
+       if (idx !== -1) liveContextQueue.splice(idx, 1);
+       liveContextQueue.push(viewer);
+ 
+       while (liveContextQueue.length > MAX_LIVE_CONTEXTS) {
+         const victim = liveContextQueue.shift();
+         if (victim !== viewer) {
+           reclaimContext(victim);
+         }
+       }
+     }
+ 
+     const activateViewer = async (viewer, force = false) => {
+       if (isScrolling && !force) return;
+       ensureContextSlot(viewer);
+ 
+       if (viewer.getAttribute('reveal') === 'manual' && viewer.dataset.loaded !== "true") {
+         if (viewer.dataset.loaded === "reclaimed" && viewer._cachedSrc) {
+           viewer.src = viewer._cachedSrc;
+         } else if (viewer.dataset.src) {
+           viewer.src = viewer.dataset.src; 
+         }
+         viewer.dataset.loaded = "true";
+         const loadHandler = () => {
+           viewer.removeEventListener('load', loadHandler);
+           try { viewer.play(); } catch(e) {}
+         };
+         viewer.addEventListener('load', loadHandler);
+         await new Promise(resolve => requestAnimationFrame(resolve));
+         viewer.dismissPoster();
+         return;
+       }
+ 
+       if (viewer.dataset.loaded === "reclaimed" && viewer._cachedSrc) {
+         viewer.src = viewer._cachedSrc;
+         viewer.dataset.loaded = "true";
+         const reloadHandler = () => {
+           viewer.removeEventListener('load', reloadHandler);
+           try { viewer.play(); } catch(e) {}
+         };
+         viewer.addEventListener('load', reloadHandler);
+         return;
+       }
+ 
+       if (viewer.paused) {
+         try { viewer.play(); } catch(e) {}
+       }
+ 
+       if (viewer.dataset.overlayDisabled !== "true") {
+         clearTimeout(viewer.hudTimer);
+         viewer.hudTimer = setTimeout(() => {
+           viewer.querySelectorAll('.gesture-overlay').forEach(el => el.classList.add('gesture-active'));
+         }, 500);
+       }
+     };
+ 
+     const checkAndActivateBestModel = () => {
+       if (isSlowNetwork()) return;
+       models.forEach(viewer => {
+         if (viewer.dataset.inView === "true") {
+           activateViewer(viewer);
+         }
+       });
+     };
+ 
+     window.addEventListener('scroll', () => {
+       isScrolling = true;
+       clearTimeout(scrollEndTimer);
+       scrollEndTimer = setTimeout(() => {
+         isScrolling = false;
+         checkAndActivateBestModel();
+       }, 150);
+     }, { passive: true });
+ 
+     models.forEach(viewer => {
+       viewer.addEventListener('click', () => {
+         activateViewer(viewer, true);
+       });
+ 
+       viewer.addEventListener('error', (e) => {
+         console.warn('[E-Link] model-viewer GL error triggered.');
+         viewer._cachedSrc = viewer._cachedSrc || viewer.src;
+         viewer.src = '';
+         viewer.dataset.loaded = "reclaimed";
+       });
+ 
+       const handleCameraChange = (event) => {
+         if (event.detail.source === 'user-interaction' && viewer.dataset.overlayDisabled !== "true") {
+           viewer.querySelectorAll('.gesture-overlay, .gesture-hud').forEach(el => {
+             el.classList.add('gesture-hidden');
+           });
+           viewer.dataset.overlayDisabled = "true";
+           viewer.removeEventListener('camera-change', handleCameraChange);
+         }
+       };
+       viewer.addEventListener('camera-change', handleCameraChange);
+     });
+ 
+     const modelObserver = new IntersectionObserver((entries) => {
+       entries.forEach(entry => {
+         const viewer = entry.target;
+         if (entry.isIntersecting) {
+           viewer.dataset.inView = "true";
+           if (!isScrolling) checkAndActivateBestModel();
+         } else {
+           viewer.dataset.inView = "false";
+           viewer.pause();
+           viewer.querySelectorAll('.gesture-overlay').forEach(el => el.classList.remove('gesture-active'));
+         }
+       });
+     }, { threshold: 0.1 });
+ 
+     models.forEach(model => modelObserver.observe(model));
+   }
+ 
+   // ===================== Intan 双屏示波器引擎 =====================
+   const intanSimulators = document.querySelectorAll('.intan-simulator-wrapper');
+ 
+   const intanColors = [
+     '#e04a4a', '#d49b38', '#3dc94d', '#3dc98b', '#3da1c9', '#3d61c9', '#573dc9',
+     '#993dc9', '#c93d9e', '#c93d5a', '#d47238', '#b8c93d', '#70c93d', '#3dc9c7', '#3d94c9',
+     '#3d51c9', '#6d3dc9', '#b53dc9', '#c93da6', '#c93d4a', '#d48838', '#d4b338', '#99c93d',
+     '#3dc958', '#3dc99e', '#3dbbc9', '#3d6ec9', '#4d3dc9', '#8b3dc9', '#c93dbb', '#c93d70'
+   ];
+ 
+   intanSimulators.forEach(sim => {
+     const canvasL = sim.querySelector('.canvas-left');
+     const canvasR = sim.querySelector('.canvas-right');
+     if (!canvasL || !canvasR) return;
+ 
+     const ctxL = canvasL.getContext('2d', { alpha: false });
+     const ctxR = canvasR.getContext('2d', { alpha: false });
+     
+     let width, height;
+     let lastWidth = 0; 
+     const NUM_CHANNELS = 20; 
+     const LABEL_WIDTH = 100; 
+     let scanX = LABEL_WIDTH;  
+     const scanSpeed = 1.2; 
+     let animationFrame;
+     
+     function resizeIntanCanvas() {
+       if(canvasL.parentElement.clientWidth === 0) return;
+       const newWidth = canvasL.parentElement.clientWidth;
+       const newHeight = canvasL.parentElement.clientHeight;
+       
+       if (lastWidth === newWidth) return; 
+       lastWidth = newWidth;
+ 
+       const dpr = Math.min(window.devicePixelRatio || 1, 2);
+       width = newWidth;
+       height = newHeight;
+       
+       [canvasL, canvasR].forEach(canvas => {
+         canvas.width = width * dpr;
+         canvas.height = height * dpr;
+         const ctx = canvas.getContext('2d');
+         ctx.scale(dpr, dpr);
+         ctx.fillStyle = '#000000';
+         ctx.fillRect(0, 0, width, height);
+       });
+ 
+       scanX = window.innerWidth <= 768 ? 80 : LABEL_WIDTH;
+     }
+       
+     window.addEventListener('resize', resizeIntanCanvas);
+     resizeIntanCanvas();
+     new ResizeObserver(resizeIntanCanvas).observe(canvasL.parentElement);
+ 
+     function generateChannels(prefix) {
+       const arr = [];
+       for (let i = 0; i < NUM_CHANNELS; i++) {
+         let isBad = false;
+         let imp = (316 + Math.random() * 100).toFixed(0) + " kΩ";
+         
+         if ((prefix === 'A' && i === 2) || (prefix === 'B' && i === 8)) {
+           isBad = true;
+           imp = (15 + Math.random() * 5).toFixed(1) + " MΩ"; 
+         }
+ 
+         let chColor = isBad ? '#6b6b6b' : intanColors[i % intanColors.length];
+         let idStr = (i + 108).toString().padStart(3, '0');
+         
+         arr.push({
+           id: `${prefix}-${idStr}`, 
+           imp: imp,                 
+           color: chColor, 
+           isBad: isBad,
+           baseY: 0, 
+           lastY: 0, 
+           currentNoise: 0, 
+           isSpiking: false, 
+           spikeProgress: 0, 
+           spikeAmp: 0,
+           firingRate: isBad ? 0 : (0.001 + Math.random() * 0.006) 
+         });
+       }
+       return arr;
+     }
+     
+     const channelsL = generateChannels('A');
+     const channelsR = generateChannels('B');
+ 
+     function drawPane(ctx, channelsData, isLeftPane) {
+       const isMobile = window.innerWidth <= 768;
+       const currentLabelWidth = isMobile ? 80 : LABEL_WIDTH; 
+       const eraseWidth = 2; 
+       ctx.fillStyle = '#000000';
+       
+       if (scanX + eraseWidth > width) {
+         ctx.fillRect(scanX, 0, width - scanX, height);
+         ctx.fillRect(currentLabelWidth, 0, eraseWidth - (width - scanX), height);
+       } else {
+         ctx.fillRect(scanX, 0, eraseWidth, height);
+       }
+ 
+       const gap = height / (NUM_CHANNELS + 0.5);
+       const maxAmplitude = gap * 0.9; 
+ 
+       for (let i = 0; i < NUM_CHANNELS; i++) {
+         const ch = channelsData[i];
+         ch.baseY = Math.floor(gap * (i + 0.5)) + 0.5;
+         let signal = 0;
+ 
+         if (ch.isBad) {
+           ch.isSpiking = false; 
+           const time_sec = scanX / width * 0.05; 
+           const powerLineInterference = Math.sin(time_sec * 60 * Math.PI * 2) * 0.15;
+           ch.currentNoise = ch.currentNoise * 0.3 + (Math.random() - 0.5) * 0.25; 
+           signal = powerLineInterference + ch.currentNoise;
+         } else {
+           ch.currentNoise = ch.currentNoise * 0.65 + (Math.random() - 0.5) * 0.06;
+           signal = ch.currentNoise; 
+           
+           if (!ch.isSpiking && Math.random() < ch.firingRate) {
+              ch.isSpiking = true; 
+              ch.spikeProgress = 0; 
+              ch.spikeAmp = 0.8 + Math.random() * 0.5; 
+           }
+ 
+           if (ch.isSpiking) {
+              let t = ch.spikeProgress;
+              let spikeShape = 
+                -2.0 * Math.exp(-Math.pow((t - 0.24) * 18, 2)) +  
+                 0.9 * Math.exp(-Math.pow((t - 0.55) * 7, 2)) +   
+                 0.1 * Math.exp(-Math.pow((t - 0.80) * 4, 2));    
+ 
+              signal += spikeShape * ch.spikeAmp;
+              ch.spikeProgress += 0.12; 
+              if (ch.spikeProgress >= 1) ch.isSpiking = false;
+           }
+         }
+ 
+         const currentY = Math.floor(ch.baseY + signal * maxAmplitude) + 0.5;
+         
+         if (scanX > currentLabelWidth + scanSpeed) {
+           ctx.beginPath();
+           ctx.strokeStyle = ch.color; 
+           ctx.lineWidth = 1.2;
+           ctx.lineJoin = 'round'; 
+           ctx.lineCap = 'round';
+           ctx.moveTo(scanX - scanSpeed, ch.lastY);
+           ctx.lineTo(scanX, currentY);
+           ctx.stroke();
+         }
+         ch.lastY = currentY;
+       }
+ 
+       ctx.fillStyle = '#000000';
+       ctx.fillRect(0, 0, currentLabelWidth, height);
+       
+       const fontSize = isMobile ? 7.5 : 10;
+       const blockHeight = isMobile ? 8 : 11;
+       const blockOffsetY = blockHeight / 2;
+       
+       ctx.font = `${fontSize}px "Segoe UI", "Arial", sans-serif`;
+       ctx.textBaseline = 'middle';
+       
+       const padding = isMobile ? 3 : 4; 
+       const iconSize = isMobile ? 7 : 7; 
+       const idOffsetX = padding + iconSize + (isMobile ? 3 : 4); 
+       const rightEdge = currentLabelWidth - padding - 1;
+ 
+       for (let i = 0; i < NUM_CHANNELS; i++) {
+         const ch = channelsData[i];
+         const textY = ch.baseY + (isMobile ? 0.5 : 1); 
+         
+         ctx.fillStyle = ch.color;
+         ctx.fillRect(0, ch.baseY - blockOffsetY, currentLabelWidth - 3, blockHeight);
+         
+         const themeColor = ch.isBad ? 'rgba(0,0,0,0.7)' : '#fff';
+         ctx.fillStyle = themeColor;
+ 
+         const iconY = textY - iconSize / 2;
+         ctx.fillRect(padding, iconY, iconSize, iconSize);
+         ctx.fillStyle = ch.color;
+         ctx.fillRect(padding + iconSize * 0.2, iconY + iconSize * 0.1, iconSize * 0.6, iconSize * 0.3);
+         ctx.fillStyle = themeColor;
+ 
+         ctx.textAlign = 'left';
+         ctx.fillText(ch.id, idOffsetX, textY);
+         
+         ctx.textAlign = 'right';
+         ctx.fillText(ch.imp, rightEdge, textY);
+       }
+ 
+       if (isLeftPane) {
+         const scaleY = channelsData[3].baseY + (gap * 0.3); 
+         const lineHeight = 6; 
+         const scaleX = currentLabelWidth + (isMobile ? 25 : 50);
+         
+         ctx.strokeStyle = 'rgba(255, 255, 255, 0.8)'; 
+         ctx.lineWidth = 1;
+         ctx.beginPath();
+         ctx.moveTo(scaleX, scaleY - lineHeight); 
+         ctx.lineTo(scaleX, scaleY + lineHeight);
+         ctx.stroke();
+ 
+         ctx.textAlign = 'left'; 
+         ctx.fillStyle = '#fff';
+         ctx.font = `${isMobile ? 7 : 9}px "Segoe UI", sans-serif`;
+         ctx.fillText("50 µV", scaleX + 6, scaleY + 1);
+       }
+     }
+ 
+     function renderDualSweep() {
+       if (!window.isPageScrolling) {
+         drawPane(ctxL, channelsL, true);
+         drawPane(ctxR, channelsR, false);
+ 
+         scanX += scanSpeed;
+         if (scanX >= width) {
+           scanX = window.innerWidth <= 768 ? 80 : LABEL_WIDTH;
+         }
+       }
+       animationFrame = requestAnimationFrame(renderDualSweep);
+     }
+ 
+     const observer = new IntersectionObserver((entries) => {
+       if (entries[0].isIntersecting && canvasL.offsetParent !== null) {
+         if (!animationFrame) renderDualSweep();
+       } else {
+         if (animationFrame) cancelAnimationFrame(animationFrame);
+         animationFrame = null;
+       }
+     }, { threshold: 0.1 });
+     observer.observe(sim);
+   });
+ 
+   // ===================== GIF 懒加载 =====================
+   const gifObserver = new IntersectionObserver((entries, observer) => {
+     entries.forEach(entry => {
+       if (entry.isIntersecting) {
+         const img = entry.target;
+         observer.unobserve(img); 
+ 
+         const markLoaded = () => {
+           requestAnimationFrame(() => {
+              img.classList.add('is-loaded'); 
+           });
+         };
+ 
+         img.addEventListener('load', markLoaded, { once: true });
+         img.src = img.dataset.src;
+ 
+         if (img.complete && img.naturalWidth > 1) {
+           markLoaded();
+         }
+       }
+     });
+   }, { threshold: 0.1, rootMargin: "50px 0px" });
+ 
+   document.querySelectorAll('img.lazy-gif').forEach(gif => {
+     gifObserver.observe(gif);
+   });
 
-        const targetValue = parseFloat(card.dataset.value);
-        const isFloat = card.dataset.isFloat === "true";
-        const decimals = parseInt(card.dataset.decimals) || 1;
-        const circumference = 283;
-        const duration = 2000;
+   // ===================== 全新重写的 Spike Scope 波形引擎 =====================
+   const scopeWrappers = document.querySelectorAll('.scope-plot-area');
+   scopeWrappers.forEach(wrapper => {
+     const canvas = wrapper.querySelector('.spike-scope-canvas');
+     const ctx = canvas.getContext('2d');
+     let sWidth, sHeight;
+     let spikes = [];
+     let animationFrame;
 
-        if (entry.isIntersecting) {
-          if (card.dataset.dashboardInView === "true") return;
-          card.dataset.dashboardInView = "true";
-
-          let startTimestamp = null;
-          const animate = (timestamp) => {
-            if (card.dataset.dashboardInView !== "true") return;
-            if (!startTimestamp) startTimestamp = timestamp;
-            const elapsed = timestamp - startTimestamp;
-            const progress = Math.min(elapsed / duration, 1);
-            const easeProgress = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
-            const currentValue = easeProgress * targetValue;
-            
-            numberEl.innerText = isFloat ? currentValue.toFixed(decimals) : Math.round(currentValue);
-            
-            if (card.dataset.type === 'ring' && fgRing) {
-                fgRing.style.strokeDashoffset = circumference - (circumference * easeProgress);
-            } else if (card.dataset.type === 'thermo') {
-                const fill = card.querySelector('.thermo-fill');
-                const maxTemp = parseFloat(card.dataset.max) || 50;
-                if (fill) fill.style.height = ((currentValue / maxTemp) * 100) + '%';
-            }
-
-            if (progress < 1) {
-               card.dashboardAnimFrame = requestAnimationFrame(animate);
-            }
-          };
-          cancelAnimationFrame(card.dashboardAnimFrame);
-          card.dashboardAnimFrame = requestAnimationFrame(animate);
-
-        } else {
-          card.dataset.dashboardInView = "false";
-          if (card.dashboardAnimFrame) {
-            cancelAnimationFrame(card.dashboardAnimFrame);
-            card.dashboardAnimFrame = null;
-          }
-        }
-      });
-    }, { threshold: 0.25, rootMargin: "0px 0px -5% 0px" });
-
-    document.querySelectorAll('.metric-card, .metric-card-v2').forEach(card => dashboardObserver.observe(card));
-
-    // ===================== 3D 模型交互 =====================
-    const models = Array.from(document.querySelectorAll('model-viewer'));
-    if (models.length > 0) {
-      let isScrolling = false;
-      let scrollEndTimer = null;
-      
-      function isSlowNetwork() {
-        const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
-        if (!conn) return false;
-        return ['slow-2g', '2g'].includes(conn.effectiveType);
-      }
-      
-      const MAX_LIVE_CONTEXTS = 2; 
-      const liveContextQueue = [];
-
-      function reclaimContext(viewer) {
-        if (viewer.dataset.loaded === "true") {
-          viewer.pause();
-          viewer._cachedSrc = viewer._cachedSrc || viewer.src;
-          viewer.src = '';
-          viewer.dataset.loaded = "reclaimed";
-        }
-      }
-
-      function ensureContextSlot(viewer) {
-        const idx = liveContextQueue.indexOf(viewer);
-        if (idx !== -1) liveContextQueue.splice(idx, 1);
-        liveContextQueue.push(viewer);
-
-        while (liveContextQueue.length > MAX_LIVE_CONTEXTS) {
-          const victim = liveContextQueue.shift();
-          if (victim !== viewer) {
-            reclaimContext(victim);
-          }
-        }
-      }
-
-      const activateViewer = async (viewer, force = false) => {
-        if (isScrolling && !force) return;
-        ensureContextSlot(viewer);
-
-        if (viewer.getAttribute('reveal') === 'manual' && viewer.dataset.loaded !== "true") {
-          if (viewer.dataset.loaded === "reclaimed" && viewer._cachedSrc) {
-            viewer.src = viewer._cachedSrc;
-          } else if (viewer.dataset.src) {
-            viewer.src = viewer.dataset.src; 
-          }
-          viewer.dataset.loaded = "true";
-          const loadHandler = () => {
-            viewer.removeEventListener('load', loadHandler);
-            try { viewer.play(); } catch(e) {}
-          };
-          viewer.addEventListener('load', loadHandler);
-          await new Promise(resolve => requestAnimationFrame(resolve));
-          viewer.dismissPoster();
-          return;
-        }
-
-        if (viewer.dataset.loaded === "reclaimed" && viewer._cachedSrc) {
-          viewer.src = viewer._cachedSrc;
-          viewer.dataset.loaded = "true";
-          const reloadHandler = () => {
-            viewer.removeEventListener('load', reloadHandler);
-            try { viewer.play(); } catch(e) {}
-          };
-          viewer.addEventListener('load', reloadHandler);
-          return;
-        }
-
-        if (viewer.paused) {
-          try { viewer.play(); } catch(e) {}
-        }
-
-        if (viewer.dataset.overlayDisabled !== "true") {
-          clearTimeout(viewer.hudTimer);
-          viewer.hudTimer = setTimeout(() => {
-            viewer.querySelectorAll('.gesture-overlay').forEach(el => el.classList.add('gesture-active'));
-          }, 500);
-        }
-      };
-
-      const checkAndActivateBestModel = () => {
-        if (isSlowNetwork()) return;
-        models.forEach(viewer => {
-          if (viewer.dataset.inView === "true") {
-            activateViewer(viewer);
-          }
-        });
-      };
-
-      window.addEventListener('scroll', () => {
-        isScrolling = true;
-        clearTimeout(scrollEndTimer);
-        scrollEndTimer = setTimeout(() => {
-          isScrolling = false;
-          checkAndActivateBestModel();
-        }, 150);
-      }, { passive: true });
-
-      models.forEach(viewer => {
-        viewer.addEventListener('click', () => {
-          activateViewer(viewer, true);
-        });
-
-        viewer.addEventListener('error', (e) => {
-          viewer._cachedSrc = viewer._cachedSrc || viewer.src;
-          viewer.src = '';
-          viewer.dataset.loaded = "reclaimed";
-        });
-
-        const handleCameraChange = (event) => {
-          if (event.detail.source === 'user-interaction' && viewer.dataset.overlayDisabled !== "true") {
-            viewer.querySelectorAll('.gesture-overlay, .gesture-hud').forEach(el => {
-              el.classList.add('gesture-hidden');
-            });
-            viewer.dataset.overlayDisabled = "true";
-            viewer.removeEventListener('camera-change', handleCameraChange);
-          }
-        };
-        viewer.addEventListener('camera-change', handleCameraChange);
-      });
-
-      const modelObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          const viewer = entry.target;
-          if (entry.isIntersecting) {
-            viewer.dataset.inView = "true";
-            if (!isScrolling) checkAndActivateBestModel();
-          } else {
-            viewer.dataset.inView = "false";
-            viewer.pause();
-            viewer.querySelectorAll('.gesture-overlay').forEach(el => el.classList.remove('gesture-active'));
-          }
-        });
-      }, { threshold: 0.1 });
-
-      models.forEach(model => modelObserver.observe(model));
-    }
-
-    // ===================== Intan 双屏示波器引擎 =====================
-    const intanSimulators = document.querySelectorAll('.intan-simulator-wrapper');
-    const intanColors = ['#e04a4a', '#d49b38', '#3dc94d', '#3dc98b', '#3da1c9', '#3d61c9', '#573dc9', '#993dc9', '#c93d9e', '#c93d5a'];
-
-    intanSimulators.forEach(sim => {
-      const canvasL = sim.querySelector('.canvas-left');
-      const canvasR = sim.querySelector('.canvas-right');
-      if (!canvasL || !canvasR) return;
-
-      const ctxL = canvasL.getContext('2d', { alpha: false });
-      const ctxR = canvasR.getContext('2d', { alpha: false });
-      
-      let width, height;
-      let lastWidth = 0; 
-      const NUM_CHANNELS = 20; 
-      const LABEL_WIDTH = 100; 
-      let scanX = LABEL_WIDTH;  
-      const scanSpeed = 1.2; 
-      let animationFrame;
-      
-      function resizeIntanCanvas() {
-        if(canvasL.parentElement.clientWidth === 0) return;
-        const newWidth = canvasL.parentElement.clientWidth;
-        const newHeight = canvasL.parentElement.clientHeight;
-        
-        if (Math.abs(lastWidth - newWidth) < 2) return; 
-        lastWidth = newWidth;
-
-        const dpr = Math.min(window.devicePixelRatio || 1, 2);
-        width = newWidth;
-        height = newHeight;
-        
-        [canvasL, canvasR].forEach(canvas => {
-          canvas.width = width * dpr;
-          canvas.height = height * dpr;
-          const ctx = canvas.getContext('2d');
-          ctx.scale(dpr, dpr);
-          ctx.fillStyle = '#000000';
-          ctx.fillRect(0, 0, width, height);
-        });
-
-        scanX = window.innerWidth <= 768 ? 80 : LABEL_WIDTH;
-      }
-        
-      window.addEventListener('resize', resizeIntanCanvas);
-      resizeIntanCanvas();
-      new ResizeObserver(resizeIntanCanvas).observe(canvasL.parentElement);
-
-      function generateChannels(prefix) {
-        const arr = [];
-        for (let i = 0; i < NUM_CHANNELS; i++) {
-          let isBad = ((prefix === 'A' && i === 2) || (prefix === 'B' && i === 8));
-          arr.push({
-            id: `${prefix}-${(i + 108).toString().padStart(3, '0')}`, 
-            imp: isBad ? ((15 + Math.random() * 5).toFixed(1) + " MΩ") : ((316 + Math.random() * 100).toFixed(0) + " kΩ"),
-            color: isBad ? '#6b6b6b' : intanColors[i % intanColors.length], 
-            isBad: isBad, baseY: 0, lastY: 0, currentNoise: 0, isSpiking: false, spikeProgress: 0, spikeAmp: 0,
-            firingRate: isBad ? 0 : (0.001 + Math.random() * 0.006) 
-          });
-        }
-        return arr;
-      }
-      
-      const channelsL = generateChannels('A');
-      const channelsR = generateChannels('B');
-
-      function drawPane(ctx, channelsData, isLeftPane) {
-        const isMobile = window.innerWidth <= 768;
-        const currentLabelWidth = isMobile ? 80 : LABEL_WIDTH; 
-        const eraseWidth = 2; 
-        
-        ctx.fillStyle = '#000000';
-        if (scanX + eraseWidth > width) {
-          ctx.fillRect(scanX, 0, width - scanX, height);
-          ctx.fillRect(currentLabelWidth, 0, eraseWidth - (width - scanX), height);
-        } else {
-          ctx.fillRect(scanX, 0, eraseWidth, height);
-        }
-
-        const gap = height / (NUM_CHANNELS + 0.5);
-        const maxAmplitude = gap * 0.9; 
-
-        for (let i = 0; i < NUM_CHANNELS; i++) {
-          const ch = channelsData[i];
-          ch.baseY = Math.floor(gap * (i + 0.5)) + 0.5;
-          let signal = 0;
-
-          if (ch.isBad) {
-            const time_sec = scanX / width * 0.05; 
-            ch.currentNoise = ch.currentNoise * 0.3 + (Math.random() - 0.5) * 0.25; 
-            signal = Math.sin(time_sec * 60 * Math.PI * 2) * 0.15 + ch.currentNoise;
-          } else {
-            ch.currentNoise = ch.currentNoise * 0.65 + (Math.random() - 0.5) * 0.06;
-            signal = ch.currentNoise; 
-            if (!ch.isSpiking && Math.random() < ch.firingRate) { ch.isSpiking = true; ch.spikeProgress = 0; ch.spikeAmp = 0.8 + Math.random() * 0.5; }
-            if (ch.isSpiking) {
-               let t = ch.spikeProgress;
-               signal += (-2.0*Math.exp(-Math.pow((t-0.24)*18,2)) + 0.9*Math.exp(-Math.pow((t-0.55)*7,2)) + 0.1*Math.exp(-Math.pow((t-0.80)*4,2))) * ch.spikeAmp;
-               ch.spikeProgress += 0.12; 
-               if (ch.spikeProgress >= 1) ch.isSpiking = false;
-            }
-          }
-
-          const currentY = Math.floor(ch.baseY + signal * maxAmplitude) + 0.5;
-          if (scanX > currentLabelWidth + scanSpeed) {
-            ctx.beginPath(); ctx.strokeStyle = ch.color; ctx.lineWidth = 1.2; ctx.lineJoin = 'round'; 
-            ctx.moveTo(scanX - scanSpeed, ch.lastY); ctx.lineTo(scanX, currentY); ctx.stroke();
-          }
-          ch.lastY = currentY;
-        }
-
-        ctx.fillStyle = '#000000';
-        ctx.fillRect(0, 0, currentLabelWidth, height);
-        ctx.font = `${isMobile ? 7.5 : 10}px "Segoe UI", sans-serif`; ctx.textBaseline = 'middle';
-        
-        for (let i = 0; i < NUM_CHANNELS; i++) {
-          const ch = channelsData[i];
-          const textY = ch.baseY + (isMobile ? 0.5 : 1); 
-          ctx.fillStyle = ch.color; ctx.fillRect(0, ch.baseY - (isMobile?4:5.5), currentLabelWidth - 3, (isMobile?8:11));
-          ctx.fillStyle = ch.isBad ? 'rgba(0,0,0,0.7)' : '#fff';
-          ctx.textAlign = 'left'; ctx.fillText(ch.id, (isMobile?13:15), textY);
-          ctx.textAlign = 'right'; ctx.fillText(ch.imp, currentLabelWidth - (isMobile?4:5), textY);
-        }
-      }
-
-      function renderDualSweep() {
-        drawPane(ctxL, channelsL, true);
-        drawPane(ctxR, channelsR, false);
-        scanX += scanSpeed;
-        if (scanX >= width) scanX = window.innerWidth <= 768 ? 80 : LABEL_WIDTH;
-        animationFrame = requestAnimationFrame(renderDualSweep);
-      }
-
-      new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting && canvasL.offsetParent !== null) {
-          if (!animationFrame) renderDualSweep();
-        } else {
-          if (animationFrame) cancelAnimationFrame(animationFrame);
-          animationFrame = null;
-        }
-      }, { threshold: 0.1 }).observe(sim);
-    });
-
-    // ===================== GIF 懒加载 =====================
-    const gifObserver = new IntersectionObserver((entries, observer) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          const img = entry.target;
-          observer.unobserve(img); 
-          img.addEventListener('load', () => requestAnimationFrame(() => img.classList.add('is-loaded')), { once: true });
-          if (img.dataset.src) img.src = img.dataset.src;
-          if (img.complete && img.naturalWidth > 1) requestAnimationFrame(() => img.classList.add('is-loaded'));
-        }
-      });
-    }, { threshold: 0.1, rootMargin: "50px 0px" });
-    document.querySelectorAll('img.lazy-gif').forEach(gif => gifObserver.observe(gif));
-
-    // ===================== 🌟 完美修复版 Spike Scope 引擎 =====================
-    document.querySelectorAll('.scope-plot-area').forEach(wrapper => {
-      const canvas = wrapper.querySelector('.spike-scope-canvas');
-      if (!canvas) return; 
-      const ctx = canvas.getContext('2d');
-      let sWidth, sHeight;
-      let lastSWidth = 0, lastSHeight = 0;
-      let spikes = [];
-      let animationFrame;
-
-      // 极其严格的防闪屏 Resize 机制：容差防抖 2px 且不使用内联 CSS style!
-      function resizeScope() {
-        const rect = wrapper.getBoundingClientRect();
-        const newWidth = Math.floor(rect.width);
-        const newHeight = Math.floor(rect.height);
-
-        if (newWidth === 0 || newHeight === 0) return;
-        // 防死循环核心：如果宽高变化不到 2px，就忽略这次调整
-        if (Math.abs(lastSWidth - newWidth) < 2 && Math.abs(lastSHeight - newHeight) < 2) return;
-        
-        lastSWidth = newWidth;
-        lastSHeight = newHeight;
-        sWidth = newWidth;
-        sHeight = newHeight;
-
+     function resizeScope() {
+        if (wrapper.clientWidth === 0) return;
         const dpr = window.devicePixelRatio || 1;
-        // 外部尺寸完全交给 css 的 width:100% height:100%，这里只修改物理像素系
+        sWidth = wrapper.clientWidth;
+        sHeight = wrapper.clientHeight;
+        
+        // 设定物理分辨率（高清）
         canvas.width = sWidth * dpr;
         canvas.height = sHeight * dpr;
+        
+        // 【关键修复】强制锁定 CSS 逻辑尺寸，不让它挤压父容器
+        canvas.style.width = sWidth + 'px';
+        canvas.style.height = sHeight + 'px';
+        
         ctx.scale(dpr, dpr);
       }
-      
-      window.addEventListener('resize', resizeScope);
-      resizeScope();
-      new ResizeObserver(resizeScope).observe(wrapper);
+     
+     window.addEventListener('resize', resizeScope);
+     resizeScope();
+     new ResizeObserver(resizeScope).observe(wrapper);
 
-      // 1:1 像素级复刻 Intan 真实截图特征的 Spike 生成器
+     // 特征的 Spike 生成器 (包含真实带通底噪与触发点收束)
       function generateSpike() {
         const trace = [];
-        const points = 90; // 模拟 30kS/s 硬件真实采样率的折线感
+        const points = 250; 
         const tMin = -1, tMax = 2;
-        const dt = (tMax - tMin) / points; 
+        const dt = (tMax - tMin) / points;
         
         const isOutlier = Math.random() < 0.1;
-        const peakAmp1 = 110 + Math.random() * 40;     
-        const peakTime1 = 0.55 + Math.random() * 0.15; 
+        const ampJitter = 0.9 + Math.random() * 0.2; 
         
-        let currentNoise = 0;
+        const peakAmpJitter1 = 0.85 + Math.random() * 0.35; 
+        const peakAmpJitter2 = 0.8 + Math.random() * 0.4;
+
+        let currentNoise = 0; // 用于生成平滑带通噪声的状态变量
 
         for(let i = 0; i < points; i++) {
           let t = tMin + i * dt;
           
-          // 逼真带通噪声
-          currentNoise = currentNoise * 0.4 + (Math.random() - 0.5) * 16; 
-          let totalNoise = currentNoise + (Math.random() - 0.5) * 12;
+          // 🌟 1. 生成逼真的带通滤波底噪 (毛茸茸的基线厚度)
+          // 结合平滑噪声(模拟电极阻抗低频特性)和白噪声(系统热噪声)
+          currentNoise = currentNoise * 0.5 + (Math.random() - 0.5) * 22; 
+          let pureWhiteNoise = (Math.random() - 0.5) * 12;
+          let totalNoise = currentNoise + pureWhiteNoise;
 
-          // 触发点打结收束
-          let knot = Math.min(1, Math.abs(t) / 0.04); 
-          totalNoise *= knot;
+          // 🌟 2. 模拟真实示波器的“触发点打结”效应
+          // 在 t=0 触发点附近强行收束噪声，让它们完美交汇于 -70，远离触发点则恢复毛躁
+          let noiseSuppression = 1;
+          if (t > -0.06 && t < 0.08) {
+              // 使用次指数平滑衰减，在 t=0 时噪点绝对为 0
+              let dist = t < 0 ? Math.abs(t) / 0.06 : t / 0.08;
+              noiseSuppression = Math.pow(dist, 1.2); 
+          }
+          totalNoise *= noiseSuppression;
 
           let val = 0;
+          
           if (!isOutlier) {
-              if (t < -0.2) val = 0;
-              else if (t >= -0.2 && t <= 0) val = -70 * (1 - Math.cos(((t + 0.2) / 0.2) * Math.PI / 2)); 
-              else if (t > 0 && t <= 0.16) val = -70 - 110 * Math.sin((t / 0.16) * Math.PI / 2); 
-              else if (t > 0.16 && t <= peakTime1) val = -180 + (180 + peakAmp1) * (1 - Math.cos(((t - 0.16) / (peakTime1 - 0.16)) * Math.PI)) / 2; 
-              else if (t > peakTime1 && t <= 1.3) val = peakAmp1 * Math.cos(((t - peakTime1) / (1.3 - peakTime1)) * Math.PI / 2); 
+              // 📈 主波形集群
+              if (t >= -0.2 && t <= 0) {
+                  let norm = (t + 0.2) / 0.2; 
+                  val = -70 * Math.pow(norm, 2); 
+              } else if (t > 0 && t <= 0.12) {
+                  let norm = t / 0.12; 
+                  val = -70 - 90 * Math.sin(norm * Math.PI / 2); 
+              } else if (t > 0.12 && t <= 0.6) {
+                  let norm = (t - 0.12) / 0.48;
+                  val = -160 + (260 * peakAmpJitter1) * (1 - Math.cos(norm * Math.PI)) / 2; 
+              } else if (t > 0.6 && t <= 1.2) {
+                  let norm = (t - 0.6) / 0.6;
+                  val = (100 * peakAmpJitter1) * Math.cos(norm * Math.PI / 2); 
+              }
           } else {
-              if (t < -0.1) val = 0;
-              else if (t >= -0.1 && t <= 0) val = -70 * (1 - Math.cos(((t + 0.1) / 0.1) * Math.PI / 2)); 
-              else if (t > 0 && t <= 0.08) val = -70 - 210 * Math.sin((t / 0.08) * Math.PI / 2); 
-              else if (t > 0.08 && t <= 0.25) val = -280 + 530 * (1 - Math.cos(((t - 0.08) / 0.17) * Math.PI)) / 2; 
-              else if (t > 0.25 && t <= 0.45) val = 250 * Math.cos(((t - 0.25) / 0.20) * Math.PI / 2); 
+              // 📉 尖锐离群波形
+              if (t >= -0.1 && t <= 0) {
+                  let norm = (t + 0.1) / 0.1;
+                  val = -70 * Math.pow(norm, 2); 
+              } else if (t > 0 && t <= 0.05) {
+                  let norm = t / 0.05;
+                  val = -70 - 180 * Math.sin(norm * Math.PI / 2); 
+              } else if (t > 0.05 && t <= 0.3) {
+                  let norm = (t - 0.05) / 0.25;
+                  val = -250 + (470 * peakAmpJitter2) * (1 - Math.cos(norm * Math.PI)) / 2; 
+              } else if (t > 0.3 && t <= 0.6) {
+                  let norm = (t - 0.3) / 0.3;
+                  val = (220 * peakAmpJitter2) * Math.cos(norm * Math.PI / 2); 
+              }
           }
-          trace.push(val + totalNoise);
+          
+          // 最终坐标 = (基准波形 * 幅度抖动) + 滤波噪声
+          trace.push((val * ampJitter) + totalNoise);
         }
         return trace;
       }
 
-      // 填充波形缓冲区
-      for(let i = 0; i < 50; i++) spikes.push(generateSpike());
+    // 初始预填充50个波形 (Pixel-perfect thickness)
+for(let i = 0; i < 50; i++) spikes.push(generateSpike());
 
-      const statsOverlay = wrapper.querySelector('.scope-dynamic-stats');
-      let lastStatsUpdate = 0;
+     // 获取我们要动态更新的文字容器，并设置时间戳变量
+     const statsOverlay = wrapper.querySelector('.scope-dynamic-stats');
+     let lastStatsUpdate = 0;
 
-      function drawScope(timestamp) {
-        if (timestamp - lastStatsUpdate > 800) {
-          if (statsOverlay) {
-            const dynamicRms = (8.5 + Math.random() * 1.3).toFixed(1);
-            const dynamicRate = Math.floor(Math.random() * 5) + 3;
-            statsOverlay.innerText = `RMS: ${dynamicRms} µV  ${dynamicRate} spikes/s`;
-          }
-          lastStatsUpdate = timestamp;
-        }
-        
-        ctx.fillStyle = '#000000';
-        ctx.fillRect(0, 0, sWidth, sHeight);
+     // 👇 注意这里加上了 timestamp 参数
+     function drawScope(timestamp) {
+       if (!window.isPageScrolling) {
+       
+         // --- 新增：每 800ms 动态刷新一次 RMS 和 Spike 数目 ---
+         if (timestamp - lastStatsUpdate > 800) {
+           if (statsOverlay) {
+             // 模拟真实的微小波动：RMS 在 8.5 ~ 9.8 之间跳动，Spike 率在 3 ~ 7 之间跳动
+             const dynamicRms = (8.5 + Math.random() * 1.3).toFixed(1);
+             const dynamicRate = Math.floor(Math.random() * 5) + 3;
+             statsOverlay.innerText = `RMS: ${dynamicRms} µV  ${dynamicRate} spikes/s`;
+           }
+           lastStatsUpdate = timestamp;
+         }
+         
+         // 填充纯黑底色
+         ctx.fillStyle = '#000000';
+         ctx.fillRect(0, 0, sWidth, sHeight);
 
-        const x0 = sWidth / 3, x1 = 2 * sWidth / 3, y0 = sHeight / 2;
-        const yThresh = y0 + (70 / 500) * (sHeight / 2);
+         // 绘制网格与参考线
+         const x0 = sWidth / 3;
+         const x1 = 2 * sWidth / 3;
+         const y0 = sHeight / 2;
+         const yThresh = y0 + (70 / 500) * (sHeight / 2);
 
-        ctx.lineWidth = 1;
-        ctx.strokeStyle = '#333333';
-        ctx.beginPath(); ctx.moveTo(x0, 0); ctx.lineTo(x0, sHeight); ctx.stroke();
-        ctx.beginPath(); ctx.moveTo(x1, 0); ctx.lineTo(x1, sHeight); ctx.stroke();
-        
-        ctx.strokeStyle = '#444444';
-        ctx.beginPath(); ctx.moveTo(0, y0); ctx.lineTo(sWidth, y0); ctx.stroke();
+         ctx.lineWidth = 1;
+         ctx.strokeStyle = '#333333';
+         
+         // 纵向参考线 (0 和 1ms)
+         ctx.beginPath(); ctx.moveTo(x0, 0); ctx.lineTo(x0, sHeight); ctx.stroke();
+         ctx.beginPath(); ctx.moveTo(x1, 0); ctx.lineTo(x1, sHeight); ctx.stroke();
+         
+         // 零点横向线 (0µV)
+         ctx.strokeStyle = '#444444';
+         ctx.beginPath(); ctx.moveTo(0, y0); ctx.lineTo(sWidth, y0); ctx.stroke();
 
-        ctx.strokeStyle = '#ef4444';
-        ctx.beginPath(); ctx.moveTo(0, yThresh); ctx.lineTo(sWidth, yThresh); ctx.stroke();
+         // 红色阈值线 (-70µV)
+         ctx.strokeStyle = '#ef4444';
+         ctx.beginPath(); ctx.moveTo(0, yThresh); ctx.lineTo(sWidth, yThresh); ctx.stroke();
 
-        if (Math.random() < 0.25) { 
-          spikes.push(generateSpike());
-          if (spikes.length > 50) spikes.shift();
-        }
+         // 偶尔抓取新的 Spike 进缓冲区 (Maintain Pixel-perfect thickness)
+            if (Math.random() < 0.25) { 
+            spikes.push(generateSpike());
+            if (spikes.length > 50) spikes.shift();
+              }
 
-        ctx.lineWidth = 1.2;
-        ctx.lineJoin = 'round';
-        spikes.forEach((spike, idx) => {
-          ctx.strokeStyle = `rgba(255, 255, 255, ${0.15 + (idx / 50) * 0.7})`;
-          ctx.beginPath();
-          for(let i = 0; i < spike.length; i++) {
-            let px = (i / (spike.length - 1)) * sWidth;
-            let py = y0 - (spike[i] / 500) * (sHeight / 2);
-            i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
-          }
-          ctx.stroke();
-        });
-        
-        animationFrame = requestAnimationFrame(drawScope);
-      }
+         // 叠加绘制波形
+         ctx.lineWidth = 1.2;
+         ctx.lineJoin = 'round';
+         spikes.forEach((spike, idx) => {
+           // 老的波形透明度更低
+           ctx.strokeStyle = `rgba(255, 255, 255, ${0.2 + (idx / 20) * 0.6})`;
+           ctx.beginPath();
+           for(let i = 0; i < spike.length; i++) {
+             let px = (i / (spike.length - 1)) * sWidth;
+             let py = y0 - (spike[i] / 500) * (sHeight / 2);
+             i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
+           }
+           ctx.stroke();
+         });
+       }
+       animationFrame = requestAnimationFrame(drawScope);
+     }
 
-      new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting && wrapper.offsetParent !== null) {
-          if (!animationFrame) drawScope(performance.now());
-        } else {
-          if (animationFrame) cancelAnimationFrame(animationFrame);
-          animationFrame = null;
-        }
-      }, { threshold: 0.1 }).observe(wrapper);
-    });
-  });
+     const scopeObserver = new IntersectionObserver((entries) => {
+       if (entries[0].isIntersecting && wrapper.offsetParent !== null) {
+         if (!animationFrame) drawScope();
+       } else {
+         if (animationFrame) cancelAnimationFrame(animationFrame);
+         animationFrame = null;
+       }
+     }, { threshold: 0.1 });
+     
+     scopeObserver.observe(wrapper);
+   });
+ });
 </script>
