@@ -2508,12 +2508,16 @@ This project is open-source and available under the **MIT License**. Click the b
  
          if (ch.isBad) {
            ch.isSpiking = false; 
-           const time_sec = scanX / width * 0.05; 
-           const powerLineInterference = Math.sin(time_sec * 60 * Math.PI * 2) * 0.15;
-           ch.currentNoise = ch.currentNoise * 0.3 + (Math.random() - 0.5) * 0.25; 
+           // 修复 1: 放弃绝对时间，直接用屏幕宽度比例生成密集的工频干扰波 (一屏约 15~20 个周期)
+           // 修复 2: 将干扰振幅从 0.15 暴增到 0.8，让它霸占整个通道的高度！
+           const powerLineInterference = Math.sin((scanX / width) * 20 * Math.PI * 2) * 0.8;
+           
+           // 坏通道的随机底噪可以压低一点，突出巨大的正弦波轮廓
+           ch.currentNoise = ch.currentNoise * 0.3 + (Math.random() - 0.5) * 0.1; 
            signal = powerLineInterference + ch.currentNoise;
-         } else {
-           ch.currentNoise = ch.currentNoise * 0.3 + (Math.random() - 0.5) * 0.35;
+          }
+         else {
+           ch.currentNoise = ch.currentNoise * 0.15 + (Math.random() - 0.5) * 0.35;
            signal = ch.currentNoise; 
            
            if (!ch.isSpiking && Math.random() < ch.firingRate) {
