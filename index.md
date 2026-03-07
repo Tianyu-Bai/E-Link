@@ -2420,7 +2420,7 @@ This project is open-source and available under the **MIT License**. Click the b
      const NUM_CHANNELS = 20; 
      const LABEL_WIDTH = 100; 
      let scanX = LABEL_WIDTH;  
-     const scanSpeed = 1.2; 
+     const scanSpeed = 3.0; 
      let animationFrame;
      
      function resizeIntanCanvas() {
@@ -2706,12 +2706,12 @@ This project is open-source and available under the **MIT License**. Click the b
         for(let i = 0; i < points; i++) {
           let t = tMin + i * dt;
           
-          // 🌟 1. 生成逼真的带通滤波底噪 (毛茸茸的基线厚度)
-          // 结合平滑噪声(模拟电极阻抗低频特性)和白噪声(系统热噪声)
-          currentNoise = currentNoise * 0.5 + (Math.random() - 0.5) * 22; 
-          let pureWhiteNoise = (Math.random() - 0.5) * 12;
-          let totalNoise = currentNoise + pureWhiteNoise;
-
+          // 🌟 1. 生成逼真的带通滤波底噪
+          // 降低平滑权重(0.5 -> 0.3)，增加白噪声比例，让底噪看起来更刺、更清脆
+           currentNoise = currentNoise * 0.3 + (Math.random() - 0.5) * 20; 
+           let pureWhiteNoise = (Math.random() - 0.5) * 16;
+           let totalNoise = currentNoise + pureWhiteNoise;
+          
           // 🌟 2. 模拟真实示波器的“触发点打结”效应
           // 在 t=0 触发点附近强行收束噪声，让它们完美交汇于 -70，远离触发点则恢复毛躁
           let noiseSuppression = 1;
@@ -2762,8 +2762,8 @@ This project is open-source and available under the **MIT License**. Click the b
         return trace;
       }
 
-    // 初始预填充50个波形 (Pixel-perfect thickness)
-for(let i = 0; i < 50; i++) spikes.push(generateSpike());
+    // 初始预填充6个波形 (Pixel-perfect thickness)
+     for(let i = 0; i < 6; i++) spikes.push(generateSpike());
 
      // 获取我们要动态更新的文字容器，并设置时间戳变量
      const statsOverlay = wrapper.querySelector('.scope-dynamic-stats');
@@ -2810,25 +2810,34 @@ for(let i = 0; i < 50; i++) spikes.push(generateSpike());
          ctx.beginPath(); ctx.moveTo(0, yThresh); ctx.lineTo(sWidth, yThresh); ctx.stroke();
 
          // 偶尔抓取新的 Spike 进缓冲区 (Maintain Pixel-perfect thickness)
-            if (Math.random() < 0.25) { 
-            spikes.push(generateSpike());
-            if (spikes.length > 50) spikes.shift();
-              }
+            if (Math.random() < 0.16) { 
+  spikes.push(generateSpike());
+  // 核心修复：只保留最近的 8 个波形，多余的剔除，防止糊成一团
+  if (spikes.length > 8) spikes.shift(); 
+}
 
-         // 叠加绘制波形
-         ctx.lineWidth = 1.2;
-         ctx.lineJoin = 'round';
-         spikes.forEach((spike, idx) => {
-           // 老的波形透明度更低
-           ctx.strokeStyle = `rgba(255, 255, 255, ${0.2 + (idx / 20) * 0.6})`;
-           ctx.beginPath();
-           for(let i = 0; i < spike.length; i++) {
-             let px = (i / (spike.length - 1)) * sWidth;
-             let py = y0 - (spike[i] / 500) * (sHeight / 2);
-             i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
-           }
-           ctx.stroke();
-         });
+         // 叠加绘制波形 (加入真实的余辉褪色效应)
+ctx.lineWidth = 1.2;
+ctx.lineJoin = 'round';
+spikes.forEach((spike, idx) => {
+  
+  // 核心修复：最新触发的波形高亮 (alpha 0.9)，历史波形迅速变暗 (alpha 0.15~0.4)
+  let alpha;
+  if (idx === spikes.length - 1) {
+      alpha = 0.9; // 最新波形
+  } else {
+      alpha = 0.15 + (idx / spikes.length) * 0.25; // 历史余辉
+  }
+  
+  ctx.strokeStyle = `rgba(255, 255, 255, ${alpha})`;
+  ctx.beginPath();
+  for(let i = 0; i < spike.length; i++) {
+    let px = (i / (spike.length - 1)) * sWidth;
+    let py = y0 - (spike[i] / 500) * (sHeight / 2);
+    i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
+  }
+     ctx.stroke();
+        });
        }
        animationFrame = requestAnimationFrame(drawScope);
      }
