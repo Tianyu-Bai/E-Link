@@ -912,6 +912,7 @@ if (localStorage.getItem('elink_visited') === 'true') {
     setTimeout(() => {
       welcomeModal.classList.add('show');
       document.body.classList.add('modal-active');
+      rafScheduler.remove('cursor'); // 🚀 Problem D：modal 激活时停止光标 CPU 计算
     }, 10);
   }
  
@@ -964,12 +965,22 @@ const rafScheduler = {
   }
 };
 
+  // 🚀 Problem C：resize 后重新计算目标帧率（设备旋转场景）
+  let _fpsResizeDebounce;
+  window.addEventListener('resize', () => {
+    clearTimeout(_fpsResizeDebounce);
+    _fpsResizeDebounce = setTimeout(() => {
+      rafScheduler.targetFPS = (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || window.innerWidth < 768) ? 30 : 45;
+    }, 300);
+  }, { passive: true });
+
   // ── 光标引擎优化 ─────────────────────────────────────────────────
 const cursorDot = document.querySelector('.cursor-dot');
 const cursorOutline = document.querySelector('.cursor-outline');
 let mouseX = -100, mouseY = -100;
 let outlineX = -100, outlineY = -100;
 
+let updateCursorOutline;
 if (window.innerWidth > 768 && cursorDot && cursorOutline) {
   document.addEventListener('mousemove', (e) => {
     mouseX = e.clientX; mouseY = e.clientY;
@@ -977,9 +988,8 @@ if (window.innerWidth > 768 && cursorDot && cursorOutline) {
     cursorDot.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0) translate(-50%, -50%)`;
   }, { passive: true });
 
-  rafScheduler.add('cursor', () => {
-    if (document.body.classList.contains('modal-active')) return;
-
+  // 🚀 优化：具名函数，便于在 modal 激活时从调度器中移除，节省 CPU
+  updateCursorOutline = () => {
     // 🚀 优化 2：将跟随系数从 0.12 提高到 0.22。数值越大越跟手，越小越丝滑但越迟钝
     const snappiness = 0.22; 
     outlineX += (mouseX - outlineX) * snappiness;
@@ -987,7 +997,8 @@ if (window.innerWidth > 768 && cursorDot && cursorOutline) {
 
     cursorOutline.style.transform =
       `translate3d(${outlineX}px, ${outlineY}px, 0) translate(-50%, -50%)`;
-  });
+  };
+  rafScheduler.add('cursor', updateCursorOutline);
 }
 
 // ── 粒子引擎 (簇群坍缩版：动态吸附成大簇 + 实时寻路长程电流 + 科技风发光大脑底座) ──────────
@@ -1105,7 +1116,7 @@ if (window.innerWidth > 768 && cursorDot && cursorOutline) {
     const px = new Float32Array(count);
     const py = new Float32Array(count);
 
-    rafScheduler.add('particles', () => {
+    const drawDustFn = () => {
      // 🚀 手机横屏终极防闪退：后台直接挂起粒子坐标计算
       if (window.innerWidth <= 1024 && window.innerWidth > window.innerHeight) return;
       // 🚀 防闪退核心：如果检测到页面正在剧烈滑动，立即挂起渲染！
@@ -1328,7 +1339,16 @@ if (window.innerWidth > 768 && cursorDot && cursorOutline) {
 
         if (p.charge > 0) p.charge *= 0.9;
       }
-    });
+    };
+
+    // 🚀 Problem B：当 canvas 被 CSS 隐藏时暂停粒子渲染，可见时恢复；初始可见时启动
+    new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting) {
+        rafScheduler.add('particles', drawDustFn);
+      } else {
+        rafScheduler.remove('particles');
+      }
+    }, { threshold: 0 }).observe(canvas);
   }
 
   setTimeout(initNeuralWeb, 150);
@@ -1337,8 +1357,9 @@ if (window.innerWidth > 768 && cursorDot && cursorOutline) {
   let globalLenis; // 提前在全局层级声明变量
   if (typeof Lenis !== 'undefined') {
     globalLenis = new Lenis({
-      duration: 1.1,
+      duration: 1.2,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      smoothWheel: true,
       smoothTouch: false, // 🚀 必须为 false！防止劫持移动端原生滚动，这是防闪退的核心配置
       touchMultiplier: 1.5,
       wheelMultiplier: window.navigator.platform.includes('Mac') ? 0.8 : 1.2, // 适配 Mac 触控板与 Windows 鼠标滚轮差异
@@ -1434,6 +1455,8 @@ if (window.innerWidth > 768 && cursorDot && cursorOutline) {
    document.body.classList.remove('modal-active');
   // 记录用户已看过欢迎弹窗
   localStorage.setItem('elink_visited', 'true');
+    // 🚀 Problem E：恢复光标渲染任务
+    if (updateCursorOutline) rafScheduler.add('cursor', updateCursorOutline);
     if (modalIsZh && currentLang !== 'zh') langToggle.click();
     else if (!modalIsZh && currentLang === 'zh') langToggle.click();
     setTimeout(() => {
@@ -1498,10 +1521,12 @@ if (window.innerWidth > 768 && cursorDot && cursorOutline) {
   const guardianVideo = document.getElementById('guardian-video');
   window.openVideoModal = () => {
     videoModal.classList.add('show'); document.body.classList.add('modal-active');
+    rafScheduler.remove('cursor'); // 🚀 Problem D：弹窗激活时停止光标 CPU 计算
   };
   window.closeVideoModal = () => {
     videoModal.classList.remove('show'); document.body.classList.remove('modal-active');
     if (guardianVideo) guardianVideo.pause();
+    if (updateCursorOutline) rafScheduler.add('cursor', updateCursorOutline); // 🚀 Problem E：恢复光标
   };
   videoModal.addEventListener('click', (e) => { if (e.target === videoModal) closeVideoModal(); });
 
