@@ -2658,106 +2658,82 @@ This project is open-source and available under the **MIT License**. Click the b
      gifObserver.observe(gif);
    });
 
-   // ===================== 全新重写的 Spike Scope 波形引擎 =====================
-   const scopeWrappers = document.querySelectorAll('.scope-plot-area');
-   scopeWrappers.forEach(wrapper => {
-     const canvas = wrapper.querySelector('.spike-scope-canvas');
-     const ctx = canvas.getContext('2d');
-     let sWidth, sHeight;
-     let spikes = [];
-     let animationFrame;
-
-     function resizeScope() {
-        if (wrapper.clientWidth === 0) return;
-        const dpr = window.devicePixelRatio || 1;
-        sWidth = wrapper.clientWidth;
-        sHeight = wrapper.clientHeight;
-        
-        // 设定物理分辨率（高清）
-        canvas.width = sWidth * dpr;
-        canvas.height = sHeight * dpr;
-        
-        // 【关键修复】强制锁定 CSS 逻辑尺寸，不让它挤压父容器
-        canvas.style.width = sWidth + 'px';
-        canvas.style.height = sHeight + 'px';
-        
-        ctx.scale(dpr, dpr);
-      }
-     
-     window.addEventListener('resize', resizeScope);
-     resizeScope();
-     new ResizeObserver(resizeScope).observe(wrapper);
-
-     // 特征的 Spike 生成器 (包含真实带通底噪与触发点收束)
+   //像素级 Spike 生成器
       function generateSpike() {
         const trace = [];
-        const points = 250; 
+        // 🌟 核心还原 1: 真实 30 kS/s 采样率，3ms 窗口刚好 90 个数据点，还原仪器特有的微小锯齿感
+        const points = 90; 
         const tMin = -1, tMax = 2;
-        const dt = (tMax - tMin) / points;
+        const dt = (tMax - tMin) / points; 
         
+        // 🌟 核心还原 2: 10% 概率生成那根极高、极尖的离群波形 (Unit 2)
         const isOutlier = Math.random() < 0.1;
-        const ampJitter = 0.9 + Math.random() * 0.2; 
         
-        const peakAmpJitter1 = 0.85 + Math.random() * 0.35; 
-        const peakAmpJitter2 = 0.8 + Math.random() * 0.4;
-
-        let currentNoise = 0; // 用于生成平滑带通噪声的状态变量
+        // 主集群 (Unit 1) 专用的后半段弥散因子 (模拟原图中：下降沿紧密，上升沿发散的特征)
+        const peakAmp1 = 110 + Math.random() * 40;     // 波峰高度在 +110 到 +150 之间随机
+        const peakTime1 = 0.55 + Math.random() * 0.15; // 波峰到达时间在 0.55ms 到 0.7ms 之间随机
+        
+        let currentNoise = 0;
 
         for(let i = 0; i < points; i++) {
           let t = tMin + i * dt;
           
-          // 🌟 1. 生成逼真的带通滤波底噪 (毛茸茸的基线厚度)
-          // 结合平滑噪声(模拟电极阻抗低频特性)和白噪声(系统热噪声)
-          currentNoise = currentNoise * 0.5 + (Math.random() - 0.5) * 22; 
+          // 1. 模拟真实硬件带通噪声 (约 RMS 9.1µV)
+          currentNoise = currentNoise * 0.4 + (Math.random() - 0.5) * 16; 
           let pureWhiteNoise = (Math.random() - 0.5) * 12;
           let totalNoise = currentNoise + pureWhiteNoise;
 
-          // 🌟 2. 模拟真实示波器的“触发点打结”效应
-          // 在 t=0 触发点附近强行收束噪声，让它们完美交汇于 -70，远离触发点则恢复毛躁
-          let noiseSuppression = 1;
-          if (t > -0.06 && t < 0.08) {
-              // 使用次指数平滑衰减，在 t=0 时噪点绝对为 0
-              let dist = t < 0 ? Math.abs(t) / 0.06 : t / 0.08;
-              noiseSuppression = Math.pow(dist, 1.2); 
-          }
-          totalNoise *= noiseSuppression;
+          // 🌟 核心还原 3: 触发点“打结”。强制在 t=0 附近 40µs 内消灭噪声，确保完美穿过 -70µV
+          let knot = Math.min(1, Math.abs(t) / 0.04); 
+          totalNoise *= knot;
 
           let val = 0;
           
           if (!isOutlier) {
-              // 📈 主波形集群
-              if (t >= -0.2 && t <= 0) {
+              // 📈 主波形集群 (对应图中较宽、较缓的那一坨)
+              if (t < -0.2) {
+                  val = 0;
+              } else if (t >= -0.2 && t <= 0) {
+                  // 触发前：从 0 平滑探底到 -70
                   let norm = (t + 0.2) / 0.2; 
-                  val = -70 * Math.pow(norm, 2); 
-              } else if (t > 0 && t <= 0.12) {
-                  let norm = t / 0.12; 
-                  val = -70 - 90 * Math.sin(norm * Math.PI / 2); 
-              } else if (t > 0.12 && t <= 0.6) {
-                  let norm = (t - 0.12) / 0.48;
-                  val = -160 + (260 * peakAmpJitter1) * (1 - Math.cos(norm * Math.PI)) / 2; 
-              } else if (t > 0.6 && t <= 1.2) {
-                  let norm = (t - 0.6) / 0.6;
-                  val = (100 * peakAmpJitter1) * Math.cos(norm * Math.PI / 2); 
+                  val = -70 * (1 - Math.cos(norm * Math.PI / 2)); 
+              } else if (t > 0 && t <= 0.16) {
+                  // 下冲谷底：严密捆绑，精准到达 -180µV
+                  let norm = t / 0.16; 
+                  val = -70 - 110 * Math.sin(norm * Math.PI / 2); 
+              } else if (t > 0.16 && t <= peakTime1) {
+                  // 回升阶段：使用随机参数，形成图中厚厚的一层白线簇
+                  let norm = (t - 0.16) / (peakTime1 - 0.16);
+                  val = -180 + (180 + peakAmp1) * (1 - Math.cos(norm * Math.PI)) / 2; 
+              } else if (t > peakTime1 && t <= 1.3) {
+                  // 衰减回基线
+                  let norm = (t - peakTime1) / (1.3 - peakTime1);
+                  val = peakAmp1 * Math.cos(norm * Math.PI / 2); 
               }
           } else {
-              // 📉 尖锐离群波形
-              if (t >= -0.1 && t <= 0) {
+              // 📉 尖锐离群波形 (对应图中那根极快、极高的单线)
+              if (t < -0.1) {
+                  val = 0;
+              } else if (t >= -0.1 && t <= 0) {
                   let norm = (t + 0.1) / 0.1;
-                  val = -70 * Math.pow(norm, 2); 
-              } else if (t > 0 && t <= 0.05) {
-                  let norm = t / 0.05;
-                  val = -70 - 180 * Math.sin(norm * Math.PI / 2); 
-              } else if (t > 0.05 && t <= 0.3) {
-                  let norm = (t - 0.05) / 0.25;
-                  val = -250 + (470 * peakAmpJitter2) * (1 - Math.cos(norm * Math.PI)) / 2; 
-              } else if (t > 0.3 && t <= 0.6) {
-                  let norm = (t - 0.3) / 0.3;
-                  val = (220 * peakAmpJitter2) * Math.cos(norm * Math.PI / 2); 
+                  val = -70 * (1 - Math.cos(norm * Math.PI / 2)); 
+              } else if (t > 0 && t <= 0.08) {
+                  // 下冲极深：仅用 0.08ms 到达 -280µV
+                  let norm = t / 0.08;
+                  val = -70 - 210 * Math.sin(norm * Math.PI / 2); 
+              } else if (t > 0.08 && t <= 0.25) {
+                  // 极速回升：到 0.25ms 飙升至 +250µV
+                  let norm = (t - 0.08) / 0.17;
+                  val = -280 + 530 * (1 - Math.cos(norm * Math.PI)) / 2; 
+              } else if (t > 0.25 && t <= 0.45) {
+                  // 迅速落回基线
+                  let norm = (t - 0.25) / 0.20;
+                  val = 250 * Math.cos(norm * Math.PI / 2); 
               }
           }
           
-          // 最终坐标 = (基准波形 * 幅度抖动) + 滤波噪声
-          trace.push((val * ampJitter) + totalNoise);
+          // 将波形与打结后的底噪叠加
+          trace.push(val + totalNoise);
         }
         return trace;
       }
