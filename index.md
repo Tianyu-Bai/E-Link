@@ -2845,4 +2845,84 @@ for(let i = 0; i < 50; i++) spikes.push(generateSpike());
      scopeObserver.observe(wrapper);
    });
  });
+
+  // ===================== 仪表盘：2.68µV 底噪波形动画 (Noise Floor) =====================
+    const waveformCanvases = document.querySelectorAll('.waveform-canvas');
+    waveformCanvases.forEach(canvas => {
+      const ctx = canvas.getContext('2d');
+      let width, height;
+      let animFrame;
+      let inView = false;
+
+      function resizeWaveform() {
+        const parent = canvas.parentElement;
+        if (!parent || parent.clientWidth === 0) return;
+        const dpr = window.devicePixelRatio || 1;
+        width = parent.clientWidth;
+        height = parent.clientHeight;
+        
+        canvas.width = width * dpr;
+        canvas.height = height * dpr;
+        canvas.style.width = width + 'px';
+        canvas.style.height = height + 'px';
+        ctx.scale(dpr, dpr);
+      }
+
+      window.addEventListener('resize', resizeWaveform);
+      resizeWaveform();
+      new ResizeObserver(resizeWaveform).observe(canvas.parentElement);
+
+      function drawWaveform() {
+        if (!inView || !width || !height) return;
+        
+        // 每次清空画布
+        ctx.clearRect(0, 0, width, height);
+        ctx.beginPath();
+        // 使用契合卡片主题的紫色
+        ctx.strokeStyle = '#a78bfa'; 
+        ctx.lineWidth = 1.2;
+        ctx.lineJoin = 'round';
+
+        // 密集采样点以模拟高频噪声
+        const points = 80; 
+        const sliceWidth = width / (points - 1);
+        let x = 0;
+
+        for (let i = 0; i < points; i++) {
+          // 生成随机白噪声，幅度为画布高度的 40%
+          const noise = (Math.random() - 0.5) * (height * 0.4);
+          const y = (height / 2) + noise;
+
+          if (i === 0) {
+            ctx.moveTo(x, y);
+          } else {
+            ctx.lineTo(x, y);
+          }
+          x += sliceWidth;
+        }
+        ctx.stroke();
+
+        // 故意降低一点刷新率 (约30fps)，让白噪声看起来更写实、不那么眼晕
+        setTimeout(() => {
+          if (inView) {
+            animFrame = requestAnimationFrame(drawWaveform);
+          }
+        }, 35); 
+      }
+
+      // 性能优化：只有在用户滚动到该卡片时才渲染动画
+      const waveObserver = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && canvas.offsetParent !== null) {
+          inView = true;
+          resizeWaveform();
+          if (!animFrame) drawWaveform();
+        } else {
+          inView = false;
+          if (animFrame) cancelAnimationFrame(animFrame);
+          animFrame = null;
+        }
+      }, { threshold: 0.1 });
+      
+      waveObserver.observe(canvas.parentElement);
+    });
 </script>
