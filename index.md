@@ -2200,17 +2200,7 @@ This project is open-source and available under the **MIT License**. Click the b
  
 <script>
  document.addEventListener("DOMContentLoaded", () => {
-
-   // 🚀 Problem G：确保 window.isPageScrolling 在 index.md 中有 fallback（layout 中也会设置）
-   if (typeof window.isPageScrolling === 'undefined') {
-     window.isPageScrolling = false;
-     window.addEventListener('scroll', () => {
-       window.isPageScrolling = true;
-       clearTimeout(window._scrollEndTimer);
-       window._scrollEndTimer = setTimeout(() => { window.isPageScrolling = false; }, 150);
-     }, { passive: true });
-   }
-
+ 
    // ===================== E-Link 动态数据面板 =====================
    const dashboardObserver = new IntersectionObserver((entries) => {
      entries.forEach(entry => {
@@ -2305,12 +2295,9 @@ This project is open-source and available under the **MIT License**. Click the b
      }
  
      const activateViewer = async (viewer, force = false) => {
-       if (viewer._activating) return; // 🚀 Problem K：防止快速滚动时重入
        if (isScrolling && !force) return;
-       viewer._activating = true;
-       try {
        ensureContextSlot(viewer);
-
+ 
        if (viewer.getAttribute('reveal') === 'manual' && viewer.dataset.loaded !== "true") {
          if (viewer.dataset.loaded === "reclaimed" && viewer._cachedSrc) {
            viewer.src = viewer._cachedSrc;
@@ -2327,7 +2314,7 @@ This project is open-source and available under the **MIT License**. Click the b
          viewer.dismissPoster();
          return;
        }
-
+ 
        if (viewer.dataset.loaded === "reclaimed" && viewer._cachedSrc) {
          viewer.src = viewer._cachedSrc;
          viewer.dataset.loaded = "true";
@@ -2338,19 +2325,16 @@ This project is open-source and available under the **MIT License**. Click the b
          viewer.addEventListener('load', reloadHandler);
          return;
        }
-
+ 
        if (viewer.paused) {
          try { viewer.play(); } catch(e) {}
        }
-
+ 
        if (viewer.dataset.overlayDisabled !== "true") {
          clearTimeout(viewer.hudTimer);
          viewer.hudTimer = setTimeout(() => {
            viewer.querySelectorAll('.gesture-overlay').forEach(el => el.classList.add('gesture-active'));
          }, 500);
-       }
-       } finally {
-         viewer._activating = false; // 🚀 Problem K：无论成功或异常，都释放锁
        }
      };
  
@@ -2436,7 +2420,7 @@ This project is open-source and available under the **MIT License**. Click the b
      const NUM_CHANNELS = 20; 
      const LABEL_WIDTH = 100; 
      let scanX = LABEL_WIDTH;  
-     const scanSpeed = 3.0; 
+     const scanSpeed = 1.2; 
      let animationFrame;
      
      function resizeIntanCanvas() {
@@ -2724,10 +2708,9 @@ This project is open-source and available under the **MIT License**. Click the b
           
           // 🌟 1. 生成逼真的带通滤波底噪 (毛茸茸的基线厚度)
           // 结合平滑噪声(模拟电极阻抗低频特性)和白噪声(系统热噪声)
-         // 降低平滑权重(0.5 -> 0.3)，增加白噪声比例，让底噪看起来更刺、更清脆
-         currentNoise = currentNoise * 0.3 + (Math.random() - 0.5) * 20; 
-        let pureWhiteNoise = (Math.random() - 0.5) * 16;
-        let totalNoise = currentNoise + pureWhiteNoise;
+          currentNoise = currentNoise * 0.5 + (Math.random() - 0.5) * 22; 
+          let pureWhiteNoise = (Math.random() - 0.5) * 12;
+          let totalNoise = currentNoise + pureWhiteNoise;
 
           // 🌟 2. 模拟真实示波器的“触发点打结”效应
           // 在 t=0 触发点附近强行收束噪声，让它们完美交汇于 -70，远离触发点则恢复毛躁
@@ -2779,8 +2762,9 @@ This project is open-source and available under the **MIT License**. Click the b
         return trace;
       }
 
-    // 初始预填充6个波形 (Pixel-perfect thickness)
-   for(let i = 0; i < 6; i++) spikes.push(generateSpike());
+    // 初始预填充50个波形 (Pixel-perfect thickness)
+for(let i = 0; i < 50; i++) spikes.push(generateSpike());
+
      // 获取我们要动态更新的文字容器，并设置时间戳变量
      const statsOverlay = wrapper.querySelector('.scope-dynamic-stats');
      let lastStatsUpdate = 0;
@@ -2826,46 +2810,34 @@ This project is open-source and available under the **MIT License**. Click the b
          ctx.beginPath(); ctx.moveTo(0, yThresh); ctx.lineTo(sWidth, yThresh); ctx.stroke();
 
          // 偶尔抓取新的 Spike 进缓冲区 (Maintain Pixel-perfect thickness)
-             // 30fps 下，0.16 的概率大约是每秒触发 5 次
-if (Math.random() < 0.16) { 
-  spikes.push(generateSpike());
-  // 核心修复：只保留最近的 8 个波形，多余的剔除，防止糊成一团
-  if (spikes.length > 8) spikes.shift(); 
-}
-         
-     // 叠加绘制波形 (加入真实的余辉褪色效应)
-ctx.lineWidth = 1.2;
-ctx.lineJoin = 'round';
-spikes.forEach((spike, idx) => {
-  
-  // 核心修复：最新触发的波形高亮 (alpha 0.9)，历史波形迅速变暗 (alpha 0.15~0.4)
-  let alpha;
-  if (idx === spikes.length - 1) {
-      alpha = 0.9; // 最新波形
-  } else {
-      alpha = 0.15 + (idx / spikes.length) * 0.25; // 历史余辉
-  }
-  
-  ctx.strokeStyle = `rgba(255, 255, 255, ${alpha})`;
-  ctx.beginPath();
-  for(let i = 0; i < spike.length; i++) {
-    let px = (i / (spike.length - 1)) * sWidth;
-    let py = y0 - (spike[i] / 500) * (sHeight / 2);
-    i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
-  }
-  ctx.stroke();
-});
-       
- // 🚀 Problem H：用 setTimeout(33ms)+RAF 替代直接 RAF 递归，将 Spike Scope 限速在约 30fps
-        animationFrame = setTimeout(() => requestAnimationFrame(drawScope), 33);
+            if (Math.random() < 0.25) { 
+            spikes.push(generateSpike());
+            if (spikes.length > 50) spikes.shift();
+              }
+
+         // 叠加绘制波形
+         ctx.lineWidth = 1.2;
+         ctx.lineJoin = 'round';
+         spikes.forEach((spike, idx) => {
+           // 老的波形透明度更低
+           ctx.strokeStyle = `rgba(255, 255, 255, ${0.2 + (idx / 20) * 0.6})`;
+           ctx.beginPath();
+           for(let i = 0; i < spike.length; i++) {
+             let px = (i / (spike.length - 1)) * sWidth;
+             let py = y0 - (spike[i] / 500) * (sHeight / 2);
+             i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
+           }
+           ctx.stroke();
+         });
+       }
+       animationFrame = requestAnimationFrame(drawScope);
      }
 
      const scopeObserver = new IntersectionObserver((entries) => {
        if (entries[0].isIntersecting && wrapper.offsetParent !== null) {
          if (!animationFrame) drawScope();
        } else {
-         // 🚀 Problem H：animationFrame 现在是 setTimeout ID，只需 clearTimeout
-         if (animationFrame) { clearTimeout(animationFrame); }
+         if (animationFrame) cancelAnimationFrame(animationFrame);
          animationFrame = null;
        }
      }, { threshold: 0.1 });
@@ -2883,8 +2855,6 @@ spikes.forEach((spike, idx) => {
       let inView = false;
 
       function resizeWaveform() {
-        // 🚀 Problem I：resize 时先停止已有动画循环，防止产生多个并行 RAF 循环
-        if (animFrame) { cancelAnimationFrame(animFrame); animFrame = null; }
         const parent = canvas.parentElement;
         if (!parent || parent.clientWidth === 0) return;
         const dpr = window.devicePixelRatio || 1;
