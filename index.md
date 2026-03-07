@@ -1003,7 +1003,7 @@ body.light-mode .scope-win-wrapper * { filter: none !important; }
     <div class="intan-plots-wrapper">
       <div class="intan-plot-pane">
         <div class="intan-time-axis">
-          <span>0</span><span>10</span><span>20</span><span>30</span><span>40</span><span>50 ms</span>
+          <span>0</span><span>0.2</span><span>0.4</span><span>0.6</span><span>0.8</span><span>1.0 ms</span>
         </div>
         <div class="intan-canvas-container">
           <canvas class="intan-canvas canvas-left"></canvas>
@@ -1019,7 +1019,7 @@ body.light-mode .scope-win-wrapper * { filter: none !important; }
       </div>
       <div class="intan-plot-pane">
         <div class="intan-time-axis">
-          <span>0</span><span>10</span><span>20</span><span>30</span><span>40</span><span>50 ms</span>
+          <span>0</span><span>200</span><span>400</span><span>600</span><span>800</span><span>1000 ms</span>
         </div>
         <div class="intan-canvas-container">
           <canvas class="intan-canvas canvas-right"></canvas>
@@ -1128,8 +1128,8 @@ body.light-mode .scope-win-wrapper * { filter: none !important; }
       <div class="scope-overlay-text" style="bottom:5px; left:66.66%; color:#fff; transform:translateX(-50%);">1</div>
       <div class="scope-overlay-text" style="bottom:5px; right:10px; color:#fff;">2 ms</div>
 
-      <div class="scope-overlay-text" style="top:10px; left:34%; color:#fff; font-size: 11px;">A-126</div>
-      <div class="scope-overlay-text scope-dynamic-stats" style="top:25px; left:34%; color:#4ade80;">RMS: 9.1 µV  5 spikes/s</div>
+      <div class="scope-overlay-text" style="top:10px; left: 15%; color:#fff; font-size: 11px;">A-126</div>
+      <div class="scope-overlay-text scope-dynamic-stats" style="top:25px; left: 15%; color:#4ade80;">RMS: 9.1 µV  5 spikes/s</div>
     </div>
   </div>
 </div>
@@ -2420,7 +2420,7 @@ This project is open-source and available under the **MIT License**. Click the b
      const NUM_CHANNELS = 20; 
      const LABEL_WIDTH = 100; 
      let scanX = LABEL_WIDTH;  
-     const scanSpeed = 3.0; 
+     const scanSpeed = 10.0; 
      let animationFrame;
      
      function resizeIntanCanvas() {
@@ -2488,7 +2488,7 @@ This project is open-source and available under the **MIT License**. Click the b
      function drawPane(ctx, channelsData, isLeftPane) {
        const isMobile = window.innerWidth <= 768;
        const currentLabelWidth = isMobile ? 80 : LABEL_WIDTH; 
-       const eraseWidth = 2; 
+       const eraseWidth = 20; 
        ctx.fillStyle = '#000000';
        
        if (scanX + eraseWidth > width) {
@@ -2530,7 +2530,7 @@ This project is open-source and available under the **MIT License**. Click the b
                  0.1 * Math.exp(-Math.pow((t - 0.80) * 4, 2));    
  
               signal += spikeShape * ch.spikeAmp;
-              ch.spikeProgress += 0.12; 
+              ch.spikeProgress += 0.6; 
               if (ch.spikeProgress >= 1) ch.isSpiking = false;
            }
          }
