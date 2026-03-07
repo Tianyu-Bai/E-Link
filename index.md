@@ -2420,7 +2420,7 @@ This project is open-source and available under the **MIT License**. Click the b
      const NUM_CHANNELS = 20; 
      const LABEL_WIDTH = 100; 
      let scanX = LABEL_WIDTH;  
-     const scanSpeed = 10.0; 
+     const scanSpeed = 7.0; 
      let animationFrame;
      
      function resizeIntanCanvas() {
@@ -2488,7 +2488,7 @@ This project is open-source and available under the **MIT License**. Click the b
      function drawPane(ctx, channelsData, isLeftPane) {
        const isMobile = window.innerWidth <= 768;
        const currentLabelWidth = isMobile ? 80 : LABEL_WIDTH; 
-       const eraseWidth = 20; 
+       const eraseWidth = 9; 
        ctx.fillStyle = '#000000';
        
        if (scanX + eraseWidth > width) {
@@ -2530,7 +2530,7 @@ This project is open-source and available under the **MIT License**. Click the b
                  0.1 * Math.exp(-Math.pow((t - 0.80) * 4, 2));    
  
               signal += spikeShape * ch.spikeAmp;
-              ch.spikeProgress += 0.6; 
+              ch.spikeProgress += 0.25; 
               if (ch.spikeProgress >= 1) ch.isSpiking = false;
            }
          }
