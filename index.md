@@ -2612,7 +2612,7 @@ This project is open-source and available under the **MIT License**. Click the b
              ctx.fillText("50 µV", scaleX + 6, scaleY + 1);
            }
        } // 👈 补丁结束括号
-    
+    }
        const blockHeight = isMobile ? 8 : 11;
        const blockOffsetY = blockHeight / 2;
        
