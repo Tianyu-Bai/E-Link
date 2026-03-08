@@ -2422,6 +2422,7 @@ This project is open-source and available under the **MIT License**. Click the b
      let scanX = LABEL_WIDTH;  
      const scanSpeed = 5.0; 
      let animationFrame;
+     let forceDrawLabels = true;
      
      function resizeIntanCanvas() {
        if(canvasL.parentElement.clientWidth === 0) return;
@@ -2555,7 +2556,7 @@ This project is open-source and available under the **MIT License**. Click the b
        }
  
        // 🚨 核心性能补丁：只有扫描线回到起点时，才重绘左侧文字标签！不再每帧盲目重绘！
-       if (scanX <= currentLabelWidth + scanSpeed + 1) {
+       if (forceDrawLabels) {
            ctx.fillStyle = '#000000';
            ctx.fillRect(0, 0, currentLabelWidth, height);
            
@@ -2612,68 +2613,16 @@ This project is open-source and available under the **MIT License**. Click the b
              ctx.fillText("50 µV", scaleX + 6, scaleY + 1);
            }
        } // 👈 补丁结束括号
-    }
-       const blockHeight = isMobile ? 8 : 11;
-       const blockOffsetY = blockHeight / 2;
-       
-       ctx.font = `${fontSize}px "Segoe UI", "Arial", sans-serif`;
-       ctx.textBaseline = 'middle';
-       
-       const padding = isMobile ? 3 : 4; 
-       const iconSize = isMobile ? 7 : 7; 
-       const idOffsetX = padding + iconSize + (isMobile ? 3 : 4); 
-       const rightEdge = currentLabelWidth - padding - 1;
- 
-       for (let i = 0; i < NUM_CHANNELS; i++) {
-         const ch = channelsData[i];
-         const textY = ch.baseY + (isMobile ? 0.5 : 1); 
-         
-         ctx.fillStyle = ch.color;
-         ctx.fillRect(0, ch.baseY - blockOffsetY, currentLabelWidth - 3, blockHeight);
-         
-         const themeColor = ch.isBad ? 'rgba(0,0,0,0.7)' : '#fff';
-         ctx.fillStyle = themeColor;
- 
-         const iconY = textY - iconSize / 2;
-         ctx.fillRect(padding, iconY, iconSize, iconSize);
-         ctx.fillStyle = ch.color;
-         ctx.fillRect(padding + iconSize * 0.2, iconY + iconSize * 0.1, iconSize * 0.6, iconSize * 0.3);
-         ctx.fillStyle = themeColor;
- 
-         ctx.textAlign = 'left';
-         ctx.fillText(ch.id, idOffsetX, textY);
-         
-         ctx.textAlign = 'right';
-         ctx.fillText(ch.imp, rightEdge, textY);
-       }
- 
-       if (isLeftPane) {
-         const scaleY = channelsData[3].baseY + (gap * 0.3); 
-         const lineHeight = 6; 
-         const scaleX = currentLabelWidth + (isMobile ? 25 : 50);
-         
-         ctx.strokeStyle = 'rgba(255, 255, 255, 0.8)'; 
-         ctx.lineWidth = 1;
-         ctx.beginPath();
-         ctx.moveTo(scaleX, scaleY - lineHeight); 
-         ctx.lineTo(scaleX, scaleY + lineHeight);
-         ctx.stroke();
- 
-         ctx.textAlign = 'left'; 
-         ctx.fillStyle = '#fff';
-         ctx.font = `${isMobile ? 7 : 9}px "Segoe UI", sans-serif`;
-         ctx.fillText("50 µV", scaleX + 6, scaleY + 1);
-       }
-     }
  
      function renderDualSweep() {
        if (!window.isPageScrolling) {
          drawPane(ctxL, channelsL, true);
          drawPane(ctxR, channelsR, false);
- 
+         forceDrawLabels = false; // 👈 新增：画完就关上开关，节省 CPU
          scanX += scanSpeed;
          if (scanX >= width) {
            scanX = window.innerWidth <= 768 ? 80 : LABEL_WIDTH;
+           forceDrawLabels = true; // 👈 新增：扫回起点时，打开开关，触发文字重绘
          }
        }
        animationFrame = setTimeout(() => {
