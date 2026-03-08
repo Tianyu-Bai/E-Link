@@ -174,7 +174,7 @@ html { overflow-x: hidden; width: 100%; -webkit-text-size-adjust: 100%; }
 body { overflow-x: hidden; width: 100%; position: relative; margin: 0; padding: 0; font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
 *, *::before, *::after { box-sizing: border-box; }
 
-/* ✅ 保险方案：占位由父容器负责 */
+/* 占位由父容器负责 */
 .gif-placeholder { width: 100%; max-width: 500px; min-height: 280px; margin: 0 auto; display: flex; align-items: center; justify-content: center; background: rgba(15, 23, 42, 0.15); border-radius: 8px; overflow: hidden; }
 .gif-placeholder.narrow { max-width: 460px; }
 .lazy-gif { width: 100%; height: auto; display: block; opacity: 0; transition: opacity 0.4s ease; border-radius: 6px; }
@@ -1683,7 +1683,7 @@ This project is open-source and available under the **MIT License**. Click the b
  
 ## 📖 概览
  
-**E-Link易链**，是一款基于弹性体互连技术（Elastomer Interconnection）的开源微型基座连接系统。它为柔性神经探针提供了稳固且可扩展的接口，专为自由活动动物的长期实验而优化设计
+**E-Link易链**，是一款基于弹性导电体互连技术（Elastomer Interconnection）的开源微型基座连接系统。它为柔性神经探针提供了稳固且可扩展的接口，专为自由活动动物的长期实验而优化设计
  
 <div align="center" data-aos="zoom-in-up" data-aos-duration="1000">
  <br>
