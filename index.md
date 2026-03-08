@@ -1003,7 +1003,7 @@ body.light-mode .scope-win-wrapper * { filter: none !important; }
     <div class="intan-plots-wrapper">
       <div class="intan-plot-pane">
         <div class="intan-time-axis">
-          <span>0</span><span>0.2</span><span>0.4</span><span>0.6</span><span>0.8</span><span>1.0 ms</span>
+           <span>0</span><span>200</span><span>400</span><span>600</span><span>800</span><span>1000 ms</span>
         </div>
         <div class="intan-canvas-container">
           <canvas class="intan-canvas canvas-left"></canvas>
@@ -1864,7 +1864,7 @@ This project is open-source and available under the **MIT License**. Click the b
    <div class="intan-plots-wrapper">
      <div class="intan-plot-pane">
        <div class="intan-time-axis">
-         <span>0</span><span>10</span><span>20</span><span>30</span><span>40</span><span>50 ms</span>
+          <span>0</span><span>200</span><span>400</span><span>600</span><span>800</span><span>1000 ms</span>
        </div>
        <div class="intan-canvas-container">
          <canvas class="intan-canvas canvas-left"></canvas>
@@ -1880,7 +1880,7 @@ This project is open-source and available under the **MIT License**. Click the b
      </div>
      <div class="intan-plot-pane">
        <div class="intan-time-axis">
-         <span>0</span><span>10</span><span>20</span><span>30</span><span>40</span><span>50 ms</span>
+          <span>0</span><span>200</span><span>400</span><span>600</span><span>800</span><span>1000 ms</span>
        </div>
        <div class="intan-canvas-container">
          <canvas class="intan-canvas canvas-right"></canvas>
