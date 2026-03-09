@@ -1117,17 +1117,15 @@ if (window.innerWidth > 768 && cursorDot && cursorOutline) {
     const py = new Float32Array(count);
 
     const drawDustFn = () => {
-     // 🚀 手机横屏终极防闪退：后台直接挂起粒子坐标计算
+      // 🚀 手机横屏终极防闪退：后台直接挂起粒子坐标计算（横屏确实显存不够，保留此设定）
       if (window.innerWidth <= 1024 && window.innerWidth > window.innerHeight) return;
-      // 🚀 防闪退核心：如果检测到页面正在剧烈滑动，立即挂起渲染！
-      if (window.isScrollingIntensely || document.documentElement.classList.contains('lenis-scrolling')) {
-        return;
-      }
+      
+      // 🚀 新策略：不直接 return 冻结，而是获取“是否在滚动”状态，用于启动“低画质模式”
+      const isScrolling = window.isScrollingIntensely || document.documentElement.classList.contains('lenis-scrolling');
       
       ctx.clearRect(0, 0, width, height);
       const isLight = document.body.classList.contains('light-mode');
       
-      // ⚠️ 已经清理了重复声明的 const
       const sigColor = isLight ? '30, 58, 138' : '0, 255, 255';
       const connectionOpacity = isLight ? 0.25 : 0.12;
       const nR = isLight ? 13 : 96, nG = isLight ? 148 : 165, nB = isLight ? 136 : 250;
@@ -1138,22 +1136,20 @@ if (window.innerWidth > 768 && cursorDot && cursorOutline) {
         if (isMobile) { if (py[s.si] < height * 0.5) topAct++; else bottomAct++; }
       });
 
-      // 1. 物理引擎：超簇吸附算法 (Cluster Coalescence)
+      // 1. 物理引擎：超簇吸附算法 (坐标计算全量保留，保证运动连续性)
       for (let i = 0; i < count; i++) {
         const p = particles[i];
         p.neighbors = []; 
         if (p.refractory > 0) p.refractory--;
 
-        // 🌊 修改：更高效的鼠标流体排斥
+        // 鼠标流体排斥
         if (mouse.active && !isMobile) {
             const dx = mouse.x - p.x;
             const dy = mouse.y - p.y;
-            // 🚀 优化：先用平方进行范围预判（避免昂贵的 Math.sqrt 计算）
             const distSq = dx * dx + dy * dy;
-            if (distSq < 62500) { // 250的平方
+            if (distSq < 62500) { 
                 const dist = Math.sqrt(distSq);
                 const force = (250 - dist) / 250;
-                // 轻轻推开，但力度减小一点点，防止节点抖动太快带来的视觉卡顿感
                 p.vx -= (dx / dist) * force * 0.1; 
                 p.vy -= (dy / dist) * force * 0.1; 
             }
@@ -1183,27 +1179,19 @@ if (window.innerWidth > 768 && cursorDot && cursorOutline) {
               if (mY < TOP_ZONE && topAct < 5) canFire = true;
               if (mY > height - BOTTOM_ZONE && bottomAct < 3) canFire = true;
             } else {
-              // 侧边判定范围自适应新的侧边宽度
               const isSide = (mX < sideZone * 1.2 || mX > width - sideZone * 1.2);
               if (isSide && pcTotal < 2) canFire = true;
             }
 
             if (canFire && dist < 75 && Math.random() < 0.012 && p.refractory <= 0) {
               p.charge = 1; p2.charge = 1;
-              
-              // 🚀 新增：根据发射源细胞的大小，计算这道电流的“能量倍率”
               const power = p.baseRadius / (isMobile ? 2.0 : 3.5); 
-
               for(let b=0; b<4; b++) sparks.push({ type: 'bubble', x: mX + (Math.random()-0.5)*15, y: mY + (Math.random()-0.5)*15, radius: 1 * power, life: 1, decay: 0.015 });
               p.refractory = 220;
               signals.push({ 
                 source: p, si: i, ep: p2, ei: j, 
-                progress: 0, 
-                speed: 0.12,  // 🚀 从 0.04 提升到 0.12 (速度提升 3 倍)
-                tail: 0.25,   // ☄️ 从 0.5 缩短到 0.25 (尾迹更短，显得更干脆)
-                hops: isMobile ? 5 : Math.floor(Math.random() * 8) + 10, // 减少跳跃次数防止画面过乱
-                history: [i],
-                power: power
+                progress: 0, speed: 0.12, tail: 0.25, hops: isMobile ? 5 : Math.floor(Math.random() * 8) + 10,
+                history: [i], power: power
               });
               if (!isMobile) pcTotal++;
             }
@@ -1213,13 +1201,12 @@ if (window.innerWidth > 768 && cursorDot && cursorOutline) {
         p.vx *= 0.85; p.vy *= 0.85; 
         p.x += p.vx; p.y += p.vy;
 
-        // 💡 3. X轴结界屏障：防止因相互吸附而被拉到中间内容区
         if (p.isLeft) {
-            if (p.x > sideZone) p.vx -= 0.05; // 越过右侧结界，推回左边
-            if (p.x < 0) p.vx += 0.05;        // 越过屏幕最左侧，推回右边
+            if (p.x > sideZone) p.vx -= 0.05; 
+            if (p.x < 0) p.vx += 0.05;        
         } else {
-            if (p.x < width - sideZone) p.vx += 0.05; // 越过左侧结界，推回右边
-            if (p.x > width) p.vx -= 0.05;            // 越过屏幕最右侧，推回左边
+            if (p.x < width - sideZone) p.vx += 0.05; 
+            if (p.x > width) p.vx -= 0.05;            
         }
 
         if (isMobile) {
@@ -1229,7 +1216,7 @@ if (window.innerWidth > 768 && cursorDot && cursorOutline) {
         px[i] = p.x + Math.sin(p.pulse) * 5; py[i] = p.y + Math.cos(p.pulse * 0.8) * 5;
       }
 
-      // 2. 连线层
+      // 2. 连线层：基础线条，开销小，全量保留
       for (let i = 0; i < count; i++) {
         particles[i].neighbors.forEach(ni => {
           if (ni > i) {
@@ -1249,7 +1236,7 @@ if (window.innerWidth > 768 && cursorDot && cursorOutline) {
         ctx.arc(s.x, s.y, s.radius, 0, Math.PI * 2); ctx.stroke();
       }
 
-      // 4. 实时长程电流传导 (Real-time Adaptive Routing)
+      // 4. 实时长程电流传导
       for (let i = signals.length - 1; i >= 0; i--) {
         const s = signals[i]; s.progress += s.speed;
         if (s.progress > 0.95 && s.progress < 0.95 + s.speed) {
@@ -1261,7 +1248,6 @@ if (window.innerWidth > 768 && cursorDot && cursorOutline) {
                     s.si = s.ei; s.ei = nextId; 
                     s.source = s.ep; s.ep = particles[nextId];
                     s.history.push(nextId); s.progress = 0; s.hops--;
-                    // 传导时的气泡也受到 power 影响
                     for(let nb=0; nb<2; nb++) sparks.push({ type: 'bubble', x: px[s.si], y: py[s.si], radius: 0.8 * s.power, life: 0.8, decay: 0.015 });
                 } else { s.hops = 0; }
             }
@@ -1274,33 +1260,38 @@ if (window.innerWidth > 768 && cursorDot && cursorOutline) {
         const ty = py[s.si] + (py[s.ei] - py[s.si]) * Math.max(0, s.progress - s.tail);
 
         ctx.beginPath(); 
-        // 优化流星的渐变色，让头部（1.0 处）更有爆发力
-        const g = ctx.createLinearGradient(tx, ty, hx, hy);
-        g.addColorStop(0, `rgba(${sigColor}, 0)`);  
-        g.addColorStop(0.2, `rgba(${sigColor}, ${0.1 + s.power * 0.1})`); 
-        g.addColorStop(0.8, `rgba(255, 255, 255, ${0.4 + s.power * 0.3})`); // 增加白光比例
-        g.addColorStop(1, '#ffffff'); // 头部直接给纯白，模拟破空感
+        
+        // 🚀 核心优化 1：滚动时放弃实例化线性渐变 (LinearGradient)，改用纯色线条
+        if (isScrolling) {
+            ctx.strokeStyle = `rgba(255, 255, 255, 0.8)`;
+            ctx.lineWidth = (isLight ? 1.5 : 2.0);
+            ctx.shadowBlur = 0;
+            ctx.moveTo(tx, ty); ctx.lineTo(hx, hy); ctx.stroke();
+        } else {
+            const g = ctx.createLinearGradient(tx, ty, hx, hy);
+            g.addColorStop(0, `rgba(${sigColor}, 0)`);  
+            g.addColorStop(0.2, `rgba(${sigColor}, ${0.1 + s.power * 0.1})`); 
+            g.addColorStop(0.8, `rgba(255, 255, 255, ${0.4 + s.power * 0.3})`); 
+            g.addColorStop(1, '#ffffff'); 
 
-        ctx.strokeStyle = g;
-        ctx.lineWidth = (isLight ? 1.5 : 2.0) + s.power * 2.0; // 稍微加粗，防止速度快了看不清
-        ctx.lineCap = 'round';
-        
-        // 🚀 动态外发光效果修复版：只有高能量的电流才附带耀眼光晕
-        ctx.shadowBlur = s.power > 1.3 ? 10 : 0; 
-        ctx.shadowColor = isLight ? '#2563eb' : '#00ffff';
-        
-        ctx.moveTo(tx, ty); ctx.lineTo(hx, hy); ctx.stroke();
-        
-        // 内核电流虚线也跟随粗细变化
-        ctx.beginPath(); 
-        ctx.strokeStyle = `rgba(255,255,255,${0.15 + s.power * 0.1})`; 
-        ctx.lineWidth = 0.5 + s.power * 0.6; 
-        ctx.setLineDash([4, 12]); ctx.lineDashOffset = -s.progress * 30; 
-        ctx.moveTo(tx, ty); ctx.lineTo(hx, hy); ctx.stroke();
-        ctx.setLineDash([]); ctx.shadowBlur = 0;
+            ctx.strokeStyle = g;
+            ctx.lineWidth = (isLight ? 1.5 : 2.0) + s.power * 2.0; 
+            ctx.lineCap = 'round';
+            ctx.shadowBlur = s.power > 1.3 ? 10 : 0; 
+            ctx.shadowColor = isLight ? '#2563eb' : '#00ffff';
+            ctx.moveTo(tx, ty); ctx.lineTo(hx, hy); ctx.stroke();
+            
+            // 内核电流虚线（滚动时屏蔽）
+            ctx.beginPath(); 
+            ctx.strokeStyle = `rgba(255,255,255,${0.15 + s.power * 0.1})`; 
+            ctx.lineWidth = 0.5 + s.power * 0.6; 
+            ctx.setLineDash([4, 12]); ctx.lineDashOffset = -s.progress * 30; 
+            ctx.moveTo(tx, ty); ctx.lineTo(hx, hy); ctx.stroke();
+            ctx.setLineDash([]); ctx.shadowBlur = 0;
+        }
       }
 
-      // --- 5. 大胞体渲染 (浅色模式下去掉模糊，增加锐度) ---
+      // 5. 大胞体渲染
       for (let i = 0; i < count; i++) {
         const p = particles[i];
         p.pulse += p.pulseSpeed;
@@ -1308,29 +1299,28 @@ if (window.innerWidth > 768 && cursorDot && cursorOutline) {
         const r = p.baseRadius * breathing;
 
         if (isLight) {
-            // ☀️ 浅色模式：去掉模糊光晕 (Halo)，改用清晰的描边或实色
-            ctx.shadowBlur = 0; // 强制关闭阴影，解决“糊”的问题
-            
-            // 绘制一个带微弱透明度的深蓝色核心
+            ctx.shadowBlur = 0; 
             ctx.fillStyle = `rgba(37, 99, 235, ${0.4 + p.charge * 0.4})`;
             ctx.beginPath();
             ctx.arc(px[i], py[i], r * 1.2, 0, Math.PI * 2);
             ctx.fill();
 
-            // 增加一个极细的深色描边，让节点在白色背景上立起来
             ctx.strokeStyle = `rgba(30, 58, 138, 0.6)`;
             ctx.lineWidth = 0.5;
             ctx.stroke();
         } else {
-            // 🌙 深色模式：保留原来的全息光晕逻辑
-            const halo = ctx.createRadialGradient(px[i], py[i], 0, px[i], py[i], r * 4.5);
-            halo.addColorStop(0, `rgba(${nR},${nG},${nB},${0.12 + p.charge * 0.3})`);
-            halo.addColorStop(1, 'rgba(0,0,0,0)');
-            ctx.fillStyle = halo; 
-            ctx.beginPath(); 
-            ctx.arc(px[i], py[i], r * 4.5, 0, Math.PI * 2); 
-            ctx.fill();
+            // 🚀 核心优化 2：滚动时放弃实例化径向渐变 (RadialGradient)，屏蔽发光层
+            if (!isScrolling) {
+                const halo = ctx.createRadialGradient(px[i], py[i], 0, px[i], py[i], r * 4.5);
+                halo.addColorStop(0, `rgba(${nR},${nG},${nB},${0.12 + p.charge * 0.3})`);
+                halo.addColorStop(1, 'rgba(0,0,0,0)');
+                ctx.fillStyle = halo; 
+                ctx.beginPath(); 
+                ctx.arc(px[i], py[i], r * 4.5, 0, Math.PI * 2); 
+                ctx.fill();
+            }
 
+            // 核心高光点全量保留，保证基础视觉结构不丢
             ctx.fillStyle = `rgba(${p.cR}, ${p.cG}, ${p.cB}, ${0.7 + p.charge * 0.3})`;
             ctx.beginPath(); 
             ctx.arc(px[i], py[i], r * 0.6, 0, Math.PI * 2); 
