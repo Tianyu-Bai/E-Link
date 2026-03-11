@@ -19,7 +19,7 @@ title: E-Link Home
 /* 2. 【英文版专属】图片遮罩与光束扫过 */
 .logo-mask-container {
   position: relative; 
-  /* 加上 max-content 锁死物理宽度 */
+  /* 加上 max-content 锁死宽度 */
   display: inline-block; 
   width: max-content; 
   max-width: 100%;
