@@ -28,7 +28,7 @@ title: E-Link Home
 .logo-mask-container::after {
   content: "";
   position: absolute;
-  inset: 0; /* 完美覆盖底层图片 */
+  inset: 0; /* 覆盖底层图片 */
   
   /* 🚀 核心修复：把遮罩仅应用于光束层！底图绝对安全 */
   -webkit-mask-image: var(--logo-url); 
