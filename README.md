@@ -57,7 +57,7 @@
 </div>
 
 > [!IMPORTANT]
-> **🎮 Interactive 3D View Available!** > GitHub doesn't support 3D models natively. <a href="https://tianyu-bai.github.io/E-Link">**Click here to interactively rotate, zoom, and explode this assembly directly in your browser!**</a>
+> **Interactive 3D View Available!** > GitHub doesn't support 3D models natively. <a href="https://tianyu-bai.github.io/E-Link">**Click here to interactively rotate, zoom, and explode this assembly directly in your browser!**</a>
 ---
 
 > [!NOTE]
