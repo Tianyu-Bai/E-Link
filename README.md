@@ -200,7 +200,7 @@
 </div>
 
 > [!TIP]
-> **🔍 Inspect the PCB Layers Up Close:** > Want to zoom in on the 0402 components or the BGA routing? <a href="https://tianyu-bai.github.io/E-Link">**Visit our interactive website**</a> to view the 3D PCBA model and examine the high-density layout!
+> **🔍 Inspect the PCB Layers Up Close:** > Want to zoom in on the components or the BGA routing? <a href="https://tianyu-bai.github.io/E-Link">**Visit our interactive website**</a> to view the 3D PCBA model and examine the high-density layout!
 <div align="center">
  <table style="margin-left: auto; margin-right: auto; width: 90%; text-align: center; border-collapse: collapse; border: 1px solid #e1e4e8;">
    <thead>
