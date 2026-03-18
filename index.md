@@ -169,7 +169,7 @@ title: E-Link Home
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@400;700&display=swap');
 
-/* 🚀 终极防溢出护盾：彻底锁死横向滚动条，修复手机端触摸失灵 */
+/* 🚀 终极防溢出护盾：彻底锁死横向滚动条 */
 html { overflow-x: hidden; width: 100%; -webkit-text-size-adjust: 100%; }
 body { overflow-x: hidden; width: 100%; position: relative; margin: 0; padding: 0; font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
 *, *::before, *::after { box-sizing: border-box; }
