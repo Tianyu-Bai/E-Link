@@ -1128,8 +1128,8 @@ body.light-mode .scope-win-wrapper * { filter: none !important; }
       <div class="scope-overlay-text" style="bottom:5px; left:66.66%; color:#fff; transform:translateX(-50%);">1</div>
       <div class="scope-overlay-text" style="bottom:5px; right:10px; color:#fff;">2 ms</div>
 
-      <div class="scope-overlay-text" style="top:10px; left: 15%; color:#fff; font-size: 11px;">A-126</div>
-      <div class="scope-overlay-text scope-dynamic-stats" style="top:25px; left: 15%; color:#4ade80;">RMS: 9.1 µV  5 spikes/s</div>
+      <div class="scope-overlay-text" style="top:10px; left:50%; transform:translateX(-50%); color:#fff; font-size: 12px; font-weight: bold;">A-126</div>
+      <div class="scope-overlay-text scope-dynamic-stats" style="top:28px; left:50%; transform:translateX(-50%); color:#4ade80; white-space: nowrap;">RMS: 9.1 µV &nbsp;&nbsp;|&nbsp;&nbsp; 5 spikes/s</div>
     </div>
   </div>
 </div>
@@ -1989,8 +1989,8 @@ This project is open-source and available under the **MIT License**. Click the b
       <div class="scope-overlay-text" style="bottom:5px; left:66.66%; color:#fff; transform:translateX(-50%);">1</div>
       <div class="scope-overlay-text" style="bottom:5px; right:10px; color:#fff;">2 ms</div>
 
-      <div class="scope-overlay-text" style="top:10px; left:34%; color:#fff; font-size: 11px;">A-126</div>
-      <div class="scope-overlay-text scope-dynamic-stats" style="top:25px; left:34%; color:#4ade80;">RMS: 9.1 µV  5 spikes/s</div>
+      <div class="scope-overlay-text" style="top:10px; left:50%; transform:translateX(-50%); color:#fff; font-size: 12px; font-weight: bold;">A-126</div>
+      <div class="scope-overlay-text scope-dynamic-stats" style="top:28px; left:50%; transform:translateX(-50%); color:#4ade80; white-space: nowrap;">RMS: 9.1 µV &nbsp;&nbsp;|&nbsp;&nbsp; 5 spikes/s</div>
     </div>
   </div>
 </div>
@@ -2783,7 +2783,7 @@ This project is open-source and available under the **MIT License**. Click the b
              // 模拟真实的微小波动：RMS 在 8.5 ~ 9.8 之间跳动，Spike 率在 3 ~ 7 之间跳动
              const dynamicRms = (8.5 + Math.random() * 1.3).toFixed(1);
              const dynamicRate = Math.floor(Math.random() * 5) + 3;
-             statsOverlay.innerText = `RMS: ${dynamicRms} µV  ${dynamicRate} spikes/s`;
+             statsOverlay.innerHTML = `RMS: ${dynamicRms} µV &nbsp;&nbsp;|&nbsp;&nbsp; ${dynamicRate} spikes/s`;
            }
            lastStatsUpdate = timestamp;
          }
