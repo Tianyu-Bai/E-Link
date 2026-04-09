@@ -229,7 +229,7 @@
   #lang-toggle { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; font-weight: bold; width: auto; padding: 0 14px; border-radius: 20px; letter-spacing: 0.5px; }
 
   /* --- 🚀 页脚数据面板 --- */
-  
+  .footer-dashboard { margin: 0 auto 25px auto; width: 360px; max-width: 100%; min-height: 240px; display: flex; flex-direction: column; justify-content: center; align-items: center; border: 1px solid rgba(59, 130, 246, 0.2); border-radius: 16px; padding: 15px; background: linear-gradient(145deg, rgba(15, 23, 42, 0.8), rgba(2, 6, 23, 0.9)); box-shadow: inset 0 0 20px rgba(59, 130, 246, 0.05), 0 10px 30px rgba(0, 0, 0, 0.5); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); overflow: hidden; position: relative; transition: all 0.3s ease; }
 
   /* ===================== 4. 模态弹窗 (Welcome & Video) ===================== */
   .welcome-modal { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(5px); z-index: 100001; display: flex; justify-content: center; align-items: center; opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s; padding: 20px; cursor: default !important; }
@@ -373,6 +373,7 @@
   body.light-mode .rpg-close:hover { color: #ef4444; }
   body.light-mode .ctrl-btn { background: rgba(255, 255, 255, 0.7); border-color: #cbd5e1; color: #64748b; }
   body.light-mode .ctrl-btn:hover { background: #ffffff; color: #0f172a; transform: scale(1.05); }
+  body.light-mode .footer-dashboard { background: linear-gradient(145deg, rgba(255, 255, 255, 0.9), rgba(241, 245, 249, 1)); border-color: rgba(148, 163, 184, 0.4); box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.8), 0 10px 30px rgba(148, 163, 184, 0.15); }
   body.light-mode .species-glass-box { background: rgba(255, 255, 255, 0.6); border-color: rgba(59, 130, 246, 0.3); }
   body.light-mode .node-title i { color: #1e293b !important; }
   body.light-mode .node-desc { color: #475569 !important; }
@@ -608,126 +609,6 @@
     #dynamic-mirror-bar { position: relative !important; top: 0 !important; margin-bottom: 5px !important; }
     .modal-watermark { display: none !important; } 
   }
-
- /* ===================== ★ Footer 全息仪表盘 ===================== */
-  .footer-holo {
-    width: 100%; max-width: 700px; margin: 0 auto 25px;
-    border: 1px solid rgba(59,130,246,0.18); border-radius: 16px;
-    overflow: hidden;
-    background: linear-gradient(160deg, rgba(10,18,35,0.95) 0%, rgba(4,9,22,0.98) 100%);
-    box-shadow: 0 0 0 1px rgba(255,255,255,0.04) inset, 0 20px 60px rgba(0,0,0,0.5), 0 0 40px rgba(59,130,246,0.06);
-    position: relative;
-  }
-  .footer-holo::before {
-    content: ''; position: absolute; top: 0; left: 10%; right: 10%; height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(96,165,250,0.5), rgba(167,139,250,0.3), transparent);
-  }
-  .fh-scan {
-    position: absolute; left: 0; right: 0; height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(96,165,250,0.25), transparent);
-    animation: fh-scan-move 6s linear infinite; pointer-events: none; opacity: 0;
-  }
-  @keyframes fh-scan-move {
-    0%   { top: 0%;   opacity: 0; }
-    5%   { opacity: 1; }
-    95%  { opacity: 0.6; }
-    100% { top: 100%; opacity: 0; }
-  }
-  .fh-header {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 12px 20px; border-bottom: 1px solid rgba(255,255,255,0.05);
-    font-family: 'JetBrains Mono', monospace; font-size: 10px;
-    letter-spacing: 1.5px; text-transform: uppercase; color: rgba(148,163,184,0.7);
-  }
-  .fh-header-left { display: flex; align-items: center; gap: 8px; }
-  .fh-status-dot {
-    width: 6px; height: 6px; border-radius: 50%;
-    background: #22d3ee; box-shadow: 0 0 6px #22d3ee;
-    animation: dot-breathe 2.5s ease-in-out infinite;
-  }
-  @keyframes dot-breathe {
-    0%,100% { opacity: 1; box-shadow: 0 0 6px #22d3ee; }
-    50%      { opacity: 0.4; box-shadow: 0 0 2px #22d3ee; }
-  }
-  .fh-live-badge {
-    display: flex; align-items: center; gap: 5px;
-    background: rgba(34,211,238,0.07); border: 1px solid rgba(34,211,238,0.2);
-    border-radius: 20px; padding: 2px 8px; font-size: 9px; color: #67e8f9;
-    position: relative; overflow: hidden;
-  }
-  .fh-live-badge::after {
-    content: ''; position: absolute; top: 0; left: -100%; width: 60%; height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(103,232,249,0.15), transparent);
-    animation: badge-sweep 3s linear infinite;
-  }
-  @keyframes badge-sweep { to { left: 160%; } }
-  .fh-body { padding: 20px; display: flex; flex-direction: column; gap: 16px; }
-  .fh-metrics { display: grid; grid-template-columns: 1fr 1px 1fr 1px 1fr; gap: 0; }
-  .fh-divider { background: rgba(255,255,255,0.06); width: 1px; margin: 4px 0; }
-  .fh-metric { display: flex; flex-direction: column; align-items: center; padding: 10px 8px; gap: 4px; position: relative; }
-  .fh-metric-label { font-family: 'JetBrains Mono', monospace; font-size: 8.5px; letter-spacing: 1.5px; color: rgba(100,116,139,0.9); text-transform: uppercase; }
-  .fh-metric-value { font-family: 'JetBrains Mono', monospace; font-size: 22px; font-weight: 700; color: #f1f5f9; line-height: 1; text-shadow: 0 0 20px rgba(96,165,250,0.3); }
-  .fh-metric-sub { font-size: 9px; color: rgba(100,116,139,0.7); font-family: 'JetBrains Mono', monospace; letter-spacing: 0.5px; }
-  .fh-plus {
-    position: absolute; top: 6px; right: 0;
-    font-family: 'JetBrains Mono', monospace; font-size: 9px;
-    color: #22d3ee; opacity: 0; pointer-events: none; text-shadow: 0 0 6px #22d3ee;
-  }
-  .fh-plus.pop { animation: plus-pop 1.4s ease-out forwards; }
-  @keyframes plus-pop {
-    0%   { opacity: 0; transform: translateY(0); }
-    15%  { opacity: 1; transform: translateY(-4px); }
-    85%  { opacity: 0.8; transform: translateY(-10px); }
-    100% { opacity: 0; transform: translateY(-14px); }
-  }
-  .fh-map-section {
-    border: 1px solid rgba(59,130,246,0.12); border-radius: 10px;
-    overflow: hidden; position: relative; background: rgba(5,10,20,0.6);
-  }
-  .fh-map-header {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 8px 14px; border-bottom: 1px solid rgba(255,255,255,0.04);
-    font-family: 'JetBrains Mono', monospace; font-size: 9px;
-    letter-spacing: 1.2px; color: rgba(100,116,139,0.8); text-transform: uppercase;
-  }
-  .fh-map-header span { color: rgba(148,163,184,0.6); }
-  .fh-map-inner {
-    padding: 10px; display: flex; flex-direction: column; align-items: center; gap: 6px; position: relative;
-  }
-  .fh-map-inner::after {
-    content: ''; position: absolute; inset: 0; pointer-events: none; border-radius: 6px;
-    background: linear-gradient(to bottom, rgba(5,10,20,0.15) 0%, transparent 20%, transparent 80%, rgba(5,10,20,0.25) 100%),
-                linear-gradient(to right,  rgba(5,10,20,0.15) 0%, transparent 15%, transparent 85%, rgba(5,10,20,0.15) 100%);
-  }
-  .fh-footer {
-    padding: 10px 20px; border-top: 1px solid rgba(255,255,255,0.04);
-    display: flex; justify-content: space-between; align-items: center;
-    font-family: 'JetBrains Mono', monospace; font-size: 9px;
-    letter-spacing: 0.8px; color: rgba(71,85,105,0.8);
-  }
-  .fh-footer-links { display: flex; gap: 16px; }
-  .fh-footer-links a { color: rgba(100,116,139,0.7); text-decoration: none; transition: color 0.2s; }
-  .fh-footer-links a:hover { color: #60a5fa; }
-
-  /* Footer 浅色模式 */
-  body.light-mode .footer-holo {
-    background: linear-gradient(160deg, rgba(248,250,252,0.97) 0%, rgba(241,245,249,0.98) 100%);
-    border-color: rgba(148,163,184,0.3); box-shadow: 0 10px 40px rgba(148,163,184,0.15);
-  }
-  body.light-mode .fh-header,
-  body.light-mode .fh-map-header { color: rgba(71,85,105,0.8); }
-  body.light-mode .fh-metric-label,
-  body.light-mode .fh-metric-sub  { color: rgba(100,116,139,0.8); }
-  body.light-mode .fh-metric-value { color: #0f172a; text-shadow: none; }
-  body.light-mode .fh-footer { color: rgba(100,116,139,0.7); border-top-color: rgba(203,213,225,0.5); }
-  body.light-mode .fh-divider { background: rgba(0,0,0,0.08); }
-  body.light-mode .fh-map-section { border-color: rgba(148,163,184,0.3); background: rgba(241,245,249,0.6); }
-
-  @media (max-width: 480px) {
-    .fh-metric-value { font-size: 18px; }
-    .fh-metric-label { font-size: 7.5px; }
-    .fh-footer { flex-direction: column; gap: 6px; text-align: center; }
-  }
 </style>
 
  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
@@ -871,83 +752,27 @@
     </div>
 
 <footer style="margin-top: 40px; padding-top: 20px; border-top: 1px solid rgba(255, 255, 255, 0.1); text-align: center; color: #94a3b8; font-size: 0.85rem;">
-<div class="footer-holo" id="footer-holo">
-  <div class="fh-scan"></div>
-
-  <div class="fh-header">
-    <div class="fh-header-left">
-      <div class="fh-status-dot"></div>
-      <span class="lang-en">Worldwide Pageview Monitor</span>
-      <span class="lang-zh" style="display:none">全球访问数据实时监测</span>
-    </div>
-    <div class="fh-live-badge">
-      <div class="fh-status-dot" style="width:5px;height:5px;background:#4ade80;box-shadow:0 0 5px #4ade80;animation-duration:1.8s;"></div>
-      <span class="lang-en">LIVE</span>
-      <span class="lang-zh" style="display:none">在线</span>
-      &nbsp;<span id="fh-live-count" style="color:#f1f5f9;font-weight:700;">--</span>
-      <span id="fh-plus" class="fh-plus">+1</span>
-    </div>
-  </div>
-
-  <div class="fh-body">
-    <div class="fh-metrics">
-      <div class="fh-metric">
-        <div class="fh-metric-label lang-en">Total Visits</div>
-        <div class="fh-metric-label lang-zh" style="display:none">总访问量</div>
-        <div class="fh-metric-value" style="font-size:14px;">
-  <script src="https://mapmyvisitors.com/counter.js?d=m5eNlZmkObq22GMdcKlpWq0A9hkoWtNuOIvQwtMspNc"></script>
-</div>
-        <div class="fh-metric-sub lang-en">since Feb 2026</div>
-        <div class="fh-metric-sub lang-zh" style="display:none">自 2026年2月</div>
+ <div class="footer-dashboard">
+    <div style="width: 100%; display: flex; justify-content: space-between; align-items: center; font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; margin-bottom: 12px; padding: 0 5px;">
+      
+      <div style="letter-spacing: 0.5px; animation: text-glow-cyan 3s ease-in-out infinite;">
+        <span class="lang-en">● Worldwide Pageview Data</span>
+        <span class="lang-zh">● 全球访问数据实时监测</span>
       </div>
-      <div class="fh-divider"></div>
-      <div class="fh-metric">
-        <div class="fh-metric-label lang-en">Countries</div>
-        <div class="fh-metric-label lang-zh" style="display:none">访客国家/地区</div>
-        <div class="fh-metric-value"><span id="fh-countries">36</span></div>
-        <div class="fh-metric-sub lang-en">regions reached</div>
-        <div class="fh-metric-sub lang-zh" style="display:none">覆盖区域</div>
-      </div>
-      <div class="fh-divider"></div>
-      <div class="fh-metric" style="position:relative;">
-        <div class="fh-metric-label lang-en">Online Now</div>
-        <div class="fh-metric-label lang-zh" style="display:none">当前在线</div>
-        <div class="fh-metric-value"><span id="fh-online">1</span></div>
-        <div class="fh-metric-sub" id="fh-online-sub">active session</div>
+
+      <div style="position: relative; display: flex; align-items: center; min-width: 100px; justify-content: flex-end; animation: live-glow-blue 3s ease-in-out infinite;">
+        <span class="lang-en" style="opacity: 0.8; margin-right: 4px;">LIVE:</span>
+        <span class="lang-zh" style="opacity: 0.8; margin-right: 4px;">在线人数:</span>
+        
+        <span id="live-counter">--</span>
+        <span id="plus-one" style="position: absolute; right: -12px; top: -8px; color: #00f2ff; opacity: 0; font-weight: bold; font-size: 0.6rem; text-shadow: 0 0 5px #00f2ff; pointer-events: none;">+1</span>
       </div>
     </div>
 
-    <div class="fh-map-section">
-      <div class="fh-map-header">
-        <span class="lang-en">Geographic Distribution</span>
-        <span class="lang-zh" style="display:none">访问地理分布</span>
-        <span>E-Link · Dartmouth</span>
-      </div>
-      <div class="fh-map-inner">
-        <div style="text-align:center; color:rgba(148,163,184,0.6); font-family:'JetBrains Mono',monospace; font-size:10px; padding:4px 0; position:relative; z-index:1;">
-          <span class="lang-en">Visitors since Feb 20th 2026:</span>
-          <span class="lang-zh" style="display:none">2026年2月20日起累计访客：</span>
-        </div>
-        <!-- 你的原始 mapmyvisitors 脚本，原封不动 -->
-        <script src="https://mapmyvisitors.com/counter.js?d=m5eNlZmkObq22GMdcKlpWq0A9hkoWtNuOIvQwtMspNc"></script>
-        <script id="mapmyvisitors"
-          src="https://mapmyvisitors.com/map.js?cl=e2e8f0&w=300&t=tt&d=m5eNlZmkObq22GMdcKlpWq0A9hkoWtNuOIvQwtMspNc&ct=e2e8f0&co=13192a">
-        </script>
-      </div>
-    </div>
-  </div>
-
-  <div class="fh-footer">
-    <span>
-      <span class="lang-en">E-Link · COPYRIGHT © 2026 Tianyu Bai</span>
-      <span class="lang-zh" style="display:none">易链 · 版权所有 © 2026 Tianyu Bai</span>
-    </span>
-    <div class="fh-footer-links">
-      <a href="https://github.com/Tianyu-Bai/ELINK" target="_blank">GitHub</a>
-      <a href="mailto:support@ephys.tech">Contact</a>
-      <a href="https://tianyu-bai.github.io/" target="_blank">Lab</a>
-    </div>
-  </div>
+  <!-- Counter -->
+<div style="text-align:center; margin-bottom:8px; color:#e2e8f0;">
+Visitors since Feb 20th 2026:
+<script src="https://mapmyvisitors.com/counter.js?d=m5eNlZmkObq22GMdcKlpWq0A9hkoWtNuOIvQwtMspNc"></script>
 </div>
 
 <!-- Styled map -->
@@ -975,32 +800,46 @@ src="https://mapmyvisitors.com/map.js?cl=e2e8f0&w=300&t=tt&d=m5eNlZmkObq22GMdcKl
 
 <script>
   (function() {
-  let online = 1;
-  const onlineEl    = document.getElementById('fh-online');
-  const onlineSubEl = document.getElementById('fh-online-sub');
-  const liveEl      = document.getElementById('fh-live-count');
-  const plusEl      = document.getElementById('fh-plus');
+    let currentDisplay = 1; 
+    
+    function initCounter() {
+      const counterEl = document.getElementById('live-counter');
+      const plusEl = document.getElementById('plus-one');
+      if(!counterEl || !plusEl) return;
+      
+      counterEl.textContent = currentDisplay;
 
-  function updateOnline(n) {
-    online = n;
-    if (onlineEl)    onlineEl.textContent    = n;
-    if (liveEl)      liveEl.textContent      = n;
-    if (onlineSubEl) onlineSubEl.textContent = n === 1 ? 'active session' : 'active sessions';
-  }
-  function showPlus() {
-    if (!plusEl) return;
-    plusEl.classList.remove('pop');
-    void plusEl.offsetWidth;
-    plusEl.classList.add('pop');
-  }
-  updateOnline(1);
-  setInterval(() => {
-    const r = Math.random();
-    if (online < 2 && r > 0.6)        { showPlus(); updateOnline(online + 1); }
-    else if (online === 2 && r > 0.9)  { updateOnline(online + 1); setTimeout(() => { if (online > 2) updateOnline(online - 1); }, Math.random() * 5000 + 5000); }
-    else if (r < 0.3 && online > 1)    { updateOnline(online - 1); }
-  }, 16000);
-})();
+      setInterval(() => {
+        const rand = Math.random();
+        
+        if (currentDisplay < 2 && rand > 0.6) { 
+          plusEl.textContent = '+1';
+          plusEl.classList.remove('animate-plus');
+          void plusEl.offsetWidth; // 触发重绘
+          plusEl.classList.add('animate-plus');
+          
+          currentDisplay++;
+          counterEl.textContent = currentDisplay;
+
+        } else if (currentDisplay === 2 && rand > 0.9) { 
+          currentDisplay++;
+          counterEl.textContent = currentDisplay;
+
+          setTimeout(() => {
+            if (currentDisplay > 2) {
+              currentDisplay--;
+              counterEl.textContent = currentDisplay;
+            }
+          }, Math.random() * 5000 + 5000);
+
+        } else if (rand < 0.3 && currentDisplay > 1) {
+          currentDisplay--;
+          counterEl.textContent = currentDisplay;
+        }
+      }, 16000); // 16秒判定
+    }
+    window.addEventListener('load', initCounter);
+  })();
 </script>
 </footer>
 
@@ -1656,8 +1495,6 @@ if (window.innerWidth > 768 && cursorDot && cursorOutline) {
     dialogData = toZh ? dialogData_ZH : dialogData_EN;
     texts = toZh ? textsZH : textsEN;
     langToggle.textContent = toZh ? "中 / 英" : "EN / CN";
-    document.querySelectorAll('.footer-holo .lang-en').forEach(el => el.style.display = toZh ? 'none' : '');
-    document.querySelectorAll('.footer-holo .lang-zh').forEach(el => el.style.display = toZh ? '' : 'none');
     document.querySelectorAll(toZh ? '.lang-en' : '.lang-zh')
       .forEach(el => el.style.display = 'none');
     document.querySelectorAll(toZh ? '.lang-zh' : '.lang-en')
