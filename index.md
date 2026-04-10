@@ -727,7 +727,6 @@ body.light-mode .yield-bar-track { background: rgba(0,0,0,0.06); border-color: r
 </div>
 
 ---
-<! BLOCK 1: 16×16 SPATIAL IMPEDANCE HEATMAP-->
  
 <style>
 /* ── Impedance Heatmap Styles ── */
@@ -930,7 +929,7 @@ body.light-mode .heatmap-legend { color: #64748b; }
       <!-- RIGHT: Findings -->
       <div>
         <div class="findings-panel">
-          <div class="findings-label">Key Findings</div>
+          <div class="findings-label">Results</div>
           <div class="finding-row">
             <span class="finding-val good">253 / 256</span>
             <span class="finding-desc">channels within 0.3 – 0.4 kΩ</span>
@@ -947,7 +946,7 @@ body.light-mode .heatmap-legend { color: #64748b; }
  
         <div class="conclusion-box">
           <p>
-            <strong style="color: #34d399;">Conclusion:</strong> All elevated impedances traced to chip-level BGA soldering. The mechanical connector interface achieves 
+            <strong style="color: #34d399;">Conclusion:</strong> The mechanical connector interface achieves 
             <strong style="color: #ffffff;">100% connection fidelity</strong>.
           </p>
         </div>
@@ -1061,6 +1060,311 @@ body.light-mode .heatmap-legend { color: #64748b; }
     </div>
   </div>
 </div>
+
+<style>
+/* ── Scalability Roadmap Styles ── */
+.scale-section { max-width: 760px; margin: 40px auto; }
+ 
+.scale-card {
+  background: rgba(11, 17, 33, 0.95);
+  border: 1px solid rgba(59, 130, 246, 0.25);
+  border-radius: 20px;
+  padding: 30px 35px;
+  box-shadow: inset 0 0 20px rgba(0,0,0,0.4), 0 15px 40px rgba(0,0,0,0.2);
+}
+ 
+.scale-card-title {
+  margin: 0 0 6px 0;
+  color: #93c5fd;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 20px;
+  font-weight: 700;
+  border-bottom: 1px solid rgba(59, 130, 246, 0.25);
+  padding-bottom: 14px;
+  letter-spacing: 0.5px;
+}
+ 
+.scale-desc {
+  font-size: 14px;
+  color: #94a3b8;
+  margin-bottom: 28px;
+  line-height: 1.7;
+}
+ 
+/* ── Bar chart ── */
+.scale-bars {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 0;
+  margin-bottom: 0;
+  height: 220px;
+  padding: 0 20px;
+}
+ 
+.scale-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  max-width: 180px;
+}
+ 
+.scale-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  letter-spacing: 0.5px;
+}
+ 
+.scale-bar {
+  width: 70%;
+  border-radius: 10px 10px 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: none;
+  position: relative;
+  transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+ 
+.scale-bar-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 22px;
+  font-weight: 800;
+}
+ 
+/* Active (current) */
+.scale-bar.active {
+  background: linear-gradient(to top, #3b82f6, rgba(59, 130, 246, 0.5));
+  border: 1px solid #3b82f6;
+  border-bottom: none;
+  box-shadow: 0 0 25px rgba(59, 130, 246, 0.25);
+}
+.scale-bar.active .scale-bar-value { color: #ffffff; }
+ 
+/* Future */
+.scale-bar.future {
+  border: 1px solid rgba(255,255,255,0.08);
+  border-bottom: none;
+}
+ 
+.scale-bar.future-green {
+  background: linear-gradient(to top, rgba(16, 185, 129, 0.25), rgba(16, 185, 129, 0.08));
+  border-color: rgba(16, 185, 129, 0.2);
+}
+.scale-bar.future-green .scale-bar-value { color: rgba(16, 185, 129, 0.7); }
+ 
+.scale-bar.future-amber {
+  background: linear-gradient(to top, rgba(245, 158, 11, 0.25), rgba(245, 158, 11, 0.08));
+  border-color: rgba(245, 158, 11, 0.2);
+}
+.scale-bar.future-amber .scale-bar-value { color: rgba(245, 158, 11, 0.7); }
+ 
+/* Gradient baseline */
+.scale-gradient-line {
+  height: 3px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, #3b82f6, #10b981, #f59e0b);
+  margin-bottom: 20px;
+  box-shadow: 0 0 12px rgba(59, 130, 246, 0.3);
+}
+ 
+/* Pitch comparison card */
+.pitch-compare {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-top: 20px;
+}
+ 
+.pitch-box {
+  background: rgba(15, 23, 42, 0.5);
+  border: 1px solid rgba(59, 130, 246, 0.15);
+  border-radius: 12px;
+  padding: 16px 20px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+ 
+.pitch-box::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 15%;
+  right: 15%;
+  height: 2px;
+  border-radius: 0 0 4px 4px;
+  opacity: 0.5;
+}
+ 
+.pitch-box.ours::before { background: #3b82f6; }
+.pitch-box.theirs::before { background: #64748b; }
+ 
+.pitch-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 28px;
+  font-weight: 800;
+  display: block;
+  margin-bottom: 2px;
+}
+ 
+.pitch-box.ours .pitch-value { color: #3b82f6; text-shadow: 0 0 15px rgba(59, 130, 246, 0.3); }
+.pitch-box.theirs .pitch-value { color: #64748b; }
+ 
+.pitch-label {
+  font-size: 12px;
+  color: #94a3b8;
+  font-family: 'JetBrains Mono', monospace;
+  letter-spacing: 0.5px;
+}
+ 
+.pitch-tag {
+  display: inline-block;
+  font-size: 10px;
+  padding: 2px 10px;
+  border-radius: 10px;
+  margin-top: 8px;
+  font-weight: 700;
+  font-family: 'JetBrains Mono', monospace;
+  letter-spacing: 0.5px;
+}
+ 
+.pitch-box.ours .pitch-tag {
+  background: rgba(59, 130, 246, 0.15);
+  color: #60a5fa;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+}
+ 
+.pitch-box.theirs .pitch-tag {
+  background: rgba(148, 163, 184, 0.1);
+  color: #94a3b8;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+}
+ 
+.scale-footer {
+  text-align: center;
+  font-size: 14px;
+  color: #cbd5e1;
+  margin-top: 22px;
+  line-height: 1.6;
+}
+ 
+/* ── Light mode ── */
+body.light-mode .scale-card {
+  background: #ffffff;
+  border-color: #cbd5e1;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.05);
+}
+body.light-mode .scale-card-title { color: #2563eb; border-bottom-color: #e2e8f0; }
+body.light-mode .scale-desc { color: #475569; }
+body.light-mode .scale-bar.active { background: linear-gradient(to top, #3b82f6, #93c5fd); }
+body.light-mode .scale-bar.future-green { background: linear-gradient(to top, rgba(16, 185, 129, 0.15), rgba(16, 185, 129, 0.05)); }
+body.light-mode .scale-bar.future-amber { background: linear-gradient(to top, rgba(245, 158, 11, 0.15), rgba(245, 158, 11, 0.05)); }
+body.light-mode .pitch-box { background: #f8fafc; border-color: #e2e8f0; }
+body.light-mode .scale-footer { color: #334155; }
+body.light-mode .pitch-label { color: #64748b; }
+ 
+/* ── IntersectionObserver animated entry ── */
+.scale-bar { transform: scaleY(0); transform-origin: bottom; }
+.scale-bar.animate-in { transform: scaleY(1); }
+ 
+/* ── Mobile ── */
+@media (max-width: 768px) {
+  .scale-card { padding: 25px 18px; }
+  .scale-bars { height: 180px; padding: 0 10px; }
+  .scale-bar-value { font-size: 18px; }
+  .pitch-compare { grid-template-columns: 1fr; }
+  .pitch-value { font-size: 24px; }
+}
+</style>
+ 
+<div class="scale-section" data-aos="fade-up">
+  <div class="scale-card">
+    <h3 class="scale-card-title">🚀 Scalability Roadmap: Pathway to 1024 Channels</h3>
+    <p class="scale-desc">
+      The inherent pitch advantage of anisotropic elastomeric technology enables massive channel scaling within the <strong style="color: #e2e8f0;">same 25-mm diameter footprint</strong>, without modifications to the mechanical compression housing.
+    </p>
+ 
+    <!-- Bar Chart -->
+    <div class="scale-bars" id="scale-bars-container">
+      <div class="scale-col">
+        <span class="scale-label" style="color: #3b82f6;">CURRENT</span>
+        <div class="scale-bar active" style="height: 90px;" data-target-height="90">
+          <span class="scale-bar-value">256</span>
+        </div>
+      </div>
+      <div class="scale-col">
+        <span class="scale-label" style="color: #10b981;">PHASE 2</span>
+        <div class="scale-bar future future-green" style="height: 140px;" data-target-height="140">
+          <span class="scale-bar-value">512</span>
+        </div>
+      </div>
+      <div class="scale-col">
+        <span class="scale-label" style="color: #f59e0b;">TARGET</span>
+        <div class="scale-bar future future-amber" style="height: 195px;" data-target-height="195">
+          <span class="scale-bar-value">1024</span>
+        </div>
+      </div>
+    </div>
+ 
+    <div class="scale-gradient-line"></div>
+ 
+    <!-- Pitch Comparison -->
+    <div class="pitch-compare">
+      <div class="pitch-box ours">
+        <span class="pitch-value">156 µm</span>
+        <span class="pitch-label">Elastomeric Pillar Pitch</span>
+        <span class="pitch-tag">3.2× DENSER</span>
+      </div>
+      <div class="pitch-box theirs">
+        <span class="pitch-value">500 µm</span>
+        <span class="pitch-label">Standard Solder Ball Pitch</span>
+        <span class="pitch-tag">INDUSTRY BASELINE</span>
+      </div>
+    </div>
+ 
+    <p class="scale-footer">
+      Same <strong style="color: #ffffff;">25 mm Ø</strong> footprint · HDI PCB fan-out · Fine-pitch elastomer pillar arrangement
+    </p>
+  </div>
+</div>
+ 
+<script>
+// ── Scalability Bar Animation (IntersectionObserver) ──
+(function() {
+  function initScaleAnim() {
+    var container = document.getElementById('scale-bars-container');
+    if (!container) return;
+    
+    var bars = container.querySelectorAll('.scale-bar');
+    
+    var observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          // Stagger the animation
+          bars.forEach(function(bar, i) {
+            setTimeout(function() {
+              bar.classList.add('animate-in');
+            }, i * 200);
+          });
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.3 });
+ 
+    observer.observe(container);
+  }
+ 
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initScaleAnim);
+  } else {
+    initScaleAnim();
+  }
+})();
+</script>
 
 <style>
 .species-glass-box { position: relative; background: rgba(15, 23, 42, 0.4); border: 1px solid rgba(59, 130, 246, 0.2); border-radius: 16px; padding: 30px 20px 40px 20px; min-height: 380px; overflow: hidden; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2); transform: translateZ(0); backface-visibility: hidden; perspective: 1000; will-change: transform; }
