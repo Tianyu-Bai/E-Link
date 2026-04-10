@@ -1171,7 +1171,338 @@ body.light-mode .scope-win-wrapper * { filter: none !important; }
 </div>
  
 ---
+<style>
+/* ── Assembly Pipeline Styles ── */
+.pipeline-section { max-width: 760px; margin: 40px auto; }
  
+.pipeline-card {
+  background: rgba(11, 17, 33, 0.95);
+  border: 1px solid rgba(59, 130, 246, 0.25);
+  border-radius: 20px;
+  padding: 30px 35px 35px;
+  box-shadow: inset 0 0 20px rgba(0,0,0,0.4), 0 15px 40px rgba(0,0,0,0.2);
+}
+ 
+.pipeline-card-title {
+  margin: 0 0 6px 0;
+  color: #93c5fd;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 20px;
+  font-weight: 700;
+  border-bottom: 1px solid rgba(59, 130, 246, 0.25);
+  padding-bottom: 14px;
+  letter-spacing: 0.5px;
+}
+ 
+.pipeline-card-desc {
+  font-size: 14px;
+  color: #94a3b8;
+  margin-bottom: 30px;
+  line-height: 1.7;
+}
+ 
+/* ── Horizontal Pipeline (Desktop) ── */
+.pipe-track-wrapper {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 0 10px;
+  margin-bottom: 10px;
+}
+ 
+/* Connecting track line */
+.pipe-track-line {
+  position: absolute;
+  top: 20px;
+  left: 40px;
+  right: 40px;
+  height: 2px;
+  background: rgba(59, 130, 246, 0.15);
+  z-index: 1;
+  overflow: hidden;
+  border-radius: 1px;
+}
+ 
+/* Animated flowing light pulse */
+.pipe-flow-light {
+  position: absolute;
+  top: 0;
+  left: -60px;
+  width: 60px;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, #3b82f6, transparent);
+  animation: pipeFlowH 3.5s linear infinite;
+}
+ 
+@keyframes pipeFlowH {
+  0%   { left: -60px; opacity: 0; }
+  8%   { opacity: 1; }
+  92%  { opacity: 1; }
+  100% { left: 100%; opacity: 0; }
+}
+ 
+/* Each step node */
+.pipe-node {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 16.66%;
+  text-align: center;
+}
+ 
+.pipe-circle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #0f172a;
+  border: 2px solid #3b82f6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 14px;
+  font-weight: 700;
+  color: #93c5fd;
+  margin-bottom: 14px;
+  box-shadow: 0 0 12px rgba(59, 130, 246, 0.3);
+  transition: all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
+  cursor: default;
+  flex-shrink: 0;
+}
+ 
+.pipe-node:hover .pipe-circle {
+  background: #3b82f6;
+  color: #ffffff;
+  box-shadow: 0 0 24px rgba(59, 130, 246, 0.7);
+  transform: scale(1.15);
+}
+ 
+.pipe-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #cbd5e1;
+  line-height: 1.35;
+  transition: color 0.3s;
+}
+ 
+.pipe-node:hover .pipe-label {
+  color: #ffffff;
+}
+ 
+.pipe-icon {
+  font-size: 16px;
+  margin-bottom: 4px;
+  display: block;
+  opacity: 0.8;
+}
+ 
+/* ── Validation stats row ── */
+.pipe-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-top: 28px;
+}
+ 
+.pipe-stat-card {
+  background: rgba(15, 23, 42, 0.4);
+  border-radius: 10px;
+  padding: 14px 16px;
+  border-left: 3px solid;
+  transition: transform 0.25s, box-shadow 0.25s;
+}
+ 
+.pipe-stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+}
+ 
+.pipe-stat-card:nth-child(1) { border-left-color: #10b981; border-color: rgba(16, 185, 129, 0.2); }
+.pipe-stat-card:nth-child(2) { border-left-color: #3b82f6; border-color: rgba(59, 130, 246, 0.2); }
+.pipe-stat-card:nth-child(3) { border-left-color: #f59e0b; border-color: rgba(245, 158, 11, 0.2); }
+ 
+.pipe-stat-card { border: 1px solid; }
+.pipe-stat-card:nth-child(1) { border-color: rgba(16, 185, 129, 0.2); border-left: 3px solid #10b981; }
+.pipe-stat-card:nth-child(2) { border-color: rgba(59, 130, 246, 0.2); border-left: 3px solid #3b82f6; }
+.pipe-stat-card:nth-child(3) { border-color: rgba(245, 158, 11, 0.2); border-left: 3px solid #f59e0b; }
+ 
+.pipe-stat-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+ 
+.pipe-stat-card:nth-child(1) .pipe-stat-title { color: #10b981; }
+.pipe-stat-card:nth-child(2) .pipe-stat-title { color: #3b82f6; }
+.pipe-stat-card:nth-child(3) .pipe-stat-title { color: #f59e0b; }
+ 
+.pipe-stat-desc {
+  font-size: 12px;
+  color: #94a3b8;
+  line-height: 1.45;
+}
+ 
+/* ── Light Mode ── */
+body.light-mode .pipeline-card {
+  background: #ffffff;
+  border-color: #cbd5e1;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.05);
+}
+body.light-mode .pipeline-card-title { color: #2563eb; border-bottom-color: #e2e8f0; }
+body.light-mode .pipeline-card-desc { color: #475569; }
+body.light-mode .pipe-circle { background: #ffffff; border-color: #2563eb; color: #2563eb; box-shadow: 0 0 10px rgba(37, 99, 235, 0.15); }
+body.light-mode .pipe-node:hover .pipe-circle { background: #2563eb; color: #fff; }
+body.light-mode .pipe-label { color: #475569; }
+body.light-mode .pipe-node:hover .pipe-label { color: #0f172a; }
+body.light-mode .pipe-track-line { background: rgba(37, 99, 235, 0.12); }
+body.light-mode .pipe-stat-card { background: #f8fafc; }
+body.light-mode .pipe-stat-desc { color: #64748b; }
+ 
+/* ── Mobile: Switch to vertical layout ── */
+@media (max-width: 768px) {
+  .pipeline-card { padding: 25px 18px; }
+ 
+  .pipe-track-wrapper {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+    padding-left: 28px;
+  }
+ 
+  /* Vertical track line */
+  .pipe-track-line {
+    top: 0;
+    bottom: 0;
+    left: 47px;
+    right: auto;
+    width: 2px;
+    height: auto;
+  }
+ 
+  .pipe-flow-light {
+    width: 100%;
+    height: 50px;
+    left: auto;
+    top: -50px;
+    background: linear-gradient(180deg, transparent, #3b82f6, transparent);
+    animation: pipeFlowV 3.5s linear infinite;
+  }
+ 
+  @keyframes pipeFlowV {
+    0%   { top: -50px; opacity: 0; }
+    8%   { opacity: 1; }
+    92%  { opacity: 1; }
+    100% { top: 100%; opacity: 0; }
+  }
+ 
+  .pipe-node {
+    flex-direction: row;
+    width: 100%;
+    text-align: left;
+    gap: 16px;
+    padding: 10px 0;
+  }
+ 
+  .pipe-circle { margin-bottom: 0; width: 38px; height: 38px; }
+  .pipe-label { font-size: 14px; }
+  .pipe-icon { display: inline; margin-right: 4px; margin-bottom: 0; }
+ 
+  .pipe-stats {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+}
+ 
+@media (max-width: 480px) {
+  .pipe-stats { grid-template-columns: 1fr; }
+}
+</style>
+ 
+<div class="pipeline-section" data-aos="fade-up">
+  <div class="pipeline-card">
+    <h3 class="pipeline-card-title">⚙️ Assembly & Validation Pipeline</h3>
+    <p class="pipeline-card-desc">
+      The insertion-free <strong style="color: #e2e8f0;">"rotate-and-play"</strong> interface eliminates micro-alignment requirements, enabling reproducible assembly by untrained operators with consistent electrical performance.
+    </p>
+ 
+    <!-- Pipeline Steps -->
+    <div class="pipe-track-wrapper">
+      <!-- Track line with flowing light -->
+      <div class="pipe-track-line">
+        <div class="pipe-flow-light"></div>
+      </div>
+ 
+      <div class="pipe-node">
+        <div class="pipe-circle">01</div>
+        <div class="pipe-label">
+          <span class="pipe-icon">🔩</span>
+          Seat<br>Pedestal
+        </div>
+      </div>
+ 
+      <div class="pipe-node">
+        <div class="pipe-circle">02</div>
+        <div class="pipe-label">
+          <span class="pipe-icon">📐</span>
+          Place<br>Adapter PCB
+        </div>
+      </div>
+ 
+      <div class="pipe-node">
+        <div class="pipe-circle">03</div>
+        <div class="pipe-label">
+          <span class="pipe-icon">🧬</span>
+          Align<br>Elastomer
+        </div>
+      </div>
+ 
+      <div class="pipe-node">
+        <div class="pipe-circle">04</div>
+        <div class="pipe-label">
+          <span class="pipe-icon">🔌</span>
+          Seat<br>Headstage
+        </div>
+      </div>
+ 
+      <div class="pipe-node">
+        <div class="pipe-circle">05</div>
+        <div class="pipe-label">
+          <span class="pipe-icon">🔄</span>
+          Rotate<br>Threaded Cap
+        </div>
+      </div>
+ 
+      <div class="pipe-node">
+        <div class="pipe-circle">06</div>
+        <div class="pipe-label">
+          <span class="pipe-icon">✅</span>
+          Electrical<br>Verify
+        </div>
+      </div>
+    </div>
+ 
+    <!-- Validation Stats -->
+    <div class="pipe-stats">
+      <div class="pipe-stat-card">
+        <div class="pipe-stat-title">3 Independent Operators</div>
+        <div class="pipe-stat-desc">Consistent &gt;97% connection yield across all users — decoupled from individual technique.</div>
+      </div>
+      <div class="pipe-stat-card">
+        <div class="pipe-stat-title">100+ Mating Cycles</div>
+        <div class="pipe-stat-desc">Zero degradation in contact impedance or yield over 5-day longitudinal durability test.</div>
+      </div>
+      <div class="pipe-stat-card">
+        <div class="pipe-stat-title">120 min Vibration</div>
+        <div class="pipe-stat-desc">98.8% yield maintained under 22.9 m/s² extreme acceleration stress testing.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <span id="en-bom"></span>
 ### 🛠 Bill of Materials (BOM) of the headstage
  
