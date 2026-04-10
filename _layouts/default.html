@@ -180,6 +180,9 @@
     overflow-x: auto;
     -webkit-overflow-scrolling: touch; 
     margin: 30px 0;
+    touch-action: pan-x; 
+    box-sizing: border-box !important;
+    display: block; /* 确保它作为块级元素撑开 */
 }
 
 #main_content > div[style*="overflow"],
@@ -502,8 +505,7 @@
     #bot-container #rpg-dialogue { position: absolute !important; top: auto !important; bottom: 90px !important; right: 0px !important; left: auto !important; width: 340px !important; max-width: 90vw !important; transform: translateY(10px) !important; }
 
     #bot-container #rpg-dialogue.active { transform: translateY(0) !important; }
-    .container { padding: 30px 20px;} #main_content { overflow-x: auto; max-width: 100%;} 
-    #main_content { overflow-x: auto; }
+    .container { padding: 30px 20px;} 
     .modal-content { padding-bottom: 140px; } 
     #bot-container.guide-mode { top: auto !important; bottom: 20% !important; left: 50% !important; right: auto !important; transform: translateX(-50%) scale(1) !important; }
     .guide-arrow { left: 50%; top: -40px; transform: translateX(-50%) rotate(90deg); }
