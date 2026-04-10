@@ -860,7 +860,7 @@ body.light-mode .yield-bar-track { background: rgba(0,0,0,0.06); border-color: r
 }
  
 /* ── Axis labels ── */
-.heatmap-container { position: relative; max-width: 320px; margin: 0 auto; }
+.heatmap-container { position: relative; max-width: 320px; margin: 0 auto; padding-left: 28px; }
  
 .axis-x-label, .axis-y-label {
   font-family: 'JetBrains Mono', monospace;
