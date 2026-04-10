@@ -1488,16 +1488,16 @@ body.light-mode .pipe-stat-desc { color: #64748b; }
     <!-- Validation Stats -->
     <div class="pipe-stats">
       <div class="pipe-stat-card">
-        <div class="pipe-stat-title">3 Independent Operators</div>
-        <div class="pipe-stat-desc">Consistent &gt;97% connection yield across all users — decoupled from individual technique.</div>
+        <div class="pipe-stat-title">Independent Operators Verified</div>
+        <div class="pipe-stat-desc">Consistent connection yield across all users — decoupled from individual technique.</div>
       </div>
       <div class="pipe-stat-card">
-        <div class="pipe-stat-title">100+ Mating Cycles</div>
+        <div class="pipe-stat-title">200+ Mating Cycles</div>
         <div class="pipe-stat-desc">Zero degradation in contact impedance or yield over 5-day longitudinal durability test.</div>
       </div>
       <div class="pipe-stat-card">
-        <div class="pipe-stat-title">120 min Vibration</div>
-        <div class="pipe-stat-desc">98.8% yield maintained under 22.9 m/s² extreme acceleration stress testing.</div>
+        <div class="pipe-stat-title">180 min Vibration</div>
+        <div class="pipe-stat-desc">Yield maintained under ~23 m/s² extreme acceleration stress testing.</div>
       </div>
     </div>
   </div>
