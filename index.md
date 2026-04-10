@@ -1755,6 +1755,107 @@ body.light-mode .scope-win-wrapper * { filter: none !important; }
  
 ---
 <style>
+.xs-sec{max-width:760px;margin:40px auto}
+.xs-card{background:rgba(11,17,33,.95);border:1px solid rgba(59,130,246,.25);border-radius:20px;padding:30px 35px;box-shadow:inset 0 0 20px rgba(0,0,0,.4),0 15px 40px rgba(0,0,0,.2)}
+.xs-card h3{margin:0 0 6px;color:#93c5fd;font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:700;border-bottom:1px solid rgba(59,130,246,.25);padding-bottom:14px}
+.xs-card>p{font-size:14px;color:#94a3b8;margin-bottom:20px;line-height:1.7}
+.xs-v{position:relative;width:100%;border-radius:14px;overflow:hidden;border:1px solid rgba(59,130,246,.2);background:#000;margin-bottom:18px}
+.xs-v img{width:100%;height:auto;display:block;transition:filter .5s}
+.xs-v.focus img{filter:brightness(.3) saturate(.5)}
+.xs-h{position:absolute;border:2px solid transparent;border-radius:4px;cursor:pointer;transition:all .35s;z-index:3}
+.xs-h:hover,.xs-h.on{border-color:var(--c);background:var(--bg);box-shadow:0 0 18px var(--g),inset 0 0 10px var(--g)}
+.xs-h::after{content:'';position:absolute;inset:-5px;border-radius:8px;border:1.5px solid var(--c);opacity:0;pointer-events:none}
+.xs-h.on::after{animation:xp 1.8s ease-out infinite}
+@keyframes xp{0%{transform:scale(1);opacity:.7}to{transform:scale(1.2);opacity:0}}
+.xs-b{position:absolute;top:-9px;right:-9px;width:20px;height:20px;border-radius:50%;background:var(--c);color:#fff;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;box-shadow:0 0 8px var(--g);opacity:0;transform:scale(.5);transition:all .3s;z-index:8;pointer-events:none}
+.xs-h:hover .xs-b,.xs-h.on .xs-b{opacity:1;transform:scale(1)}
+.xs-t{position:absolute;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:#fff;background:rgba(0,0,0,.85);border:1px solid var(--c);padding:3px 10px;border-radius:6px;white-space:nowrap;pointer-events:none;opacity:0;transition:all .35s;z-index:11;box-shadow:0 0 10px var(--g)}
+.xs-t.on{opacity:1}
+.xs-g{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.xs-i{display:flex;gap:10px;padding:10px 12px;background:rgba(15,23,42,.4);border:1px solid rgba(255,255,255,.04);border-radius:10px;cursor:pointer;transition:all .3s;position:relative}
+.xs-i::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--c);border-radius:3px 0 0 3px;opacity:0;transition:opacity .3s}
+.xs-i:hover{background:rgba(15,23,42,.7);transform:translateX(2px)}
+.xs-i:hover::before{opacity:.5}
+.xs-i.on{background:rgba(59,130,246,.06);border-color:var(--c)}
+.xs-i.on::before{opacity:1;width:4px}
+.xs-n{width:22px;height:22px;border-radius:50%;background:var(--c);color:#fff;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.xs-cn{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:#e2e8f0}
+.xs-cs{font-size:9.5px;color:#94a3b8;line-height:1.35}
+.xs-d{max-height:0;overflow:hidden;transition:max-height .4s,margin .3s;grid-column:1/-1}
+.xs-d.open{max-height:140px;margin-top:6px}
+.xs-d div{background:rgba(0,0,0,.25);border-radius:8px;padding:10px 14px;font-size:11px;color:#cbd5e1;line-height:1.6;border:1px solid rgba(255,255,255,.04)}
+.xs-d strong{color:#93c5fd}
+body.light-mode .xs-card{background:#fff;border-color:#cbd5e1}
+body.light-mode .xs-card h3{color:#2563eb;border-color:#e2e8f0}
+body.light-mode .xs-card>p{color:#475569}
+body.light-mode .xs-i{background:#f8fafc;border-color:#e2e8f0}
+body.light-mode .xs-cn{color:#1e293b}
+body.light-mode .xs-cs{color:#64748b}
+body.light-mode .xs-d div{background:#f1f5f9;color:#334155;border-color:#e2e8f0}
+body.light-mode .xs-d strong{color:#1d4ed8}
+body.light-mode .xs-t{background:rgba(255,255,255,.9);color:#0f172a}
+@media(max-width:768px){.xs-card{padding:22px 16px}.xs-g{grid-template-columns:1fr}.xs-t{font-size:9px}}
+</style>
+
+<div class="xs-sec" data-aos="fade-up">
+<div class="xs-card">
+<h3>🔬 Interactive Cross-Section Explorer</h3>
+<p>Click any component below — or hover directly on the cross-section — to highlight the corresponding layer and view specifications.</p>
+<div class="xs-v" id="xV">
+<img src="{{ '/Images/Assem.PNG' | relative_url }}" alt="E-Link Cross-Section" loading="lazy">
+<span class="xs-h" data-c="spi" style="left:36%;top:0%;width:28%;height:9%;--c:#3b82f6;--bg:rgba(59,130,246,.1);--g:rgba(59,130,246,.4)"><span class="xs-b">1</span></span>
+<span class="xs-h" data-c="cap" style="left:0%;top:27%;width:100%;height:10.5%;--c:#f59e0b;--bg:rgba(245,158,11,.08);--g:rgba(245,158,11,.35)"><span class="xs-b">2</span></span>
+<span class="xs-h" data-c="foam" style="left:20%;top:31%;width:60%;height:6.5%;--c:#94a3b8;--bg:rgba(148,163,184,.12);--g:rgba(148,163,184,.35)"><span class="xs-b">3</span></span>
+<span class="xs-h" data-c="pcb" style="left:12%;top:37.5%;width:76%;height:24%;--c:#22c55e;--bg:rgba(34,197,94,.08);--g:rgba(34,197,94,.35)"><span class="xs-b">4</span></span>
+<span class="xs-h" data-c="elast" style="left:14%;top:62%;width:72%;height:7%;--c:#a78bfa;--bg:rgba(167,139,250,.1);--g:rgba(167,139,250,.35)"><span class="xs-b">5</span></span>
+<span class="xs-h" data-c="adapt" style="left:14%;top:69%;width:72%;height:6%;--c:#eab308;--bg:rgba(234,179,8,.1);--g:rgba(234,179,8,.3)"><span class="xs-b">6</span></span>
+<span class="xs-h" data-c="spring" style="left:14%;top:75%;width:72%;height:9%;--c:#cbd5e1;--bg:rgba(203,213,225,.06);--g:rgba(203,213,225,.25)"><span class="xs-b">7</span></span>
+<span class="xs-h" data-c="base" style="left:0%;top:62%;width:14%;height:22%;--c:#2563eb;--bg:rgba(37,99,235,.08);--g:rgba(37,99,235,.3)"><span class="xs-b">8</span></span>
+<span class="xs-t" data-k="spi" style="--c:#3b82f6;--g:rgba(59,130,246,.4);right:4%;top:2%">① SPI Cables</span>
+<span class="xs-t" data-k="cap" style="--c:#f59e0b;--g:rgba(245,158,11,.35);right:2%;top:28%">② Threaded Cap</span>
+<span class="xs-t" data-k="foam" style="--c:#94a3b8;--g:rgba(148,163,184,.35);right:5%;top:32%">③ Foam Washer</span>
+<span class="xs-t" data-k="pcb" style="--c:#22c55e;--g:rgba(34,197,94,.35);right:2%;top:44%">④ Headstage PCB</span>
+<span class="xs-t" data-k="elast" style="--c:#a78bfa;--g:rgba(167,139,250,.35);right:2%;top:62.5%">⑤ Elastomer</span>
+<span class="xs-t" data-k="adapt" style="--c:#eab308;--g:rgba(234,179,8,.3);right:2%;top:70%">⑥ Adapter PCB</span>
+<span class="xs-t" data-k="spring" style="--c:#cbd5e1;--g:rgba(203,213,225,.25);right:4%;top:78%">⑦ Springs</span>
+<span class="xs-t" data-k="base" style="--c:#2563eb;--g:rgba(37,99,235,.3);left:2%;top:72%">⑧ Pedestal</span>
+</div>
+<div class="xs-g" id="xG">
+<div class="xs-i" data-c="spi" style="--c:#3b82f6"><span class="xs-n">1</span><div><div class="xs-cn">SPI Cables</div><div class="xs-cs">Dual Omnetics A7621</div></div></div>
+<div class="xs-i" data-c="cap" style="--c:#f59e0b"><span class="xs-n">2</span><div><div class="xs-cn">Threaded Cap</div><div class="xs-cs">Compression housing</div></div></div>
+<div class="xs-i" data-c="foam" style="--c:#94a3b8"><span class="xs-n">3</span><div><div class="xs-cn">Foam Washer</div><div class="xs-cs">Pressure distribution</div></div></div>
+<div class="xs-i" data-c="pcb" style="--c:#22c55e"><span class="xs-n">4</span><div><div class="xs-cn">Headstage PCB</div><div class="xs-cs">4× RHD2164 + 4L HDI</div></div></div>
+<div class="xs-i" data-c="elast" style="--c:#a78bfa"><span class="xs-n">5</span><div><div class="xs-cn">Elastomeric Sheet</div><div class="xs-cs">Z-axis conductor</div></div></div>
+<div class="xs-i" data-c="adapt" style="--c:#eab308"><span class="xs-n">6</span><div><div class="xs-cn">Adapter PCB</div><div class="xs-cs">Probe signal routing</div></div></div>
+<div class="xs-i" data-c="spring" style="--c:#cbd5e1"><span class="xs-n">7</span><div><div class="xs-cn">Spring Screws</div><div class="xs-cs">Captive fasteners</div></div></div>
+<div class="xs-i" data-c="base" style="--c:#2563eb"><span class="xs-n">8</span><div><div class="xs-cn">Pedestal Base</div><div class="xs-cs">Cranial housing</div></div></div>
+<div class="xs-d" id="xD"><div id="xDI"></div></div>
+</div>
+</div>
+</div>
+
+<script>
+(function(){var D={spi:'<strong>Wire:</strong> 32AWG 12-conductor | <strong>Interface:</strong> Dual SPI 2×128ch',cap:'<strong>Material:</strong> PEEK/Surgical resin | <strong>Function:</strong> Torque → uniform axial compression across 25mm Ø',foam:'<strong>Material:</strong> Closed-cell silicone | <strong>Thickness:</strong> 1.5→0.8mm | Compensates planarity errors',pcb:'<strong>ICs:</strong> 4× RHD2164 BGA | <strong>Passives:</strong> 7R+8C LVDS +1 LED | <strong>Bottom:</strong> 256-pad BGA 0.4mm',elast:'<strong>Pitch:</strong> 156µm (3.2× denser than BGA) | Z-axis conduction under compression | Zero insertion force',adapt:'<strong>Layers:</strong> 4L HDI | <strong>Top:</strong> BGA match via elastomer | <strong>Bottom:</strong> Probe bond pads | ENIG finish',spring:'<strong>Function:</strong> Secure pedestal to cranial anchors | <strong>Count:</strong> 4 per assembly',base:'<strong>Material:</strong> PEEK/Surgical resin | Textured sidewalls | Customizable curvature | +3.8g → 6.6g total'};
+function go(){var v=document.getElementById('xV'),g=document.getElementById('xG'),d=document.getElementById('xD'),di=document.getElementById('xDI');if(!v||!g)return;
+var hs=v.querySelectorAll('.xs-h'),ts=v.querySelectorAll('.xs-t'),cs=g.querySelectorAll('.xs-i'),cur=null;
+function act(k){if(cur===k){off();return}cur=k;v.classList.add('focus');
+hs.forEach(function(h){h.classList.toggle('on',h.dataset.c===k)});
+ts.forEach(function(t){t.classList.toggle('on',t.dataset.k===k)});
+cs.forEach(function(c){c.classList.toggle('on',c.dataset.c===k)});
+if(D[k]){di.innerHTML=D[k];d.classList.add('open');var ac=g.querySelector('.xs-i[data-c="'+k+'"]');if(ac)ac.after(d)}}
+function off(){cur=null;v.classList.remove('focus');hs.forEach(function(h){h.classList.remove('on')});ts.forEach(function(t){t.classList.remove('on')});cs.forEach(function(c){c.classList.remove('on')});d.classList.remove('open')}
+hs.forEach(function(h){h.addEventListener('click',function(e){e.stopPropagation();act(h.dataset.c)});
+h.addEventListener('mouseenter',function(){if(!cur){ts.forEach(function(t){t.classList.toggle('on',t.dataset.k===h.dataset.c)});cs.forEach(function(c){c.classList.toggle('on',c.dataset.c===h.dataset.c)})}});
+h.addEventListener('mouseleave',function(){if(!cur){ts.forEach(function(t){t.classList.remove('on')});cs.forEach(function(c){c.classList.remove('on')})}})});
+cs.forEach(function(c){c.addEventListener('click',function(e){e.stopPropagation();act(c.dataset.c)});
+c.addEventListener('mouseenter',function(){if(!cur){hs.forEach(function(h){h.classList.toggle('on',h.dataset.c===c.dataset.c)});ts.forEach(function(t){t.classList.toggle('on',t.dataset.k===c.dataset.c)})}});
+c.addEventListener('mouseleave',function(){if(!cur){hs.forEach(function(h){h.classList.remove('on')});ts.forEach(function(t){t.classList.remove('on')})}})});
+document.addEventListener('click',function(e){if(cur&&!v.contains(e.target)&&!g.contains(e.target))off()});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')off()})}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',go);else go()})();
+</script>
+
+<style>
 /* ── Assembly Pipeline Styles ── */
 .pipeline-section { max-width: 760px; margin: 40px auto; }
  
