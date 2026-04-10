@@ -197,6 +197,17 @@
     border: 1px solid rgba(59, 130, 246, 0.2); 
     backdrop-filter: blur(10px); 
   }
+/* 🚀 排除自定义组件内部的表格，防止 nowrap 和 min-width 破坏布局 */
+.impedance-card table,
+.scale-card table,
+.pipeline-card table,
+.impedance-section table,
+.scale-section table,
+.pipeline-section table {
+  white-space: normal !important;
+  min-width: 0 !important;
+}
+
   #main_content th, #main_content td { padding: 15px 12px; border: none; border-bottom: 1px solid rgba(255, 255, 255, 0.05); text-align: left; }
   #main_content tr:last-child td { border-bottom: none; }
   #main_content tr { transition: background 0.3s ease; background: transparent !important; }
@@ -900,14 +911,22 @@ document.addEventListener("DOMContentLoaded", function () {
  
 const welcomeModal = document.getElementById('welcome-modal');
 
- // 🚀 自动包裹 Markdown 表格，并阻止 Lenis 劫持横向滑动
-  document.querySelectorAll('#main_content table').forEach(table => {
-    const wrapper = document.createElement('div');
-    wrapper.className = 'table-responsive-wrapper';
-    wrapper.setAttribute('data-lenis-prevent', 'true'); // 核心：明确告诉 Lenis 这个区域允许原生滑动
-    table.parentNode.insertBefore(wrapper, table);
-    wrapper.appendChild(table);
-  });
+// 🚀 修复后的表格自动包裹逻辑 —— 排除自定义组件内部的表格
+document.querySelectorAll('#main_content table').forEach(table => {
+  // 跳过已经在自定义卡片组件内部的表格
+  if (table.closest('.impedance-card, .scale-card, .pipeline-card, .impedance-section, .scale-section, .pipeline-section')) {
+    return; // 这些组件自己管理布局，不需要被包裹
+  }
+  // 跳过已经被包裹过的表格（防止重复包裹）
+  if (table.parentElement && table.parentElement.classList.contains('table-responsive-wrapper')) {
+    return;
+  }
+  const wrapper = document.createElement('div');
+  wrapper.className = 'table-responsive-wrapper';
+  wrapper.setAttribute('data-lenis-prevent', 'true');
+  table.parentNode.insertBefore(wrapper, table);
+  wrapper.appendChild(table);
+});
  
 if (window.innerWidth > 768) {
   document.body.classList.add('js-cursor-enabled');
