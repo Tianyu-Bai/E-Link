@@ -176,10 +176,15 @@
   /* 1. 滑动外壳：彻底透明，只负责横向滚动功能 */
   .table-responsive-wrapper {
     width: 100%;
+    max-width: 100%;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch; 
-    margin: 30px 0; /* 外边距交给外壳 */
-  }
+    margin: 30px 0;
+}
+ #main_content > div[style*="overflow"] {
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+}
   
   /* 2. 表格本体：恢复原版的神仙颜值，增加不换行和最小宽度触发滚动 */
   #main_content table { 
