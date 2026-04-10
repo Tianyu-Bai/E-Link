@@ -2232,10 +2232,10 @@ body.light-mode .xs-assembled-label { background: rgba(255,255,255,0.8); color: 
       <!-- ═══ LEFT: Image Viewer ═══ -->
       <div class="xs-viewer" id="xsViewer">
         <!-- Assembled exterior image (default visible) -->
-        <img src="{{ '/Images/Assem.PNG' | relative_url }}" alt="E-Link Assembled View" class="xs-viewer-img xs-img-assembled" loading="lazy">
+        <img src="{{ '/Images/Ext.PNG' | relative_url }}" alt="E-Link Assembled View" class="xs-viewer-img xs-img-assembled" loading="lazy">
 
         <!-- Cross-section image (hidden by default) -->
-        <img src="{{ '/Images/Assem.png' | relative_url }}" alt="E-Link Cross-Section" class="xs-viewer-img xs-img-xsection" loading="lazy">
+        <img src="{{ '/Images/Assem.PNG' | relative_url }}" alt="E-Link Cross-Section" class="xs-viewer-img xs-img-xsection" loading="lazy">
 
         <!-- Assembled mode gradient overlay -->
         <div class="xs-assembled-overlay">
