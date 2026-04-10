@@ -1752,7 +1752,851 @@ body.light-mode .scope-win-wrapper * { filter: none !important; }
   </tbody>
  </table>
 </div>
- 
+
+<!-- ╔══════════════════════════════════════════════════════════════════╗
+     ║  INTERACTIVE CROSS-SECTION EXPLORER  (Dual-View Edition)         ║
+     ║  Paste into index.md. Requires two images in Images/:            ║
+     ║    1. Images/Assem.png                    (assembled exterior)    ║
+     ║    2. Images/Assem_chamber_screw_nut.PNG  (cross-section)        ║
+     ╚══════════════════════════════════════════════════════════════════╝ -->
+
+<style>
+/* ===================== Cross-Section Explorer ===================== */
+.xs-section { max-width: 760px; margin: 40px auto; }
+
+.xs-card {
+  background: rgba(11, 17, 33, 0.95);
+  border: 1px solid rgba(59, 130, 246, 0.25);
+  border-radius: 20px;
+  padding: 30px 35px;
+  box-shadow: inset 0 0 20px rgba(0,0,0,0.4), 0 15px 40px rgba(0,0,0,0.2);
+}
+
+.xs-card-title {
+  margin: 0 0 6px 0;
+  color: #93c5fd;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 20px;
+  font-weight: 700;
+  border-bottom: 1px solid rgba(59, 130, 246, 0.25);
+  padding-bottom: 14px;
+  letter-spacing: 0.5px;
+}
+
+.xs-card-desc {
+  font-size: 14px;
+  color: #94a3b8;
+  margin-bottom: 20px;
+  line-height: 1.7;
+}
+
+/* ── Dual-View Toggle Tabs ── */
+.xs-view-tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 20px;
+  background: rgba(15, 23, 42, 0.5);
+  border-radius: 12px;
+  padding: 4px;
+  border: 1px solid rgba(59, 130, 246, 0.12);
+  width: fit-content;
+}
+
+.xs-view-tab {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 18px;
+  border-radius: 9px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  font-weight: 600;
+  color: #64748b;
+  cursor: pointer;
+  transition: all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
+  border: 1px solid transparent;
+  user-select: none;
+  white-space: nowrap;
+}
+
+.xs-view-tab:hover {
+  color: #94a3b8;
+  background: rgba(59, 130, 246, 0.04);
+}
+
+.xs-view-tab.active {
+  background: rgba(59, 130, 246, 0.12);
+  color: #93c5fd;
+  border-color: rgba(59, 130, 246, 0.25);
+  box-shadow: 0 0 12px rgba(59, 130, 246, 0.1);
+}
+
+.xs-view-tab svg {
+  flex-shrink: 0;
+  opacity: 0.6;
+  transition: opacity 0.3s;
+}
+
+.xs-view-tab.active svg { opacity: 1; }
+
+/* ── Main Grid ── */
+.xs-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+/* ── Image Viewer ── */
+.xs-viewer {
+  position: relative;
+  width: 100%;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  background: #000;
+  cursor: crosshair;
+}
+
+/* Image layers (stacked) */
+.xs-viewer-img {
+  width: 100%;
+  height: auto;
+  display: block;
+  transition: opacity 0.6s cubic-bezier(0.25, 0.8, 0.25, 1),
+              filter 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.xs-img-assembled {
+  position: relative;
+  z-index: 1;
+}
+
+.xs-img-xsection {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* When in cross-section mode */
+.xs-viewer.mode-xsection .xs-img-assembled {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.xs-viewer.mode-xsection .xs-img-xsection {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Dim cross-section when a component is focused */
+.xs-viewer.mode-xsection.has-focus .xs-img-xsection {
+  filter: brightness(0.3) saturate(0.5);
+}
+
+/* In assembled mode, show a subtle "click to explore" overlay */
+.xs-assembled-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  padding-bottom: 20px;
+  background: linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 40%);
+  z-index: 5;
+  opacity: 1;
+  pointer-events: none;
+  transition: opacity 0.4s;
+}
+
+.xs-viewer.mode-xsection .xs-assembled-overlay { opacity: 0; }
+
+.xs-assembled-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.7);
+  background: rgba(0, 0, 0, 0.5);
+  padding: 6px 16px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+/* ── Hotspot Regions (only visible in cross-section mode) ── */
+.xs-hotspots-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.xs-viewer.mode-xsection .xs-hotspots-layer {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.xs-hs {
+  position: absolute;
+  border: 2px solid transparent;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+  z-index: 3;
+}
+
+.xs-hs:hover,
+.xs-hs.active {
+  border-color: var(--xc);
+  background: var(--xbg);
+  box-shadow: 0 0 20px var(--xglow), inset 0 0 12px var(--xglow);
+}
+
+.xs-hs::after {
+  content: '';
+  position: absolute;
+  inset: -5px;
+  border-radius: 8px;
+  border: 1.5px solid var(--xc);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.xs-hs.active::after {
+  animation: xs-ping 1.8s ease-out infinite;
+}
+
+@keyframes xs-ping {
+  0% { transform: scale(1); opacity: 0.7; }
+  100% { transform: scale(1.2); opacity: 0; }
+}
+
+/* Number badge */
+.xs-num {
+  position: absolute;
+  top: -9px;
+  right: -9px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--xc);
+  color: #fff;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 8px var(--xglow);
+  opacity: 0;
+  transform: scale(0.5);
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  z-index: 8;
+  pointer-events: none;
+}
+
+.xs-hs:hover .xs-num,
+.xs-hs.active .xs-num {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* ── Tag Labels ── */
+.xs-tag {
+  position: absolute;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.85);
+  border: 1px solid var(--xc);
+  padding: 3px 10px;
+  border-radius: 6px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateX(5px);
+  transition: all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
+  z-index: 11;
+  box-shadow: 0 0 10px var(--xglow);
+}
+
+.xs-tag.visible { opacity: 1; transform: translateX(0); }
+
+/* ── Right Panel ── */
+.xs-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  max-height: 600px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(59,130,246,0.3) transparent;
+}
+
+.xs-panel::-webkit-scrollbar { width: 4px; }
+.xs-panel::-webkit-scrollbar-thumb { background: rgba(59,130,246,0.3); border-radius: 2px; }
+
+.xs-panel-header {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  color: #64748b;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+  padding-left: 2px;
+}
+
+.xs-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 9px 11px;
+  background: rgba(15, 23, 42, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  position: relative;
+}
+
+.xs-item::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 3px;
+  background: var(--ic);
+  border-radius: 3px 0 0 3px;
+  opacity: 0;
+  transition: opacity 0.3s, width 0.2s;
+}
+
+.xs-item:hover {
+  background: rgba(15, 23, 42, 0.7);
+  border-color: rgba(59, 130, 246, 0.15);
+  transform: translateX(3px);
+}
+
+.xs-item:hover::before { opacity: 0.5; }
+
+.xs-item.active {
+  background: rgba(59, 130, 246, 0.06);
+  border-color: var(--ic);
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.12);
+}
+
+.xs-item.active::before { opacity: 1; width: 4px; }
+
+.xs-item-num {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--ic);
+  color: #fff;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 1px;
+  box-shadow: 0 0 6px var(--ig);
+  transition: transform 0.3s;
+}
+
+.xs-item.active .xs-item-num { transform: scale(1.15); }
+
+.xs-item-body { flex: 1; min-width: 0; }
+
+.xs-item-name {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  font-weight: 700;
+  color: #e2e8f0;
+  margin-bottom: 1px;
+}
+
+.xs-item-sub {
+  font-size: 10px;
+  color: #94a3b8;
+  line-height: 1.4;
+}
+
+.xs-detail {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), margin-top 0.3s;
+  margin-top: 0;
+}
+
+.xs-detail.open {
+  max-height: 160px;
+  margin-top: 8px;
+}
+
+.xs-detail-inner {
+  background: rgba(0, 0, 0, 0.25);
+  border-radius: 8px;
+  padding: 9px 12px;
+  font-size: 10.5px;
+  color: #cbd5e1;
+  line-height: 1.6;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.xs-detail-inner strong { color: #93c5fd; }
+
+/* ── Hint bar ── */
+.xs-hint {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 18px;
+  padding: 8px;
+  background: rgba(59, 130, 246, 0.04);
+  border: 1px solid rgba(59, 130, 246, 0.1);
+  border-radius: 10px;
+  font-size: 11px;
+  color: #64748b;
+  font-family: 'JetBrains Mono', monospace;
+  transition: opacity 0.5s;
+}
+
+/* ── Light mode ── */
+body.light-mode .xs-card { background: #ffffff; border-color: #cbd5e1; box-shadow: 0 15px 40px rgba(0,0,0,0.05); }
+body.light-mode .xs-card-title { color: #2563eb; border-bottom-color: #e2e8f0; }
+body.light-mode .xs-card-desc { color: #475569; }
+body.light-mode .xs-view-tabs { background: #f1f5f9; border-color: #e2e8f0; }
+body.light-mode .xs-view-tab { color: #94a3b8; }
+body.light-mode .xs-view-tab:hover { color: #64748b; background: rgba(0,0,0,0.03); }
+body.light-mode .xs-view-tab.active { background: #fff; color: #2563eb; border-color: #cbd5e1; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+body.light-mode .xs-item { background: #f8fafc; border-color: #e2e8f0; }
+body.light-mode .xs-item:hover { background: #f1f5f9; }
+body.light-mode .xs-item.active { background: rgba(37, 99, 235, 0.04); }
+body.light-mode .xs-item-name { color: #1e293b; }
+body.light-mode .xs-item-sub { color: #64748b; }
+body.light-mode .xs-detail-inner { background: #f1f5f9; color: #334155; border-color: #e2e8f0; }
+body.light-mode .xs-detail-inner strong { color: #1d4ed8; }
+body.light-mode .xs-panel-header { color: #94a3b8; }
+body.light-mode .xs-tag { background: rgba(255,255,255,0.9); color: #0f172a; }
+body.light-mode .xs-assembled-label { background: rgba(255,255,255,0.8); color: #334155; border-color: #cbd5e1; }
+
+/* ── Mobile ── */
+@media (max-width: 768px) {
+  .xs-grid { grid-template-columns: 1fr; }
+  .xs-card { padding: 22px 16px; }
+  .xs-num { width: 17px; height: 17px; font-size: 9px; }
+  .xs-tag { font-size: 9px; padding: 2px 7px; }
+  .xs-item { padding: 8px 9px; }
+  .xs-item-name { font-size: 11px; }
+  .xs-item-sub { font-size: 9px; }
+  .xs-item-num { width: 20px; height: 20px; font-size: 9px; }
+  .xs-view-tab { padding: 7px 12px; font-size: 11px; }
+}
+</style>
+
+<div class="xs-section" data-aos="fade-up">
+  <div class="xs-card">
+    <h3 class="xs-card-title">🔬 Interactive Cross-Section Explorer</h3>
+    <p class="xs-card-desc">
+      Toggle between the assembled exterior and the internal cross-section view. In cross-section mode, click any component to highlight its layer and see detailed specifications.
+    </p>
+
+    <!-- ═══ Dual-View Toggle ═══ -->
+    <div class="xs-view-tabs" id="xsViewTabs">
+      <div class="xs-view-tab active" data-view="assembled">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="12" cy="12" r="3"/>
+        </svg>
+        Assembled View
+      </div>
+      <div class="xs-view-tab" data-view="xsection">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M2 12h4l3-9 5 18 3-9h5"/>
+        </svg>
+        Cross-Section
+      </div>
+    </div>
+
+    <div class="xs-grid">
+      <!-- ═══ LEFT: Image Viewer ═══ -->
+      <div class="xs-viewer" id="xsViewer">
+        <!-- Assembled exterior image (default visible) -->
+        <img src="{{ '/Images/Assem.png' | relative_url }}" alt="E-Link Assembled View" class="xs-viewer-img xs-img-assembled" loading="lazy">
+
+        <!-- Cross-section image (hidden by default) -->
+        <img src="{{ '/Images/Assem.png' | relative_url }}" alt="E-Link Cross-Section" class="xs-viewer-img xs-img-xsection" loading="lazy">
+
+        <!-- Assembled mode gradient overlay -->
+        <div class="xs-assembled-overlay">
+          <span class="xs-assembled-label">Assembled Exterior · Switch to Cross-Section →</span>
+        </div>
+
+        <!-- ═══ Hotspots Layer (only visible in cross-section mode) ═══ -->
+        <div class="xs-hotspots-layer">
+          <!-- ① SPI Cables: blue cables at very top -->
+          <div class="xs-hs" data-comp="spi"
+               style="left:36%; top:0%; width:28%; height:9%;
+                      --xc:#3b82f6; --xbg:rgba(59,130,246,0.1); --xglow:rgba(59,130,246,0.4);">
+            <span class="xs-num">1</span>
+          </div>
+
+          <!-- ② Threaded Cap: gold ring with threads -->
+          <div class="xs-hs" data-comp="cap"
+               style="left:0%; top:27%; width:100%; height:10.5%;
+                      --xc:#f59e0b; --xbg:rgba(245,158,11,0.08); --xglow:rgba(245,158,11,0.35);">
+            <span class="xs-num">2</span>
+          </div>
+
+          <!-- ③ Foam Washer: grey layer under cap -->
+          <div class="xs-hs" data-comp="foam"
+               style="left:20%; top:31%; width:60%; height:6.5%;
+                      --xc:#94a3b8; --xbg:rgba(148,163,184,0.12); --xglow:rgba(148,163,184,0.35);">
+            <span class="xs-num">3</span>
+          </div>
+
+          <!-- ④ Headstage PCB + ICs: orange hub + green PCB + black chips -->
+          <div class="xs-hs" data-comp="pcb"
+               style="left:12%; top:37.5%; width:76%; height:24%;
+                      --xc:#22c55e; --xbg:rgba(34,197,94,0.08); --xglow:rgba(34,197,94,0.35);">
+            <span class="xs-num">4</span>
+          </div>
+
+          <!-- ⑤ Elastomeric Connector: olive/tan sheet -->
+          <div class="xs-hs" data-comp="elast"
+               style="left:14%; top:62%; width:72%; height:7%;
+                      --xc:#a78bfa; --xbg:rgba(167,139,250,0.1); --xglow:rgba(167,139,250,0.35);">
+            <span class="xs-num">5</span>
+          </div>
+
+          <!-- ⑥ Adapter PCB: yellowish-green board -->
+          <div class="xs-hs" data-comp="adapter"
+               style="left:14%; top:69%; width:72%; height:6%;
+                      --xc:#eab308; --xbg:rgba(234,179,8,0.1); --xglow:rgba(234,179,8,0.3);">
+            <span class="xs-num">6</span>
+          </div>
+
+          <!-- ⑦ Spring Screws: silver coils at bottom -->
+          <div class="xs-hs" data-comp="springs"
+               style="left:14%; top:75%; width:72%; height:9%;
+                      --xc:#cbd5e1; --xbg:rgba(203,213,225,0.06); --xglow:rgba(203,213,225,0.25);">
+            <span class="xs-num">7</span>
+          </div>
+
+          <!-- ⑧ Pedestal Base: blue outer structure -->
+          <div class="xs-hs" data-comp="pedestal"
+               style="left:0%; top:62%; width:14%; height:22%;
+                      --xc:#2563eb; --xbg:rgba(37,99,235,0.08); --xglow:rgba(37,99,235,0.3);">
+            <span class="xs-num">8</span>
+          </div>
+
+          <!-- Tag Labels -->
+          <div class="xs-tag" data-tag="spi"     style="--xc:#3b82f6; --xglow:rgba(59,130,246,0.4);   right:4%; top:2%;">① SPI Cables</div>
+          <div class="xs-tag" data-tag="cap"     style="--xc:#f59e0b; --xglow:rgba(245,158,11,0.35);  right:2%; top:28%;">② Threaded Cap</div>
+          <div class="xs-tag" data-tag="foam"    style="--xc:#94a3b8; --xglow:rgba(148,163,184,0.35); right:5%; top:31.5%;">③ Foam Washer</div>
+          <div class="xs-tag" data-tag="pcb"     style="--xc:#22c55e; --xglow:rgba(34,197,94,0.35);   right:2%; top:44%;">④ Headstage PCB</div>
+          <div class="xs-tag" data-tag="elast"   style="--xc:#a78bfa; --xglow:rgba(167,139,250,0.35); right:2%; top:62.5%;">⑤ Elastomeric Sheet</div>
+          <div class="xs-tag" data-tag="adapter" style="--xc:#eab308; --xglow:rgba(234,179,8,0.3);    right:2%; top:70%;">⑥ Adapter PCB</div>
+          <div class="xs-tag" data-tag="springs" style="--xc:#cbd5e1; --xglow:rgba(203,213,225,0.25); right:4%; top:78%;">⑦ Spring Screws</div>
+          <div class="xs-tag" data-tag="pedestal"style="--xc:#2563eb; --xglow:rgba(37,99,235,0.3);    left:2%;  top:72%;">⑧ Pedestal</div>
+        </div>
+      </div>
+
+      <!-- ═══ RIGHT: Component List ═══ -->
+      <div class="xs-panel" id="xsPanel">
+        <div class="xs-panel-header">System Components</div>
+
+        <div class="xs-item" data-comp="spi" style="--ic:#3b82f6; --ig:rgba(59,130,246,0.3);">
+          <span class="xs-item-num">1</span>
+          <div class="xs-item-body">
+            <div class="xs-item-name">SPI Cables</div>
+            <div class="xs-item-sub">Dual Omnetics A7621 harnesses</div>
+          </div>
+          <div class="xs-detail">
+            <div class="xs-detail-inner">
+              <strong>Wire:</strong> 32 AWG, 12-conductor per port<br>
+              <strong>Interface:</strong> Dual SPI for 256ch (2×128ch)<br>
+              <strong>Tip:</strong> Route flat against PCB to minimize torque on solder joints during movement.
+            </div>
+          </div>
+        </div>
+
+        <div class="xs-item" data-comp="cap" style="--ic:#f59e0b; --ig:rgba(245,158,11,0.3);">
+          <span class="xs-item-num">2</span>
+          <div class="xs-item-body">
+            <div class="xs-item-name">Threaded Cap</div>
+            <div class="xs-item-sub">Screw-down compression housing</div>
+          </div>
+          <div class="xs-detail">
+            <div class="xs-detail-inner">
+              <strong>Material:</strong> 3D-printed PEEK / Surgical resin<br>
+              <strong>Function:</strong> Converts rotation torque into uniform axial compression across the 25 mm Ø elastomeric interface.<br>
+              <strong>Threads:</strong> Visible on both sides of cross-section.
+            </div>
+          </div>
+        </div>
+
+        <div class="xs-item" data-comp="foam" style="--ic:#94a3b8; --ig:rgba(148,163,184,0.3);">
+          <span class="xs-item-num">3</span>
+          <div class="xs-item-body">
+            <div class="xs-item-name">Foam Washer</div>
+            <div class="xs-item-sub">Compliant pressure distribution layer</div>
+          </div>
+          <div class="xs-detail">
+            <div class="xs-detail-inner">
+              <strong>Material:</strong> Closed-cell silicone foam<br>
+              <strong>Function:</strong> Distributes cap pressure evenly, compensating for planarity errors between PCBs.<br>
+              <strong>Thickness:</strong> 1.5 mm → ~0.8 mm under working compression.
+            </div>
+          </div>
+        </div>
+
+        <div class="xs-item" data-comp="pcb" style="--ic:#22c55e; --ig:rgba(34,197,94,0.3);">
+          <span class="xs-item-num">4</span>
+          <div class="xs-item-body">
+            <div class="xs-item-name">256ch Headstage PCB</div>
+            <div class="xs-item-sub">4× RHD2164 ICs + 4-layer HDI substrate</div>
+          </div>
+          <div class="xs-detail">
+            <div class="xs-detail-inner">
+              <strong>ICs:</strong> 4× Intan RHD2164 (BGA) — visible as black rectangles<br>
+              <strong>Passives:</strong> 7R + 8C (LVDS) + 1 LED<br>
+              <strong>Bottom:</strong> 256-pad BGA array (0.4mm SAC305 balls) contacts elastomer below.
+            </div>
+          </div>
+        </div>
+
+        <div class="xs-item" data-comp="elast" style="--ic:#a78bfa; --ig:rgba(167,139,250,0.3);">
+          <span class="xs-item-num">5</span>
+          <div class="xs-item-body">
+            <div class="xs-item-name">Elastomeric Connector</div>
+            <div class="xs-item-sub">Anisotropic conductive elastomer sheet</div>
+          </div>
+          <div class="xs-detail">
+            <div class="xs-detail-inner">
+              <strong>Pitch:</strong> 156 µm pillars (3.2× denser than BGA)<br>
+              <strong>Principle:</strong> Z-axis conduction under compression only; lateral insulation. Zero insertion force.<br>
+              <strong>Key:</strong> Eliminates bent-pin failure mode entirely.
+            </div>
+          </div>
+        </div>
+
+        <div class="xs-item" data-comp="adapter" style="--ic:#eab308; --ig:rgba(234,179,8,0.3);">
+          <span class="xs-item-num">6</span>
+          <div class="xs-item-body">
+            <div class="xs-item-name">Adapter PCB</div>
+            <div class="xs-item-sub">Neural probe → headstage signal routing</div>
+          </div>
+          <div class="xs-detail">
+            <div class="xs-detail-inner">
+              <strong>Layers:</strong> 4-layer HDI<br>
+              <strong>Top:</strong> Matches headstage BGA pattern via elastomer<br>
+              <strong>Bottom:</strong> Bond pads for thin-film neural probe<br>
+              <strong>Finish:</strong> ENIG for reliable elastomer contact.
+            </div>
+          </div>
+        </div>
+
+        <div class="xs-item" data-comp="springs" style="--ic:#cbd5e1; --ig:rgba(203,213,225,0.3);">
+          <span class="xs-item-num">7</span>
+          <div class="xs-item-body">
+            <div class="xs-item-name">Spring-Loaded Screws</div>
+            <div class="xs-item-sub">Captive compression fasteners</div>
+          </div>
+          <div class="xs-detail">
+            <div class="xs-detail-inner">
+              <strong>Function:</strong> Secure pedestal to cranial anchors with controlled vertical compliance.<br>
+              <strong>Count:</strong> 4 per assembly (2 visible in this section view).
+            </div>
+          </div>
+        </div>
+
+        <div class="xs-item" data-comp="pedestal" style="--ic:#2563eb; --ig:rgba(37,99,235,0.3);">
+          <span class="xs-item-num">8</span>
+          <div class="xs-item-body">
+            <div class="xs-item-name">Pedestal Base</div>
+            <div class="xs-item-sub">Cranial-mounted structural housing</div>
+          </div>
+          <div class="xs-detail">
+            <div class="xs-detail-inner">
+              <strong>Material:</strong> 3D-printed PEEK / Surgical resin<br>
+              <strong>Features:</strong> Textured sidewalls for dental cement adhesion; customizable base curvature.<br>
+              <strong>Mass:</strong> Adds 3.8 g → 6.6 g total assembly.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="xs-hint" id="xsHint">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="opacity:0.5;flex-shrink:0;">
+        <path d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5"/>
+      </svg>
+      Switch to Cross-Section view, then click any component · 切换至剖面视图，点击任意组件查看详情
+    </div>
+  </div>
+</div>
+
+<script>
+// ── Cross-Section Explorer: Dual-View + Hotspot Interaction ──
+(function() {
+  function initXS() {
+    var viewer = document.getElementById('xsViewer');
+    var panel  = document.getElementById('xsPanel');
+    var hint   = document.getElementById('xsHint');
+    var tabs   = document.getElementById('xsViewTabs');
+    if (!viewer || !panel || !tabs) return;
+
+    var tabBtns   = tabs.querySelectorAll('.xs-view-tab');
+    var hotspots  = viewer.querySelectorAll('.xs-hs');
+    var tags      = viewer.querySelectorAll('.xs-tag');
+    var items     = panel.querySelectorAll('.xs-item');
+    var activeComp = null;
+    var currentView = 'assembled';
+    var hintGone = false;
+
+    // ── View Toggle ──
+    function switchView(view) {
+      if (view === currentView) return;
+      currentView = view;
+
+      // Update tab states
+      tabBtns.forEach(function(t) {
+        t.classList.toggle('active', t.dataset.view === view);
+      });
+
+      // Toggle viewer mode class
+      viewer.classList.toggle('mode-xsection', view === 'xsection');
+
+      // Deactivate any selected component when switching
+      deactivate();
+
+      // Update hint text
+      if (hint && !hintGone) {
+        if (view === 'xsection') {
+          hint.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="opacity:0.5;flex-shrink:0;"><path d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5"/></svg> Click or hover any component to explore · 点击或悬停任意组件以查看详情';
+        } else {
+          hint.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="opacity:0.5;flex-shrink:0;"><path d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5"/></svg> Switch to Cross-Section view, then click any component · 切换至剖面视图，点击任意组件查看详情';
+        }
+      }
+    }
+
+    tabBtns.forEach(function(tab) {
+      tab.addEventListener('click', function() {
+        switchView(tab.dataset.view);
+      });
+    });
+
+    // ── Component Activation ──
+    function activate(key) {
+      // Auto-switch to cross-section if in assembled mode
+      if (currentView !== 'xsection') {
+        switchView('xsection');
+      }
+
+      if (activeComp === key) { deactivate(); return; }
+      activeComp = key;
+      viewer.classList.add('has-focus');
+
+      if (!hintGone && hint) { hint.style.opacity = '0'; hintGone = true; }
+
+      hotspots.forEach(function(hs) {
+        hs.classList.toggle('active', hs.dataset.comp === key);
+      });
+
+      tags.forEach(function(tag) {
+        tag.classList.toggle('visible', tag.dataset.tag === key);
+      });
+
+      items.forEach(function(item) {
+        var match = item.dataset.comp === key;
+        item.classList.toggle('active', match);
+        var d = item.querySelector('.xs-detail');
+        if (d) d.classList.toggle('open', match);
+      });
+
+      var activeItem = panel.querySelector('.xs-item[data-comp="' + key + '"]');
+      if (activeItem) activeItem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    function deactivate() {
+      activeComp = null;
+      viewer.classList.remove('has-focus');
+      hotspots.forEach(function(hs) { hs.classList.remove('active'); });
+      tags.forEach(function(tag) { tag.classList.remove('visible'); });
+      items.forEach(function(item) {
+        item.classList.remove('active');
+        var d = item.querySelector('.xs-detail');
+        if (d) d.classList.remove('open');
+      });
+    }
+
+    // Hotspot interactions
+    hotspots.forEach(function(hs) {
+      hs.addEventListener('click', function(e) { e.stopPropagation(); activate(hs.dataset.comp); });
+      hs.addEventListener('mouseenter', function() {
+        if (!activeComp) {
+          var key = hs.dataset.comp;
+          tags.forEach(function(tag) { tag.classList.toggle('visible', tag.dataset.tag === key); });
+          items.forEach(function(item) { item.classList.toggle('active', item.dataset.comp === key); });
+        }
+      });
+      hs.addEventListener('mouseleave', function() {
+        if (!activeComp) {
+          tags.forEach(function(tag) { tag.classList.remove('visible'); });
+          items.forEach(function(item) { item.classList.remove('active'); });
+        }
+      });
+    });
+
+    // List item interactions (clicking auto-switches to cross-section)
+    items.forEach(function(item) {
+      item.addEventListener('click', function(e) { e.stopPropagation(); activate(item.dataset.comp); });
+      item.addEventListener('mouseenter', function() {
+        if (!activeComp && currentView === 'xsection') {
+          var key = item.dataset.comp;
+          hotspots.forEach(function(hs) { hs.classList.toggle('active', hs.dataset.comp === key); });
+          tags.forEach(function(tag) { tag.classList.toggle('visible', tag.dataset.tag === key); });
+        }
+      });
+      item.addEventListener('mouseleave', function() {
+        if (!activeComp) {
+          hotspots.forEach(function(hs) { hs.classList.remove('active'); });
+          tags.forEach(function(tag) { tag.classList.remove('visible'); });
+        }
+      });
+    });
+
+    // Click outside
+    document.addEventListener('click', function(e) {
+      if (activeComp && !viewer.contains(e.target) && !panel.contains(e.target) && !tabs.contains(e.target)) {
+        deactivate();
+      }
+    });
+
+    // Escape key
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') deactivate();
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initXS);
+  } else {
+    initXS();
+  }
+})();
+</script>
 ---
 <style>
 /* ── Assembly Pipeline Styles ── */
