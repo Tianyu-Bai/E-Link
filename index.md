@@ -1802,40 +1802,34 @@ body.light-mode .xs-t{background:rgba(255,255,255,.9);color:#0f172a}
 <h3>🔬 Interactive Cross-Section Explorer</h3>
 <p>Click any component below or hover directly on the cross-section to highlight the corresponding layer and view specifications.</p>
 <div class="xs-v" id="xV">
-<img src="{{ '/Images/Assem1.PNG' | relative_url }}" alt="E-Link Cross-Section" loading="lazy">
-<span class="xs-h" data-c="spi" style="left:36%;top:0%;width:28%;height:9%;--c:#3b82f6;--bg:rgba(59,130,246,.1);--g:rgba(59,130,246,.4)"><span class="xs-b">1</span></span>
-<span class="xs-h" data-c="cap" style="left:0%;top:29%;width:100%;height:11%;--c:#f59e0b;--bg:rgba(245,158,11,.08);--g:rgba(245,158,11,.35)"><span class="xs-b">2</span></span>
-<span class="xs-h" data-c="foam" style="left:18%;top:32.5%;width:64%;height:7%;--c:#94a3b8;--bg:rgba(148,163,184,.12);--g:rgba(148,163,184,.35)"><span class="xs-b">3</span></span>
-<span class="xs-h" data-c="pcb" style="left:10%;top:39.5%;width:80%;height:19%;--c:#22c55e;--bg:rgba(34,197,94,.08);--g:rgba(34,197,94,.35)"><span class="xs-b">4</span></span>
-<span class="xs-h" data-c="elast" style="left:12%;top:66%;width:76%;height:7%;--c:#a78bfa;--bg:rgba(167,139,250,.1);--g:rgba(167,139,250,.35)"><span class="xs-b">5</span></span>
-<span class="xs-h" data-c="adapt" style="left:12%;top:75%;width:76%;height:4%;--c:#eab308;--bg:rgba(234,179,8,.1);--g:rgba(234,179,8,.3)"><span class="xs-b">6</span></span>
-<span class="xs-h" data-c="spring" style="left:12%;top:79%;width:76%;height:9%;--c:#cbd5e1;--bg:rgba(203,213,225,.06);--g:rgba(203,213,225,.25)"><span class="xs-b">7</span></span>
-<span class="xs-h" data-c="base" style="left:0%;top:66%;width:12%;height:22%;--c:#2563eb;--bg:rgba(37,99,235,.08);--g:rgba(37,99,235,.3)"><span class="xs-b">8</span></span>
-<span class="xs-t" data-k="spi" style="--c:#3b82f6;--g:rgba(59,130,246,.4);right:4%;top:2%">① SPI Cables</span>
-<span class="xs-t" data-k="cap" style="--c:#f59e0b;--g:rgba(245,158,11,.35);right:2%;top:30%">② Threaded Cap</span>
-<span class="xs-t" data-k="foam" style="--c:#94a3b8;--g:rgba(148,163,184,.35);right:5%;top:33%">③ Foam Washer</span>
-<span class="xs-t" data-k="pcb" style="--c:#22c55e;--g:rgba(34,197,94,.35);right:2%;top:46%">④ Headstage PCB</span>
-<span class="xs-t" data-k="elast" style="--c:#a78bfa;--g:rgba(167,139,250,.35);right:2%;top:66.5%">⑤ Elastomer</span>
-<span class="xs-t" data-k="adapt" style="--c:#eab308;--g:rgba(234,179,8,.3);right:2%;top:75.5%">⑥ Adapter PCB</span>
-<span class="xs-t" data-k="spring" style="--c:#cbd5e1;--g:rgba(203,213,225,.25);right:4%;top:82%">⑦ Springs</span>
-<span class="xs-t" data-k="base" style="--c:#2563eb;--g:rgba(37,99,235,.3);left:2%;top:76%">⑧ Pedestal</span>
+<img src="{{ '/Images/Assem new.PNG' | relative_url }}" alt="E-Link Cross-Section" loading="lazy">
+<span class="xs-h" data-c="spi" style="left:35%;top:0%;width:30%;height:28%;--c:#3b82f6;--bg:rgba(59,130,246,.08);--g:rgba(59,130,246,.4)"><span class="xs-b">1</span></span>
+<span class="xs-h" data-c="foam" style="left:15%;top:29%;width:70%;height:3%;--c:#94a3b8;--bg:rgba(148,163,184,.15);--g:rgba(148,163,184,.4)"><span class="xs-b">2</span></span>
+<span class="xs-h" data-c="cap" style="left:5%;top:31%;width:90%;height:7%;--c:#f59e0b;--bg:rgba(245,158,11,.08);--g:rgba(245,158,11,.35)"><span class="xs-b">3</span></span>
+<span class="xs-h" data-c="pcb" style="left:10%;top:37.5%;width:80%;height:18%;--c:#22c55e;--bg:rgba(34,197,94,.08);--g:rgba(34,197,94,.35)"><span class="xs-b">4</span></span>
+<span class="xs-h" data-c="elast" style="left:10%;top:62.5%;width:80%;height:6%;--c:#a78bfa;--bg:rgba(167,139,250,.12);--g:rgba(167,139,250,.4)"><span class="xs-b">5</span></span>
+<span class="xs-h" data-c="adapt" style="left:10%;top:71%;width:80%;height:4%;--c:#eab308;--bg:rgba(234,179,8,.12);--g:rgba(234,179,8,.35)"><span class="xs-b">6</span></span>
+<span class="xs-t" data-k="spi" style="--c:#3b82f6;--g:rgba(59,130,246,.4);right:4%;top:8%">① SPI Cables</span>
+<span class="xs-t" data-k="foam" style="--c:#94a3b8;--g:rgba(148,163,184,.4);right:5%;top:27%">② Foam Washer</span>
+<span class="xs-t" data-k="cap" style="--c:#f59e0b;--g:rgba(245,158,11,.35);right:2%;top:32%">③ Threaded Cap</span>
+<span class="xs-t" data-k="pcb" style="--c:#22c55e;--g:rgba(34,197,94,.35);right:2%;top:44%">④ Headstage PCB</span>
+<span class="xs-t" data-k="elast" style="--c:#a78bfa;--g:rgba(167,139,250,.4);right:2%;top:63%">⑤ Elastomer</span>
+<span class="xs-t" data-k="adapt" style="--c:#eab308;--g:rgba(234,179,8,.35);right:2%;top:71.5%">⑥ Adapter PCB</span>
 </div>
 <div class="xs-g" id="xG">
 <div class="xs-i" data-c="spi" style="--c:#3b82f6"><span class="xs-n">1</span><div><div class="xs-cn">SPI Cables</div><div class="xs-cs">Dual Omnetics A7621</div></div></div>
-<div class="xs-i" data-c="cap" style="--c:#f59e0b"><span class="xs-n">2</span><div><div class="xs-cn">Threaded Cap</div><div class="xs-cs">Compression housing</div></div></div>
-<div class="xs-i" data-c="foam" style="--c:#94a3b8"><span class="xs-n">3</span><div><div class="xs-cn">Foam Washer</div><div class="xs-cs">Pressure distribution</div></div></div>
+<div class="xs-i" data-c="foam" style="--c:#94a3b8"><span class="xs-n">2</span><div><div class="xs-cn">Foam Washer</div><div class="xs-cs">Pressure distribution</div></div></div>
+<div class="xs-i" data-c="cap" style="--c:#f59e0b"><span class="xs-n">3</span><div><div class="xs-cn">Threaded Cap</div><div class="xs-cs">Compression housing</div></div></div>
 <div class="xs-i" data-c="pcb" style="--c:#22c55e"><span class="xs-n">4</span><div><div class="xs-cn">Headstage PCB</div><div class="xs-cs">4× RHD2164 + 4L HDI</div></div></div>
 <div class="xs-i" data-c="elast" style="--c:#a78bfa"><span class="xs-n">5</span><div><div class="xs-cn">Elastomeric Sheet</div><div class="xs-cs">Z-axis conductor</div></div></div>
 <div class="xs-i" data-c="adapt" style="--c:#eab308"><span class="xs-n">6</span><div><div class="xs-cn">Adapter PCB</div><div class="xs-cs">Probe signal routing</div></div></div>
-<div class="xs-i" data-c="spring" style="--c:#cbd5e1"><span class="xs-n">7</span><div><div class="xs-cn">Spring Screws</div><div class="xs-cs">Captive fasteners</div></div></div>
-<div class="xs-i" data-c="base" style="--c:#2563eb"><span class="xs-n">8</span><div><div class="xs-cn">Pedestal Base</div><div class="xs-cs">Cranial housing</div></div></div>
 <div class="xs-d" id="xD"><div id="xDI"></div></div>
 </div>
 </div>
 </div>
 
 <script>
-(function(){var D={spi:'<strong>Wire:</strong> 32AWG 12-conductor | <strong>Interface:</strong> Dual SPI 2×128ch',cap:'<strong>Material:</strong> PEEK/Surgical resin | <strong>Function:</strong> Torque → uniform axial compression across 25mm Ø',foam:'<strong>Material:</strong> Closed-cell silicone | <strong>Thickness:</strong> 1.5→0.8mm | Compensates planarity errors',pcb:'<strong>ICs:</strong> 4× RHD2164 BGA | <strong>Passives:</strong> 7R+8C LVDS +1 LED | <strong>Bottom:</strong> 256-pad BGA 0.4mm',elast:'<strong>Pitch:</strong> 156µm (3.2× denser than BGA) | Z-axis conduction under compression | Zero insertion force',adapt:'<strong>Layers:</strong> 4L HDI | <strong>Top:</strong> BGA match via elastomer | <strong>Bottom:</strong> Probe bond pads | ENIG finish',spring:'<strong>Function:</strong> Secure pedestal to cranial anchors | <strong>Count:</strong> 4 per assembly',base:'<strong>Material:</strong> PEEK/Surgical resin | Textured sidewalls | Customizable curvature | +3.8g → 6.6g total'};
+(function(){var D={spi:'<strong>Wire:</strong> 32AWG 12-conductor | <strong>Interface:</strong> Dual SPI 2×128ch',foam:'<strong>Material:</strong> Closed-cell silicone | <strong>Thickness:</strong> 1.5→0.8mm | Compensates planarity errors',cap:'<strong>Material:</strong> PEEK/Surgical resin | <strong>Function:</strong> Torque → uniform axial compression across 25mm Ø',pcb:'<strong>ICs:</strong> 4× RHD2164 BGA | <strong>Passives:</strong> 7R+8C LVDS +1 LED | <strong>Bottom:</strong> 256-pad BGA 0.4mm',elast:'<strong>Pitch:</strong> 156µm (3.2× denser than BGA) | Z-axis conduction under compression | Zero insertion force',adapt:'<strong>Layers:</strong> 4L HDI | <strong>Top:</strong> BGA match via elastomer | <strong>Bottom:</strong> Probe bond pads | ENIG finish'};
 function go(){var v=document.getElementById('xV'),g=document.getElementById('xG'),d=document.getElementById('xD'),di=document.getElementById('xDI');if(!v||!g)return;
 var hs=v.querySelectorAll('.xs-h'),ts=v.querySelectorAll('.xs-t'),cs=g.querySelectorAll('.xs-i'),cur=null;
 function act(k){if(cur===k){off();return}cur=k;v.classList.add('focus');
