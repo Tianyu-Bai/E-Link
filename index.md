@@ -1768,7 +1768,7 @@ body.light-mode .pitch-label { color: #64748b; }
       <div class="scale-col">
         <span class="scale-label" style="color: #f59e0b;">TARGET</span>
         <div class="scale-bar future future-amber" style="height: 195px;" data-target-height="195">
-          <span class="scale-bar-value">1024</span>
+          <span class="scale-bar-value">1024+</span>
         </div>
       </div>
     </div>
