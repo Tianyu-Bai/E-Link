@@ -1760,7 +1760,7 @@ body.light-mode .pitch-label { color: #64748b; }
         </div>
       </div>
       <div class="scale-col">
-        <span class="scale-label" style="color: #10b981;">PHASE 2</span>
+        <span class="scale-label" style="color: #10b981;">NEXT PHASE</span>
         <div class="scale-bar future future-green" style="height: 140px;" data-target-height="140">
           <span class="scale-bar-value">512</span>
         </div>
