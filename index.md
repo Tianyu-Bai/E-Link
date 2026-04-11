@@ -1803,7 +1803,7 @@ body.light-mode .xs-t{background:rgba(255,255,255,.9);color:#0f172a}
 <p>Click any component below or hover directly on the cross-section to highlight the corresponding layer and view specifications.</p>
 <div class="xs-v" id="xV">
 <img src="{{ '/Images/Assem new.PNG' | relative_url }}" alt="E-Link Cross-Section" loading="lazy">
-<span class="xs-h" data-c="spi" style="left:35%;top:0%;width:30%;height:28%;--c:#3b82f6;--bg:rgba(59,130,246,.08);--g:rgba(59,130,246,.4)"><span class="xs-b">1</span></span>
+<span class="xs-h" data-c="spi" style="left:43%;top:0%;width:30%;height:32%;--c:#3b82f6;--bg:rgba(59,130,246,.08);--g:rgba(59,130,246,.4)"><span class="xs-b">1</span></span>
 <span class="xs-h" data-c="foam" style="left:15%;top:29%;width:70%;height:3%;--c:#94a3b8;--bg:rgba(148,163,184,.15);--g:rgba(148,163,184,.4)"><span class="xs-b">2</span></span>
 <span class="xs-h" data-c="cap" style="left:5%;top:31%;width:90%;height:7%;--c:#f59e0b;--bg:rgba(245,158,11,.08);--g:rgba(245,158,11,.35)"><span class="xs-b">3</span></span>
 <span class="xs-h" data-c="pcb" style="left:10%;top:37.5%;width:80%;height:18%;--c:#22c55e;--bg:rgba(34,197,94,.08);--g:rgba(34,197,94,.35)"><span class="xs-b">4</span></span>
