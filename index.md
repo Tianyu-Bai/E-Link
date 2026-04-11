@@ -1111,13 +1111,13 @@ body.light-mode .xs-t{background:rgba(255,255,255,.9);color:#0f172a}
 <div class="xs-v" id="xV">
 <img src="{{ '/Images/Assem new.PNG' | relative_url }}" alt="E-Link Cross-Section" loading="lazy">
 <span class="xs-h" data-c="spi" style="left:43.5%;top:0%;width:13%;height:41%;--c:#3b82f6;--bg:rgba(59,130,246,.08);--g:rgba(59,130,246,.4)"><span class="xs-b">1</span></span>
-<span class="xs-h" data-c="foam" style="left:20%;top:39.5%;width:60%;height:6.88%;--c:#94a3b8;--bg:rgba(148,163,184,.15);--g:rgba(148,163,184,.4)"><span class="xs-b">2</span></span>
+<span class="xs-h" data-c="foam" style="left:20%;top:39.5%;width:60%;height:6.88%;--c:#f472b6;--bg:rgba(244,114,182,.15);--g:rgba(244,114,182,.4)"><span class="xs-b">2</span></span>
 <span class="xs-h" data-c="cap" style="left:2%;top:36.5%;width:96%;height:26%;--c:#f59e0b;--bg:rgba(245,158,11,.08);--g:rgba(245,158,11,.35)"><span class="xs-b">3</span></span>
 <span class="xs-h" data-c="pcb" style="left:16%;top:61.6%;width:66%;height:7.5%;--c:#22c55e;--bg:rgba(34,197,94,.08);--g:rgba(34,197,94,.35)"><span class="xs-b">4</span></span>
 <span class="xs-h" data-c="elast" style="left:16%;top:68.6%;width:66%;height:1.88%;--c:#a78bfa;--bg:rgba(167,139,250,.12);--g:rgba(167,139,250,.4)"><span class="xs-b">5</span></span>
 <span class="xs-h" data-c="adapt" style="left:16%;top:70.5%;width:66%;height:5%;--c:#eab308;--bg:rgba(234,179,8,.12);--g:rgba(234,179,8,.35)"><span class="xs-b">6</span></span>
 <span class="xs-t" data-k="spi" style="--c:#3b82f6;--g:rgba(59,130,246,.4);right:4%;top:8%">① SPI Cables</span>
-<span class="xs-t" data-k="foam" style="--c:#94a3b8;--g:rgba(148,163,184,.4);right:5%;top:27%">② Foam Washer</span>
+<span class="xs-t" data-k="foam" style="--c:#f472b6;--g:rgba(244,114,182,.4);right:5%;top:27%">② Foam Washer</span>
 <span class="xs-t" data-k="cap" style="--c:#f59e0b;--g:rgba(245,158,11,.35);right:2%;top:32%">③ Threaded Cap</span>
 <span class="xs-t" data-k="pcb" style="--c:#22c55e;--g:rgba(34,197,94,.35);right:2%;top:44%">④ Headstage PCB</span>
 <span class="xs-t" data-k="elast" style="--c:#a78bfa;--g:rgba(167,139,250,.4);right:2%;top:63%">⑤ Elastomer</span>
@@ -1125,7 +1125,7 @@ body.light-mode .xs-t{background:rgba(255,255,255,.9);color:#0f172a}
 </div>
 <div class="xs-g" id="xG">
 <div class="xs-i" data-c="spi" style="--c:#3b82f6"><span class="xs-n">1</span><div><div class="xs-cn">SPI Cables</div><div class="xs-cs">Dual Omnetics A7621</div></div></div>
-<div class="xs-i" data-c="foam" style="--c:#94a3b8"><span class="xs-n">2</span><div><div class="xs-cn">Foam Washer</div><div class="xs-cs">Pressure distribution</div></div></div>
+<div class="xs-i" data-c="foam" style="--c:#f472b6"><span class="xs-n">2</span><div><div class="xs-cn">Foam Washer</div><div class="xs-cs">Pressure distribution</div></div></div>
 <div class="xs-i" data-c="cap" style="--c:#f59e0b"><span class="xs-n">3</span><div><div class="xs-cn">Threaded Cap</div><div class="xs-cs">Compression housing</div></div></div>
 <div class="xs-i" data-c="pcb" style="--c:#22c55e"><span class="xs-n">4</span><div><div class="xs-cn">Headstage PCB</div><div class="xs-cs">4× RHD2164 + 4L HDI</div></div></div>
 <div class="xs-i" data-c="elast" style="--c:#a78bfa"><span class="xs-n">5</span><div><div class="xs-cn">Elastomeric Sheet</div><div class="xs-cs">Z-axis conductor</div></div></div>
