@@ -1011,7 +1011,7 @@ body.light-mode .pipe-stat-desc { color: #64748b; }
         <div class="pipe-circle">03</div>
         <div class="pipe-label">
           <span class="pipe-icon">🧬</span>
-          Align<br>Elastomer
+          Put<br>Elastomer
         </div>
       </div>
  
