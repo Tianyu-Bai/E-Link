@@ -1804,11 +1804,11 @@ body.light-mode .xs-t{background:rgba(255,255,255,.9);color:#0f172a}
 <div class="xs-v" id="xV">
 <img src="{{ '/Images/Assem new.PNG' | relative_url }}" alt="E-Link Cross-Section" loading="lazy">
 <span class="xs-h" data-c="spi" style="left:43.5%;top:0%;width:13%;height:41%;--c:#3b82f6;--bg:rgba(59,130,246,.08);--g:rgba(59,130,246,.4)"><span class="xs-b">1</span></span>
-<span class="xs-h" data-c="foam" style="left:20%;top:39%;width:60%;height:6.6%;--c:#94a3b8;--bg:rgba(148,163,184,.15);--g:rgba(148,163,184,.4)"><span class="xs-b">2</span></span>
+<span class="xs-h" data-c="foam" style="left:20%;top:40%;width:60%;height:5.8%;--c:#94a3b8;--bg:rgba(148,163,184,.15);--g:rgba(148,163,184,.4)"><span class="xs-b">2</span></span>
 <span class="xs-h" data-c="cap" style="left:2%;top:36.5%;width:96%;height:26%;--c:#f59e0b;--bg:rgba(245,158,11,.08);--g:rgba(245,158,11,.35)"><span class="xs-b">3</span></span>
-<span class="xs-h" data-c="pcb" style="left:16%;top:62%;width:68%;height:7.1%;--c:#22c55e;--bg:rgba(34,197,94,.08);--g:rgba(34,197,94,.35)"><span class="xs-b">4</span></span>
-<span class="xs-h" data-c="elast" style="left:16%;top:69%;width:68%;height:1.8%;--c:#a78bfa;--bg:rgba(167,139,250,.12);--g:rgba(167,139,250,.4)"><span class="xs-b">5</span></span>
-<span class="xs-h" data-c="adapt" style="left:16%;top:70%;width:68%;height:4.7%;--c:#eab308;--bg:rgba(234,179,8,.12);--g:rgba(234,179,8,.35)"><span class="xs-b">6</span></span>
+<span class="xs-h" data-c="pcb" style="left:16%;top:61.2%;width:68%;height:7.1%;--c:#22c55e;--bg:rgba(34,197,94,.08);--g:rgba(34,197,94,.35)"><span class="xs-b">4</span></span>
+<span class="xs-h" data-c="elast" style="left:16%;top:68.6%;width:68%;height:1.88%;--c:#a78bfa;--bg:rgba(167,139,250,.12);--g:rgba(167,139,250,.4)"><span class="xs-b">5</span></span>
+<span class="xs-h" data-c="adapt" style="left:16%;top:70.8%;width:68%;height:4.7%;--c:#eab308;--bg:rgba(234,179,8,.12);--g:rgba(234,179,8,.35)"><span class="xs-b">6</span></span>
 <span class="xs-t" data-k="spi" style="--c:#3b82f6;--g:rgba(59,130,246,.4);right:4%;top:8%">① SPI Cables</span>
 <span class="xs-t" data-k="foam" style="--c:#94a3b8;--g:rgba(148,163,184,.4);right:5%;top:27%">② Foam Washer</span>
 <span class="xs-t" data-k="cap" style="--c:#f59e0b;--g:rgba(245,158,11,.35);right:2%;top:32%">③ Threaded Cap</span>
