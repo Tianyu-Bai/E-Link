@@ -1761,7 +1761,7 @@ body.light-mode .scope-win-wrapper * { filter: none !important; }
 .xs-card>p{font-size:14px;color:#94a3b8;margin-bottom:20px;line-height:1.7}
 .xs-v{position:relative;width:100%;border-radius:14px;overflow:hidden;border:1px solid rgba(59,130,246,.2);background:#000;margin-bottom:18px}
 .xs-v img{width:100%;height:auto;display:block;transition:filter .5s}
-.xs-v.focus img{filter:brightness(.9) saturate(.6)}
+.xs-v.focus img{filter:brightness(.9) saturate(.99)}
 .xs-h{position:absolute;border:2px solid transparent;border-radius:4px;cursor:pointer;transition:all .35s;z-index:3}
 .xs-h:hover,.xs-h.on{border-color:var(--c);background:var(--bg);box-shadow:0 0 18px var(--g),inset 0 0 10px var(--g)}
 .xs-h::after{content:'';position:absolute;inset:-5px;border-radius:8px;border:1.5px solid var(--c);opacity:0;pointer-events:none}
@@ -1804,9 +1804,9 @@ body.light-mode .xs-t{background:rgba(255,255,255,.9);color:#0f172a}
 <div class="xs-v" id="xV">
 <img src="{{ '/Images/Assem new.PNG' | relative_url }}" alt="E-Link Cross-Section" loading="lazy">
 <span class="xs-h" data-c="spi" style="left:43.5%;top:0%;width:13%;height:41%;--c:#3b82f6;--bg:rgba(59,130,246,.08);--g:rgba(59,130,246,.4)"><span class="xs-b">1</span></span>
-<span class="xs-h" data-c="foam" style="left:20%;top:39.5%;width:60%;height:6.2%;--c:#94a3b8;--bg:rgba(148,163,184,.15);--g:rgba(148,163,184,.4)"><span class="xs-b">2</span></span>
+<span class="xs-h" data-c="foam" style="left:20%;top:39.5%;width:60%;height:6.88%;--c:#94a3b8;--bg:rgba(148,163,184,.15);--g:rgba(148,163,184,.4)"><span class="xs-b">2</span></span>
 <span class="xs-h" data-c="cap" style="left:2%;top:36.5%;width:96%;height:26%;--c:#f59e0b;--bg:rgba(245,158,11,.08);--g:rgba(245,158,11,.35)"><span class="xs-b">3</span></span>
-<span class="xs-h" data-c="pcb" style="left:16%;top:61.6%;width:68%;height:7.1%;--c:#22c55e;--bg:rgba(34,197,94,.08);--g:rgba(34,197,94,.35)"><span class="xs-b">4</span></span>
+<span class="xs-h" data-c="pcb" style="left:16%;top:61.6%;width:68%;height:7.5%;--c:#22c55e;--bg:rgba(34,197,94,.08);--g:rgba(34,197,94,.35)"><span class="xs-b">4</span></span>
 <span class="xs-h" data-c="elast" style="left:16%;top:68.6%;width:68%;height:1.88%;--c:#a78bfa;--bg:rgba(167,139,250,.12);--g:rgba(167,139,250,.4)"><span class="xs-b">5</span></span>
 <span class="xs-h" data-c="adapt" style="left:16%;top:70.5%;width:68%;height:5%;--c:#eab308;--bg:rgba(234,179,8,.12);--g:rgba(234,179,8,.35)"><span class="xs-b">6</span></span>
 <span class="xs-t" data-k="spi" style="--c:#3b82f6;--g:rgba(59,130,246,.4);right:4%;top:8%">① SPI Cables</span>
