@@ -726,6 +726,469 @@ body.light-mode .yield-bar-track { background: rgba(0,0,0,0.06); border-color: r
  </table>
 </div>
 
+<style>
+/* ── Assembly Pipeline Styles ── */
+.pipeline-section { max-width: 760px; margin: 40px auto; }
+ 
+.pipeline-card {
+  background: rgba(11, 17, 33, 0.95);
+  border: 1px solid rgba(59, 130, 246, 0.25);
+  border-radius: 20px;
+  padding: 30px 35px 35px;
+  box-shadow: inset 0 0 20px rgba(0,0,0,0.4), 0 15px 40px rgba(0,0,0,0.2);
+}
+ 
+.pipeline-card-title {
+  margin: 0 0 6px 0;
+  color: #93c5fd;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 20px;
+  font-weight: 700;
+  border-bottom: 1px solid rgba(59, 130, 246, 0.25);
+  padding-bottom: 14px;
+  letter-spacing: 0.5px;
+}
+ 
+.pipeline-card-desc {
+  font-size: 14px;
+  color: #94a3b8;
+  margin-bottom: 30px;
+  line-height: 1.7;
+}
+ 
+/* ── Horizontal Pipeline (Desktop) ── */
+.pipe-track-wrapper {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 0 10px;
+  margin-bottom: 10px;
+}
+ 
+/* Connecting track line */
+.pipe-track-line {
+  position: absolute;
+  top: 20px;
+  left: 40px;
+  right: 40px;
+  height: 2px;
+  background: rgba(59, 130, 246, 0.15);
+  z-index: 1;
+  overflow: hidden;
+  border-radius: 1px;
+}
+ 
+/* Animated flowing light pulse */
+.pipe-flow-light {
+  position: absolute;
+  top: 0;
+  left: -60px;
+  width: 60px;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, #3b82f6, transparent);
+  animation: pipeFlowH 3.5s linear infinite;
+}
+ 
+@keyframes pipeFlowH {
+  0%   { left: -60px; opacity: 0; }
+  8%   { opacity: 1; }
+  92%  { opacity: 1; }
+  100% { left: 100%; opacity: 0; }
+}
+ 
+/* Each step node */
+.pipe-node {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 16.66%;
+  text-align: center;
+}
+ 
+.pipe-circle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #0f172a;
+  border: 2px solid #3b82f6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 14px;
+  font-weight: 700;
+  color: #93c5fd;
+  margin-bottom: 14px;
+  box-shadow: 0 0 12px rgba(59, 130, 246, 0.3);
+  transition: all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
+  cursor: default;
+  flex-shrink: 0;
+}
+ 
+.pipe-node:hover .pipe-circle {
+  background: #3b82f6;
+  color: #ffffff;
+  box-shadow: 0 0 24px rgba(59, 130, 246, 0.7);
+  transform: scale(1.15);
+}
+ 
+.pipe-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #cbd5e1;
+  line-height: 1.35;
+  transition: color 0.3s;
+}
+ 
+.pipe-node:hover .pipe-label {
+  color: #ffffff;
+}
+ 
+.pipe-icon {
+  font-size: 16px;
+  margin-bottom: 4px;
+  display: block;
+  opacity: 0.8;
+}
+ 
+/* ── Validation stats row ── */
+.pipe-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-top: 28px;
+}
+ 
+.pipe-stat-card {
+  background: rgba(15, 23, 42, 0.4);
+  border-radius: 10px;
+  padding: 14px 16px;
+  border-left: 3px solid;
+  transition: transform 0.25s, box-shadow 0.25s;
+}
+ 
+.pipe-stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+}
+ 
+.pipe-stat-card:nth-child(1) { border-left-color: #10b981; border-color: rgba(16, 185, 129, 0.2); }
+.pipe-stat-card:nth-child(2) { border-left-color: #3b82f6; border-color: rgba(59, 130, 246, 0.2); }
+.pipe-stat-card:nth-child(3) { border-left-color: #f59e0b; border-color: rgba(245, 158, 11, 0.2); }
+ 
+.pipe-stat-card { border: 1px solid; }
+.pipe-stat-card:nth-child(1) { border-color: rgba(16, 185, 129, 0.2); border-left: 3px solid #10b981; }
+.pipe-stat-card:nth-child(2) { border-color: rgba(59, 130, 246, 0.2); border-left: 3px solid #3b82f6; }
+.pipe-stat-card:nth-child(3) { border-color: rgba(245, 158, 11, 0.2); border-left: 3px solid #f59e0b; }
+ 
+.pipe-stat-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+ 
+.pipe-stat-card:nth-child(1) .pipe-stat-title { color: #10b981; }
+.pipe-stat-card:nth-child(2) .pipe-stat-title { color: #3b82f6; }
+.pipe-stat-card:nth-child(3) .pipe-stat-title { color: #f59e0b; }
+ 
+.pipe-stat-desc {
+  font-size: 12px;
+  color: #94a3b8;
+  line-height: 1.45;
+}
+ 
+/* ── Light Mode ── */
+body.light-mode .pipeline-card {
+  background: #ffffff;
+  border-color: #cbd5e1;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.05);
+}
+body.light-mode .pipeline-card-title { color: #2563eb; border-bottom-color: #e2e8f0; }
+body.light-mode .pipeline-card-desc { color: #475569; }
+body.light-mode .pipe-circle { background: #ffffff; border-color: #2563eb; color: #2563eb; box-shadow: 0 0 10px rgba(37, 99, 235, 0.15); }
+body.light-mode .pipe-node:hover .pipe-circle { background: #2563eb; color: #fff; }
+body.light-mode .pipe-label { color: #475569; }
+body.light-mode .pipe-node:hover .pipe-label { color: #0f172a; }
+body.light-mode .pipe-track-line { background: rgba(37, 99, 235, 0.12); }
+body.light-mode .pipe-stat-card { background: #f8fafc; }
+body.light-mode .pipe-stat-desc { color: #64748b; }
+ 
+/* ── Mobile: Switch to vertical layout ── */
+@media (max-width: 768px) {
+  .pipeline-card { padding: 25px 18px; }
+ 
+  .pipe-track-wrapper {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+    padding-left: 28px;
+  }
+ 
+  /* Vertical track line */
+  .pipe-track-line {
+    top: 0;
+    bottom: 0;
+    left: 47px;
+    right: auto;
+    width: 2px;
+    height: auto;
+  }
+ 
+  .pipe-flow-light {
+    width: 100%;
+    height: 50px;
+    left: auto;
+    top: -50px;
+    background: linear-gradient(180deg, transparent, #3b82f6, transparent);
+    animation: pipeFlowV 3.5s linear infinite;
+  }
+ 
+  @keyframes pipeFlowV {
+    0%   { top: -50px; opacity: 0; }
+    8%   { opacity: 1; }
+    92%  { opacity: 1; }
+    100% { top: 100%; opacity: 0; }
+  }
+ 
+  .pipe-node {
+    flex-direction: row;
+    width: 100%;
+    text-align: left;
+    gap: 16px;
+    padding: 10px 0;
+  }
+ 
+  .pipe-circle { margin-bottom: 0; width: 38px; height: 38px; }
+  .pipe-label { font-size: 14px; }
+  .pipe-icon { display: inline; margin-right: 4px; margin-bottom: 0; }
+ 
+  .pipe-stats {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+}
+ 
+@media (max-width: 480px) {
+  .pipe-stats { grid-template-columns: 1fr; }
+}
+</style>
+ 
+<div class="pipeline-section" data-aos="fade-up">
+  <div class="pipeline-card">
+    <h3 class="pipeline-card-title">⚙️ Assembly & Validation Pipeline</h3>
+    <p class="pipeline-card-desc">
+      The insertion-free <strong style="color: #e2e8f0;">"rotate-and-play"</strong> interface eliminates micro-alignment requirements, enabling reproducible assembly by untrained operators with consistent electrical performance.
+    </p>
+ 
+    <!-- Pipeline Steps -->
+    <div class="pipe-track-wrapper">
+      <!-- Track line with flowing light -->
+      <div class="pipe-track-line">
+        <div class="pipe-flow-light"></div>
+      </div>
+ 
+      <div class="pipe-node">
+        <div class="pipe-circle">01</div>
+        <div class="pipe-label">
+          <span class="pipe-icon">🔩</span>
+          Seat<br>Pedestal
+        </div>
+      </div>
+ 
+      <div class="pipe-node">
+        <div class="pipe-circle">02</div>
+        <div class="pipe-label">
+          <span class="pipe-icon">📐</span>
+          Place<br>Adapter PCB
+        </div>
+      </div>
+ 
+      <div class="pipe-node">
+        <div class="pipe-circle">03</div>
+        <div class="pipe-label">
+          <span class="pipe-icon">🧬</span>
+          Align<br>Elastomer
+        </div>
+      </div>
+ 
+      <div class="pipe-node">
+        <div class="pipe-circle">04</div>
+        <div class="pipe-label">
+          <span class="pipe-icon">🔌</span>
+          Seat<br>Headstage
+        </div>
+      </div>
+ 
+      <div class="pipe-node">
+        <div class="pipe-circle">05</div>
+        <div class="pipe-label">
+          <span class="pipe-icon">🔄</span>
+          Rotate<br>Threaded Cap
+        </div>
+      </div>
+ 
+      <div class="pipe-node">
+        <div class="pipe-circle">06</div>
+        <div class="pipe-label">
+          <span class="pipe-icon">✅</span>
+          Electrical<br>Verify
+        </div>
+      </div>
+    </div>
+ 
+    <!-- Validation Stats -->
+    <div class="pipe-stats">
+      <div class="pipe-stat-card">
+        <div class="pipe-stat-title">Independent Operators Verified</div>
+        <div class="pipe-stat-desc">Consistent connection yield across all users — decoupled from individual technique.</div>
+      </div>
+      <div class="pipe-stat-card">
+        <div class="pipe-stat-title">200+ Mating Cycles</div>
+        <div class="pipe-stat-desc">Zero degradation in contact impedance or yield over 5-day longitudinal durability test.</div>
+      </div>
+      <div class="pipe-stat-card">
+        <div class="pipe-stat-title">180 min Vibration</div>
+        <div class="pipe-stat-desc">Yield maintained under ~23 m/s² extreme acceleration stress testing.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<span id="en-components"></span>
+## 🧩 System Components
+
+<style>
+.xs-sec{max-width:760px;margin:40px auto}
+.xs-card{background:rgba(11,17,33,.95);border:1px solid rgba(59,130,246,.25);border-radius:20px;padding:30px 35px;box-shadow:inset 0 0 20px rgba(0,0,0,.4),0 15px 40px rgba(0,0,0,.2)}
+.xs-card h3{margin:0 0 6px;color:#93c5fd;font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:700;border-bottom:1px solid rgba(59,130,246,.25);padding-bottom:14px}
+.xs-card>p{font-size:14px;color:#94a3b8;margin-bottom:20px;line-height:1.7}
+.xs-v{position:relative;width:100%;border-radius:14px;overflow:hidden;border:1px solid rgba(59,130,246,.2);background:#000;margin-bottom:18px}
+.xs-v img{width:100%;height:auto;display:block;transition:filter .5s}
+.xs-v.focus img{filter:brightness(.9) saturate(.99)}
+.xs-h{position:absolute;border:2px solid transparent;border-radius:4px;cursor:pointer;transition:all .35s;z-index:3}
+.xs-h:hover,.xs-h.on{border-color:var(--c);background:var(--bg);box-shadow:0 0 18px var(--g),inset 0 0 10px var(--g)}
+.xs-h::after{content:'';position:absolute;inset:-5px;border-radius:8px;border:1.5px solid var(--c);opacity:0;pointer-events:none}
+.xs-h.on::after{animation:xp 1.8s ease-out infinite}
+@keyframes xp{0%{transform:scale(1);opacity:.7}to{transform:scale(1.2);opacity:0}}
+.xs-b{position:absolute;top:-9px;right:-9px;width:20px;height:20px;border-radius:50%;background:var(--c);color:#fff;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;box-shadow:0 0 8px var(--g);opacity:0;transform:scale(.5);transition:all .3s;z-index:8;pointer-events:none}
+.xs-h:hover .xs-b,.xs-h.on .xs-b{opacity:1;transform:scale(1)}
+.xs-t{position:absolute;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:#fff;background:rgba(0,0,0,.85);border:1px solid var(--c);padding:3px 10px;border-radius:6px;white-space:nowrap;pointer-events:none;opacity:0;transition:all .35s;z-index:11;box-shadow:0 0 10px var(--g)}
+.xs-t.on{opacity:1}
+.xs-g{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.xs-i{display:flex;gap:10px;padding:10px 12px;background:rgba(15,23,42,.4);border:1px solid rgba(255,255,255,.04);border-radius:10px;cursor:pointer;transition:all .3s;position:relative}
+.xs-i::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--c);border-radius:3px 0 0 3px;opacity:0;transition:opacity .3s}
+.xs-i:hover{background:rgba(15,23,42,.7);transform:translateX(2px)}
+.xs-i:hover::before{opacity:.5}
+.xs-i.on{background:rgba(59,130,246,.06);border-color:var(--c)}
+.xs-i.on::before{opacity:1;width:4px}
+.xs-n{width:22px;height:22px;border-radius:50%;background:var(--c);color:#fff;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.xs-cn{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:#e2e8f0}
+.xs-cs{font-size:9.5px;color:#94a3b8;line-height:1.35}
+.xs-d{max-height:0;overflow:hidden;transition:max-height .4s,margin .3s;grid-column:1/-1}
+.xs-d.open{max-height:140px;margin-top:6px}
+.xs-d div{background:rgba(0,0,0,.25);border-radius:8px;padding:10px 14px;font-size:11px;color:#cbd5e1;line-height:1.6;border:1px solid rgba(255,255,255,.04)}
+.xs-d strong{color:#93c5fd}
+body.light-mode .xs-card{background:#fff;border-color:#cbd5e1}
+body.light-mode .xs-card h3{color:#2563eb;border-color:#e2e8f0}
+body.light-mode .xs-card>p{color:#475569}
+body.light-mode .xs-i{background:#f8fafc;border-color:#e2e8f0}
+body.light-mode .xs-cn{color:#1e293b}
+body.light-mode .xs-cs{color:#64748b}
+body.light-mode .xs-d div{background:#f1f5f9;color:#334155;border-color:#e2e8f0}
+body.light-mode .xs-d strong{color:#1d4ed8}
+body.light-mode .xs-t{background:rgba(255,255,255,.9);color:#0f172a}
+@media(max-width:768px){.xs-card{padding:22px 16px}.xs-g{grid-template-columns:1fr}.xs-t{font-size:9px}}
+</style>
+
+<div class="xs-sec" data-aos="fade-up">
+<div class="xs-card">
+<h3>🔬 Interactive Cross-Section Explorer</h3>
+<p>Click any component below or hover directly on the cross-section to highlight the corresponding layer and view specifications.</p>
+<div class="xs-v" id="xV">
+<img src="{{ '/Images/Assem new.PNG' | relative_url }}" alt="E-Link Cross-Section" loading="lazy">
+<span class="xs-h" data-c="spi" style="left:43.5%;top:0%;width:13%;height:41%;--c:#3b82f6;--bg:rgba(59,130,246,.08);--g:rgba(59,130,246,.4)"><span class="xs-b">1</span></span>
+<span class="xs-h" data-c="foam" style="left:20%;top:39.5%;width:60%;height:6.88%;--c:#94a3b8;--bg:rgba(148,163,184,.15);--g:rgba(148,163,184,.4)"><span class="xs-b">2</span></span>
+<span class="xs-h" data-c="cap" style="left:2%;top:36.5%;width:96%;height:26%;--c:#f59e0b;--bg:rgba(245,158,11,.08);--g:rgba(245,158,11,.35)"><span class="xs-b">3</span></span>
+<span class="xs-h" data-c="pcb" style="left:16%;top:61.6%;width:68%;height:7.5%;--c:#22c55e;--bg:rgba(34,197,94,.08);--g:rgba(34,197,94,.35)"><span class="xs-b">4</span></span>
+<span class="xs-h" data-c="elast" style="left:16%;top:68.6%;width:68%;height:1.88%;--c:#a78bfa;--bg:rgba(167,139,250,.12);--g:rgba(167,139,250,.4)"><span class="xs-b">5</span></span>
+<span class="xs-h" data-c="adapt" style="left:16%;top:70.5%;width:68%;height:5%;--c:#eab308;--bg:rgba(234,179,8,.12);--g:rgba(234,179,8,.35)"><span class="xs-b">6</span></span>
+<span class="xs-t" data-k="spi" style="--c:#3b82f6;--g:rgba(59,130,246,.4);right:4%;top:8%">① SPI Cables</span>
+<span class="xs-t" data-k="foam" style="--c:#94a3b8;--g:rgba(148,163,184,.4);right:5%;top:27%">② Foam Washer</span>
+<span class="xs-t" data-k="cap" style="--c:#f59e0b;--g:rgba(245,158,11,.35);right:2%;top:32%">③ Threaded Cap</span>
+<span class="xs-t" data-k="pcb" style="--c:#22c55e;--g:rgba(34,197,94,.35);right:2%;top:44%">④ Headstage PCB</span>
+<span class="xs-t" data-k="elast" style="--c:#a78bfa;--g:rgba(167,139,250,.4);right:2%;top:63%">⑤ Elastomer</span>
+<span class="xs-t" data-k="adapt" style="--c:#eab308;--g:rgba(234,179,8,.35);right:2%;top:71.5%">⑥ Adapter PCB</span>
+</div>
+<div class="xs-g" id="xG">
+<div class="xs-i" data-c="spi" style="--c:#3b82f6"><span class="xs-n">1</span><div><div class="xs-cn">SPI Cables</div><div class="xs-cs">Dual Omnetics A7621</div></div></div>
+<div class="xs-i" data-c="foam" style="--c:#94a3b8"><span class="xs-n">2</span><div><div class="xs-cn">Foam Washer</div><div class="xs-cs">Pressure distribution</div></div></div>
+<div class="xs-i" data-c="cap" style="--c:#f59e0b"><span class="xs-n">3</span><div><div class="xs-cn">Threaded Cap</div><div class="xs-cs">Compression housing</div></div></div>
+<div class="xs-i" data-c="pcb" style="--c:#22c55e"><span class="xs-n">4</span><div><div class="xs-cn">Headstage PCB</div><div class="xs-cs">4× RHD2164 + 4L HDI</div></div></div>
+<div class="xs-i" data-c="elast" style="--c:#a78bfa"><span class="xs-n">5</span><div><div class="xs-cn">Elastomeric Sheet</div><div class="xs-cs">Z-axis conductor</div></div></div>
+<div class="xs-i" data-c="adapt" style="--c:#eab308"><span class="xs-n">6</span><div><div class="xs-cn">Adapter PCB</div><div class="xs-cs">Probe signal routing</div></div></div>
+<div class="xs-d" id="xD"><div id="xDI"></div></div>
+</div>
+</div>
+</div>
+
+<script>
+(function(){var D={spi:'<strong>Wire:</strong> 32AWG 12-conductor | <strong>Interface:</strong> Dual SPI 2×128ch',foam:'<strong>Material:</strong> Closed-cell silicone | <strong>Thickness:</strong> 1.5→0.8mm | Compensates planarity errors',cap:'<strong>Material:</strong> PEEK/Surgical resin | <strong>Function:</strong> Torque → uniform axial compression across 25mm Ø',pcb:'<strong>ICs:</strong> 4× RHD2164 BGA | <strong>Passives:</strong> 7R+8C LVDS +1 LED | <strong>Bottom:</strong> 256-pad BGA 0.4mm',elast:'<strong>Pitch:</strong> 156µm (3.2× denser than BGA) | Z-axis conduction under compression | Zero insertion force',adapt:'<strong>Layers:</strong> 4L HDI | <strong>Top:</strong> BGA match via elastomer | <strong>Bottom:</strong> Probe bond pads | ENIG finish'};
+function go(){var v=document.getElementById('xV'),g=document.getElementById('xG'),d=document.getElementById('xD'),di=document.getElementById('xDI');if(!v||!g)return;
+var hs=v.querySelectorAll('.xs-h'),ts=v.querySelectorAll('.xs-t'),cs=g.querySelectorAll('.xs-i'),cur=null;
+function act(k){if(cur===k){off();return}cur=k;v.classList.add('focus');
+hs.forEach(function(h){h.classList.toggle('on',h.dataset.c===k)});
+ts.forEach(function(t){t.classList.toggle('on',t.dataset.k===k)});
+cs.forEach(function(c){c.classList.toggle('on',c.dataset.c===k)});
+if(D[k]){di.innerHTML=D[k];d.classList.add('open');var ac=g.querySelector('.xs-i[data-c="'+k+'"]');if(ac)ac.after(d)}}
+function off(){cur=null;v.classList.remove('focus');hs.forEach(function(h){h.classList.remove('on')});ts.forEach(function(t){t.classList.remove('on')});cs.forEach(function(c){c.classList.remove('on')});d.classList.remove('open')}
+hs.forEach(function(h){h.addEventListener('click',function(e){e.stopPropagation();act(h.dataset.c)});
+h.addEventListener('mouseenter',function(){if(!cur){ts.forEach(function(t){t.classList.toggle('on',t.dataset.k===h.dataset.c)});cs.forEach(function(c){c.classList.toggle('on',c.dataset.c===h.dataset.c)})}});
+h.addEventListener('mouseleave',function(){if(!cur){ts.forEach(function(t){t.classList.remove('on')});cs.forEach(function(c){c.classList.remove('on')})}})});
+cs.forEach(function(c){c.addEventListener('click',function(e){e.stopPropagation();act(c.dataset.c)});
+c.addEventListener('mouseenter',function(){if(!cur){hs.forEach(function(h){h.classList.toggle('on',h.dataset.c===c.dataset.c)});ts.forEach(function(t){t.classList.toggle('on',t.dataset.k===c.dataset.c)})}});
+c.addEventListener('mouseleave',function(){if(!cur){hs.forEach(function(h){h.classList.remove('on')});ts.forEach(function(t){t.classList.remove('on')})}})});
+document.addEventListener('click',function(e){if(cur&&!v.contains(e.target)&&!g.contains(e.target))off()});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')off()})}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',go);else go()})();
+</script>
+
+<div align="center">
+ <table border="1" style="border-collapse: collapse; width: 90%; text-align: center;">
+  <thead>
+    <tr style="background-color: #f2f2f2;">
+      <th>Component</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><b>Pedestal Housing</b></td>
+      <td>3D-printed/machined pedestal providing structural support and cranial fixation</td>
+    </tr>
+    <tr>
+      <td><b>Customized 256Ch Headstage</b></td>
+      <td>Form-factor optimized recording interface for high-density 128/256-channel signal acquisition</td>
+    </tr>
+    <tr>
+      <td><b>Foam Washer</b></td>
+      <td>Provides compliant compression to ensure uniform electrical contact across the elastomeric interface</td>
+    </tr>
+    <tr>
+      <td><b>Adapter PCB</b></td>
+      <td>High-density 4-layer PCB for routing signals from thin-film probes to headstage ball array pattern</td>
+    </tr>
+    <tr>
+      <td><b>Surgical Cap</b></td>
+      <td>Protective enclosure preserving electrical and mechanical integrity throughout chronic experiments</td>
+    </tr>
+  </tbody>
+ </table>
+</div>
+ 
 ---
  
 <style>
@@ -1717,469 +2180,7 @@ body.light-mode .scope-win-wrapper * { filter: none !important; }
   </div>
 </div>
 
-<span id="en-components"></span>
-## 🧩 System Components
- 
-<div align="center">
- <table border="1" style="border-collapse: collapse; width: 90%; text-align: center;">
-  <thead>
-    <tr style="background-color: #f2f2f2;">
-      <th>Component</th>
-      <th>Description</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><b>Pedestal Housing</b></td>
-      <td>3D-printed/machined pedestal providing structural support and cranial fixation</td>
-    </tr>
-    <tr>
-      <td><b>Customized 256Ch Headstage</b></td>
-      <td>Form-factor optimized recording interface for high-density 128/256-channel signal acquisition</td>
-    </tr>
-    <tr>
-      <td><b>Foam Washer</b></td>
-      <td>Provides compliant compression to ensure uniform electrical contact across the elastomeric interface</td>
-    </tr>
-    <tr>
-      <td><b>Adapter PCB</b></td>
-      <td>High-density 4-layer PCB for routing signals from thin-film probes to headstage ball array pattern</td>
-    </tr>
-    <tr>
-      <td><b>Surgical Cap</b></td>
-      <td>Protective enclosure preserving electrical and mechanical integrity throughout chronic experiments</td>
-    </tr>
-  </tbody>
- </table>
-</div>
- 
 ---
-<style>
-.xs-sec{max-width:760px;margin:40px auto}
-.xs-card{background:rgba(11,17,33,.95);border:1px solid rgba(59,130,246,.25);border-radius:20px;padding:30px 35px;box-shadow:inset 0 0 20px rgba(0,0,0,.4),0 15px 40px rgba(0,0,0,.2)}
-.xs-card h3{margin:0 0 6px;color:#93c5fd;font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:700;border-bottom:1px solid rgba(59,130,246,.25);padding-bottom:14px}
-.xs-card>p{font-size:14px;color:#94a3b8;margin-bottom:20px;line-height:1.7}
-.xs-v{position:relative;width:100%;border-radius:14px;overflow:hidden;border:1px solid rgba(59,130,246,.2);background:#000;margin-bottom:18px}
-.xs-v img{width:100%;height:auto;display:block;transition:filter .5s}
-.xs-v.focus img{filter:brightness(.9) saturate(.99)}
-.xs-h{position:absolute;border:2px solid transparent;border-radius:4px;cursor:pointer;transition:all .35s;z-index:3}
-.xs-h:hover,.xs-h.on{border-color:var(--c);background:var(--bg);box-shadow:0 0 18px var(--g),inset 0 0 10px var(--g)}
-.xs-h::after{content:'';position:absolute;inset:-5px;border-radius:8px;border:1.5px solid var(--c);opacity:0;pointer-events:none}
-.xs-h.on::after{animation:xp 1.8s ease-out infinite}
-@keyframes xp{0%{transform:scale(1);opacity:.7}to{transform:scale(1.2);opacity:0}}
-.xs-b{position:absolute;top:-9px;right:-9px;width:20px;height:20px;border-radius:50%;background:var(--c);color:#fff;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;box-shadow:0 0 8px var(--g);opacity:0;transform:scale(.5);transition:all .3s;z-index:8;pointer-events:none}
-.xs-h:hover .xs-b,.xs-h.on .xs-b{opacity:1;transform:scale(1)}
-.xs-t{position:absolute;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:#fff;background:rgba(0,0,0,.85);border:1px solid var(--c);padding:3px 10px;border-radius:6px;white-space:nowrap;pointer-events:none;opacity:0;transition:all .35s;z-index:11;box-shadow:0 0 10px var(--g)}
-.xs-t.on{opacity:1}
-.xs-g{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.xs-i{display:flex;gap:10px;padding:10px 12px;background:rgba(15,23,42,.4);border:1px solid rgba(255,255,255,.04);border-radius:10px;cursor:pointer;transition:all .3s;position:relative}
-.xs-i::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--c);border-radius:3px 0 0 3px;opacity:0;transition:opacity .3s}
-.xs-i:hover{background:rgba(15,23,42,.7);transform:translateX(2px)}
-.xs-i:hover::before{opacity:.5}
-.xs-i.on{background:rgba(59,130,246,.06);border-color:var(--c)}
-.xs-i.on::before{opacity:1;width:4px}
-.xs-n{width:22px;height:22px;border-radius:50%;background:var(--c);color:#fff;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.xs-cn{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:#e2e8f0}
-.xs-cs{font-size:9.5px;color:#94a3b8;line-height:1.35}
-.xs-d{max-height:0;overflow:hidden;transition:max-height .4s,margin .3s;grid-column:1/-1}
-.xs-d.open{max-height:140px;margin-top:6px}
-.xs-d div{background:rgba(0,0,0,.25);border-radius:8px;padding:10px 14px;font-size:11px;color:#cbd5e1;line-height:1.6;border:1px solid rgba(255,255,255,.04)}
-.xs-d strong{color:#93c5fd}
-body.light-mode .xs-card{background:#fff;border-color:#cbd5e1}
-body.light-mode .xs-card h3{color:#2563eb;border-color:#e2e8f0}
-body.light-mode .xs-card>p{color:#475569}
-body.light-mode .xs-i{background:#f8fafc;border-color:#e2e8f0}
-body.light-mode .xs-cn{color:#1e293b}
-body.light-mode .xs-cs{color:#64748b}
-body.light-mode .xs-d div{background:#f1f5f9;color:#334155;border-color:#e2e8f0}
-body.light-mode .xs-d strong{color:#1d4ed8}
-body.light-mode .xs-t{background:rgba(255,255,255,.9);color:#0f172a}
-@media(max-width:768px){.xs-card{padding:22px 16px}.xs-g{grid-template-columns:1fr}.xs-t{font-size:9px}}
-</style>
-
-<div class="xs-sec" data-aos="fade-up">
-<div class="xs-card">
-<h3>🔬 Interactive Cross-Section Explorer</h3>
-<p>Click any component below or hover directly on the cross-section to highlight the corresponding layer and view specifications.</p>
-<div class="xs-v" id="xV">
-<img src="{{ '/Images/Assem new.PNG' | relative_url }}" alt="E-Link Cross-Section" loading="lazy">
-<span class="xs-h" data-c="spi" style="left:43.5%;top:0%;width:13%;height:41%;--c:#3b82f6;--bg:rgba(59,130,246,.08);--g:rgba(59,130,246,.4)"><span class="xs-b">1</span></span>
-<span class="xs-h" data-c="foam" style="left:20%;top:39.5%;width:60%;height:6.88%;--c:#94a3b8;--bg:rgba(148,163,184,.15);--g:rgba(148,163,184,.4)"><span class="xs-b">2</span></span>
-<span class="xs-h" data-c="cap" style="left:2%;top:36.5%;width:96%;height:26%;--c:#f59e0b;--bg:rgba(245,158,11,.08);--g:rgba(245,158,11,.35)"><span class="xs-b">3</span></span>
-<span class="xs-h" data-c="pcb" style="left:16%;top:61.6%;width:68%;height:7.5%;--c:#22c55e;--bg:rgba(34,197,94,.08);--g:rgba(34,197,94,.35)"><span class="xs-b">4</span></span>
-<span class="xs-h" data-c="elast" style="left:16%;top:68.6%;width:68%;height:1.88%;--c:#a78bfa;--bg:rgba(167,139,250,.12);--g:rgba(167,139,250,.4)"><span class="xs-b">5</span></span>
-<span class="xs-h" data-c="adapt" style="left:16%;top:70.5%;width:68%;height:5%;--c:#eab308;--bg:rgba(234,179,8,.12);--g:rgba(234,179,8,.35)"><span class="xs-b">6</span></span>
-<span class="xs-t" data-k="spi" style="--c:#3b82f6;--g:rgba(59,130,246,.4);right:4%;top:8%">① SPI Cables</span>
-<span class="xs-t" data-k="foam" style="--c:#94a3b8;--g:rgba(148,163,184,.4);right:5%;top:27%">② Foam Washer</span>
-<span class="xs-t" data-k="cap" style="--c:#f59e0b;--g:rgba(245,158,11,.35);right:2%;top:32%">③ Threaded Cap</span>
-<span class="xs-t" data-k="pcb" style="--c:#22c55e;--g:rgba(34,197,94,.35);right:2%;top:44%">④ Headstage PCB</span>
-<span class="xs-t" data-k="elast" style="--c:#a78bfa;--g:rgba(167,139,250,.4);right:2%;top:63%">⑤ Elastomer</span>
-<span class="xs-t" data-k="adapt" style="--c:#eab308;--g:rgba(234,179,8,.35);right:2%;top:71.5%">⑥ Adapter PCB</span>
-</div>
-<div class="xs-g" id="xG">
-<div class="xs-i" data-c="spi" style="--c:#3b82f6"><span class="xs-n">1</span><div><div class="xs-cn">SPI Cables</div><div class="xs-cs">Dual Omnetics A7621</div></div></div>
-<div class="xs-i" data-c="foam" style="--c:#94a3b8"><span class="xs-n">2</span><div><div class="xs-cn">Foam Washer</div><div class="xs-cs">Pressure distribution</div></div></div>
-<div class="xs-i" data-c="cap" style="--c:#f59e0b"><span class="xs-n">3</span><div><div class="xs-cn">Threaded Cap</div><div class="xs-cs">Compression housing</div></div></div>
-<div class="xs-i" data-c="pcb" style="--c:#22c55e"><span class="xs-n">4</span><div><div class="xs-cn">Headstage PCB</div><div class="xs-cs">4× RHD2164 + 4L HDI</div></div></div>
-<div class="xs-i" data-c="elast" style="--c:#a78bfa"><span class="xs-n">5</span><div><div class="xs-cn">Elastomeric Sheet</div><div class="xs-cs">Z-axis conductor</div></div></div>
-<div class="xs-i" data-c="adapt" style="--c:#eab308"><span class="xs-n">6</span><div><div class="xs-cn">Adapter PCB</div><div class="xs-cs">Probe signal routing</div></div></div>
-<div class="xs-d" id="xD"><div id="xDI"></div></div>
-</div>
-</div>
-</div>
-
-<script>
-(function(){var D={spi:'<strong>Wire:</strong> 32AWG 12-conductor | <strong>Interface:</strong> Dual SPI 2×128ch',foam:'<strong>Material:</strong> Closed-cell silicone | <strong>Thickness:</strong> 1.5→0.8mm | Compensates planarity errors',cap:'<strong>Material:</strong> PEEK/Surgical resin | <strong>Function:</strong> Torque → uniform axial compression across 25mm Ø',pcb:'<strong>ICs:</strong> 4× RHD2164 BGA | <strong>Passives:</strong> 7R+8C LVDS +1 LED | <strong>Bottom:</strong> 256-pad BGA 0.4mm',elast:'<strong>Pitch:</strong> 156µm (3.2× denser than BGA) | Z-axis conduction under compression | Zero insertion force',adapt:'<strong>Layers:</strong> 4L HDI | <strong>Top:</strong> BGA match via elastomer | <strong>Bottom:</strong> Probe bond pads | ENIG finish'};
-function go(){var v=document.getElementById('xV'),g=document.getElementById('xG'),d=document.getElementById('xD'),di=document.getElementById('xDI');if(!v||!g)return;
-var hs=v.querySelectorAll('.xs-h'),ts=v.querySelectorAll('.xs-t'),cs=g.querySelectorAll('.xs-i'),cur=null;
-function act(k){if(cur===k){off();return}cur=k;v.classList.add('focus');
-hs.forEach(function(h){h.classList.toggle('on',h.dataset.c===k)});
-ts.forEach(function(t){t.classList.toggle('on',t.dataset.k===k)});
-cs.forEach(function(c){c.classList.toggle('on',c.dataset.c===k)});
-if(D[k]){di.innerHTML=D[k];d.classList.add('open');var ac=g.querySelector('.xs-i[data-c="'+k+'"]');if(ac)ac.after(d)}}
-function off(){cur=null;v.classList.remove('focus');hs.forEach(function(h){h.classList.remove('on')});ts.forEach(function(t){t.classList.remove('on')});cs.forEach(function(c){c.classList.remove('on')});d.classList.remove('open')}
-hs.forEach(function(h){h.addEventListener('click',function(e){e.stopPropagation();act(h.dataset.c)});
-h.addEventListener('mouseenter',function(){if(!cur){ts.forEach(function(t){t.classList.toggle('on',t.dataset.k===h.dataset.c)});cs.forEach(function(c){c.classList.toggle('on',c.dataset.c===h.dataset.c)})}});
-h.addEventListener('mouseleave',function(){if(!cur){ts.forEach(function(t){t.classList.remove('on')});cs.forEach(function(c){c.classList.remove('on')})}})});
-cs.forEach(function(c){c.addEventListener('click',function(e){e.stopPropagation();act(c.dataset.c)});
-c.addEventListener('mouseenter',function(){if(!cur){hs.forEach(function(h){h.classList.toggle('on',h.dataset.c===c.dataset.c)});ts.forEach(function(t){t.classList.toggle('on',t.dataset.k===c.dataset.c)})}});
-c.addEventListener('mouseleave',function(){if(!cur){hs.forEach(function(h){h.classList.remove('on')});ts.forEach(function(t){t.classList.remove('on')})}})});
-document.addEventListener('click',function(e){if(cur&&!v.contains(e.target)&&!g.contains(e.target))off()});
-document.addEventListener('keydown',function(e){if(e.key==='Escape')off()})}
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',go);else go()})();
-</script>
-
-<style>
-/* ── Assembly Pipeline Styles ── */
-.pipeline-section { max-width: 760px; margin: 40px auto; }
- 
-.pipeline-card {
-  background: rgba(11, 17, 33, 0.95);
-  border: 1px solid rgba(59, 130, 246, 0.25);
-  border-radius: 20px;
-  padding: 30px 35px 35px;
-  box-shadow: inset 0 0 20px rgba(0,0,0,0.4), 0 15px 40px rgba(0,0,0,0.2);
-}
- 
-.pipeline-card-title {
-  margin: 0 0 6px 0;
-  color: #93c5fd;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 20px;
-  font-weight: 700;
-  border-bottom: 1px solid rgba(59, 130, 246, 0.25);
-  padding-bottom: 14px;
-  letter-spacing: 0.5px;
-}
- 
-.pipeline-card-desc {
-  font-size: 14px;
-  color: #94a3b8;
-  margin-bottom: 30px;
-  line-height: 1.7;
-}
- 
-/* ── Horizontal Pipeline (Desktop) ── */
-.pipe-track-wrapper {
-  position: relative;
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  padding: 0 10px;
-  margin-bottom: 10px;
-}
- 
-/* Connecting track line */
-.pipe-track-line {
-  position: absolute;
-  top: 20px;
-  left: 40px;
-  right: 40px;
-  height: 2px;
-  background: rgba(59, 130, 246, 0.15);
-  z-index: 1;
-  overflow: hidden;
-  border-radius: 1px;
-}
- 
-/* Animated flowing light pulse */
-.pipe-flow-light {
-  position: absolute;
-  top: 0;
-  left: -60px;
-  width: 60px;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, #3b82f6, transparent);
-  animation: pipeFlowH 3.5s linear infinite;
-}
- 
-@keyframes pipeFlowH {
-  0%   { left: -60px; opacity: 0; }
-  8%   { opacity: 1; }
-  92%  { opacity: 1; }
-  100% { left: 100%; opacity: 0; }
-}
- 
-/* Each step node */
-.pipe-node {
-  position: relative;
-  z-index: 2;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 16.66%;
-  text-align: center;
-}
- 
-.pipe-circle {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: #0f172a;
-  border: 2px solid #3b82f6;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 14px;
-  font-weight: 700;
-  color: #93c5fd;
-  margin-bottom: 14px;
-  box-shadow: 0 0 12px rgba(59, 130, 246, 0.3);
-  transition: all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
-  cursor: default;
-  flex-shrink: 0;
-}
- 
-.pipe-node:hover .pipe-circle {
-  background: #3b82f6;
-  color: #ffffff;
-  box-shadow: 0 0 24px rgba(59, 130, 246, 0.7);
-  transform: scale(1.15);
-}
- 
-.pipe-label {
-  font-size: 13px;
-  font-weight: 600;
-  color: #cbd5e1;
-  line-height: 1.35;
-  transition: color 0.3s;
-}
- 
-.pipe-node:hover .pipe-label {
-  color: #ffffff;
-}
- 
-.pipe-icon {
-  font-size: 16px;
-  margin-bottom: 4px;
-  display: block;
-  opacity: 0.8;
-}
- 
-/* ── Validation stats row ── */
-.pipe-stats {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
-  margin-top: 28px;
-}
- 
-.pipe-stat-card {
-  background: rgba(15, 23, 42, 0.4);
-  border-radius: 10px;
-  padding: 14px 16px;
-  border-left: 3px solid;
-  transition: transform 0.25s, box-shadow 0.25s;
-}
- 
-.pipe-stat-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(0,0,0,0.2);
-}
- 
-.pipe-stat-card:nth-child(1) { border-left-color: #10b981; border-color: rgba(16, 185, 129, 0.2); }
-.pipe-stat-card:nth-child(2) { border-left-color: #3b82f6; border-color: rgba(59, 130, 246, 0.2); }
-.pipe-stat-card:nth-child(3) { border-left-color: #f59e0b; border-color: rgba(245, 158, 11, 0.2); }
- 
-.pipe-stat-card { border: 1px solid; }
-.pipe-stat-card:nth-child(1) { border-color: rgba(16, 185, 129, 0.2); border-left: 3px solid #10b981; }
-.pipe-stat-card:nth-child(2) { border-color: rgba(59, 130, 246, 0.2); border-left: 3px solid #3b82f6; }
-.pipe-stat-card:nth-child(3) { border-color: rgba(245, 158, 11, 0.2); border-left: 3px solid #f59e0b; }
- 
-.pipe-stat-title {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 14px;
-  font-weight: 700;
-  margin-bottom: 4px;
-}
- 
-.pipe-stat-card:nth-child(1) .pipe-stat-title { color: #10b981; }
-.pipe-stat-card:nth-child(2) .pipe-stat-title { color: #3b82f6; }
-.pipe-stat-card:nth-child(3) .pipe-stat-title { color: #f59e0b; }
- 
-.pipe-stat-desc {
-  font-size: 12px;
-  color: #94a3b8;
-  line-height: 1.45;
-}
- 
-/* ── Light Mode ── */
-body.light-mode .pipeline-card {
-  background: #ffffff;
-  border-color: #cbd5e1;
-  box-shadow: 0 15px 40px rgba(0,0,0,0.05);
-}
-body.light-mode .pipeline-card-title { color: #2563eb; border-bottom-color: #e2e8f0; }
-body.light-mode .pipeline-card-desc { color: #475569; }
-body.light-mode .pipe-circle { background: #ffffff; border-color: #2563eb; color: #2563eb; box-shadow: 0 0 10px rgba(37, 99, 235, 0.15); }
-body.light-mode .pipe-node:hover .pipe-circle { background: #2563eb; color: #fff; }
-body.light-mode .pipe-label { color: #475569; }
-body.light-mode .pipe-node:hover .pipe-label { color: #0f172a; }
-body.light-mode .pipe-track-line { background: rgba(37, 99, 235, 0.12); }
-body.light-mode .pipe-stat-card { background: #f8fafc; }
-body.light-mode .pipe-stat-desc { color: #64748b; }
- 
-/* ── Mobile: Switch to vertical layout ── */
-@media (max-width: 768px) {
-  .pipeline-card { padding: 25px 18px; }
- 
-  .pipe-track-wrapper {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0;
-    padding-left: 28px;
-  }
- 
-  /* Vertical track line */
-  .pipe-track-line {
-    top: 0;
-    bottom: 0;
-    left: 47px;
-    right: auto;
-    width: 2px;
-    height: auto;
-  }
- 
-  .pipe-flow-light {
-    width: 100%;
-    height: 50px;
-    left: auto;
-    top: -50px;
-    background: linear-gradient(180deg, transparent, #3b82f6, transparent);
-    animation: pipeFlowV 3.5s linear infinite;
-  }
- 
-  @keyframes pipeFlowV {
-    0%   { top: -50px; opacity: 0; }
-    8%   { opacity: 1; }
-    92%  { opacity: 1; }
-    100% { top: 100%; opacity: 0; }
-  }
- 
-  .pipe-node {
-    flex-direction: row;
-    width: 100%;
-    text-align: left;
-    gap: 16px;
-    padding: 10px 0;
-  }
- 
-  .pipe-circle { margin-bottom: 0; width: 38px; height: 38px; }
-  .pipe-label { font-size: 14px; }
-  .pipe-icon { display: inline; margin-right: 4px; margin-bottom: 0; }
- 
-  .pipe-stats {
-    grid-template-columns: 1fr;
-    gap: 10px;
-  }
-}
- 
-@media (max-width: 480px) {
-  .pipe-stats { grid-template-columns: 1fr; }
-}
-</style>
- 
-<div class="pipeline-section" data-aos="fade-up">
-  <div class="pipeline-card">
-    <h3 class="pipeline-card-title">⚙️ Assembly & Validation Pipeline</h3>
-    <p class="pipeline-card-desc">
-      The insertion-free <strong style="color: #e2e8f0;">"rotate-and-play"</strong> interface eliminates micro-alignment requirements, enabling reproducible assembly by untrained operators with consistent electrical performance.
-    </p>
- 
-    <!-- Pipeline Steps -->
-    <div class="pipe-track-wrapper">
-      <!-- Track line with flowing light -->
-      <div class="pipe-track-line">
-        <div class="pipe-flow-light"></div>
-      </div>
- 
-      <div class="pipe-node">
-        <div class="pipe-circle">01</div>
-        <div class="pipe-label">
-          <span class="pipe-icon">🔩</span>
-          Seat<br>Pedestal
-        </div>
-      </div>
- 
-      <div class="pipe-node">
-        <div class="pipe-circle">02</div>
-        <div class="pipe-label">
-          <span class="pipe-icon">📐</span>
-          Place<br>Adapter PCB
-        </div>
-      </div>
- 
-      <div class="pipe-node">
-        <div class="pipe-circle">03</div>
-        <div class="pipe-label">
-          <span class="pipe-icon">🧬</span>
-          Align<br>Elastomer
-        </div>
-      </div>
- 
-      <div class="pipe-node">
-        <div class="pipe-circle">04</div>
-        <div class="pipe-label">
-          <span class="pipe-icon">🔌</span>
-          Seat<br>Headstage
-        </div>
-      </div>
- 
-      <div class="pipe-node">
-        <div class="pipe-circle">05</div>
-        <div class="pipe-label">
-          <span class="pipe-icon">🔄</span>
-          Rotate<br>Threaded Cap
-        </div>
-      </div>
- 
-      <div class="pipe-node">
-        <div class="pipe-circle">06</div>
-        <div class="pipe-label">
-          <span class="pipe-icon">✅</span>
-          Electrical<br>Verify
-        </div>
-      </div>
-    </div>
- 
-    <!-- Validation Stats -->
-    <div class="pipe-stats">
-      <div class="pipe-stat-card">
-        <div class="pipe-stat-title">Independent Operators Verified</div>
-        <div class="pipe-stat-desc">Consistent connection yield across all users — decoupled from individual technique.</div>
-      </div>
-      <div class="pipe-stat-card">
-        <div class="pipe-stat-title">200+ Mating Cycles</div>
-        <div class="pipe-stat-desc">Zero degradation in contact impedance or yield over 5-day longitudinal durability test.</div>
-      </div>
-      <div class="pipe-stat-card">
-        <div class="pipe-stat-title">180 min Vibration</div>
-        <div class="pipe-stat-desc">Yield maintained under ~23 m/s² extreme acceleration stress testing.</div>
-      </div>
-    </div>
-  </div>
-</div>
 
 <span id="en-bom"></span>
 ### 🛠 Bill of Materials (BOM) of the headstage
