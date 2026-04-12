@@ -1076,7 +1076,7 @@ body.light-mode .pipe-stat-desc { color: #64748b; }
 @keyframes xp{0%{transform:scale(1);opacity:.7}to{transform:scale(1.2);opacity:0}}
 .xs-b{position:absolute;top:50%;right:-9px;width:20px;height:20px;border-radius:50%;background:var(--c);color:#fff;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;box-shadow:0 0 8px var(--g);opacity:0;transform:translateY(-50%) scale(.5);transition:all .3s;z-index:8;pointer-events:none}
 .xs-h:hover .xs-b,.xs-h.on .xs-b{opacity:1;transform:translateY(-50%) scale(1)}
-.xs-t{position:absolute;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:#fff;background:rgba(0,0,0,.85);border:1px solid var(--c);padding:3px 10px;border-radius:6px;white-space:nowrap;pointer-events:none;opacity:0;transition:all .35s;z-index:11;box-shadow:0 0 10px var(--g)}
+.xs-t{position:absolute;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:#fff;background:rgba(0,0,0,.85);border:1px solid var(--c);padding:3px 10px;border-radius:6px;white-space:nowrap;pointer-events:none;opacity:0;transition:all .35s;z-index:11;box-shadow:0 0 10px var(--g)}
 .xs-t.on{opacity:1}
 .xs-g{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .xs-i{display:flex;gap:10px;padding:12px 14px;background:rgba(15,23,42,.4);border:1px solid rgba(255,255,255,.08);border-radius:10px;cursor:pointer;transition:all .3s;position:relative;align-items:center;box-shadow:0 0 8px rgba(59,130,246,.08)}
@@ -1086,6 +1086,7 @@ body.light-mode .pipe-stat-desc { color: #64748b; }
 .xs-i.on{background:rgba(59,130,246,.06);border-color:var(--c);box-shadow:0 0 15px var(--g),0 0 30px rgba(59,130,246,.1)}
 .xs-i.on::before{opacity:1;width:4px}
 .xs-n{width:22px;height:22px;border-radius:50%;background:var(--c);color:#fff;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.xs-i:hover .xs-n,.xs-i.on .xs-n{box-shadow:0 0 12px var(--g),0 0 24px var(--g)}
 .xs-cn{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:#e2e8f0}
 .xs-cs{font-size:11px;color:#94a3b8;line-height:1.35}
 .xs-d{max-height:0;overflow:hidden;transition:max-height .4s,margin .3s;grid-column:1/-1}
