@@ -1127,7 +1127,7 @@ body.light-mode .xs-t{background:rgba(255,255,255,.9);color:#0f172a}
 <div class="xs-i" data-c="spi" style="--c:#3b82f6"><span class="xs-n">1</span><div><div class="xs-cn">SPI Cables</div><div class="xs-cs">Dual Omnetics A7621</div></div></div>
 <div class="xs-i" data-c="foam" style="--c:#f472b6"><span class="xs-n">2</span><div><div class="xs-cn">Foam Washer</div><div class="xs-cs">Pressure distribution</div></div></div>
 <div class="xs-i" data-c="cap" style="--c:#f59e0b"><span class="xs-n">3</span><div><div class="xs-cn">Threaded Cap</div><div class="xs-cs">Compression housing</div></div></div>
-<div class="xs-i" data-c="pcb" style="--c:#22c55e"><span class="xs-n">4</span><div><div class="xs-cn">Headstage PCB</div><div class="xs-cs">4× RHD2164 + 4L HDI</div></div></div>
+<div class="xs-i" data-c="pcb" style="--c:#22c55e"><span class="xs-n">4</span><div><div class="xs-cn">Headstage PCB</div><div class="xs-cs">4× RHD2164 + 4Layer HDI</div></div></div>
 <div class="xs-i" data-c="elast" style="--c:#a78bfa"><span class="xs-n">5</span><div><div class="xs-cn">Elastomeric Sheet</div><div class="xs-cs">Z-axis conductor</div></div></div>
 <div class="xs-i" data-c="adapt" style="--c:#eab308"><span class="xs-n">6</span><div><div class="xs-cn">Adapter PCB</div><div class="xs-cs">Probe signal routing</div></div></div>
 <div class="xs-d" id="xD"><div id="xDI"></div></div>
