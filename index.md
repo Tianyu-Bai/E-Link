@@ -1074,8 +1074,8 @@ body.light-mode .pipe-stat-desc { color: #64748b; }
 .xs-h::after{content:'';position:absolute;inset:-5px;border-radius:8px;border:1.5px solid var(--c);opacity:0;pointer-events:none}
 .xs-h.on::after{animation:xp 1.8s ease-out infinite}
 @keyframes xp{0%{transform:scale(1);opacity:.7}to{transform:scale(1.2);opacity:0}}
-.xs-b{position:absolute;top:50%;right:-9px;transform:translateY(-50%);width:20px;height:20px;border-radius:50%;background:var(--c);color:#fff;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;box-shadow:0 0 8px var(--g);opacity:0;transform:scale(.5);transition:all .3s;z-index:8;pointer-events:none}
-.xs-h:hover .xs-b,.xs-h.on .xs-b{opacity:1;transform:scale(1)}
+.xs-b{position:absolute;top:50%;right:-9px;width:20px;height:20px;border-radius:50%;background:var(--c);color:#fff;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;box-shadow:0 0 8px var(--g);opacity:0;transform:translateY(-50%) scale(.5);transition:all .3s;z-index:8;pointer-events:none}
+.xs-h:hover .xs-b,.xs-h.on .xs-b{opacity:1;transform:translateY(-50%) scale(1)}
 .xs-t{position:absolute;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:#fff;background:rgba(0,0,0,.85);border:1px solid var(--c);padding:3px 10px;border-radius:6px;white-space:nowrap;pointer-events:none;opacity:0;transition:all .35s;z-index:11;box-shadow:0 0 10px var(--g)}
 .xs-t.on{opacity:1}
 .xs-g{display:grid;grid-template-columns:1fr 1fr;gap:8px}
