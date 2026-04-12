@@ -1059,24 +1059,14 @@ let outlineX = -100, outlineY = -100;
 
 let updateCursorOutline;
 if (window.innerWidth > 768 && cursorDot && cursorOutline) {
-  document.addEventListener('mousemove', (e) => {
+ document.addEventListener('mousemove', (e) => {
     mouseX = e.clientX; mouseY = e.clientY;
-    // 🚀 优化 1：小点直接跟随，不设延迟，消除视觉上的第一层延迟
     cursorDot.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0) translate(-50%, -50%)`;
+    cursorOutline.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0) translate(-50%, -50%)`;
   }, { passive: true });
 
-  // 🚀 优化：具名函数，便于在 modal 激活时从调度器中移除，节省 CPU
-  updateCursorOutline = () => {
-    // 🚀 优化 2：将跟随系数从 0.12 提高到 0.22。数值越大越跟手，越小越丝滑但越迟钝
-    const snappiness = 0.45; 
-    outlineX += (mouseX - outlineX) * snappiness;
-    outlineY += (mouseY - outlineY) * snappiness;
-
-    cursorOutline.style.transform =
-      `translate3d(${outlineX}px, ${outlineY}px, 0) translate(-50%, -50%)`;
-  };
-  rafScheduler.add('cursor', updateCursorOutline);
-}
+  // 保留具名函数引用（modal 恢复时用），但不再注册到调度器
+  updateCursorOutline = () => {};
 
 // ── 粒子引擎 (簇群坍缩版：动态吸附成大簇 + 实时寻路长程电流 + 科技风发光大脑底座) ──────────
   function initNeuralWeb() {
