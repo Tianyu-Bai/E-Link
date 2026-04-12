@@ -2753,8 +2753,148 @@ This project is open-source and available under the **MIT License**. Click the b
    </tbody>
  </table>
 </div>
- 
+
 ---
+
+## ✨ 流程图
+<div class="pipeline-section" data-aos="fade-up">
+  <div class="pipeline-card">
+    <h3 class="pipeline-card-title">⚙️ 装配与验证流程</h3>
+    <p class="pipeline-card-desc">
+      免插拔的<strong style="color: #e2e8f0;">"旋转即用"</strong>接口设计消除了微米级对准的需求，使未经培训的操作者也能实现可重复的组装，并保持一致的电气性能。
+    </p>
+
+    <!-- 流程步骤 -->
+    <div class="pipe-track-wrapper">
+      <div class="pipe-track-line">
+        <div class="pipe-flow-light"></div>
+      </div>
+
+      <div class="pipe-node">
+        <div class="pipe-circle">01</div>
+        <div class="pipe-label">
+          <span class="pipe-icon">🔩</span>
+          安置<br>基座
+        </div>
+      </div>
+
+      <div class="pipe-node">
+        <div class="pipe-circle">02</div>
+        <div class="pipe-label">
+          <span class="pipe-icon">📐</span>
+          放置<br>转接 PCB
+        </div>
+      </div>
+
+      <div class="pipe-node">
+        <div class="pipe-circle">03</div>
+        <div class="pipe-label">
+          <span class="pipe-icon">🧬</span>
+          铺设<br>弹性导电体
+        </div>
+      </div>
+
+      <div class="pipe-node">
+        <div class="pipe-circle">04</div>
+        <div class="pipe-label">
+          <span class="pipe-icon">🔌</span>
+          安置<br>放大器板
+        </div>
+      </div>
+
+      <div class="pipe-node">
+        <div class="pipe-circle">05</div>
+        <div class="pipe-label">
+          <span class="pipe-icon">🔄</span>
+          旋紧<br>螺纹顶盖
+        </div>
+      </div>
+
+      <div class="pipe-node">
+        <div class="pipe-circle">06</div>
+        <div class="pipe-label">
+          <span class="pipe-icon">✅</span>
+          电气<br>验证
+        </div>
+      </div>
+    </div>
+
+    <!-- 验证数据 -->
+    <div class="pipe-stats">
+      <div class="pipe-stat-card">
+        <div class="pipe-stat-title">多操作者独立验证</div>
+        <div class="pipe-stat-desc">所有用户均获得一致的连接良率——与个人操作技巧无关。</div>
+      </div>
+      <div class="pipe-stat-card">
+        <div class="pipe-stat-title">200+ 次插拔循环</div>
+        <div class="pipe-stat-desc">5 天纵向耐久性测试中，接触阻抗和良率零退化。</div>
+      </div>
+      <div class="pipe-stat-card">
+        <div class="pipe-stat-title">180 分钟振动测试</div>
+        <div class="pipe-stat-desc">在约 23 m/s² 极端加速度冲击下仍保持连接良率。</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+---
+
+<span id="cn-components"></span> 
+## 🧩 系统组件
+
+<div class="xs-sec" data-aos="fade-up">
+<div class="xs-card">
+<h3>🔬 交互式截面结构浏览器</h3>
+<p>将鼠标悬停在截面结构图或点击下方任意组件，即可高亮对应层并查看详细规格。</p>
+<div class="xs-v" id="xV2">
+<img src="{{ '/Images/Assem new.PNG' | relative_url }}" alt="E-Link 截面结构" loading="lazy">
+<span class="xs-h" data-c="spi" style="left:43.5%;top:0%;width:13%;height:41%;--c:#3b82f6;--bg:rgba(59,130,246,.08);--g:rgba(59,130,246,.4)"><span class="xs-b">1</span></span>
+<span class="xs-h" data-c="foam" style="left:20%;top:39.5%;width:61%;height:6.46%;z-index:5;--c:#f472b6;--bg:rgba(244,114,182,.15);--g:rgba(244,114,182,.4)"><span class="xs-b">2</span></span>
+<span class="xs-h" data-c="cap" style="left:2%;top:36.5%;width:96%;height:26%;--c:#f59e0b;--bg:rgba(245,158,11,.08);--g:rgba(245,158,11,.35)"><span class="xs-b">3</span></span>
+<span class="xs-h" data-c="pcb" style="left:17%;top:61.6%;width:65.6%;height:7.5%;--c:#22c55e;--bg:rgba(34,197,94,.08);--g:rgba(34,197,94,.35)"><span class="xs-b">4</span></span>
+<span class="xs-h" data-c="elast" style="left:17%;top:68.6%;width:65.6%;height:1.88%;--c:#a78bfa;--bg:rgba(167,139,250,.12);--g:rgba(167,139,250,.4)"><span class="xs-b">5</span></span>
+<span class="xs-h" data-c="adapt" style="left:17%;top:70.5%;width:65.6%;height:5%;--c:#eab308;--bg:rgba(234,179,8,.12);--g:rgba(234,179,8,.35)"><span class="xs-b">6</span></span>
+<span class="xs-t" data-k="spi" style="--c:#3b82f6;--g:rgba(59,130,246,.4);right:18%;top:18%">1. SPI 线缆</span>
+<span class="xs-t" data-k="foam" style="--c:#f472b6;--g:rgba(244,114,182,.4);right:18%;top:36%">2. 泡沫垫圈</span>
+<span class="xs-t" data-k="cap" style="--c:#f59e0b;--g:rgba(245,158,11,.35);right:18%;top:33%">3. 顶部螺纹盖</span>
+<span class="xs-t" data-k="pcb" style="--c:#22c55e;--g:rgba(34,197,94,.35);right:18%;top:58%">4. 放大器电路板</span>
+<span class="xs-t" data-k="elast" style="--c:#a78bfa;--g:rgba(167,139,250,.4);right:18%;top:65%">5. 弹性导电体</span>
+<span class="xs-t" data-k="adapt" style="--c:#eab308;--g:rgba(234,179,8,.35);right:18%;top:68%">6. 转接电路板</span>
+</div>
+<div class="xs-g" id="xG2">
+<div class="xs-i" data-c="spi" style="--c:#3b82f6"><span class="xs-n">1</span><div><div class="xs-cn">SPI 线缆</div><div class="xs-cs">双路 Omnetics A7621</div></div></div>
+<div class="xs-i" data-c="foam" style="--c:#f472b6"><span class="xs-n">2</span><div><div class="xs-cn">泡沫垫圈</div><div class="xs-cs">压力均匀分布</div></div></div>
+<div class="xs-i" data-c="cap" style="--c:#f59e0b"><span class="xs-n">3</span><div><div class="xs-cn">顶部螺纹盖</div><div class="xs-cs">压缩外壳</div></div></div>
+<div class="xs-i" data-c="pcb" style="--c:#22c55e"><span class="xs-n">4</span><div><div class="xs-cn">放大器电路板</div><div class="xs-cs">4个RHD2164芯片 + 4层HDI</div></div></div>
+<div class="xs-i" data-c="elast" style="--c:#a78bfa"><span class="xs-n">5</span><div><div class="xs-cn">弹性导电体</div><div class="xs-cs">Z轴导电介质</div></div></div>
+<div class="xs-i" data-c="adapt" style="--c:#eab308"><span class="xs-n">6</span><div><div class="xs-cn">转接电路板</div><div class="xs-cs">探针布局规则化</div></div></div>
+<div class="xs-d" id="xD2"><div id="xDI2"></div></div>
+</div>
+</div>
+</div>
+
+<script>
+(function(){var D={spi:'<strong>线材：</strong>32AWG 12 芯线 | <strong>接口：</strong>双路 SPI 2×128ch',foam:'<strong>材料：</strong>闭孔硅胶 | <strong>厚度：</strong>1.5→0.8mm | 补偿平面度误差',cap:'<strong>材料：</strong>PEEK/手术级树脂 | <strong>功能：</strong>扭矩 → 25mm Ø 范围内均匀轴向压缩',pcb:'<strong>芯片：</strong>4× RHD2164 BGA | <strong>无源器件：</strong>7电阻+8电容 LVDS +1 LED | <strong>底面：</strong>256焊盘 BGA 0.4mm',elast:'<strong>间距：</strong>156µm（比 BGA 密 3.2 倍）| 压缩下 Z 轴导通 | 零插拔力',adapt:'<strong>层数：</strong>4层 HDI | <strong>顶面：</strong>经弹性体匹配 BGA | <strong>底面：</strong>探针焊盘 | ENIG 表面处理'};
+function go(){var v=document.getElementById('xV2'),g=document.getElementById('xG2'),d=document.getElementById('xD2'),di=document.getElementById('xDI2');if(!v||!g)return;
+var hs=v.querySelectorAll('.xs-h'),ts=v.querySelectorAll('.xs-t'),cs=g.querySelectorAll('.xs-i'),cur=null;
+function act(k){if(cur===k){off();return}cur=k;v.classList.add('focus');
+hs.forEach(function(h){h.classList.toggle('on',h.dataset.c===k)});
+ts.forEach(function(t){t.classList.toggle('on',t.dataset.k===k)});
+cs.forEach(function(c){c.classList.toggle('on',c.dataset.c===k)});
+if(D[k]){di.innerHTML=D[k];d.classList.add('open');var ac=g.querySelector('.xs-i[data-c="'+k+'"]');if(ac)ac.after(d)}}
+function off(){cur=null;v.classList.remove('focus');hs.forEach(function(h){h.classList.remove('on')});ts.forEach(function(t){t.classList.remove('on')});cs.forEach(function(c){c.classList.remove('on')});d.classList.remove('open')}
+hs.forEach(function(h){h.addEventListener('click',function(e){e.stopPropagation();act(h.dataset.c)});
+h.addEventListener('mouseenter',function(){if(!cur){ts.forEach(function(t){t.classList.toggle('on',t.dataset.k===h.dataset.c)});cs.forEach(function(c){c.classList.toggle('on',c.dataset.c===h.dataset.c)})}});
+h.addEventListener('mouseleave',function(){if(!cur){ts.forEach(function(t){t.classList.remove('on')});cs.forEach(function(c){c.classList.remove('on')})}})});
+cs.forEach(function(c){c.addEventListener('click',function(e){e.stopPropagation();act(c.dataset.c)});
+c.addEventListener('mouseenter',function(){if(!cur){hs.forEach(function(h){h.classList.toggle('on',h.dataset.c===c.dataset.c)});ts.forEach(function(t){t.classList.toggle('on',t.dataset.k===c.dataset.c)})}});
+c.addEventListener('mouseleave',function(){if(!cur){hs.forEach(function(h){h.classList.remove('on')});ts.forEach(function(t){t.classList.remove('on')})}})});
+document.addEventListener('click',function(e){if(cur&&!v.contains(e.target)&&!g.contains(e.target))off()});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')off()})}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',go);else go()})();
+</script>
+ 
+ ---
  
 <span id="cn-features"></span>
  
@@ -2854,89 +2994,6 @@ This project is open-source and available under the **MIT License**. Click the b
         class="lazy-gif white-bg-gif" 
         decoding="async">
  </div>
-</div>
- 
----
-
-## ✨ 流程图
-<div class="pipeline-section" data-aos="fade-up">
-  <div class="pipeline-card">
-    <h3 class="pipeline-card-title">⚙️ 装配与验证流程</h3>
-    <p class="pipeline-card-desc">
-      免插拔的<strong style="color: #e2e8f0;">"旋转即用"</strong>接口设计消除了微米级对准的需求，使未经培训的操作者也能实现可重复的组装，并保持一致的电气性能。
-    </p>
-
-    <!-- 流程步骤 -->
-    <div class="pipe-track-wrapper">
-      <div class="pipe-track-line">
-        <div class="pipe-flow-light"></div>
-      </div>
-
-      <div class="pipe-node">
-        <div class="pipe-circle">01</div>
-        <div class="pipe-label">
-          <span class="pipe-icon">🔩</span>
-          安置<br>基座
-        </div>
-      </div>
-
-      <div class="pipe-node">
-        <div class="pipe-circle">02</div>
-        <div class="pipe-label">
-          <span class="pipe-icon">📐</span>
-          放置<br>转接 PCB
-        </div>
-      </div>
-
-      <div class="pipe-node">
-        <div class="pipe-circle">03</div>
-        <div class="pipe-label">
-          <span class="pipe-icon">🧬</span>
-          铺设<br>弹性导电体
-        </div>
-      </div>
-
-      <div class="pipe-node">
-        <div class="pipe-circle">04</div>
-        <div class="pipe-label">
-          <span class="pipe-icon">🔌</span>
-          安置<br>放大器板
-        </div>
-      </div>
-
-      <div class="pipe-node">
-        <div class="pipe-circle">05</div>
-        <div class="pipe-label">
-          <span class="pipe-icon">🔄</span>
-          旋紧<br>螺纹顶盖
-        </div>
-      </div>
-
-      <div class="pipe-node">
-        <div class="pipe-circle">06</div>
-        <div class="pipe-label">
-          <span class="pipe-icon">✅</span>
-          电气<br>验证
-        </div>
-      </div>
-    </div>
-
-    <!-- 验证数据 -->
-    <div class="pipe-stats">
-      <div class="pipe-stat-card">
-        <div class="pipe-stat-title">多操作者独立验证</div>
-        <div class="pipe-stat-desc">所有用户均获得一致的连接良率——与个人操作技巧无关。</div>
-      </div>
-      <div class="pipe-stat-card">
-        <div class="pipe-stat-title">200+ 次插拔循环</div>
-        <div class="pipe-stat-desc">5 天纵向耐久性测试中，接触阻抗和良率零退化。</div>
-      </div>
-      <div class="pipe-stat-card">
-        <div class="pipe-stat-title">180 分钟振动测试</div>
-        <div class="pipe-stat-desc">在约 23 m/s² 极端加速度冲击下仍保持连接良率。</div>
-      </div>
-    </div>
-  </div>
 </div>
  
 <span id="cn-signal-demo"></span>
@@ -3088,98 +3145,6 @@ This project is open-source and available under the **MIT License**. Click the b
       <div class="scope-overlay-text scope-dynamic-stats" style="top:28px; left:50%; transform:translateX(-50%); color:#4ade80; white-space: nowrap;">RMS: 9.1 µV &nbsp;&nbsp;|&nbsp;&nbsp; 5 spikes/s</div>
     </div>
   </div>
-</div>
- 
-<span id="cn-components"></span>
- 
-## 🧩 系统组件
-
-<span id="cn-components"></span>
-## 🧩 系统组件
-
-<div class="xs-sec" data-aos="fade-up">
-<div class="xs-card">
-<h3>🔬 交互式截面结构浏览器</h3>
-<p>将鼠标悬停在截面结构图或点击下方任意组件，即可高亮对应层并查看详细规格。</p>
-<div class="xs-v" id="xV2">
-<img src="{{ '/Images/Assem new.PNG' | relative_url }}" alt="E-Link 截面结构" loading="lazy">
-<span class="xs-h" data-c="spi" style="left:43.5%;top:0%;width:13%;height:41%;--c:#3b82f6;--bg:rgba(59,130,246,.08);--g:rgba(59,130,246,.4)"><span class="xs-b">1</span></span>
-<span class="xs-h" data-c="foam" style="left:20%;top:39.5%;width:61%;height:6.46%;z-index:5;--c:#f472b6;--bg:rgba(244,114,182,.15);--g:rgba(244,114,182,.4)"><span class="xs-b">2</span></span>
-<span class="xs-h" data-c="cap" style="left:2%;top:36.5%;width:96%;height:26%;--c:#f59e0b;--bg:rgba(245,158,11,.08);--g:rgba(245,158,11,.35)"><span class="xs-b">3</span></span>
-<span class="xs-h" data-c="pcb" style="left:17%;top:61.6%;width:65.6%;height:7.5%;--c:#22c55e;--bg:rgba(34,197,94,.08);--g:rgba(34,197,94,.35)"><span class="xs-b">4</span></span>
-<span class="xs-h" data-c="elast" style="left:17%;top:68.6%;width:65.6%;height:1.88%;--c:#a78bfa;--bg:rgba(167,139,250,.12);--g:rgba(167,139,250,.4)"><span class="xs-b">5</span></span>
-<span class="xs-h" data-c="adapt" style="left:17%;top:70.5%;width:65.6%;height:5%;--c:#eab308;--bg:rgba(234,179,8,.12);--g:rgba(234,179,8,.35)"><span class="xs-b">6</span></span>
-<span class="xs-t" data-k="spi" style="--c:#3b82f6;--g:rgba(59,130,246,.4);right:18%;top:18%">1. SPI 线缆</span>
-<span class="xs-t" data-k="foam" style="--c:#f472b6;--g:rgba(244,114,182,.4);right:18%;top:36%">2. 泡沫垫圈</span>
-<span class="xs-t" data-k="cap" style="--c:#f59e0b;--g:rgba(245,158,11,.35);right:18%;top:33%">3. 顶部螺纹盖</span>
-<span class="xs-t" data-k="pcb" style="--c:#22c55e;--g:rgba(34,197,94,.35);right:18%;top:58%">4. 放大器电路板</span>
-<span class="xs-t" data-k="elast" style="--c:#a78bfa;--g:rgba(167,139,250,.4);right:18%;top:65%">5. 弹性导电体</span>
-<span class="xs-t" data-k="adapt" style="--c:#eab308;--g:rgba(234,179,8,.35);right:18%;top:68%">6. 转接电路板</span>
-</div>
-<div class="xs-g" id="xG2">
-<div class="xs-i" data-c="spi" style="--c:#3b82f6"><span class="xs-n">1</span><div><div class="xs-cn">SPI 线缆</div><div class="xs-cs">双路 Omnetics A7621</div></div></div>
-<div class="xs-i" data-c="foam" style="--c:#f472b6"><span class="xs-n">2</span><div><div class="xs-cn">泡沫垫圈</div><div class="xs-cs">压力均匀分布</div></div></div>
-<div class="xs-i" data-c="cap" style="--c:#f59e0b"><span class="xs-n">3</span><div><div class="xs-cn">顶部螺纹盖</div><div class="xs-cs">压缩外壳</div></div></div>
-<div class="xs-i" data-c="pcb" style="--c:#22c55e"><span class="xs-n">4</span><div><div class="xs-cn">放大器电路板</div><div class="xs-cs">4个RHD2164芯片 + 4层HDI</div></div></div>
-<div class="xs-i" data-c="elast" style="--c:#a78bfa"><span class="xs-n">5</span><div><div class="xs-cn">弹性导电体</div><div class="xs-cs">Z轴导电介质</div></div></div>
-<div class="xs-i" data-c="adapt" style="--c:#eab308"><span class="xs-n">6</span><div><div class="xs-cn">转接电路板</div><div class="xs-cs">探针布局规则化</div></div></div>
-<div class="xs-d" id="xD2"><div id="xDI2"></div></div>
-</div>
-</div>
-</div>
-
-<script>
-(function(){var D={spi:'<strong>线材：</strong>32AWG 12 芯线 | <strong>接口：</strong>双路 SPI 2×128ch',foam:'<strong>材料：</strong>闭孔硅胶 | <strong>厚度：</strong>1.5→0.8mm | 补偿平面度误差',cap:'<strong>材料：</strong>PEEK/手术级树脂 | <strong>功能：</strong>扭矩 → 25mm Ø 范围内均匀轴向压缩',pcb:'<strong>芯片：</strong>4× RHD2164 BGA | <strong>无源器件：</strong>7电阻+8电容 LVDS +1 LED | <strong>底面：</strong>256焊盘 BGA 0.4mm',elast:'<strong>间距：</strong>156µm（比 BGA 密 3.2 倍）| 压缩下 Z 轴导通 | 零插拔力',adapt:'<strong>层数：</strong>4层 HDI | <strong>顶面：</strong>经弹性体匹配 BGA | <strong>底面：</strong>探针焊盘 | ENIG 表面处理'};
-function go(){var v=document.getElementById('xV2'),g=document.getElementById('xG2'),d=document.getElementById('xD2'),di=document.getElementById('xDI2');if(!v||!g)return;
-var hs=v.querySelectorAll('.xs-h'),ts=v.querySelectorAll('.xs-t'),cs=g.querySelectorAll('.xs-i'),cur=null;
-function act(k){if(cur===k){off();return}cur=k;v.classList.add('focus');
-hs.forEach(function(h){h.classList.toggle('on',h.dataset.c===k)});
-ts.forEach(function(t){t.classList.toggle('on',t.dataset.k===k)});
-cs.forEach(function(c){c.classList.toggle('on',c.dataset.c===k)});
-if(D[k]){di.innerHTML=D[k];d.classList.add('open');var ac=g.querySelector('.xs-i[data-c="'+k+'"]');if(ac)ac.after(d)}}
-function off(){cur=null;v.classList.remove('focus');hs.forEach(function(h){h.classList.remove('on')});ts.forEach(function(t){t.classList.remove('on')});cs.forEach(function(c){c.classList.remove('on')});d.classList.remove('open')}
-hs.forEach(function(h){h.addEventListener('click',function(e){e.stopPropagation();act(h.dataset.c)});
-h.addEventListener('mouseenter',function(){if(!cur){ts.forEach(function(t){t.classList.toggle('on',t.dataset.k===h.dataset.c)});cs.forEach(function(c){c.classList.toggle('on',c.dataset.c===h.dataset.c)})}});
-h.addEventListener('mouseleave',function(){if(!cur){ts.forEach(function(t){t.classList.remove('on')});cs.forEach(function(c){c.classList.remove('on')})}})});
-cs.forEach(function(c){c.addEventListener('click',function(e){e.stopPropagation();act(c.dataset.c)});
-c.addEventListener('mouseenter',function(){if(!cur){hs.forEach(function(h){h.classList.toggle('on',h.dataset.c===c.dataset.c)});ts.forEach(function(t){t.classList.toggle('on',t.dataset.k===c.dataset.c)})}});
-c.addEventListener('mouseleave',function(){if(!cur){hs.forEach(function(h){h.classList.remove('on')});ts.forEach(function(t){t.classList.remove('on')})}})});
-document.addEventListener('click',function(e){if(cur&&!v.contains(e.target)&&!g.contains(e.target))off()});
-document.addEventListener('keydown',function(e){if(e.key==='Escape')off()})}
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',go);else go()})();
-</script>
- 
-<div align="center">
- <table border="1" style="border-collapse: collapse; width: 90%; text-align: center;">
-   <thead>
-     <tr style="background-color: #f2f2f2;">
-       <th>组件</th>
-       <th>描述</th>
-     </tr>
-   </thead>
-   <tbody>
-     <tr>
-       <td><b>基座外壳</b></td>
-       <td>3D 打印/机械加工的基座，提供结构支撑和颅骨固定</td>
-     </tr>
-     <tr>
-       <td><b>定制化 256Ch 头部放大器</b></td>
-       <td>针对高密度 128/256 通道信号采集优化的记录接口</td>
-     </tr>
-     <tr>
-       <td><b>泡沫垫圈</b></td>
-       <td>提供柔性压缩层，确保弹性导电基体上方的电气接触均匀</td>
-     </tr>
-     <tr>
-       <td><b>转接PCB</b></td>
-       <td>高密度 4 层 PCB，用于将信号从薄膜探针放大器的球栅阵列图案转换</td>
-     </tr>
-     <tr>
-       <td><b>手术保护盖</b></td>
-       <td>保护性外壳，在长期慢性实验中保持电气和机械完整性</td>
-     </tr>
-   </tbody>
- </table>
 </div>
  
 ---
