@@ -1074,7 +1074,7 @@ body.light-mode .pipe-stat-desc { color: #64748b; }
 .xs-h::after{content:'';position:absolute;inset:-5px;border-radius:8px;border:1.5px solid var(--c);opacity:0;pointer-events:none}
 .xs-h.on::after{animation:xp 1.8s ease-out infinite}
 @keyframes xp{0%{transform:scale(1);opacity:.7}to{transform:scale(1.2);opacity:0}}
-.xs-b{position:absolute;top:-9px;right:-9px;width:20px;height:20px;border-radius:50%;background:var(--c);color:#fff;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;box-shadow:0 0 8px var(--g);opacity:0;transform:scale(.5);transition:all .3s;z-index:8;pointer-events:none}
+.xs-b{position:absolute;top:-9px;right:-9px;width:20px;height:20px;border-radius:50%;background:var(--c);color:#fff;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;box-shadow:0 0 8px var(--g);opacity:0;transform:scale(.5);transition:all .3s;z-index:8;pointer-events:none}
 .xs-h:hover .xs-b,.xs-h.on .xs-b{opacity:1;transform:scale(1)}
 .xs-t{position:absolute;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:#fff;background:rgba(0,0,0,.85);border:1px solid var(--c);padding:3px 10px;border-radius:6px;white-space:nowrap;pointer-events:none;opacity:0;transition:all .35s;z-index:11;box-shadow:0 0 10px var(--g)}
 .xs-t.on{opacity:1}
@@ -1116,12 +1116,12 @@ body.light-mode .xs-t{background:rgba(255,255,255,.9);color:#0f172a}
 <span class="xs-h" data-c="pcb" style="left:17%;top:61.6%;width:65.6%;height:7.5%;--c:#22c55e;--bg:rgba(34,197,94,.08);--g:rgba(34,197,94,.35)"><span class="xs-b">4</span></span>
 <span class="xs-h" data-c="elast" style="left:17%;top:68.6%;width:65.6%;height:1.88%;--c:#a78bfa;--bg:rgba(167,139,250,.12);--g:rgba(167,139,250,.4)"><span class="xs-b">5</span></span>
 <span class="xs-h" data-c="adapt" style="left:17%;top:70.5%;width:65.6%;height:5%;--c:#eab308;--bg:rgba(234,179,8,.12);--g:rgba(234,179,8,.35)"><span class="xs-b">6</span></span>
-<span class="xs-t" data-k="spi" style="--c:#3b82f6;--g:rgba(59,130,246,.4);right:4%;top:8%">① SPI Cables</span>
-<span class="xs-t" data-k="foam" style="--c:#f472b6;--g:rgba(244,114,182,.4);right:5%;top:27%">② Foam Washer</span>
-<span class="xs-t" data-k="cap" style="--c:#f59e0b;--g:rgba(245,158,11,.35);right:2%;top:32%">③ Threaded Cap</span>
-<span class="xs-t" data-k="pcb" style="--c:#22c55e;--g:rgba(34,197,94,.35);right:2%;top:44%">④ Headstage PCB</span>
-<span class="xs-t" data-k="elast" style="--c:#a78bfa;--g:rgba(167,139,250,.4);right:2%;top:63%">⑤ Elastomer</span>
-<span class="xs-t" data-k="adapt" style="--c:#eab308;--g:rgba(234,179,8,.35);right:2%;top:71.5%">⑥ Adapter PCB</span>
+<span class="xs-t" data-k="spi" style="--c:#3b82f6;--g:rgba(59,130,246,.4);right:18%;top:18%">1. SPI Cables</span>
+<span class="xs-t" data-k="foam" style="--c:#f472b6;--g:rgba(244,114,182,.4);right:18%;top:40%">2. Foam Washer</span>
+<span class="xs-t" data-k="cap" style="--c:#f59e0b;--g:rgba(245,158,11,.35);right:18%;top:48%">3. Threaded Cap</span>
+<span class="xs-t" data-k="pcb" style="--c:#22c55e;--g:rgba(34,197,94,.35);right:18%;top:63%">4. Headstage PCB</span>
+<span class="xs-t" data-k="elast" style="--c:#a78bfa;--g:rgba(167,139,250,.4);right:18%;top:68%">5. Elastomer</span>
+<span class="xs-t" data-k="adapt" style="--c:#eab308;--g:rgba(234,179,8,.35);right:18%;top:72%">6. Adapter PCB</span>
 </div>
 <div class="xs-g" id="xG">
 <div class="xs-i" data-c="spi" style="--c:#3b82f6"><span class="xs-n">1</span><div><div class="xs-cn">SPI Cables</div><div class="xs-cs">Dual Omnetics A7621</div></div></div>
