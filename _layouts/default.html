@@ -1066,16 +1066,10 @@ if (window.innerWidth > 768 && cursorDot && cursorOutline) {
 
   // 🚀 优化：具名函数，便于在 modal 激活时从调度器中移除，节省 CPU
   updateCursorOutline = () => {
-    // 🚀 优化 2：将跟随系数从 0.12 提高到 0.22。数值越大越跟手，越小越丝滑但越迟钝
-    const snappiness = 0.45; 
-    outlineX += (mouseX - outlineX) * snappiness;
-    outlineY += (mouseY - outlineY) * snappiness;
-
     cursorOutline.style.transform =
-      `translate3d(${outlineX}px, ${outlineY}px, 0) translate(-50%, -50%)`;
+      `translate3d(${mouseX}px, ${mouseY}px, 0) translate(-50%, -50%)`;
   };
   rafScheduler.add('cursor', updateCursorOutline);
-}
 
 // ── 粒子引擎 (簇群坍缩版：动态吸附成大簇 + 实时寻路长程电流 + 科技风发光大脑底座) ──────────
   function initNeuralWeb() {
@@ -1218,16 +1212,31 @@ if (window.innerWidth > 768 && cursorDot && cursorOutline) {
         p.neighbors = []; 
         if (p.refractory > 0) p.refractory--;
 
-        // 鼠标流体排斥
+        // 鼠标流体吸附 
         if (mouse.active && !isMobile) {
             const dx = mouse.x - p.x;
             const dy = mouse.y - p.y;
             const distSq = dx * dx + dy * dy;
-            if (distSq < 62500) { 
+            if (distSq < 90000) {
                 const dist = Math.sqrt(distSq);
-                const force = (250 - dist) / 250;
-                p.vx -= (dx / dist) * force * 0.1; 
-                p.vy -= (dy / dist) * force * 0.1; 
+                if (dist < 80) {
+                    // 近距离：强吸附，粒子贴向光标
+                    const pull = (80 - dist) / 80 * 0.15;
+                    p.vx += (dx / dist) * pull;
+                    p.vy += (dy / dist) * pull;
+                    // 触发放电
+                    if (p.charge < 0.5) p.charge = 0.8;
+                } else if (dist < 180) {
+                    // 中距离：轻微吸引
+                    const pull = (180 - dist) / 180 * 0.04;
+                    p.vx += (dx / dist) * pull;
+                    p.vy += (dy / dist) * pull;
+                } else {
+                    // 远距离：轻微排斥（保持原有的流体感）
+                    const force = (300 - dist) / 300;
+                    p.vx -= (dx / dist) * force * 0.03;
+                    p.vy -= (dy / dist) * force * 0.03;
+                }
             }
         }
 
