@@ -1735,15 +1735,14 @@ body.light-mode .pitch-label { color: #64748b; }
 .scale-bar.animate-in { transform: scaleY(1); }
  
 @media (max-width: 768px) {
-  .scale-card { padding: 25px 18px; }
-  .scale-bars { height: 240px; padding: 0 10px; }
+  .scale-bars { height: 180px; padding: 0 10px; }
   .scale-bar-value { font-size: 16px; }
   .scale-label { font-size: 10px; margin-bottom: 4px; }
   .pitch-compare { grid-template-columns: 1fr; }
   .pitch-value { font-size: 24px; }
-  .scale-bar.active { height: 60px !important; }
-  .scale-bar.future-green { height: 95px !important; }
-  .scale-bar.future-amber { height: 130px !important; }
+  .scale-bar.active { height: 70px !important; }
+  .scale-bar.future-green { height: 115px !important; }
+  .scale-bar.future-amber { height: 160px !important; }
 }
 </style>
  
