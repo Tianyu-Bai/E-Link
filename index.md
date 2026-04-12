@@ -1734,13 +1734,16 @@ body.light-mode .pitch-label { color: #64748b; }
 .scale-bar { transform: scaleY(0); transform-origin: bottom; }
 .scale-bar.animate-in { transform: scaleY(1); }
  
-/* ── Mobile ── */
 @media (max-width: 768px) {
   .scale-card { padding: 25px 18px; }
-  .scale-bars { height: 180px; padding: 0 10px; }
-  .scale-bar-value { font-size: 18px; }
+  .scale-bars { height: 240px; padding: 0 10px; }
+  .scale-bar-value { font-size: 16px; }
+  .scale-label { font-size: 10px; margin-bottom: 4px; }
   .pitch-compare { grid-template-columns: 1fr; }
   .pitch-value { font-size: 24px; }
+  .scale-bar.active { height: 60px !important; }
+  .scale-bar.future-green { height: 95px !important; }
+  .scale-bar.future-amber { height: 130px !important; }
 }
 </style>
  
@@ -2535,7 +2538,7 @@ This project is open-source and available under the **MIT License**. Click the b
 </div>
    <div class="gesture-overlay mode-drag">
      <div class="icon-box"><div class="hand-icon">👆</div></div>
-     <div class="gesture-text">Drag to Rotate</div>
+     <div class="gesture-text">拖拽以旋转</div>
  </div>
   <button class="reset-btn"
  onclick="
