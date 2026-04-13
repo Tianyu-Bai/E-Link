@@ -27,6 +27,9 @@
 
 <script src="https://unpkg.com/lenis@1.3.17/dist/lenis.min.js"></script>
 <style>
+ model-viewer {
+  touch-action: none !important;
+}
   /* ===================== 0. 全局与底层重置 ===================== */
   * { box-sizing: border-box; } 
   html, body { width: 100%; max-width: 100vw; overflow-x: hidden; overscroll-behavior-y: none; } 
@@ -1007,6 +1010,10 @@ if (localStorage.getItem('elink_visited') === 'true') {
       cursorRAFRunning = false; // 🚀 Problem D：modal 激活时停止光标独立rAF
     }, 10);
   }
+
+ document.querySelectorAll('model-viewer').forEach(mv => {
+    mv.setAttribute('data-lenis-prevent', 'true');
+});
  
  // ── 统一 RAF 调度器 (带 FPS 锁定 & 移动端智能识别) ──────────────────────────────────────────
 const rafScheduler = {
