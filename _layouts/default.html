@@ -1391,18 +1391,25 @@ if (window.innerWidth > 768 && cursorDot && cursorOutline) {
         p.vx *= 0.85; p.vy *= 0.85; 
         p.x += p.vx; p.y += p.vy;
 
-        if (p.isLeft) {
-            if (p.x > sideZone) p.vx -= 0.05; 
-            if (p.x < 0) p.vx += 0.05;        
-        } else {
-            if (p.x < width - sideZone) p.vx += 0.05; 
-            if (p.x > width) p.vx -= 0.05;            
-        }
+        // ── 硬边界回弹：防止粒子永远消失 ──
+const margin = 50; // 允许飘出画布的最大距离
 
-        if (isMobile) {
-          if (i < count * 0.6 && p.y > TOP_ZONE) p.vy -= 0.02;
-          if (i >= count * 0.6 && p.y < height - BOTTOM_ZONE) p.vy += 0.02;
-        }
+if (p.isLeft) {
+    if (p.x > sideZone) p.vx -= 0.05;
+    if (p.x < -margin) { p.x = -margin; p.vx = Math.abs(p.vx) * 0.5 + 0.1; }
+} else {
+    if (p.x < width - sideZone) p.vx += 0.05;
+    if (p.x > width + margin) { p.x = width + margin; p.vx = -Math.abs(p.vx) * 0.5 - 0.1; }
+}
+
+// 垂直硬边界（原来完全没有，这是粒子上下消失的元凶）
+if (p.y < -margin) { p.y = -margin; p.vy = Math.abs(p.vy) * 0.5 + 0.05; }
+if (p.y > height + margin) { p.y = height + margin; p.vy = -Math.abs(p.vy) * 0.5 - 0.05; }
+
+if (isMobile) {
+  if (i < count * 0.6 && p.y > TOP_ZONE) p.vy -= 0.02;
+  if (i >= count * 0.6 && p.y < height - BOTTOM_ZONE) p.vy += 0.02;
+}
         px[i] = p.x + Math.sin(p.pulse) * 5; py[i] = p.y + Math.cos(p.pulse * 0.8) * 5;
       }
 
