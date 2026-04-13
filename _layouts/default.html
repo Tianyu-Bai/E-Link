@@ -1065,17 +1065,22 @@ if (window.innerWidth > 768 && cursorDot && cursorOutline) {
     cursorDot.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0) translate(-50%, -50%)`;
   }, { passive: true });
 
-  // 🚀 优化：具名函数，便于在 modal 激活时从调度器中移除，节省 CPU
+  // 🚀 光标独立 rAF 循环，不受 rafScheduler 帧率锁定 (45fps) 限制
+  let cursorRAFRunning = true;
   updateCursorOutline = () => {
-    // 🚀 优化 2：将跟随系数从 0.12 提高到 0.22。数值越大越跟手，越小越丝滑但越迟钝
-    const snappiness = 0.45; 
+    if (!cursorRAFRunning) return;
+    const snappiness = 0.65;  // 提高跟手感
     outlineX += (mouseX - outlineX) * snappiness;
     outlineY += (mouseY - outlineY) * snappiness;
-
     cursorOutline.style.transform =
       `translate3d(${outlineX}px, ${outlineY}px, 0) translate(-50%, -50%)`;
+    requestAnimationFrame(updateCursorOutline);
   };
-  rafScheduler.add('cursor', updateCursorOutline);
+  requestAnimationFrame(updateCursorOutline);
+
+  // 暴露启停接口，供 modal 调用
+  window._stopCursorRAF = () => { cursorRAFRunning = false; };
+  window._startCursorRAF = () => { if (!cursorRAFRunning) { cursorRAFRunning = true; requestAnimationFrame(updateCursorOutline); } };
 }
 
 // ── 粒子引擎 (簇群坍缩版：动态吸附成大簇 + 实时寻路长程电流 + 科技风发光大脑底座) ──────────
@@ -1219,17 +1224,37 @@ if (window.innerWidth > 768 && cursorDot && cursorOutline) {
         p.neighbors = []; 
         if (p.refractory > 0) p.refractory--;
 
-        // 鼠标流体排斥
+        // 🧲 鼠标磁性吸附场：中距吸引 + 近距排斥
         if (mouse.active && !isMobile) {
             const dx = mouse.x - p.x;
             const dy = mouse.y - p.y;
             const distSq = dx * dx + dy * dy;
-            if (distSq < 62500) { 
+            const attractRadius = 300;   // 吸附感应范围
+            const repelRadius = 50;      // 内核排斥范围（防止粒子堆叠到光标正中）
+            
+            if (distSq < attractRadius * attractRadius) {
                 const dist = Math.sqrt(distSq);
-                const force = (250 - dist) / 250;
-                p.vx -= (dx / dist) * force * 0.1; 
-                p.vy -= (dy / dist) * force * 0.1; 
+                const norm = dist || 1;
+                
+                if (dist < repelRadius) {
+                    // 近距：柔性排斥，防止粘死
+                    const push = (repelRadius - dist) / repelRadius * 0.15;
+                    p.vx -= (dx / norm) * push;
+                    p.vy -= (dy / norm) * push;
+                } else {
+                    // 中距：磁性吸附，越近吸力越弱（避免加速冲入内核）
+                    const pull = Math.pow((attractRadius - dist) / (attractRadius - repelRadius), 2) * 0.08;
+                    p.vx += (dx / norm) * pull;
+                    p.vy += (dy / norm) * pull;
+                }
+                
+                // 标记此粒子被吸附（用于后续画连线）
+                p._magnetDist = dist;
+            } else {
+                p._magnetDist = -1;
             }
+        } else {
+            p._magnetDist = -1;
         }
 
         for (let j = i + 1; j < count; j++) {
