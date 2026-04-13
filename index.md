@@ -960,12 +960,13 @@ body.light-mode .pipe-stat-desc { color: #64748b; }
     text-align: left;
     gap: 16px;
     padding: 10px 0;
+    align-items: center;
   }
  
   .pipe-circle { margin-bottom: 0; width: 38px; height: 38px; }
-  .pipe-label { font-size: 14px; }
+  .pipe-label { font-size: 14px; white-space: nowrap; }
+  .pipe-label br { display: none; }
   .pipe-icon { display: inline; margin-right: 4px; margin-bottom: 0; }
- 
   .pipe-stats {
     grid-template-columns: 1fr;
     gap: 10px;
