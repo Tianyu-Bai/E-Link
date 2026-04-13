@@ -53,6 +53,13 @@
  
   /* 仅当 JS 运行后才隐藏原生光标 */
   body.js-cursor-enabled { cursor: none; }
+  /* 交互式组件内恢复系统光标，隐藏神经元光标 */
+  model-viewer, 
+  input, textarea, select,
+  .video-content,
+  iframe {
+  cursor: auto !important;
+ }
   @media (pointer: coarse) { body.js-cursor-enabled { cursor: auto; } }
   img, video, iframe { max-width: 100% !important; height: auto !important; box-sizing: border-box; transition: opacity 0.5s ease; transform: translateZ(0); backface-visibility: hidden; }
   img[loading] { min-height: 1px; }
@@ -1932,6 +1939,24 @@ if (window.innerWidth > 768 && cursorDot && cursorOutline) {
 
   // ── 悬停态 ───────────────────────────────────────────────────
   const hoverSel = 'a, button, .ctrl-btn, .rpg-btn, #bot-container, .slider';
+  // 🧪 交互式组件内隐藏神经元光标
+const interactiveSel = 'model-viewer, input, textarea, select, .video-content, iframe';
+document.body.addEventListener('mouseover', (e) => {
+  if (e.target.closest(interactiveSel)) {
+    if (cursorDot) cursorDot.style.opacity = '0';
+    if (cursorOutline) cursorOutline.style.opacity = '0';
+    document.body.style.cursor = 'auto';
+  }
+});
+document.body.addEventListener('mouseout', (e) => {
+  if (e.target.closest(interactiveSel)) {
+    if (cursorDot) cursorDot.style.opacity = '1';
+    if (cursorOutline) cursorOutline.style.opacity = '1';
+    if (document.body.classList.contains('js-cursor-enabled')) {
+      document.body.style.cursor = '';
+    }
+  }
+});
   document.body.addEventListener('mouseover', (e) => {
     if (e.target.closest(hoverSel)) document.body.classList.add('hovering');
   });
