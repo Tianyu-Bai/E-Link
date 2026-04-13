@@ -1138,9 +1138,6 @@ if (window.innerWidth > 768 && cursorDot && cursorOutline) {
   }
 }
 
-  // 暴露启停接口，供 modal 调用
-  window._stopCursorRAF = () => { cursorRAFRunning = false; };
-  window._startCursorRAF = () => { if (!cursorRAFRunning) { cursorRAFRunning = true; requestAnimationFrame(updateCursorOutline); } };
 }
 
 // ── 粒子引擎 (簇群坍缩版：动态吸附成大簇 + 实时寻路长程电流 + 科技风发光大脑底座) ──────────
