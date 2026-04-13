@@ -996,7 +996,7 @@ body.light-mode .pipe-stat-desc { color: #64748b; }
         <div class="pipe-circle">01</div>
         <div class="pipe-label">
           <span class="pipe-icon">🔩</span>
-          Seat<br>Pedestal
+          Seat <br>Pedestal
         </div>
       </div>
  
@@ -1004,7 +1004,7 @@ body.light-mode .pipe-stat-desc { color: #64748b; }
         <div class="pipe-circle">02</div>
         <div class="pipe-label">
           <span class="pipe-icon">📐</span>
-          Place<br>Adapter PCB
+          Place <br>Adapter PCB
         </div>
       </div>
  
@@ -1012,7 +1012,7 @@ body.light-mode .pipe-stat-desc { color: #64748b; }
         <div class="pipe-circle">03</div>
         <div class="pipe-label">
           <span class="pipe-icon">🧬</span>
-          Put<br>Elastomer
+          Put <br>Elastomer
         </div>
       </div>
  
@@ -1020,7 +1020,7 @@ body.light-mode .pipe-stat-desc { color: #64748b; }
         <div class="pipe-circle">04</div>
         <div class="pipe-label">
           <span class="pipe-icon">🔌</span>
-          Seat<br>Headstage
+          Seat <br>Headstage
         </div>
       </div>
  
@@ -1028,7 +1028,7 @@ body.light-mode .pipe-stat-desc { color: #64748b; }
         <div class="pipe-circle">05</div>
         <div class="pipe-label">
           <span class="pipe-icon">🔄</span>
-          Rotate<br>Threaded Cap
+          Rotate <br>Threaded Cap
         </div>
       </div>
  
@@ -1036,7 +1036,7 @@ body.light-mode .pipe-stat-desc { color: #64748b; }
         <div class="pipe-circle">06</div>
         <div class="pipe-label">
           <span class="pipe-icon">✅</span>
-          Electrical<br>Verify
+          Electrical <br>Verify
         </div>
       </div>
     </div>
