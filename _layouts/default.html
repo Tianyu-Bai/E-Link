@@ -1072,7 +1072,7 @@ if (window.innerWidth > 768 && cursorDot && cursorOutline) {
   // 🚀 光标轮廓独立 rAF — 跑满原生刷新率，彻底告别延迟
   updateCursorOutline = () => {
     if (!cursorRAFRunning) return;
-    const snappiness = 0.7;
+    const snappiness = 1.0;
     outlineX += (mouseX - outlineX) * snappiness;
     outlineY += (mouseY - outlineY) * snappiness;
     cursorOutline.style.transform =
@@ -1240,17 +1240,47 @@ if (window.innerWidth > 768 && cursorDot && cursorOutline) {
       }
 
       particles.push({
-        id: i, x: startX, y: startY,
-        vx: (Math.random() - 0.5) * 0.03, vy: (Math.random() - 0.5) * 0.03,
-        baseRadius: baseR, radius: baseR, charge: 0, refractory: 0, 
-        pulse: Math.random() * Math.PI * 2, pulseSpeed: 0.015 + Math.random() * 0.015,
-        neighbors: [],
-        isLeft: isLeft,
-        // 🚀 将计算好的 RGB 存入粒子对象中
-        cR: cR, cG: cG, cB: cB 
-      });
+    id: i, x: startX, y: startY,
+    vx: (Math.random() - 0.5) * 0.03, vy: (Math.random() - 0.5) * 0.03,
+    baseRadius: baseR, radius: baseR, charge: 0, refractory: 0, 
+    pulse: Math.random() * Math.PI * 2, pulseSpeed: 0.015 + Math.random() * 0.015,
+    neighbors: [],
+    isLeft: isLeft,
+    cR: cR, cG: cG, cB: cB,
+    // 🧬 神经元树突触角数据
+    dendrites: (() => {
+      const armCount = sizeType > 0.88 ? Math.floor(Math.random()*3)+4 : 
+                       sizeType > 0.35 ? Math.floor(Math.random()*2)+3 : 
+                       Math.floor(Math.random()*2)+2;
+      const arms = [];
+      for (let a = 0; a < armCount; a++) {
+        const angle = (a / armCount) * Math.PI * 2 + (Math.random()-0.5)*0.5;
+        const len = baseR * (2.5 + Math.random()*2.0);
+        // 主干 + 1-2个分叉
+        const branches = [];
+        const bCount = Math.random() > 0.5 ? 2 : 1;
+        for (let b = 0; b < bCount; b++) {
+          branches.push({
+            pos: 0.4 + Math.random()*0.4,
+            angle: angle + (Math.random()-0.5)*1.2,
+            len: len * (0.3 + Math.random()*0.35)
+          });
+        }
+        arms.push({ angle, len, branches, tipR: 0.6 + Math.random()*0.8 });
+      }
+      return arms;
+    })()
+  });
     }
 
+    // 🚀 预建颜色分组索引（零GC，避免每帧 new Map）
+    const colorGroupKeys = [];
+    const colorGroupIndices = {};
+    particles.forEach((p, i) => {
+      const k = `${p.cR},${p.cG},${p.cB}`;
+      if (!colorGroupIndices[k]) { colorGroupIndices[k] = []; colorGroupKeys.push(k); }
+      colorGroupIndices[k].push(i);
+    });
     const px = new Float32Array(count);
     const py = new Float32Array(count);
 
@@ -1460,43 +1490,182 @@ if (window.innerWidth > 768 && cursorDot && cursorOutline) {
         }
       }
 
-      // 5. 大胞体渲染
-      for (let i = 0; i < count; i++) {
-        const p = particles[i];
-        p.pulse += p.pulseSpeed;
-        const breathing = Math.sin(p.pulse) * 0.2 + 1;
-        const r = p.baseRadius * breathing;
-
-        if (isLight) {
-            ctx.shadowBlur = 0; 
-            ctx.fillStyle = `rgba(37, 99, 235, ${0.4 + p.charge * 0.4})`;
-            ctx.beginPath();
-            ctx.arc(px[i], py[i], r * 1.2, 0, Math.PI * 2);
-            ctx.fill();
-
-            ctx.strokeStyle = `rgba(30, 58, 138, 0.6)`;
-            ctx.lineWidth = 0.5;
-            ctx.stroke();
+      // 5. 大胞体渲染 (批量合并绘制，极致性能版)
+      // 滚动时完全跳过树突，只画胞体核心点
+      const drawDendrites = !isScrolling;
+      
+      if (isLight) {
+        // ===== 浅色模式：全部合并为 2 次绘制 =====
+        // 批量画树突线条 (1次stroke)
+        if (drawDendrites) {
+          ctx.beginPath();
+          ctx.strokeStyle = 'rgba(37, 99, 235, 0.3)';
+          ctx.lineWidth = 0.4;
+          for (let i = 0; i < count; i++) {
+            const p = particles[i], cx = px[i], cy = py[i];
+            p.pulse += p.pulseSpeed;
+            const breathing = Math.sin(p.pulse) * 0.2 + 1;
+            p._br = breathing; // 缓存给后面胞体用
+            p.dendrites.forEach(arm => {
+              const ex = cx + Math.cos(arm.angle) * arm.len * breathing;
+              const ey = cy + Math.sin(arm.angle) * arm.len * breathing;
+              ctx.moveTo(cx, cy); ctx.lineTo(ex, ey);
+              arm.branches.forEach(br => {
+                const bx = cx + Math.cos(arm.angle) * arm.len * br.pos * breathing;
+                const by = cy + Math.sin(arm.angle) * arm.len * br.pos * breathing;
+                ctx.moveTo(bx, by);
+                ctx.lineTo(bx + Math.cos(br.angle) * br.len * breathing,
+                           by + Math.sin(br.angle) * br.len * breathing);
+              });
+            });
+          }
+          ctx.stroke();
+          
+          // 批量画突触小球 (1次fill)
+          ctx.beginPath();
+          ctx.fillStyle = 'rgba(37, 99, 235, 0.45)';
+          for (let i = 0; i < count; i++) {
+            const p = particles[i], cx = px[i], cy = py[i], breathing = p._br;
+            p.dendrites.forEach(arm => {
+              const ex = cx + Math.cos(arm.angle) * arm.len * breathing;
+              const ey = cy + Math.sin(arm.angle) * arm.len * breathing;
+              ctx.moveTo(ex + arm.tipR * 0.7, ey);
+              ctx.arc(ex, ey, arm.tipR * 0.7, 0, Math.PI * 2);
+              arm.branches.forEach(br => {
+                const bx = cx + Math.cos(arm.angle) * arm.len * br.pos * breathing;
+                const by = cy + Math.sin(arm.angle) * arm.len * br.pos * breathing;
+                const bex = bx + Math.cos(br.angle) * br.len * breathing;
+                const bey = by + Math.sin(br.angle) * br.len * breathing;
+                ctx.moveTo(bex + arm.tipR * 0.6, bey);
+                ctx.arc(bex, bey, arm.tipR * 0.6, 0, Math.PI * 2);
+              });
+            });
+          }
+          ctx.fill();
         } else {
-            // 🚀 核心优化 2：滚动时放弃实例化径向渐变 (RadialGradient)，屏蔽发光层
-            if (!isScrolling) {
-                const halo = ctx.createRadialGradient(px[i], py[i], 0, px[i], py[i], r * 4.5);
-                halo.addColorStop(0, `rgba(${nR},${nG},${nB},${0.12 + p.charge * 0.3})`);
-                halo.addColorStop(1, 'rgba(0,0,0,0)');
-                ctx.fillStyle = halo; 
-                ctx.beginPath(); 
-                ctx.arc(px[i], py[i], r * 4.5, 0, Math.PI * 2); 
-                ctx.fill();
-            }
-
-            // 核心高光点全量保留，保证基础视觉结构不丢
-            ctx.fillStyle = `rgba(${p.cR}, ${p.cG}, ${p.cB}, ${0.7 + p.charge * 0.3})`;
-            ctx.beginPath(); 
-            ctx.arc(px[i], py[i], r * 0.6, 0, Math.PI * 2); 
-            ctx.fill();
+          // 滚动时只算 pulse
+          for (let i = 0; i < count; i++) {
+            const p = particles[i];
+            p.pulse += p.pulseSpeed;
+            p._br = Math.sin(p.pulse) * 0.2 + 1;
+          }
         }
+        
+        // 批量画胞体 (1次fill + 1次stroke)
+        ctx.beginPath();
+        ctx.fillStyle = 'rgba(37, 99, 235, 0.5)';
+        for (let i = 0; i < count; i++) {
+          const p = particles[i], r = p.baseRadius * p._br * 1.2;
+          ctx.moveTo(px[i] + r, py[i]);
+          ctx.arc(px[i], py[i], r, 0, Math.PI * 2);
+        }
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(30, 58, 138, 0.6)'; ctx.lineWidth = 0.5; ctx.stroke();
+        
+        // charge 衰减
+        for (let i = 0; i < count; i++) { if (particles[i].charge > 0) particles[i].charge *= 0.9; }
 
-        if (p.charge > 0) p.charge *= 0.9;
+      } else {
+        // ===== 深色模式 =====
+        // 光晕层 (滚动时跳过，无法合并因为每个用独立渐变)
+        if (!isScrolling) {
+          for (let i = 0; i < count; i++) {
+            const p = particles[i], cx = px[i], cy = py[i];
+            p.pulse += p.pulseSpeed;
+            p._br = Math.sin(p.pulse) * 0.2 + 1;
+            const hr = p.baseRadius * p._br * 4.5;
+            const halo = ctx.createRadialGradient(cx, cy, 0, cx, cy, hr);
+            halo.addColorStop(0, `rgba(${nR},${nG},${nB},${0.12 + p.charge * 0.3})`);
+            halo.addColorStop(1, 'rgba(0,0,0,0)');
+            ctx.fillStyle = halo; ctx.beginPath();
+            ctx.arc(cx, cy, hr, 0, Math.PI * 2); ctx.fill();
+          }
+        } else {
+          for (let i = 0; i < count; i++) {
+            const p = particles[i];
+            p.pulse += p.pulseSpeed;
+            p._br = Math.sin(p.pulse) * 0.2 + 1;
+          }
+        }
+        
+        // 批量画树突线条 —— 用预建分组（零GC）
+        if (drawDendrites) {
+          for (let g = 0; g < colorGroupKeys.length; g++) {
+            const rgb = colorGroupKeys[g];
+            const indices = colorGroupIndices[rgb];
+            
+            // 树突线
+            ctx.beginPath();
+            ctx.strokeStyle = `rgba(${rgb},0.22)`;
+            ctx.lineWidth = 0.5;
+            for (let k = 0; k < indices.length; k++) {
+              const idx = indices[k], p = particles[idx];
+              const cx = px[idx], cy = py[idx], br = p._br;
+              const dends = p.dendrites;
+              for (let a = 0; a < dends.length; a++) {
+                const arm = dends[a];
+                const ex = cx + Math.cos(arm.angle) * arm.len * br;
+                const ey = cy + Math.sin(arm.angle) * arm.len * br;
+                ctx.moveTo(cx, cy); ctx.lineTo(ex, ey);
+                const branches = arm.branches;
+                for (let b = 0; b < branches.length; b++) {
+                  const br2 = branches[b];
+                  const bx = cx + Math.cos(arm.angle) * arm.len * br2.pos * br;
+                  const by = cy + Math.sin(arm.angle) * arm.len * br2.pos * br;
+                  ctx.moveTo(bx, by);
+                  ctx.lineTo(bx + Math.cos(br2.angle) * br2.len * br,
+                             by + Math.sin(br2.angle) * br2.len * br);
+                }
+              }
+            }
+            ctx.stroke();
+            
+            // 突触小球
+            ctx.beginPath();
+            ctx.fillStyle = `rgba(${rgb},0.5)`;
+            for (let k = 0; k < indices.length; k++) {
+              const idx = indices[k], p = particles[idx];
+              const cx = px[idx], cy = py[idx], br = p._br;
+              const dends = p.dendrites;
+              for (let a = 0; a < dends.length; a++) {
+                const arm = dends[a];
+                const ex = cx + Math.cos(arm.angle) * arm.len * br;
+                const ey = cy + Math.sin(arm.angle) * arm.len * br;
+                ctx.moveTo(ex + arm.tipR * 0.8, ey);
+                ctx.arc(ex, ey, arm.tipR * 0.8, 0, Math.PI * 2);
+                const branches = arm.branches;
+                for (let b = 0; b < branches.length; b++) {
+                  const br2 = branches[b];
+                  const bx = cx + Math.cos(arm.angle) * arm.len * br2.pos * br;
+                  const by = cy + Math.sin(arm.angle) * arm.len * br2.pos * br;
+                  const bex = bx + Math.cos(br2.angle) * br2.len * br;
+                  const bey = by + Math.sin(br2.angle) * br2.len * br;
+                  ctx.moveTo(bex + arm.tipR * 0.6, bey);
+                  ctx.arc(bex, bey, arm.tipR * 0.6, 0, Math.PI * 2);
+                }
+              }
+            }
+            ctx.fill();
+          }
+        }
+        
+        // 批量画胞体核心 —— 用预建分组（零GC）
+        for (let g = 0; g < colorGroupKeys.length; g++) {
+          const rgb = colorGroupKeys[g];
+          const indices = colorGroupIndices[rgb];
+          ctx.beginPath();
+          ctx.fillStyle = `rgba(${rgb},0.75)`;
+          for (let k = 0; k < indices.length; k++) {
+            const idx = indices[k], p = particles[idx];
+            const r = p.baseRadius * p._br * 0.6;
+            ctx.moveTo(px[idx] + r, py[idx]);
+            ctx.arc(px[idx], py[idx], r, 0, Math.PI * 2);
+          }
+          ctx.fill();
+        }
+        
+        // charge 衰减
+        for (let i = 0; i < count; i++) { if (particles[i].charge > 0) particles[i].charge *= 0.9; }
       }
     };
 
