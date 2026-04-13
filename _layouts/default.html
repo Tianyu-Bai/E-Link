@@ -961,7 +961,8 @@ src="https://mapmyvisitors.com/map.js?cl=e2e8f0&w=300&t=tt&d=m5eNlZmkObq22GMdcKl
   let dialogData = dialogData_EN;
    
 document.addEventListener("DOMContentLoaded", function () {
- 
+let cursorRAFRunning = true;
+let updateCursorOutline;
 const welcomeModal = document.getElementById('welcome-modal');
 
 // 🚀 修复后的表格自动包裹逻辑 —— 排除自定义组件内部的表格
@@ -1061,9 +1062,6 @@ const cursorDot = document.querySelector('.cursor-dot');
 const cursorOutline = document.querySelector('.cursor-outline');
 let mouseX = -100, mouseY = -100;
 let outlineX = -100, outlineY = -100;
-
-let updateCursorOutline;
-let cursorRAFRunning = true;
 
 if (window.innerWidth > 768 && cursorDot && cursorOutline) {
   document.addEventListener('mousemove', (e) => {
