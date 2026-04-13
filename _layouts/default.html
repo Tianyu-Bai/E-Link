@@ -1156,13 +1156,38 @@ if (window.innerWidth > 768 && cursorDot && cursorOutline) {
     const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || window.innerWidth < 768;
     let width, height, dpr, sideZone;
     let mouse = { x: -1000, y: -1000, active: false };
+    // 🧲 鼠标吸附系统状态
+    const attachedSet = new Set();   // 当前被鼠标"捡起"的粒子 index
+    let mouseOverCard = false;       // 鼠标是否在内容卡片上
     window.addEventListener('mousemove', (e) => {
       mouse.x = e.clientX;
       mouse.y = e.clientY;
       mouse.active = true;
     }, { passive: true });
     window.addEventListener('mouseout', () => mouse.active = false);
-
+    // 🧲 检测鼠标是否进入内容卡片区域 → 触发卸货
+document.addEventListener('mousemove', () => {
+  const card = document.querySelector('.container');
+  if (!card) return;
+  const rect = card.getBoundingClientRect();
+  const wasOver = mouseOverCard;
+  mouseOverCard = (
+    mouse.x >= rect.left && mouse.x <= rect.right &&
+    mouse.y >= rect.top && mouse.y <= rect.bottom
+  );
+  // 刚进入卡片 → 释放所有吸附粒子，给一个爆散初速度
+  if (mouseOverCard && !wasOver && attachedSet.size > 0) {
+    attachedSet.forEach(idx => {
+      const p = particles[idx];
+      const angle = Math.random() * Math.PI * 2;
+      const force = 1.5 + Math.random() * 2;
+      p.vx = Math.cos(angle) * force;
+      p.vy = Math.sin(angle) * force;
+    });
+    attachedSet.clear();
+  }
+}, { passive: true });
+   
     function applyResize() {
       dpr = isMobile ? 1.0 : Math.min(window.devicePixelRatio || 1, 1.5);
       width = window.innerWidth; height = window.innerHeight;
@@ -1318,33 +1343,41 @@ if (window.innerWidth > 768 && cursorDot && cursorOutline) {
         p.neighbors = []; 
         if (p.refractory > 0) p.refractory--;
 
-        // 🧲 鼠标磁性吸附场（用渲染坐标算距离，物理坐标算力方向）
+       // 🧲 鼠标吸附捡拾系统（经过即捡起，卡片区域卸货）
         p._magnetDist = -1;
-        if (mouse.active && !isMobile) {
+        if (mouse.active && !isMobile && !mouseOverCard) {
             const rdx = mouse.x - px[i];
             const rdy = mouse.y - py[i];
             const rDistSq = rdx * rdx + rdy * rdy;
-            const attractRadius = 180;
-            const repelRadius = 35;
-            if (rDistSq < attractRadius * attractRadius) {
-                const rDist = Math.sqrt(rDistSq);
-                const fdx = mouse.x - p.x;
-                const fdy = mouse.y - p.y;
-                const fNorm = Math.sqrt(fdx * fdx + fdy * fdy) || 1;
-                if (rDist < repelRadius) {
-                    const push = (repelRadius - rDist) / repelRadius * 0.2;
-                    p.vx -= (fdx / fNorm) * push;
-                    p.vy -= (fdy / fNorm) * push;
-                } else {
-                    const t = (attractRadius - rDist) / (attractRadius - repelRadius);
-                    const pull = t * t * 0.25;
-                    p.vx += (fdx / fNorm) * pull;
-                    p.vy += (fdy / fNorm) * pull;
-                }
-                p._magnetDist = rDist;
+            const pickupRadius = 80; // 经过此范围内即被捡起
+
+            // 尚未吸附 → 检测是否进入捡拾范围
+            if (!attachedSet.has(i) && rDistSq < pickupRadius * pickupRadius) {
+                attachedSet.add(i);
+                p.charge = 1; // 捡起瞬间闪光
             }
         }
 
+        // 已吸附的粒子：强力锁定跟随鼠标
+        if (attachedSet.has(i)) {
+            if (mouseOverCard) {
+                // 卡片上 → 已经在 mousemove 中统一释放，这里兜底
+                attachedSet.delete(i);
+            } else {
+                const targetX = mouse.x + Math.sin(i * 2.39) * (15 + (i % 7) * 4);
+                const targetY = mouse.y + Math.cos(i * 2.39) * (15 + (i % 5) * 4);
+                // 弹簧跟随：紧而不僵
+                const springK = 0.18;
+                const dampK = 0.65;
+                p.vx = (p.vx + (targetX - p.x) * springK) * dampK;
+                p.vy = (p.vy + (targetY - p.y) * springK) * dampK;
+                p.x += p.vx;
+                p.y += p.vy;
+                p._magnetDist = 0;
+                p.charge = Math.min(1, p.charge + 0.05); // 持续微发光
+                continue; // 跳过后续常规物理（边界、簇群引力等）
+            }
+        }
         for (let j = i + 1; j < count; j++) {
           const p2 = particles[j];
           const dx = p2.x - p.x, dy = p2.y - p.y;
@@ -1424,21 +1457,25 @@ if (isMobile) {
         });
       }
 
-     // 🧲 磁性吸附连线：光标 → 被吸附粒子的发光丝线
-      if (mouse.active && !isMobile) {
-        for (let i = 0; i < count; i++) {
-          const p = particles[i];
-          if (p._magnetDist > 0 && p._magnetDist < 160) {
-            const t = 1 - p._magnetDist / 160;
-            ctx.beginPath();
-            ctx.strokeStyle = isLight ? `rgba(37,99,235,${t*t*0.55})` : `rgba(96,165,250,${t*t*0.55})`;
-            ctx.lineWidth = t * 2.5;
-            ctx.moveTo(mouse.x, mouse.y);
-            ctx.lineTo(px[i], py[i]);
-            ctx.stroke();
-            p.charge = Math.max(p.charge, t * 0.7);
-          }
-        }
+     // 🧲 吸附粒子 → 鼠标的发光丝线（能量脐带效果）
+      if (mouse.active && !isMobile && attachedSet.size > 0) {
+        ctx.lineCap = 'round';
+        attachedSet.forEach(idx => {
+          const dist = Math.sqrt((mouse.x - px[idx]) ** 2 + (mouse.y - py[idx]) ** 2);
+          const t = Math.min(1, 1 - dist / 120);
+          if (t <= 0) return;
+          ctx.beginPath();
+          ctx.strokeStyle = isLight
+            ? `rgba(37,99,235,${t * 0.6})`
+            : `rgba(96,165,250,${t * 0.6})`;
+          ctx.lineWidth = t * 2.5 + 0.5;
+          ctx.moveTo(mouse.x, mouse.y);
+          // 轻微弧线而非直线，更有"能量流"感
+          const mx = (mouse.x + px[idx]) / 2 + Math.sin(idx + performance.now() * 0.003) * 8;
+          const my = (mouse.y + py[idx]) / 2 + Math.cos(idx + performance.now() * 0.002) * 8;
+          ctx.quadraticCurveTo(mx, my, px[idx], py[idx]);
+          ctx.stroke();
+        });
       }
 
       // 3. 气泡层
