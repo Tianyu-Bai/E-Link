@@ -121,6 +121,10 @@
   }
 
   #neuro-dust-canvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -5; pointer-events: none; transform: translateZ(0); will-change: contents; }
+
+ /* 🚀 鼠标拖尾画布 */
+  #cursor-trail-canvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 99998; pointer-events: none; }
+  @media (max-width: 768px) { #cursor-trail-canvas { display: none; } }
   
   /* ☀️ 浅色模式完美覆盖 (高级工程图纸风) */
  body.light-mode #neuro-ambient-bg { 
@@ -781,6 +785,7 @@
   <div class="aurora aurora-3"></div>
 </div>
 <canvas id="neuro-dust-canvas"></canvas>
+<canvas id="cursor-trail-canvas"></canvas>
  
  
 <div id="bot-container" title="Chat with me!">
@@ -989,7 +994,7 @@ if (localStorage.getItem('elink_visited') === 'true') {
     setTimeout(() => {
       welcomeModal.classList.add('show');
       document.body.classList.add('modal-active');
-      rafScheduler.remove('cursor'); // 🚀 Problem D：modal 激活时停止光标 CPU 计算
+      cursorRAFRunning = false; // 🚀 Problem D：modal 激活时停止光标独立rAF
     }, 10);
   }
  
@@ -1051,25 +1056,25 @@ const rafScheduler = {
     }, 300);
   }, { passive: true });
 
-  // ── 光标引擎优化 ─────────────────────────────────────────────────
+ // ── 光标引擎优化 (独立rAF，不受rafScheduler帧率锁限制) ──────────
 const cursorDot = document.querySelector('.cursor-dot');
 const cursorOutline = document.querySelector('.cursor-outline');
 let mouseX = -100, mouseY = -100;
 let outlineX = -100, outlineY = -100;
 
 let updateCursorOutline;
+let cursorRAFRunning = true;
+
 if (window.innerWidth > 768 && cursorDot && cursorOutline) {
   document.addEventListener('mousemove', (e) => {
     mouseX = e.clientX; mouseY = e.clientY;
-    // 🚀 优化 1：小点直接跟随，不设延迟，消除视觉上的第一层延迟
     cursorDot.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0) translate(-50%, -50%)`;
   }, { passive: true });
 
-  // 🚀 光标独立 rAF 循环，不受 rafScheduler 帧率锁定 (45fps) 限制
-  let cursorRAFRunning = true;
+  // 🚀 光标轮廓独立 rAF — 跑满原生刷新率，彻底告别延迟
   updateCursorOutline = () => {
     if (!cursorRAFRunning) return;
-    const snappiness = 0.65;  // 提高跟手感
+    const snappiness = 0.7;
     outlineX += (mouseX - outlineX) * snappiness;
     outlineY += (mouseY - outlineY) * snappiness;
     cursorOutline.style.transform =
@@ -1077,6 +1082,63 @@ if (window.innerWidth > 768 && cursorDot && cursorOutline) {
     requestAnimationFrame(updateCursorOutline);
   };
   requestAnimationFrame(updateCursorOutline);
+
+  // 🚀 鼠标拖尾特效
+  const trailCanvas = document.getElementById('cursor-trail-canvas');
+  if (trailCanvas) {
+    const tCtx = trailCanvas.getContext('2d', { alpha: true });
+    function resizeTrail() {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      trailCanvas.width = window.innerWidth * dpr;
+      trailCanvas.height = window.innerHeight * dpr;
+      trailCanvas.style.width = window.innerWidth + 'px';
+      trailCanvas.style.height = window.innerHeight + 'px';
+      tCtx.setTransform(1,0,0,1,0,0);
+      tCtx.scale(dpr, dpr);
+    }
+    resizeTrail();
+    window.addEventListener('resize', resizeTrail, { passive: true });
+
+    const TRAIL_LENGTH = 28;
+    const cursorTrail = [];
+    let lastTX = -100, lastTY = -100;
+
+    function trailLoop() {
+      tCtx.clearRect(0, 0, trailCanvas.width, trailCanvas.height);
+      const dx = mouseX - lastTX, dy = mouseY - lastTY;
+      if (dx * dx + dy * dy > 4) {
+        cursorTrail.push({ x: mouseX, y: mouseY, life: 1.0 });
+        lastTX = mouseX; lastTY = mouseY;
+      }
+      while (cursorTrail.length > TRAIL_LENGTH) cursorTrail.shift();
+      for (let i = cursorTrail.length - 1; i >= 0; i--) {
+        cursorTrail[i].life -= 0.04;
+        if (cursorTrail[i].life <= 0) { cursorTrail.splice(i, 1); }
+      }
+      if (cursorTrail.length >= 2) {
+        tCtx.lineCap = 'round'; tCtx.lineJoin = 'round';
+        for (let i = 1; i < cursorTrail.length; i++) {
+          const p0 = cursorTrail[i-1], p1 = cursorTrail[i];
+          const progress = i / cursorTrail.length;
+          tCtx.beginPath();
+          tCtx.strokeStyle = `rgba(96,165,250,${p1.life * progress * 0.6})`;
+          tCtx.lineWidth = progress * 4;
+          tCtx.shadowBlur = progress * 12;
+          tCtx.shadowColor = 'rgba(96,165,250,0.4)';
+          tCtx.moveTo(p0.x, p0.y); tCtx.lineTo(p1.x, p1.y); tCtx.stroke();
+        }
+        const head = cursorTrail[cursorTrail.length - 1];
+        tCtx.beginPath();
+        tCtx.fillStyle = 'rgba(255,255,255,0.6)';
+        tCtx.shadowBlur = 12; tCtx.shadowColor = '#60a5fa';
+        tCtx.arc(head.x, head.y, 2, 0, Math.PI * 2); tCtx.fill();
+      }
+      tCtx.shadowBlur = 0;
+      requestAnimationFrame(trailLoop);
+    }
+    requestAnimationFrame(trailLoop);
+  }
+}
 
   // 暴露启停接口，供 modal 调用
   window._stopCursorRAF = () => { cursorRAFRunning = false; };
@@ -1224,37 +1286,31 @@ if (window.innerWidth > 768 && cursorDot && cursorOutline) {
         p.neighbors = []; 
         if (p.refractory > 0) p.refractory--;
 
-        // 🧲 鼠标磁性吸附场：中距吸引 + 近距排斥
+        // 🧲 鼠标磁性吸附场（用渲染坐标算距离，物理坐标算力方向）
+        p._magnetDist = -1;
         if (mouse.active && !isMobile) {
-            const dx = mouse.x - p.x;
-            const dy = mouse.y - p.y;
-            const distSq = dx * dx + dy * dy;
-            const attractRadius = 300;   // 吸附感应范围
-            const repelRadius = 50;      // 内核排斥范围（防止粒子堆叠到光标正中）
-            
-            if (distSq < attractRadius * attractRadius) {
-                const dist = Math.sqrt(distSq);
-                const norm = dist || 1;
-                
-                if (dist < repelRadius) {
-                    // 近距：柔性排斥，防止粘死
-                    const push = (repelRadius - dist) / repelRadius * 0.15;
-                    p.vx -= (dx / norm) * push;
-                    p.vy -= (dy / norm) * push;
+            const rdx = mouse.x - px[i];
+            const rdy = mouse.y - py[i];
+            const rDistSq = rdx * rdx + rdy * rdy;
+            const attractRadius = 180;
+            const repelRadius = 35;
+            if (rDistSq < attractRadius * attractRadius) {
+                const rDist = Math.sqrt(rDistSq);
+                const fdx = mouse.x - p.x;
+                const fdy = mouse.y - p.y;
+                const fNorm = Math.sqrt(fdx * fdx + fdy * fdy) || 1;
+                if (rDist < repelRadius) {
+                    const push = (repelRadius - rDist) / repelRadius * 0.2;
+                    p.vx -= (fdx / fNorm) * push;
+                    p.vy -= (fdy / fNorm) * push;
                 } else {
-                    // 中距：磁性吸附，越近吸力越弱（避免加速冲入内核）
-                    const pull = Math.pow((attractRadius - dist) / (attractRadius - repelRadius), 2) * 0.08;
-                    p.vx += (dx / norm) * pull;
-                    p.vy += (dy / norm) * pull;
+                    const t = (attractRadius - rDist) / (attractRadius - repelRadius);
+                    const pull = t * t * 0.25;
+                    p.vx += (fdx / fNorm) * pull;
+                    p.vy += (fdy / fNorm) * pull;
                 }
-                
-                // 标记此粒子被吸附（用于后续画连线）
-                p._magnetDist = dist;
-            } else {
-                p._magnetDist = -1;
+                p._magnetDist = rDist;
             }
-        } else {
-            p._magnetDist = -1;
         }
 
         for (let j = i + 1; j < count; j++) {
@@ -1327,6 +1383,23 @@ if (window.innerWidth > 768 && cursorDot && cursorOutline) {
             ctx.lineWidth = 0.5; ctx.moveTo(px[i], py[i]); ctx.lineTo(px[ni], py[ni]); ctx.stroke();
           }
         });
+      }
+
+     // 🧲 磁性吸附连线：光标 → 被吸附粒子的发光丝线
+      if (mouse.active && !isMobile) {
+        for (let i = 0; i < count; i++) {
+          const p = particles[i];
+          if (p._magnetDist > 0 && p._magnetDist < 160) {
+            const t = 1 - p._magnetDist / 160;
+            ctx.beginPath();
+            ctx.strokeStyle = isLight ? `rgba(37,99,235,${t*t*0.55})` : `rgba(96,165,250,${t*t*0.55})`;
+            ctx.lineWidth = t * 2.5;
+            ctx.moveTo(mouse.x, mouse.y);
+            ctx.lineTo(px[i], py[i]);
+            ctx.stroke();
+            p.charge = Math.max(p.charge, t * 0.7);
+          }
+        }
       }
 
       // 3. 气泡层
@@ -1547,8 +1620,7 @@ if (window.innerWidth > 768 && cursorDot && cursorOutline) {
    document.body.classList.remove('modal-active');
   // 记录用户已看过欢迎弹窗
   localStorage.setItem('elink_visited', 'true');
-    // 🚀 Problem E：恢复光标渲染任务
-    if (updateCursorOutline) rafScheduler.add('cursor', updateCursorOutline);
+   if (!cursorRAFRunning) { cursorRAFRunning = true; requestAnimationFrame(updateCursorOutline); } // 🚀 Problem E：恢复光标
     if (modalIsZh && currentLang !== 'zh') langToggle.click();
     else if (!modalIsZh && currentLang === 'zh') langToggle.click();
     setTimeout(() => {
@@ -1613,12 +1685,13 @@ if (window.innerWidth > 768 && cursorDot && cursorOutline) {
   const guardianVideo = document.getElementById('guardian-video');
   window.openVideoModal = () => {
     videoModal.classList.add('show'); document.body.classList.add('modal-active');
-    rafScheduler.remove('cursor'); // 🚀 Problem D：弹窗激活时停止光标 CPU 计算
+    cursorRAFRunning = false; // 🚀 Problem D：弹窗激活时停止光标独立rAF
   };
   window.closeVideoModal = () => {
     videoModal.classList.remove('show'); document.body.classList.remove('modal-active');
     if (guardianVideo) guardianVideo.pause();
-    if (updateCursorOutline) rafScheduler.add('cursor', updateCursorOutline); // 🚀 Problem E：恢复光标
+  // 🚀 Problem E：恢复光标
+    if (!cursorRAFRunning) { cursorRAFRunning = true; requestAnimationFrame(updateCursorOutline); }
   };
   videoModal.addEventListener('click', (e) => { if (e.target === videoModal) closeVideoModal(); });
 
