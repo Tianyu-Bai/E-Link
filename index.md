@@ -1232,6 +1232,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 }
  
 .heatmap-wrapper {
+  position: relative; /* 🎯 tooltip 定位基准 */
   width: 100%;
   aspect-ratio: 1 / 1;
   max-width: 320px;
@@ -1240,6 +1241,101 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
   overflow: hidden;
   border: 1px solid rgba(59, 130, 246, 0.25);
   box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+  cursor: crosshair; /* 暗示可交互 */
+}
+
+#impedance-canvas {
+  transition: filter 0.3s ease;
+}
+.heatmap-wrapper:hover #impedance-canvas {
+  filter: brightness(1.1) saturate(1.15);
+}
+
+/* 🎯 Hover 高亮方格 */
+.hm-cell-highlight {
+  position: absolute;
+  border: 2px solid #ffffff;
+  box-shadow: 0 0 12px rgba(255,255,255,0.9), inset 0 0 6px rgba(255,255,255,0.4);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  box-sizing: border-box;
+  border-radius: 1px;
+  z-index: 2;
+}
+.hm-cell-highlight.active { opacity: 1; }
+
+/* 🎯 Tooltip 主体 */
+.hm-tooltip {
+  position: absolute;
+  top: 0; left: 0;
+  background: rgba(10, 15, 30, 0.96);
+  border: 1px solid rgba(96, 165, 250, 0.5);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: #e2e8f0;
+  pointer-events: none;
+  opacity: 0;
+  transform: translate(-50%, -120%);
+  transition: opacity 0.15s ease;
+  white-space: nowrap;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.6), 0 0 20px rgba(59,130,246,0.2);
+  z-index: 10;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+.hm-tooltip.active { opacity: 1; }
+.hm-tooltip::after {
+  content: '';
+  position: absolute;
+  bottom: -5px; left: 50%;
+  width: 8px; height: 8px;
+  background: inherit;
+  border-right: 1px solid rgba(96, 165, 250, 0.5);
+  border-bottom: 1px solid rgba(96, 165, 250, 0.5);
+  transform: translateX(-50%) rotate(45deg);
+}
+.hm-tooltip .hm-tt-label {
+  color: #94a3b8;
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 2px;
+}
+.hm-tooltip .hm-tt-val {
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
+}
+.hm-tooltip .hm-tt-val.good { color: #10b981; }
+.hm-tooltip .hm-tt-val.warn { color: #f59e0b; }
+.hm-tooltip .hm-tt-status {
+  font-size: 10px;
+  margin-top: 4px;
+  padding-top: 4px;
+  border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+/* 浅色模式适配 */
+body.light-mode .hm-tooltip {
+  background: rgba(255, 255, 255, 0.98);
+  border-color: rgba(37, 99, 235, 0.4);
+  color: #1e293b;
+  box-shadow: 0 8px 24px rgba(148, 163, 184, 0.3);
+}
+body.light-mode .hm-tooltip .hm-tt-label { color: #64748b; }
+body.light-mode .hm-tooltip .hm-tt-val { color: #0f172a; }
+body.light-mode .hm-cell-highlight {
+  border-color: #1e293b;
+  box-shadow: 0 0 12px rgba(30, 41, 59, 0.6);
+}
+
+/* 手机端简化 */
+@media (max-width: 768px) {
+  .heatmap-wrapper { cursor: default; }
+  .hm-tooltip { font-size: 10px; padding: 6px 10px; }
 }
  
 #impedance-canvas {
@@ -1381,8 +1477,16 @@ body.light-mode .heatmap-legend { color: #64748b; }
         <div class="heatmap-container">
           <span class="axis-y-label">Row Index</span>
           <div class="heatmap-wrapper">
-            <canvas id="impedance-canvas" width="256" height="256"></canvas>
-          </div>
+  <canvas id="impedance-canvas" width="256" height="256"></canvas>
+  <div class="hm-cell-highlight" id="hm-highlight"></div>
+  <div class="hm-tooltip" id="hm-tooltip">
+    <div class="hm-tt-label">Channel</div>
+    <div class="hm-tt-val" id="hm-ch">—</div>
+    <div class="hm-tt-label" style="margin-top: 4px;">Impedance</div>
+    <div class="hm-tt-val" id="hm-imp">—</div>
+    <div class="hm-tt-status" id="hm-status">—</div>
+  </div>
+</div>
           <div class="axis-x-label">Column Index</div>
         </div>
         <div class="heatmap-legend">
@@ -1424,6 +1528,8 @@ body.light-mode .heatmap-legend { color: #64748b; }
 <script>
 // ── Impedance Heatmap Renderer ──
 (function() {
+  var impedanceData = []; // 🎯 存储每个格子的数据供 hover 读取
+
   function renderHeatmap() {
     var canvas = document.getElementById('impedance-canvas');
     if (!canvas || canvas.dataset.rendered === 'true') return;
@@ -1431,39 +1537,152 @@ body.light-mode .heatmap-legend { color: #64748b; }
     var size = 16;
     var cellW = canvas.width / size;
     var cellH = canvas.height / size;
-    
-    // Seed for reproducible "random" values
+
     var seed = 42;
     function seededRandom() {
       seed = (seed * 16807 + 0) % 2147483647;
       return (seed - 1) / 2147483646;
     }
-    
+
     for (var r = 0; r < size; r++) {
       for (var c = 0; c < size; c++) {
         var val = 0.3 + seededRandom() * 0.12;
-        
-        // 3 bad channels — matching paper data
+        var isBad = false;
+
         if ((r === 2 && c === 5) || (r === 10 && c === 3) || (r === 7 && c === 14)) {
           val = 1.2 + seededRandom() * 0.8;
+          isBad = true;
         }
-        
-        // Slight gradient: edges slightly higher
+
         var edgeFactor = Math.min(r, c, 15 - r, 15 - c) / 8;
         val += (1 - edgeFactor) * 0.03;
-        
+
         var norm = Math.min(val / 2.0, 1.0);
         var hue = (1 - norm) * 220;
         var sat = 75 + norm * 10;
         var light = 32 + norm * 28;
-        
+
         ctx.fillStyle = 'hsl(' + hue + ', ' + sat + '%, ' + light + '%)';
         ctx.fillRect(c * cellW, r * cellH, cellW - 0.8, cellH - 0.8);
+
+        // 🎯 记录每个格子的数据,row*16+col 作为 channel 编号
+        impedanceData.push({
+          row: r,
+          col: c,
+          channel: r * 16 + c,
+          impedance: val,
+          isBad: isBad
+        });
       }
     }
     canvas.dataset.rendered = 'true';
+    bindHoverInteraction();
   }
- 
+
+  function bindHoverInteraction() {
+    var wrapper = document.querySelector('.heatmap-wrapper');
+    var canvas = document.getElementById('impedance-canvas');
+    var tooltip = document.getElementById('hm-tooltip');
+    var highlight = document.getElementById('hm-highlight');
+    var chEl = document.getElementById('hm-ch');
+    var impEl = document.getElementById('hm-imp');
+    var statusEl = document.getElementById('hm-status');
+    if (!wrapper || !tooltip) return;
+
+    var lastCell = -1;
+
+    function handleMove(clientX, clientY) {
+      var rect = wrapper.getBoundingClientRect();
+      var x = clientX - rect.left;
+      var y = clientY - rect.top;
+      var w = rect.width;
+      var h = rect.height;
+
+      if (x < 0 || y < 0 || x > w || y > h) {
+        hideTooltip();
+        return;
+      }
+
+      var col = Math.floor((x / w) * 16);
+      var row = Math.floor((y / h) * 16);
+      col = Math.max(0, Math.min(15, col));
+      row = Math.max(0, Math.min(15, row));
+
+      var idx = row * 16 + col;
+      if (idx === lastCell) return;
+      lastCell = idx;
+
+      var data = impedanceData[idx];
+      if (!data) return;
+
+      // 更新 tooltip 内容
+      chEl.textContent = 'CH ' + String(data.channel).padStart(3, '0') +
+                        ' (R' + data.row + ', C' + data.col + ')';
+
+      var impKohm = data.impedance.toFixed(2);
+      impEl.textContent = impKohm + ' kΩ';
+      impEl.className = 'hm-tt-val ' + (data.isBad ? 'warn' : 'good');
+
+      if (data.isBad) {
+        statusEl.innerHTML = '<span style="color:#f59e0b;">⚠ BGA reflow defect</span>';
+      } else {
+        statusEl.innerHTML = '<span style="color:#10b981;">✓ PASS · within spec</span>';
+      }
+
+      // 定位高亮方格
+      var cellPxW = w / 16;
+      var cellPxH = h / 16;
+      highlight.style.width = cellPxW + 'px';
+      highlight.style.height = cellPxH + 'px';
+      highlight.style.left = (col * cellPxW) + 'px';
+      highlight.style.top = (row * cellPxH) + 'px';
+      highlight.classList.add('active');
+
+      // 定位 tooltip (贴在格子上方居中)
+      var ttX = col * cellPxW + cellPxW / 2;
+      var ttY = row * cellPxH;
+      tooltip.style.left = ttX + 'px';
+      tooltip.style.top = ttY + 'px';
+
+      // 边缘防溢出:如果格子在顶部两行,把 tooltip 翻到下方
+      if (row < 2) {
+        tooltip.style.transform = 'translate(-50%, ' + (cellPxH + 10) + 'px)';
+        tooltip.style.setProperty('--arrow-flip', '1');
+      } else {
+        tooltip.style.transform = 'translate(-50%, -120%)';
+      }
+
+      tooltip.classList.add('active');
+    }
+
+    function hideTooltip() {
+      tooltip.classList.remove('active');
+      highlight.classList.remove('active');
+      lastCell = -1;
+    }
+
+    // PC: mousemove
+    wrapper.addEventListener('mousemove', function(e) {
+      handleMove(e.clientX, e.clientY);
+    });
+    wrapper.addEventListener('mouseleave', hideTooltip);
+
+    // 移动端: touch
+    wrapper.addEventListener('touchstart', function(e) {
+      if (e.touches.length > 0) {
+        handleMove(e.touches[0].clientX, e.touches[0].clientY);
+      }
+    }, { passive: true });
+    wrapper.addEventListener('touchmove', function(e) {
+      if (e.touches.length > 0) {
+        handleMove(e.touches[0].clientX, e.touches[0].clientY);
+      }
+    }, { passive: true });
+    wrapper.addEventListener('touchend', function() {
+      setTimeout(hideTooltip, 1500);
+    });
+  }
+
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', renderHeatmap);
   } else {
