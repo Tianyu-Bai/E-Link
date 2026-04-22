@@ -1502,7 +1502,7 @@ body.light-mode .heatmap-legend { color: #64748b; }
           <div class="findings-label">Results</div>
           <div class="finding-row">
             <span class="finding-val good">253 / 256</span>
-            <span class="finding-desc">channels within 0.3 – 0.4 kΩ</span>
+            <span class="finding-desc">channels within 0.3 – 0.4 kΩ contact impedance</span>
           </div>
           <div class="finding-row">
             <span class="finding-val warn">3 channels</span>
