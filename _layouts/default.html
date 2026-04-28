@@ -32,6 +32,14 @@
 body, body.js-cursor-enabled { cursor: auto !important; }
 /* 临时：隐藏机器人 + 光环 + 气泡 */
 #bot-container { display: none !important; }
+/* 临时：替换深色背景为午夜蓝 */
+body, 
+#neuro-ambient-bg,
+body:not(.light-mode),
+body:not(.light-mode) #neuro-ambient-bg {
+  background-color: #0f1729 !important;
+  background-image: radial-gradient(ellipse at top, #1a2744 0%, #0f1729 50%, #0a0f1c 100%) !important;
+}
 </style>
  
 <style>
