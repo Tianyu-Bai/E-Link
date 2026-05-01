@@ -2505,12 +2505,12 @@ This project is developed by the **MINE Lab** at Dartmouth College. <a href="htt
 ---
  
 ## 📄 Publication
+
+This work has been **accepted** for publication in the *IEEE Journal on Flexible Electronics (JFLEX)*.
  
-This work is currently **under review** at the *IEEE Journal on Flexible Electronics (JFLEX)*.
+The hardware designs and visual assets in this repository correspond directly to the system described in the submitted manuscript. 
  
-The hardware designs and visual assets in this repository correspond directly to the system described in the submitted manuscript. To maintain the integrity of the peer-review process:
- 
-* **Full Citation**: A permanent link to the final paper will be updated here immediately upon formal acceptance.
+* **Full Citation**: *Coming Soon.*
 * **Preprint/Full Paper**: *Coming Soon.*
   
 * We welcome feedback and collaboration from the neuroengineering community!
