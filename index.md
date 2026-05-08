@@ -2523,11 +2523,11 @@ The hardware designs and visual assets in this repository correspond directly to
  
 ## 📑 Citation & DOI
  
-If you utilize these designs, code, or assets in your research, please cite this repository using the persistent DOI provided by Zenodo:
- 
-**Current Reference:**
-> T. Bai, et al., "E-Link GitHub Repository," v1.0, MINE Lab, Dartmouth College, 2026. [![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.18440104-007EC6?style=flat-square)](https://doi.org/10.5281/zenodo.18440104)
- 
+If you utilize these designs, code, or assets in your research, please cite this repository using the DOI:
+
+> T. Bai, *et al.*, "E-Link: A 256-Channel Elastomer-Based Flexible Neural Connector for High-Density Chronic Recording," *IEEE Journal on Flexible Electronics*, 2026. [![DOI](https://img.shields.io/badge/DOI-10.1109%2FJFLEX.2026.3692102-007EC6?style=flat-square)](https://doi.org/10.1109/JFLEX.2026.3692102)
+
+
 ---
  
 <span id="en-downloads"></span>
@@ -3466,13 +3466,15 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 ---
  
 ## 📄 出版物
- 
-相关工作目前正在 **IEEE Journal on Flexible Electronics (JFLEX)** 审稿中。
- 
-本仓库中的硬件设计和视觉资产直接对应于投稿中描述的系统。
- 
-* **完整引用**：正式录用后，最终论文的永久链接将立即在此处更新。
-* **预印本/全文**：*即将推出。*
+
+本仓库的硬件设计与视觉资产直接对应于在 **IEEE Journal on Flexible Electronics (J-FLEX)** 发表的论文。
+
+### 📄 期刊论文
+
+> T. Bai, *et al.*, "E-Link：用于高密度慢性记录的 256 通道弹性体柔性神经连接器," *IEEE Journal on Flexible Electronics*, 2026. [![DOI](https://img.shields.io/badge/DOI-10.1109%2FJFLEX.2026.3692102-007EC6?style=flat-square)](https://doi.org/10.1109/JFLEX.2026.3692102)
+
+* **永久链接 (DOI)**：[10.1109/JFLEX.2026.3692102](https://doi.org/10.1109/JFLEX.2026.3692102)
+* **全文获取**：可通过上方 DOI 链接访问 IEEE Xplore 正式版本。
   
 * 🤝 **我们诚挚欢迎神经工程科研同行的反馈与合作！**
  
