@@ -2511,7 +2511,7 @@ This work has been **published** in the *IEEE Journal on Flexible Electronics (J
 The hardware designs and visual assets in this repository correspond directly to the system described in the published manuscript.
 
 * **Citation**: T. Bai, G. Li, Y. Qi, and H. Fang, "E-Link: A 256-ch mini-pedestal connector for high-density soft neural interfaces," *IEEE J. Flex. Electron.*, Early Access, 2026, doi: 10.1109/JFLEX.2026.3692102.
-* **Read the paper**: [IEEE *Xplore*](https://ieeexplore.ieee.org/document/11513879)
+* **Read the paper**: <a href="https://ieeexplore.ieee.org/document/11513879"><font color="#60a5fa">IEEE Xplore</font></a>
 
 We welcome feedback and collaboration from the neuroengineering community!
 
@@ -3470,10 +3470,9 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 本仓库的硬件设计与视觉资产直接对应于发表在 **IEEE Journal on Flexible Electronics (J-FLEX)** 的论文。
 
 ### 📄 期刊论文
-
 > T. Bai *et al.*, "E-Link: A 256-ch mini-pedestal connector for high-density soft neural interfaces," *IEEE J. Flex. Electron.*, Early Access, 2026.
 >
-> [![DOI](https://img.shields.io/badge/DOI-10.1109%2FJFLEX.2026.3692102-007EC6?style=flat-square)](https://doi.org/10.1109/JFLEX.2026.3692102) [![IEEE Xplore](https://img.shields.io/badge/IEEE-Xplore-00629B?style=flat-square)](https://ieeexplore.ieee.org/document/11513879)
+> [![DOI](https://img.shields.io/badge/DOI-10.1109%2FJFLEX.2026.3692102-60a5fa?style=flat-square)](https://doi.org/10.1109/JFLEX.2026.3692102) [![IEEE Xplore](https://img.shields.io/badge/IEEE-Xplore-60a5fa?style=flat-square)](https://ieeexplore.ieee.org/document/11513879)
 
 * **永久链接 (DOI)**：[10.1109/JFLEX.2026.3692102](https://doi.org/10.1109/JFLEX.2026.3692102)
 * **全文获取**：可通过上方 DOI 链接访问 IEEE *Xplore* 正式版本
@@ -3488,10 +3487,13 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
  
 ## 📑 引用与 DOI
  
-如果您在研究中使用了这些设计、代码或资产，需使用 Zenodo 提供的永久 DOI 引用本仓库：
+如在研究中使用了相关设计、代码或资产，请使用以下引用源：
  
 **当前引用源：**
-> T. Bai, et al., "E-Link GitHub Repository," v1.0, MINE Lab, Dartmouth College, 2026. [![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.18440104-007EC6?style=flat-square)](https://doi.org/10.5281/zenodo.18440104)
+> T. Bai, G. Li, Y. Qi and H. Fang, "E-Link: A 256-ch Mini-Pedestal Connector for High-Density Soft Neural Interfaces," in *IEEE Journal on Flexible Electronics*, doi: 10.1109/JFLEX.2026.3692102.
+>
+> [![DOI](https://img.shields.io/badge/DOI-10.1109%2FJFLEX.2026.3692102-60a5fa?style=flat-square)](https://doi.org/10.1109/JFLEX.2026.3692102)
+
  
 ---
  
