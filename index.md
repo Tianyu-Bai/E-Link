@@ -2506,16 +2506,16 @@ This project is developed by the **MINE Lab** at Dartmouth College. <a href="htt
  
 ## 📄 Publication
 
-This work has been **accepted** for publication in the *IEEE Journal on Flexible Electronics (JFLEX)*.
- 
-The hardware designs and visual assets in this repository correspond directly to the system described in the submitted manuscript. 
- 
-* **Full Citation**: *Coming Soon.*
-* **Preprint/Full Paper**: *Coming Soon.*
-  
-* We welcome feedback and collaboration from the neuroengineering community!
- 
-* **Inquiries**: Thinking about using E-Link in your lab? We know setting up a new system can be tricky. If you have questions about the PCB design or 3D printing, drop us an email or open an issue. We'd love to help you get started!
+This work has been **published** in the *IEEE Journal on Flexible Electronics (J-FLEX)* and is now available on IEEE *Xplore* (Early Access).
+
+The hardware designs and visual assets in this repository correspond directly to the system described in the published manuscript.
+
+* **Citation**: T. Bai, G. Li, Y. Qi, and H. Fang, "E-Link: A 256-ch mini-pedestal connector for high-density soft neural interfaces," *IEEE J. Flex. Electron.*, Early Access, 2026, doi: 10.1109/JFLEX.2026.3692102.
+* **Read the paper**: [IEEE *Xplore*](https://ieeexplore.ieee.org/document/11513879)
+
+We welcome feedback and collaboration from the neuroengineering community!
+
+* **Inquiries**: Thinking about using E-Link in your lab? We know setting up a new system can be tricky. If you have questions about the PCB design or 3D printing, drop us an email or open an issue — we'd love to help you get started!
   * **Support**: [<font color="#60a5fa">support@ephys.tech</font>](mailto:support@ephys.tech)
   * **Developer (Tianyu)**: [<font color="#60a5fa">tianyu@ephys.tech</font>](mailto:tianyu@ephys.tech)
  
@@ -3467,20 +3467,22 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
  
 ## 📄 出版物
 
-本仓库的硬件设计与视觉资产直接对应于在 **IEEE Journal on Flexible Electronics (J-FLEX)** 发表的论文。
+本仓库的硬件设计与视觉资产直接对应于发表在 **IEEE Journal on Flexible Electronics (J-FLEX)** 的论文。
 
 ### 📄 期刊论文
 
-> T. Bai, *et al.*, "E-Link：用于高密度慢性记录的 256 通道弹性体柔性神经连接器," *IEEE Journal on Flexible Electronics*, 2026. [![DOI](https://img.shields.io/badge/DOI-10.1109%2FJFLEX.2026.3692102-007EC6?style=flat-square)](https://doi.org/10.1109/JFLEX.2026.3692102)
+> T. Bai *et al.*, "E-Link: A 256-ch mini-pedestal connector for high-density soft neural interfaces," *IEEE J. Flex. Electron.*, Early Access, 2026.
+>
+> [![DOI](https://img.shields.io/badge/DOI-10.1109%2FJFLEX.2026.3692102-007EC6?style=flat-square)](https://doi.org/10.1109/JFLEX.2026.3692102) [![IEEE Xplore](https://img.shields.io/badge/IEEE-Xplore-00629B?style=flat-square)](https://ieeexplore.ieee.org/document/11513879)
 
 * **永久链接 (DOI)**：[10.1109/JFLEX.2026.3692102](https://doi.org/10.1109/JFLEX.2026.3692102)
-* **全文获取**：可通过上方 DOI 链接访问 IEEE Xplore 正式版本。
-  
-* 🤝 **我们诚挚欢迎神经工程科研同行的反馈与合作！**
- 
-* **技术咨询**：有意部署 E-Link易链？作为开发者深知从零搭建一套新系统往往伴随诸多挑战。无论您在 PCB 设计、3D 打印制造，还是系统组装方面遇到任何问题，都欢迎随时通过邮件与我们取得联系。将为您提供技术支持！
-  * **技术支持**: [<font color="#60a5fa">support@ephys.tech</font>](mailto:support@ephys.tech)
-  * **留言**: [<font color="#60a5fa">tianyu@ephys.tech</font>](mailto:tianyu@ephys.tech)
+* **全文获取**：可通过上方 DOI 链接访问 IEEE *Xplore* 正式版本
+
+🤝 **诚挚欢迎神经工程领域同行的反馈与合作！**
+
+* **技术咨询**：有意在您的实验室部署 E-Link 易链？作为开发者，我们深知从零搭建一套新系统的种种挑战。无论您在 PCB 设计、3D 打印制造、还是系统组装方面遇到任何问题，欢迎随时通过邮件联系我们，将为您提供技术支持。
+  * **技术支持**：[<font color="#60a5fa">support@ephys.tech</font>](mailto:support@ephys.tech)
+  * **留言**：[<font color="#60a5fa">tianyu@ephys.tech</font>](mailto:tianyu@ephys.tech)
  
 ---
  
