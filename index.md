@@ -308,6 +308,142 @@ body.light-mode .model-watermark-text { color: rgba(71, 85, 105, 0.6) !important
   .inner-content .sub { display: none; }
   .gesture-hud { backdrop-filter: none; -webkit-backdrop-filter: none; background: rgba(15, 23, 42, 0.75); }
 }
+
+/* ====== Publication Card ====== */
+.pub-section { max-width: 760px; margin: 40px auto; }
+
+.pub-card {
+  background: rgba(11, 17, 33, 0.95);
+  border: 1px solid rgba(59, 130, 246, 0.25);
+  border-radius: 20px;
+  padding: 28px 32px;
+  box-shadow: inset 0 0 20px rgba(0,0,0,0.4), 0 15px 40px rgba(0,0,0,0.2);
+  position: relative;
+  overflow: hidden;
+}
+.pub-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 8%; right: 8%;
+  height: 2px;
+  background: linear-gradient(90deg, #3b82f6, #a78bfa, #f472b6);
+  border-radius: 0 0 4px 4px;
+  opacity: 0.7;
+}
+
+.pub-header {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 14px; flex-wrap: wrap;
+}
+.pub-journal {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px; font-weight: 700; color: #93c5fd;
+  letter-spacing: 1.2px; text-transform: uppercase;
+}
+.pub-badge {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; padding: 3px 10px;
+  border-radius: 10px; font-weight: 700; letter-spacing: 0.5px;
+}
+.pub-badge.status {
+  background: rgba(16, 185, 129, 0.15); color: #34d399;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+.pub-badge.year {
+  background: rgba(59, 130, 246, 0.12); color: #93c5fd;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+.pub-title {
+  font-size: 18px; font-weight: 700; color: #f1f5f9;
+  line-height: 1.4; margin: 0 0 10px 0;
+}
+.pub-authors {
+  font-size: 13px; color: #cbd5e1;
+  margin-bottom: 6px; line-height: 1.6;
+}
+.pub-authors em {
+  color: #93c5fd; font-style: normal; font-weight: 600;
+}
+
+.pub-cite {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11.5px; color: #94a3b8;
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 8px; padding: 10px 14px;
+  margin: 14px 0 18px; line-height: 1.55; word-break: break-word;
+}
+.pub-cite a {
+  color: #60a5fa; text-decoration: none;
+  border-bottom: 1px dashed rgba(96, 165, 250, 0.4);
+}
+
+.pub-actions {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 10px; margin-bottom: 14px;
+}
+.pub-btn {
+  display: flex; align-items: center; justify-content: center;
+  gap: 8px; padding: 11px 16px; border-radius: 10px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px; font-weight: 700;
+  text-decoration: none; letter-spacing: 0.5px;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  border: 1px solid; cursor: pointer;
+}
+.pub-btn.primary {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(96, 165, 250, 0.1));
+  border-color: rgba(59, 130, 246, 0.5); color: #93c5fd;
+  box-shadow: 0 0 18px rgba(59, 130, 246, 0.15);
+}
+.pub-btn.primary:hover {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.35), rgba(96, 165, 250, 0.2));
+  border-color: #60a5fa; color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
+}
+.pub-btn.secondary {
+  background: rgba(167, 139, 250, 0.1);
+  border-color: rgba(167, 139, 250, 0.4); color: #c4b5fd;
+}
+.pub-btn.secondary:hover {
+  background: rgba(167, 139, 250, 0.2);
+  border-color: #a78bfa; color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(167, 139, 250, 0.25);
+}
+
+.pub-disclaimer {
+  font-size: 10px; color: rgba(148, 163, 184, 0.6);
+  line-height: 1.5; padding-top: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  font-family: system-ui, sans-serif;
+}
+.pub-disclaimer strong { color: rgba(203, 213, 225, 0.8); }
+
+/* Light mode */
+body.light-mode .pub-card {
+  background: #ffffff; border-color: #cbd5e1;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.05);
+}
+body.light-mode .pub-journal { color: #2563eb; }
+body.light-mode .pub-title { color: #0f172a; }
+body.light-mode .pub-authors { color: #334155; }
+body.light-mode .pub-authors em { color: #2563eb; }
+body.light-mode .pub-cite {
+  background: #f8fafc; color: #475569; border-color: #e2e8f0;
+}
+body.light-mode .pub-disclaimer { color: #64748b; }
+body.light-mode .pub-disclaimer strong { color: #334155; }
+
+/* Mobile */
+@media (max-width: 600px) {
+  .pub-card { padding: 22px 18px; }
+  .pub-actions { grid-template-columns: 1fr; }
+  .pub-title { font-size: 16px; }
+  .pub-cite { font-size: 10.5px; padding: 8px 12px; }
+}
     
 /* ===================== 高级 3D 封面特效 (HUD) ===================== */
 .cyber-loader { position: relative; width: 50px; height: 50px; }
@@ -2506,12 +2642,38 @@ This project is developed by the **MINE Lab** at Dartmouth College. <a href="htt
  
 ## 📄 Publication
 
-This work has been **published** in the *IEEE Journal on Flexible Electronics (J-FLEX)* and is now available on IEEE *Xplore* (Early Access).
+<div class="pub-section" data-aos="fade-up">
+  <div class="pub-card">
+    <div class="pub-header">
+      <span class="pub-journal">IEEE Journal on Flexible Electronics</span>
+      <span class="pub-badge status">✓ Published</span>
+      <span class="pub-badge year">2026</span>
+    </div>
 
-The hardware designs and visual assets in this repository correspond directly to the system described in the published manuscript.
+    <h3 class="pub-title">E-Link: A 256-ch Mini-Pedestal Connector for High-Density Soft Neural Interfaces</h3>
 
-* **Citation**: T. Bai, G. Li, Y. Qi, and H. Fang, "E-Link: A 256-ch mini-pedestal connector for high-density soft neural interfaces," *IEEE J. Flex. Electron.*, Early Access, 2026, doi: 10.1109/JFLEX.2026.3692102.
-* **Read the paper**: <a href="https://ieeexplore.ieee.org/document/11513879"><font color="#60a5fa">IEEE Xplore</font></a>
+    <p class="pub-authors"><em>Tianyu Bai</em>, Gen Li, Yongli Qi, and Hui Fang</p>
+
+    <div class="pub-cite">
+      T. Bai, G. Li, Y. Qi, and H. Fang, "E-Link: A 256-ch mini-pedestal connector for high-density soft neural interfaces," <em>IEEE J. Flex. Electron.</em>, Early Access, 2026, doi: <a href="https://doi.org/10.1109/JFLEX.2026.3692102" target="_blank" rel="noopener">10.1109/JFLEX.2026.3692102</a>.
+    </div>
+
+    <div class="pub-actions">
+      <a href="https://ieeexplore.ieee.org/document/11513879" target="_blank" rel="noopener" class="pub-btn primary">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        IEEE Xplore
+      </a>
+      <a href="{{ '/Files/Bai_E-Link_JFLEX_2026_Author_Accepted_Version.pdf' | relative_url }}" target="_blank" rel="noopener" class="pub-btn secondary">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Download PDF
+      </a>
+    </div>
+
+    <p class="pub-disclaimer">
+      <strong>Author's Accepted Version.</strong> © 2026 IEEE. Personal use of this material is permitted. Permission from IEEE must be obtained for all other uses, including reprinting/republishing for advertising or promotional purposes, creating new collective works, for resale or redistribution, or reuse of any copyrighted component of this work in other works. The final published version is available via the DOI link above.
+    </p>
+  </div>
+</div>
 
 We welcome feedback and collaboration from the neuroengineering community!
 
@@ -3464,18 +3626,40 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 本项目由达特茅斯学院的 **MINE Lab**团队开发。<a href="https://sites.dartmouth.edu/fang-group/"><img src="https://img.shields.io/badge/访问网站_%E2%86%97-MINE_Lab-00693E?style=flat-square" alt="MINE Lab"></a>
  
 ---
- 
 ## 📄 出版物
 
-本仓库的硬件设计与视觉资产直接对应于发表在 **IEEE Journal on Flexible Electronics (J-FLEX)** 的论文。
+<div class="pub-section" data-aos="fade-up">
+  <div class="pub-card">
+    <div class="pub-header">
+      <span class="pub-journal">IEEE Journal on Flexible Electronics</span>
+      <span class="pub-badge status">✓ 已发表</span>
+      <span class="pub-badge year">2026</span>
+    </div>
 
-### 📄 期刊论文
-> T. Bai *et al.*, "E-Link: A 256-ch mini-pedestal connector for high-density soft neural interfaces," *IEEE J. Flex. Electron.*, Early Access, 2026.
->
-> [![DOI](https://img.shields.io/badge/DOI-10.1109%2FJFLEX.2026.3692102-60a5fa?style=flat-square)](https://doi.org/10.1109/JFLEX.2026.3692102) [![IEEE Xplore](https://img.shields.io/badge/IEEE-Xplore-60a5fa?style=flat-square)](https://ieeexplore.ieee.org/document/11513879)
+    <h3 class="pub-title">E-Link: A 256-ch Mini-Pedestal Connector for High-Density Soft Neural Interfaces</h3>
 
-* **永久链接 (DOI)**：[10.1109/JFLEX.2026.3692102](https://doi.org/10.1109/JFLEX.2026.3692102)
-* **全文获取**：可通过上方 DOI 链接访问 IEEE *Xplore* 正式版本
+    <p class="pub-authors"><em>白天宇</em>、李根、齐永丽、方辉</p>
+
+    <div class="pub-cite">
+      T. Bai, G. Li, Y. Qi, and H. Fang, "E-Link: A 256-ch mini-pedestal connector for high-density soft neural interfaces," <em>IEEE J. Flex. Electron.</em>, Early Access, 2026, doi: <a href="https://doi.org/10.1109/JFLEX.2026.3692102" target="_blank" rel="noopener">10.1109/JFLEX.2026.3692102</a>.
+    </div>
+
+    <div class="pub-actions">
+      <a href="https://ieeexplore.ieee.org/document/11513879" target="_blank" rel="noopener" class="pub-btn primary">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        IEEE Xplore
+      </a>
+      <a href="{{ '/Files/Bai_E-Link_JFLEX_2026_Author_Accepted_Version.pdf' | relative_url }}" target="_blank" rel="noopener" class="pub-btn secondary">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        下载 PDF
+      </a>
+    </div>
+
+    <p class="pub-disclaimer">
+      <strong>作者接收版本 (Author's Accepted Version)</strong>。© 2026 IEEE. Personal use of this material is permitted. Permission from IEEE must be obtained for all other uses, including reprinting/republishing for advertising or promotional purposes, creating new collective works, for resale or redistribution, or reuse of any copyrighted component of this work in other works. 经 IEEE 排版的最终版本请通过上方 DOI 链接访问。
+    </p>
+  </div>
+</div>
 
 🤝 **诚挚欢迎神经工程领域同行的反馈与合作！**
 
