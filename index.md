@@ -3095,7 +3095,7 @@ This project is open-source and available under the **MIT License**. Click the b
 ---
  
 > [!NOTE]
-> **核心创新：** 本连接器是一种完全一体化的 “即拧即用” 数据采集方案。该系统利用弹性导电介质连接高密度 PCB，并封装于轻量级基座中。其最大的突破在于实现了“零力插拔”，免去使用者用力插拔的动作，有效规避了高密度引脚连接器常见的断针和弯针风险。
+> **核心创新：** 本连接器提供了一种完全一体化的 “即拧即用” 数据采集方案。该系统利用弹性导电介质连接高密度 PCB，并封装于轻量级基座中。其最大的突破在于实现了“零力插拔”，免去使用者用力插拔的动作，有效规避了高密度引脚连接器常见的断针和弯针风险。
  
 ---
  
@@ -3122,7 +3122,7 @@ This project is open-source and available under the **MIT License**. Click the b
      </tr>
      <tr>
        <td style="padding: 8px; border: 1px solid #e1e4e8;"><b>互连类型</b></td>
-       <td style="padding: 8px; border: 1px solid #e1e4e8;">免焊各向异性弹性体</td>
+       <td style="padding: 8px; border: 1px solid #e1e4e8;">各向异性弹性体</td>
      </tr>
      <tr>
        <td style="padding: 8px; border: 1px solid #e1e4e8;"><b>兼容采集系统</b></td>
