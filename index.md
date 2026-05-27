@@ -2186,30 +2186,32 @@ body.light-mode .pitch-label { color: #64748b; }
  
 <script>
 // ── Scalability Bar Animation (IntersectionObserver) ──
-(function() {
+    
+    (function() {
   function initScaleAnim() {
-    var container = document.getElementById('scale-bars-container');
-    if (!container) return;
-    
-    var bars = container.querySelectorAll('.scale-bar');
-    
-    var observer = new IntersectionObserver(function(entries) {
-      entries.forEach(function(entry) {
-        if (entry.isIntersecting) {
-          // Stagger the animation
-          bars.forEach(function(bar, i) {
-            setTimeout(function() {
-              bar.classList.add('animate-in');
-            }, i * 200);
-          });
-          observer.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.3 });
- 
-    observer.observe(container);
+    var containers = document.querySelectorAll('.scale-bars');
+    if (!containers.length) return;
+
+    containers.forEach(function(container) {
+      var bars = container.querySelectorAll('.scale-bar');
+
+      var observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting) {
+            bars.forEach(function(bar, i) {
+              setTimeout(function() {
+                bar.classList.add('animate-in');
+              }, i * 200);
+            });
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.3 });
+
+      observer.observe(container);
+    });
   }
- 
+
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initScaleAnim);
   } else {
@@ -2938,20 +2940,18 @@ This project is open-source and available under the **MIT License**. Click the b
      <div class="gesture-text">拖拽以旋转</div>
    </div>
  
-   <div class="gesture-overlay mode-zoom">
+<div class="gesture-overlay mode-zoom">
  <div class="icon-box">
    <div class="hand-icon hand-left">👉</div>
    <div class="hand-icon hand-right">👈</div>
  </div>
+     
  <div class="gesture-text">
    <span class="pc-tip">Ctrl键 + 鼠标滚轮以缩放</span>
    <span class="mobile-tip">双指捏合屏幕以缩放</span>
  </div>
 </div>
-   <div class="gesture-overlay mode-drag">
-     <div class="icon-box"><div class="hand-icon">👆</div></div>
-     <div class="gesture-text">拖拽以旋转</div>
- </div>
+
   <button class="reset-btn"
  onclick="
    const mv = this.closest('model-viewer');
@@ -3304,8 +3304,41 @@ document.addEventListener('click',function(e){if(cur&&!v.contains(e.target)&&!g.
 document.addEventListener('keydown',function(e){if(e.key==='Escape')off()})}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',go);else go()})();
 </script>
+
+<div align="center">
+ <table border="1" style="border-collapse: collapse; width: 90%; text-align: center;">
+  <thead>
+    <tr style="background-color: #f2f2f2;">
+      <th>组件</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><b>基座外壳</b></td>
+      <td>3D 打印/机加工的基座结构,提供机械支撑与颅骨固定</td>
+    </tr>
+    <tr>
+      <td><b>定制 256 通道前置放大器</b></td>
+      <td>优化外形的高密度记录接口,支持 128/256 通道信号采集</td>
+    </tr>
+    <tr>
+      <td><b>泡沫垫圈</b></td>
+      <td>提供柔性压缩,确保弹性互连界面上均匀的电接触</td>
+    </tr>
+    <tr>
+      <td><b>转接电路板</b></td>
+      <td>高密度 4 层 PCB,将薄膜探针信号路由至前置放大器 BGA 阵列</td>
+    </tr>
+    <tr>
+      <td><b>螺纹顶盖</b></td>
+      <td>保护性外壳,保障长期慢性实验中的电气与机械完整性</td>
+    </tr>
+  </tbody>
+ </table>
+</div>
  
- ---
+ ---   
 
 <div class="impedance-section" data-aos="fade-up">
   <div class="impedance-card" data-lang="zh">
@@ -3429,7 +3462,54 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
    </div>
  </div>
 </div>
- 
+ <div class="scale-section" data-aos="fade-up">
+  <div class="scale-card">
+    <h3 class="scale-card-title">🚀 通道拓展路线图:迈向 1024 通道</h3>
+    <p class="scale-desc">
+      得益于各向异性弹性导电体的高密度间距优势,可在保持 <strong style="color: #e2e8f0;">25 mm 直径占地不变</strong>的前提下,实现通道数的大规模拓展,且无需对外壳压缩结构作任何改动。
+    </p>
+
+    <div class="scale-bars">
+      <div class="scale-col">
+        <span class="scale-label" style="color: #3b82f6;">当前</span>
+        <div class="scale-bar active" style="height: 90px;" data-target-height="90">
+          <span class="scale-bar-value">256</span>
+        </div>
+      </div>
+      <div class="scale-col">
+        <span class="scale-label" style="color: #10b981;">下一阶段</span>
+        <div class="scale-bar future future-green" style="height: 140px;" data-target-height="140">
+          <span class="scale-bar-value">512</span>
+        </div>
+      </div>
+      <div class="scale-col">
+        <span class="scale-label" style="color: #f59e0b;">目标</span>
+        <div class="scale-bar future future-amber" style="height: 195px;" data-target-height="195">
+          <span class="scale-bar-value">1024+</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="scale-gradient-line"></div>
+
+    <div class="pitch-compare">
+      <div class="pitch-box ours">
+        <span class="pitch-value">156 µm</span>
+        <span class="pitch-label">弹性导电柱间距</span>
+        <span class="pitch-tag">3.2× 高密度</span>
+      </div>
+      <div class="pitch-box theirs">
+        <span class="pitch-value">500 µm</span>
+        <span class="pitch-label">标准 BGA 焊球间距</span>
+        <span class="pitch-tag">行业基准</span>
+      </div>
+    </div>
+
+    <p class="scale-footer">
+      同一 <strong style="color: #ffffff;">25 mm Ø</strong> 占地 · HDI PCB 扇出 · 细间距弹性导电柱阵列
+    </p>
+  </div>
+</div>
 <div class="watermark-features">
  <ul>
    <li data-aos="fade-up" data-aos-delay="0">
