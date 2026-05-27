@@ -1113,7 +1113,8 @@ body.light-mode .pipe-stat-desc { color: #64748b; }
   .pipe-stats { grid-template-columns: 1fr; }
 }
 </style>
- 
+
+## ⚙️ Assembly Pipeline
 <div class="pipeline-section" data-aos="fade-up">
   <div class="pipeline-card">
     <h3 class="pipeline-card-title">⚙️ Assembly & Validation Pipeline</h3>
@@ -2665,7 +2666,7 @@ body.light-mode .scope-win-wrapper * { filter: none !important; }
  
 * **Tianyu Bai** (Lead Designer) <a href="https://tianyu-bai.github.io/"><img src="https://img.shields.io/badge/Website-Tianyu%20Bai-0077B5?style=flat-square&logo=github&logoColor=white" alt="Website"></a>
 * **Gen Li, Ph.D.**
-* **Hui Fang, Ph.D.** <a href="https://engineering.dartmouth.edu/community/faculty/hui-fang"><img src="https://img.shields.io/badge/Principal%20Investigator-444444?style=flat-square&logoColor=white" />
+* **Hui Fang, Ph.D.** <a href="https://engineering.dartmouth.edu/community/faculty/hui-fang"><img src="https://img.shields.io/badge/Principal_Investigator_(PI)-444444?style=flat-square&logoColor=white" />
  
 This project is developed by the **MINE Lab** at Dartmouth College. <a href="https://sites.dartmouth.edu/fang-group/"><img src="https://img.shields.io/badge/VISIT_WEBSITE_%E2%86%97-MINE_Lab-00693E?style=flat-square" alt="MINE Lab"></a>
  
@@ -2718,7 +2719,7 @@ We welcome feedback and collaboration from the neuroengineering community!
  
 If you utilize these designs, code, or assets in your research, please cite this repository using the DOI:
 
-> T. Bai, *et al.*, "E-Link: A 256-Channel Elastomer-Based Flexible Neural Connector for High-Density Chronic Recording," *IEEE Journal on Flexible Electronics*, 2026. [![DOI](https://img.shields.io/badge/DOI-10.1109%2FJFLEX.2026.3692102-007EC6?style=flat-square)](https://doi.org/10.1109/JFLEX.2026.3692102)
+> T. Bai, G. Li, Y. Qi, and H. Fang, "E-Link: A 256-ch Mini-Pedestal Connector for High-Density Soft Neural Interfaces," *IEEE Journal on Flexible Electronics*, 2026. [![DOI](https://img.shields.io/badge/DOI-10.1109%2FJFLEX.2026.3692102-007EC6?style=flat-square)](https://doi.org/10.1109/JFLEX.2026.3692102)
 
 
 ---
@@ -2758,11 +2759,12 @@ This project is open-source and available under the **MIT License**. Click the b
   <img src="https://img.shields.io/badge/License-MIT-A31F34?style=flat-square&logo=opensourceinitiative&logoColor=white" alt="License">
  </a>
 </div>
- 
+
 <div class="github-only">
  <br>
  <hr>
  <p align="center" style="font-size: 1.5em; font-weight: bold; margin: 20px 0;">
+    👆 🇺🇸 English Version / 英文版 👆
     👇 🇨🇳 Chinese Version / 中文版 👇
  </p>
  <hr>
@@ -3167,7 +3169,7 @@ This project is open-source and available under the **MIT License**. Click the b
 
 ---
 
-## ✨ 流程图
+## ⚙️ 装配流程
 <div class="pipeline-section" data-aos="fade-up">
   <div class="pipeline-card">
     <h3 class="pipeline-card-title">⚙️ 装配与验证流程</h3>
