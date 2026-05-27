@@ -1380,10 +1380,10 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
   cursor: crosshair; /* 暗示可交互 */
 }
 
-#impedance-canvas {
+.impedance-canvas {
   transition: filter 0.3s ease;
 }
-.heatmap-wrapper:hover #impedance-canvas {
+.heatmap-wrapper:hover .impedance-canvas {
   filter: brightness(1.1) saturate(1.15);
 }
 
@@ -1474,7 +1474,7 @@ body.light-mode .hm-cell-highlight {
   .hm-tooltip { font-size: 10px; padding: 6px 10px; }
 }
  
-#impedance-canvas {
+.impedance-canvas {
   width: 100%;
   height: 100%;
   display: block;
@@ -1598,30 +1598,90 @@ body.light-mode .heatmap-legend { color: #64748b; }
   .impedance-grid { grid-template-columns: 1fr; }
   .impedance-card { padding: 25px 18px; }
 }
+/* ── Heatmap interaction hint ── */
+.heatmap-hint {
+  position: absolute;
+  top: 10px; right: 10px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(96, 165, 250, 0.4);
+  border-radius: 16px;
+  padding: 5px 11px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 600;
+  color: #93c5fd;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 4;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3), 0 0 16px rgba(59, 130, 246, 0.15);
+  animation: hint-pulse 2.5s ease-in-out infinite, hint-appear 0.5s ease-out;
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.heatmap-hint.dismissed {
+  opacity: 0;
+  transform: translateY(-6px);
+  animation: none;
+}
+
+@keyframes hint-pulse {
+  0%, 100% { box-shadow: 0 4px 12px rgba(0,0,0,0.3), 0 0 16px rgba(59, 130, 246, 0.15); }
+  50%      { box-shadow: 0 4px 12px rgba(0,0,0,0.3), 0 0 22px rgba(96, 165, 250, 0.6); }
+}
+
+@keyframes hint-appear {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+body.light-mode .heatmap-hint {
+  background: rgba(255, 255, 255, 0.92);
+  color: #1d4ed8;
+  border-color: rgba(37, 99, 235, 0.4);
+  box-shadow: 0 4px 12px rgba(148, 163, 184, 0.25);
+}
+
+@media (max-width: 768px) {
+  .heatmap-hint { font-size: 9px; padding: 4px 9px; top: 6px; right: 6px; }
+}
 </style>
  
 <div class="impedance-section" data-aos="fade-up">
-  <div class="impedance-card">
+  <div class="impedance-card" data-lang="en">
     <h3 class="impedance-card-title">🔬 16×16 Spatial Impedance Mapping</h3>
     <p class="impedance-desc">
       Gold-film test interface validates uniform contact pressure distribution. The threaded housing converts manual torque into uniform axial pressure across the entire 25-mm footprint.
     </p>
  
     <div class="impedance-grid">
+    
       <!-- LEFT: Heatmap -->
       <div>
         <div class="heatmap-container">
           <span class="axis-y-label">Row Index</span>
           <div class="heatmap-wrapper">
-  <canvas id="impedance-canvas" width="256" height="256"></canvas>
-  <div class="hm-cell-highlight" id="hm-highlight"></div>
-  <div class="hm-tooltip" id="hm-tooltip">
-    <div class="hm-tt-label">Channel</div>
-    <div class="hm-tt-val" id="hm-ch">—</div>
-    <div class="hm-tt-label" style="margin-top: 4px;">Impedance</div>
-    <div class="hm-tt-val" id="hm-imp">—</div>
-    <div class="hm-tt-status" id="hm-status">—</div>
-  </div>
+          
+<canvas class="impedance-canvas" width="256" height="256"></canvas>
+<div class="heatmap-hint">
+  <span>👆</span>
+  <span class="pc-only">Hover to inspect</span>
+  <span class="mobile-only">Tap to inspect</span>
+</div>
+
+<div class="hm-cell-highlight"></div>
+<div class="hm-tooltip">
+  <div class="hm-tt-label">Channel</div>
+  <div class="hm-tt-val hm-ch">—</div>
+  <div class="hm-tt-label" style="margin-top: 4px;">Impedance</div>
+  <div class="hm-tt-val hm-imp">—</div>
+  <div class="hm-tt-status hm-status">—</div>
+</div>
 </div>
           <div class="axis-x-label">Column Index</div>
         </div>
@@ -1662,21 +1722,26 @@ body.light-mode .heatmap-legend { color: #64748b; }
 </div>
  
 <script>
-// ── Impedance Heatmap Renderer ──
+// ── Impedance Heatmap Renderer (multi-instance, i18n-aware) ──
 (function() {
-  var impedanceData = []; // 🎯 存储每个格子的数据供 hover 读取
+  var LOCALE = {
+    en: { ch: 'CH ', pass: '✓ PASS · within spec', fail: '⚠ BGA reflow defect' },
+    zh: { ch: '通道 ', pass: '✓ 通过 · 规格范围内', fail: '⚠ BGA 焊球缺陷' }
+  };
 
-  function renderHeatmap() {
-    var canvas = document.getElementById('impedance-canvas');
+  function initInstance(card) {
+    var canvas = card.querySelector('.impedance-canvas');
     if (!canvas || canvas.dataset.rendered === 'true') return;
+
     var ctx = canvas.getContext('2d');
     var size = 16;
     var cellW = canvas.width / size;
     var cellH = canvas.height / size;
-
+    var impedanceData = [];
     var seed = 42;
+
     function seededRandom() {
-      seed = (seed * 16807 + 0) % 2147483647;
+      seed = (seed * 16807) % 2147483647;
       return (seed - 1) / 2147483646;
     }
 
@@ -1684,12 +1749,10 @@ body.light-mode .heatmap-legend { color: #64748b; }
       for (var c = 0; c < size; c++) {
         var val = 0.3 + seededRandom() * 0.12;
         var isBad = false;
-
         if ((r === 2 && c === 5) || (r === 10 && c === 3) || (r === 7 && c === 14)) {
           val = 1.2 + seededRandom() * 0.8;
           isBad = true;
         }
-
         var edgeFactor = Math.min(r, c, 15 - r, 15 - c) / 8;
         val += (1 - edgeFactor) * 0.03;
 
@@ -1697,53 +1760,44 @@ body.light-mode .heatmap-legend { color: #64748b; }
         var hue = (1 - norm) * 220;
         var sat = 75 + norm * 10;
         var light = 32 + norm * 28;
-
         ctx.fillStyle = 'hsl(' + hue + ', ' + sat + '%, ' + light + '%)';
         ctx.fillRect(c * cellW, r * cellH, cellW - 0.8, cellH - 0.8);
 
-        // 🎯 记录每个格子的数据,row*16+col 作为 channel 编号
-        impedanceData.push({
-          row: r,
-          col: c,
-          channel: r * 16 + c,
-          impedance: val,
-          isBad: isBad
-        });
+        impedanceData.push({ row: r, col: c, channel: r * 16 + c, impedance: val, isBad: isBad });
       }
     }
     canvas.dataset.rendered = 'true';
-    bindHoverInteraction();
+    bindHover(card, impedanceData);
   }
 
-  function bindHoverInteraction() {
-    var wrapper = document.querySelector('.heatmap-wrapper');
-    var canvas = document.getElementById('impedance-canvas');
-    var tooltip = document.getElementById('hm-tooltip');
-    var highlight = document.getElementById('hm-highlight');
-    var chEl = document.getElementById('hm-ch');
-    var impEl = document.getElementById('hm-imp');
-    var statusEl = document.getElementById('hm-status');
+  function bindHover(card, impedanceData) {
+    
+    var wrapper  = card.querySelector('.heatmap-wrapper');
+    var hint     = card.querySelector('.heatmap-hint');
+    var tooltip  = card.querySelector('.hm-tooltip');
+    var highlight= card.querySelector('.hm-cell-highlight');
+    var chEl     = card.querySelector('.hm-ch');
+    var impEl    = card.querySelector('.hm-imp');
+    var statusEl = card.querySelector('.hm-status');
     if (!wrapper || !tooltip) return;
 
+    var L = LOCALE[card.dataset.lang] || LOCALE.en;
     var lastCell = -1;
+
+    function dismissHint() {                    
+    if (hint && !hint.classList.contains('dismissed')) {
+      hint.classList.add('dismissed');
+     }
+   }
 
     function handleMove(clientX, clientY) {
       var rect = wrapper.getBoundingClientRect();
-      var x = clientX - rect.left;
-      var y = clientY - rect.top;
-      var w = rect.width;
-      var h = rect.height;
+      var x = clientX - rect.left, y = clientY - rect.top;
+      var w = rect.width, h = rect.height;
+      if (x < 0 || y < 0 || x > w || y > h) { hide(); return; }
 
-      if (x < 0 || y < 0 || x > w || y > h) {
-        hideTooltip();
-        return;
-      }
-
-      var col = Math.floor((x / w) * 16);
-      var row = Math.floor((y / h) * 16);
-      col = Math.max(0, Math.min(15, col));
-      row = Math.max(0, Math.min(15, row));
-
+      var col = Math.max(0, Math.min(15, Math.floor((x / w) * 16)));
+      var row = Math.max(0, Math.min(15, Math.floor((y / h) * 16)));
       var idx = row * 16 + col;
       if (idx === lastCell) return;
       lastCell = idx;
@@ -1751,78 +1805,53 @@ body.light-mode .heatmap-legend { color: #64748b; }
       var data = impedanceData[idx];
       if (!data) return;
 
-      // 更新 tooltip 内容
-      chEl.textContent = 'CH ' + String(data.channel).padStart(3, '0') +
-                        ' (R' + data.row + ', C' + data.col + ')';
+      chEl.textContent = L.ch + String(data.channel).padStart(3, '0') +
+                         ' (R' + data.row + ', C' + data.col + ')';
+      impEl.textContent = data.impedance.toFixed(2) + ' kΩ';
+      impEl.className = 'hm-tt-val hm-imp ' + (data.isBad ? 'warn' : 'good');
+      statusEl.innerHTML = data.isBad
+        ? '<span style="color:#f59e0b;">' + L.fail + '</span>'
+        : '<span style="color:#10b981;">' + L.pass + '</span>';
 
-      var impKohm = data.impedance.toFixed(2);
-      impEl.textContent = impKohm + ' kΩ';
-      impEl.className = 'hm-tt-val ' + (data.isBad ? 'warn' : 'good');
-
-      if (data.isBad) {
-        statusEl.innerHTML = '<span style="color:#f59e0b;">⚠ BGA reflow defect</span>';
-      } else {
-        statusEl.innerHTML = '<span style="color:#10b981;">✓ PASS · within spec</span>';
-      }
-
-      // 定位高亮方格
-      var cellPxW = w / 16;
-      var cellPxH = h / 16;
+      var cellPxW = w / 16, cellPxH = h / 16;
       highlight.style.width = cellPxW + 'px';
       highlight.style.height = cellPxH + 'px';
       highlight.style.left = (col * cellPxW) + 'px';
-      highlight.style.top = (row * cellPxH) + 'px';
+      highlight.style.top  = (row * cellPxH) + 'px';
       highlight.classList.add('active');
 
-      // 定位 tooltip (贴在格子上方居中)
-      var ttX = col * cellPxW + cellPxW / 2;
-      var ttY = row * cellPxH;
-      tooltip.style.left = ttX + 'px';
-      tooltip.style.top = ttY + 'px';
-
-      // 边缘防溢出:如果格子在顶部两行,把 tooltip 翻到下方
-      if (row < 2) {
-        tooltip.style.transform = 'translate(-50%, ' + (cellPxH + 10) + 'px)';
-        tooltip.style.setProperty('--arrow-flip', '1');
-      } else {
-        tooltip.style.transform = 'translate(-50%, -120%)';
-      }
-
+      tooltip.style.left = (col * cellPxW + cellPxW / 2) + 'px';
+      tooltip.style.top  = (row * cellPxH) + 'px';
+      tooltip.style.transform = row < 2
+        ? 'translate(-50%, ' + (cellPxH + 10) + 'px)'
+        : 'translate(-50%, -120%)';
       tooltip.classList.add('active');
     }
 
-    function hideTooltip() {
+    function hide() {
       tooltip.classList.remove('active');
       highlight.classList.remove('active');
       lastCell = -1;
     }
 
-    // PC: mousemove
-    wrapper.addEventListener('mousemove', function(e) {
-      handleMove(e.clientX, e.clientY);
-    });
-    wrapper.addEventListener('mouseleave', hideTooltip);
-
-    // 移动端: touch
-    wrapper.addEventListener('touchstart', function(e) {
-      if (e.touches.length > 0) {
-        handleMove(e.touches[0].clientX, e.touches[0].clientY);
-      }
+    wrapper.addEventListener('mousemove', function(e) { dismissHint();  handleMove(e.clientX, e.clientY); });
+    wrapper.addEventListener('mouseleave', hide);
+    wrapper.addEventListener('touchstart', function(e) {dismissHint();    
+      if (e.touches.length) handleMove(e.touches[0].clientX, e.touches[0].clientY);
     }, { passive: true });
     wrapper.addEventListener('touchmove', function(e) {
-      if (e.touches.length > 0) {
-        handleMove(e.touches[0].clientX, e.touches[0].clientY);
-      }
+      if (e.touches.length) handleMove(e.touches[0].clientX, e.touches[0].clientY);
     }, { passive: true });
-    wrapper.addEventListener('touchend', function() {
-      setTimeout(hideTooltip, 1500);
-    });
+    wrapper.addEventListener('touchend', function() { setTimeout(hide, 1500); });
   }
 
+  function init() {
+    document.querySelectorAll('.impedance-card').forEach(initInstance);
+  }
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', renderHeatmap);
+    document.addEventListener('DOMContentLoaded', init);
   } else {
-    renderHeatmap();
+    init();
   }
 })();
 </script>
@@ -3277,9 +3306,76 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 </script>
  
  ---
- 
+
+<div class="impedance-section" data-aos="fade-up">
+  <div class="impedance-card" data-lang="zh">
+    <h3 class="impedance-card-title">🔬 16×16 接触阻抗空间映射</h3>
+    <p class="impedance-desc">
+      通过金膜测试接口验证了接触压力的均匀分布。螺纹外壳将手动扭矩转化为整个 25 mm 直径范围内均匀的轴向压力。
+    </p>
+
+    <div class="impedance-grid">
+      <!-- 左：热力图 -->
+      <div>
+        <div class="heatmap-container">
+          <span class="axis-y-label">行索引 (Row)</span>
+          <div class="heatmap-wrapper">
+            <canvas class="impedance-canvas" width="256" height="256"></canvas>
+            <div class="heatmap-hint">
+            
+  <span>👆</span>
+  <span class="pc-only">悬停查看通道详情</span>
+  <span class="mobile-only">点击查看通道详情</span>
+</div>
+            <div class="hm-cell-highlight"></div>
+            <div class="hm-tooltip">
+              <div class="hm-tt-label">通道</div>
+              <div class="hm-tt-val hm-ch">—</div>
+              <div class="hm-tt-label" style="margin-top: 4px;">阻抗</div>
+              <div class="hm-tt-val hm-imp">—</div>
+              <div class="hm-tt-status hm-status">—</div>
+            </div>
+          </div>
+          <div class="axis-x-label">列索引 (Column)</div>
+        </div>
+        <div class="heatmap-legend">
+          <span>0.3 kΩ</span>
+          <div class="heatmap-legend-bar"></div>
+          <span>2.0 kΩ</span>
+        </div>
+      </div>
+
+      <!-- 右：测量结果 -->
+      <div>
+        <div class="findings-panel">
+          <div class="findings-label">测量结果</div>
+          <div class="finding-row">
+            <span class="finding-val good">253 / 256</span>
+            <span class="finding-desc">通道接触阻抗位于 0.3 – 0.4 kΩ 区间</span>
+          </div>
+          <div class="finding-row">
+            <span class="finding-val warn">3 个通道</span>
+            <span class="finding-desc">&gt; 1.0 kΩ（BGA 焊球缺陷）</span>
+          </div>
+          <div class="finding-row">
+            <span class="finding-val good">0 个失效</span>
+            <span class="finding-desc">来自连接器接口本身</span>
+          </div>
+        </div>
+
+        <div class="conclusion-box">
+          <p>
+            <strong style="color: #34d399;">结论：</strong>本机械连接接口实现
+            <strong style="color: #ffffff;">100% 连接保真度</strong>，所有失效均源于头戴板 BGA 焊接工艺，与弹性体互连本身无关。
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+---
 <span id="cn-features"></span>
- 
 ## ✨ 核心特性
 <div class="species-compatibility-container" align="center" style="margin: 40px auto; max-width: 760px;">
  <h3 style="color: #60a5fa; margin-bottom: 20px; font-family: sans-serif;">🌍 跨物种适用性展望 </h3>
