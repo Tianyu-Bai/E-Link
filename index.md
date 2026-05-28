@@ -649,6 +649,137 @@ body.light-mode .pub-disclaimer strong { color: #334155; }
 </div> 
 
 <style>
+/* ===================== Key Innovation Callout ===================== */
+.innovation-callout {
+  max-width: 760px;
+  margin: 30px auto;
+  background: linear-gradient(135deg, rgba(96, 165, 250, 0.08) 0%, rgba(167, 139, 250, 0.06) 50%, rgba(244, 114, 182, 0.05) 100%);
+  border: 1px solid rgba(167, 139, 250, 0.3);
+  border-radius: 18px;
+  padding: 24px 28px;
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  box-shadow: 0 10px 30px rgba(167, 139, 250, 0.12), inset 0 0 20px rgba(96, 165, 250, 0.05);
+}
+.innovation-callout::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 5%; right: 5%;
+  height: 2px;
+  background: linear-gradient(90deg, #60a5fa 0%, #a78bfa 50%, #f472b6 100%);
+  border-radius: 0 0 4px 4px;
+  filter: blur(0.4px);
+}
+
+.innovation-icon-wrap {
+  flex-shrink: 0;
+  width: 64px; height: 64px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, rgba(96, 165, 250, 0.15), rgba(167, 139, 250, 0.18));
+  border: 1px solid rgba(167, 139, 250, 0.35);
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 0 25px rgba(167, 139, 250, 0.25), inset 0 0 12px rgba(96, 165, 250, 0.1);
+  position: relative;
+}
+.innovation-icon-wrap::after {
+  content: '';
+  position: absolute; inset: -3px;
+  border-radius: 18px;
+  border: 1px solid rgba(167, 139, 250, 0.2);
+  opacity: 0;
+  animation: innovation-pulse 2.8s ease-in-out infinite;
+}
+@keyframes innovation-pulse {
+  0%, 100% { opacity: 0; transform: scale(1); }
+  50%      { opacity: 0.7; transform: scale(1.1); }
+}
+
+.innovation-icon {
+  font-size: 32px;
+  filter: drop-shadow(0 0 8px rgba(255, 220, 100, 0.5));
+  animation: innovation-flicker 3s ease-in-out infinite;
+  line-height: 1;
+}
+@keyframes innovation-flicker {
+  0%, 100% { transform: scale(1); filter: drop-shadow(0 0 8px rgba(255, 220, 100, 0.5)); }
+  50%      { transform: scale(1.08); filter: drop-shadow(0 0 14px rgba(255, 220, 100, 0.85)); }
+}
+
+.innovation-body { flex: 1; min-width: 0; }
+
+.innovation-badge {
+  display: inline-block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #c4b5fd;
+  background: rgba(167, 139, 250, 0.12);
+  border: 1px solid rgba(167, 139, 250, 0.3);
+  padding: 4px 10px;
+  border-radius: 12px;
+  margin-bottom: 10px;
+}
+
+.innovation-text {
+  font-size: 14.5px;
+  color: #e2e8f0;
+  line-height: 1.65;
+  margin: 0;
+  font-family: 'Inter', system-ui, 'Noto Sans SC', sans-serif;
+}
+.innovation-text strong {
+  background: linear-gradient(90deg, #93c5fd, #c4b5fd);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  font-weight: 800;
+}
+
+/* Light mode */
+body.light-mode .innovation-callout {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, rgba(167, 139, 250, 0.05) 100%);
+  border-color: rgba(167, 139, 250, 0.35);
+  box-shadow: 0 10px 30px rgba(167, 139, 250, 0.08);
+}
+body.light-mode .innovation-icon-wrap {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.08), rgba(167, 139, 250, 0.1));
+  border-color: rgba(167, 139, 250, 0.4);
+}
+body.light-mode .innovation-badge {
+  background: rgba(167, 139, 250, 0.1);
+  color: #6d28d9;
+  border-color: rgba(167, 139, 250, 0.4);
+}
+body.light-mode .innovation-text { color: #1e293b; }
+body.light-mode .innovation-text strong {
+  background: linear-gradient(90deg, #2563eb, #7c3aed);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+  .innovation-callout {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 22px 18px;
+    gap: 14px;
+  }
+  .innovation-icon-wrap { width: 52px; height: 52px; }
+  .innovation-icon { font-size: 26px; }
+  .innovation-text { font-size: 13.5px; }
+}
+</style>
+
+<style>
 /* ====== V2 仪表盘新增样式 ====== */
 .metrics-grid-v2 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; width: 100%; max-width: 760px; margin: 25px auto; padding: 0 5px; box-sizing: border-box; }
 .metric-card-v2 { background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(59, 130, 246, 0.25); border-radius: 14px; padding: 18px 12px; box-sizing: border-box; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); text-align: center; transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease; position: relative; overflow: hidden; }
@@ -857,9 +988,15 @@ body.light-mode .spec-sub { color: #64748b; }
 
 ---
 
-> [!NOTE]
-> **Key Innovation:** The system integrates two high-density PCBs, an anisotropic elastomeric contact interface, and a lightweight pedestal housing into a fully integrated, headstage-ready solution.
-
+<div class="innovation-callout">
+  <div class="innovation-icon-wrap">
+    <div class="innovation-icon">💡</div>
+  </div>
+  <div class="innovation-body">
+    <span class="innovation-badge">Key Innovation</span>
+    <p class="innovation-text">The system integrates <strong>two high-density PCBs</strong>, an <strong>anisotropic elastomeric contact interface</strong>, and a <strong>lightweight pedestal housing</strong> into a fully integrated, headstage-ready solution.</p>
+  </div>
+</div>
 ---
 
 <span id="en-specs"></span>
@@ -3417,8 +3554,15 @@ This project is open-source and available under the **MIT License**. Click the b
  
 ---
  
-> [!NOTE]
-> **核心创新：** 本连接器提供了一种完全一体化的 “即拧即用” 数据采集方案。该系统利用弹性导电介质连接高密度 PCB，并封装于轻量级基座中。其最大的突破在于实现了“零力插拔”，免去使用者用力插拔的动作，有效规避了高密度引脚连接器常见的断针和弯针风险。
+<div class="innovation-callout">
+  <div class="innovation-icon-wrap">
+    <div class="innovation-icon">💡</div>
+  </div>
+  <div class="innovation-body">
+    <span class="innovation-badge">核心创新</span>
+    <p class="innovation-text">本连接器提供完全一体化的<strong>"即拧即用"</strong>数据采集方案。系统利用<strong>弹性导电介质</strong>连接高密度 PCB,并封装于轻量级基座中。最大的突破在于实现<strong>"零力插拔"</strong>,从物理层面规避高密度引脚连接器常见的断针、弯针风险。</p>
+  </div>
+</div>
  
 ---
  
