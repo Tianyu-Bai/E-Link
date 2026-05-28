@@ -2680,56 +2680,6 @@ body.light-mode .scope-win-wrapper * { filter: none !important; }
  </p>
 </div>
  
-<div class="spec-grid" data-aos="fade-up">
-
-  <div class="spec-tile" style="--tile-accent: #3b82f6;">
-    <span class="spec-icon">⚡</span>
-    <div class="spec-label">通道数</div>
-    <div class="spec-value">128 / 256<span class="spec-unit">ch</span></div>
-    <div class="spec-sub">支持单/双 SPI 端口</div>
-  </div>
-
-  <div class="spec-tile" style="--tile-accent: #10b981;">
-    <span class="spec-icon">⚖️</span>
-    <div class="spec-label">总质量</div>
-    <div class="spec-value">6.6 / 2.8<span class="spec-unit">g</span></div>
-    <div class="spec-sub">含 / 不含外壳</div>
-  </div>
-
-  <div class="spec-tile" style="--tile-accent: #f59e0b;">
-    <span class="spec-icon">⭕</span>
-    <div class="spec-label">占地直径</div>
-    <div class="spec-value">25<span class="spec-unit">mm Ø</span></div>
-    <div class="spec-sub">基座外径</div>
-  </div>
-
-  <div class="spec-tile" style="--tile-accent: #a78bfa;">
-    <span class="spec-icon">🧬</span>
-    <div class="spec-label">互连方式</div>
-    <div class="spec-value" style="font-size: 14px;">各向异性弹性体</div>
-    <div class="spec-sub">免焊接 · 零插拔力</div>
-  </div>
-
-  <div class="spec-tile" style="--tile-accent: #f472b6;">
-    <span class="spec-icon">🛡️</span>
-    <div class="spec-label">外壳材料</div>
-    <div class="spec-value" style="font-size: 14px;">PEEK / 手术级树脂</div>
-    <div class="spec-sub">3D 打印 · 生物相容</div>
-  </div>
-
-  <div class="spec-tile" style="--tile-accent: #22c55e;">
-    <span class="spec-icon">🔌</span>
-    <div class="spec-label">兼容系统</div>
-    <div class="spec-stack">
-      <span>Intan RHX</span>
-      <span>Open-Ephys</span>
-      <span>NeuroNexus</span>
-      <span>OmniPlex</span>
-    </div>
-  </div>
-
-</div>
- 
 ---
  
 ## 👥 Developers and Lab
@@ -3204,37 +3154,54 @@ This project is open-source and available under the **MIT License**. Click the b
  
 ### 📊 规格参数
  
-<div style="width: 100%; max-width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 10px;">
- <table style="margin-left: auto; margin-right: auto; width: 90%; min-width: 600px; text-align: center; border-collapse: collapse; border: 1px solid #e1e4e8;">
-   <thead>
-     <tr style="background-color: #f6f8fa; border-bottom: 2px solid #e1e4e8;">
-       <th style="padding: 10px; border: 1px solid #e1e4e8;">规格项目</th>
-       <th style="padding: 10px; border: 1px solid #e1e4e8;">E-Link(256)_V1.0</th>
-     </tr>
-   </thead>
-   <tbody>
-     <tr>
-       <td style="padding: 8px; border: 1px solid #e1e4e8;"><b>通道数</b></td>
-       <td style="padding: 8px; border: 1px solid #e1e4e8;">128或 256 通道 (支持单/双 SPI 端口)</td>
-     </tr>
-     <tr>
-       <td style="padding: 8px; border: 1px solid #e1e4e8;"><b>总质量</b></td>
-       <td style="padding: 8px; border: 1px solid #e1e4e8;">6.6 g (含外壳)<br>2.8 g (不含外壳)</td>
-     </tr>
-     <tr>
-       <td style="padding: 8px; border: 1px solid #e1e4e8;"><b>互连类型</b></td>
-       <td style="padding: 8px; border: 1px solid #e1e4e8;">各向异性弹性体</td>
-     </tr>
-     <tr>
-       <td style="padding: 8px; border: 1px solid #e1e4e8;"><b>兼容采集系统</b></td>
-       <td style="padding: 8px; border: 1px solid #e1e4e8;">Intan Recording Controller (512ch/1024ch)<br>Open-Ephys DAQ box<br>NeuroNexus Smartbox<br>OmniPlex DAQ box</td>
-     </tr>
-     <tr>
-       <td style="padding: 8px; border: 1px solid #e1e4e8;"><b>外壳材料</b></td>
-       <td style="padding: 8px; border: 1px solid #e1e4e8;">3D 打印 PEEK / 手术级树脂</td>
-     </tr>
-   </tbody>
- </table>
+<div class="spec-grid" data-aos="fade-up">
+
+  <div class="spec-tile" style="--tile-accent: #3b82f6;">
+    <span class="spec-icon">⚡</span>
+    <div class="spec-label">通道数</div>
+    <div class="spec-value">128 / 256<span class="spec-unit">ch</span></div>
+    <div class="spec-sub">支持单/双 SPI 端口</div>
+  </div>
+
+  <div class="spec-tile" style="--tile-accent: #10b981;">
+    <span class="spec-icon">⚖️</span>
+    <div class="spec-label">总质量</div>
+    <div class="spec-value">6.6 / 2.8<span class="spec-unit">g</span></div>
+    <div class="spec-sub">含 / 不含外壳</div>
+  </div>
+
+  <div class="spec-tile" style="--tile-accent: #f59e0b;">
+    <span class="spec-icon">⭕</span>
+    <div class="spec-label">占地直径</div>
+    <div class="spec-value">25<span class="spec-unit">mm Ø</span></div>
+    <div class="spec-sub">基座外径</div>
+  </div>
+
+  <div class="spec-tile" style="--tile-accent: #a78bfa;">
+    <span class="spec-icon">🧬</span>
+    <div class="spec-label">互连方式</div>
+    <div class="spec-value" style="font-size: 14px;">各向异性弹性体</div>
+    <div class="spec-sub">免焊接 · 零插拔力</div>
+  </div>
+
+  <div class="spec-tile" style="--tile-accent: #f472b6;">
+    <span class="spec-icon">🛡️</span>
+    <div class="spec-label">外壳材料</div>
+    <div class="spec-value" style="font-size: 14px;">PEEK / 手术级树脂</div>
+    <div class="spec-sub">3D 打印 · 生物相容</div>
+  </div>
+
+  <div class="spec-tile" style="--tile-accent: #22c55e;">
+    <span class="spec-icon">🔌</span>
+    <div class="spec-label">兼容系统</div>
+    <div class="spec-stack">
+      <span>Intan RHX</span>
+      <span>Open-Ephys</span>
+      <span>NeuroNexus</span>
+      <span>OmniPlex</span>
+    </div>
+  </div>
+
 </div>
 
 ---
