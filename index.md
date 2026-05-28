@@ -1349,39 +1349,160 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')off()})}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',go);else go()})();
 </script>
 
-<div align="center">
- <table border="1" style="border-collapse: collapse; width: 90%; text-align: center;">
-  <thead>
-    <tr style="background-color: #f2f2f2;">
-      <th>Component</th>
-      <th>Description</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><b>Pedestal Housing</b></td>
-      <td>3D-printed/machined pedestal providing structural support and cranial fixation</td>
-    </tr>
-    <tr>
-      <td><b>Customized 256Ch Headstage</b></td>
-      <td>Form-factor optimized recording interface for high-density 128/256-channel signal acquisition</td>
-    </tr>
-    <tr>
-      <td><b>Foam Washer</b></td>
-      <td>Provides compliant compression to ensure uniform electrical contact across the elastomeric interface</td>
-    </tr>
-    <tr>
-      <td><b>Adapter PCB</b></td>
-      <td>High-density 4-layer PCB for routing signals from thin-film probes to headstage ball array pattern</td>
-    </tr>
-    <tr>
-      <td><b>Surgical Cap</b></td>
-      <td>Protective enclosure preserving electrical and mechanical integrity throughout chronic experiments</td>
-    </tr>
-  </tbody>
- </table>
+<style>
+/* ===================== System Components Card Grid ===================== */
+.sys-section { max-width: 760px; margin: 30px auto; padding: 0 5px; box-sizing: border-box; }
+.sys-grid {
+  display: flex; flex-wrap: wrap; justify-content: center; gap: 14px;
+}
+.sys-card {
+  position: relative;
+  flex: 0 1 calc(33.33% - 10px);
+  min-width: 195px;
+  background: rgba(11, 17, 33, 0.95);
+  border: 1px solid rgba(59, 130, 246, 0.25);
+  border-radius: 16px;
+  padding: 20px 18px 18px;
+  box-sizing: border-box;
+  box-shadow: inset 0 0 14px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.15);
+  overflow: hidden;
+  transition: transform .3s ease, border-color .3s ease, box-shadow .3s ease;
+  display: flex; flex-direction: column;
+}
+.sys-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--sys-accent, #3b82f6);
+  box-shadow: 0 12px 35px rgba(59,130,246,0.18);
+}
+.sys-card::before {
+  content: ''; position: absolute; top: 0; left: 12%; right: 12%;
+  height: 2px;
+  background: var(--sys-accent, #3b82f6);
+  opacity: 0.7; border-radius: 0 0 4px 4px;
+}
+.sys-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px; font-weight: 700; letter-spacing: 1.2px;
+  padding: 3px 8px; border-radius: 4px;
+  background: rgba(148, 163, 184, 0.12);
+  color: #cbd5e1;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  text-transform: uppercase;
+  align-self: flex-start;
+  margin-bottom: 12px;
+}
+.sys-icon {
+  display: flex; justify-content: center; align-items: center;
+  height: 48px; margin-bottom: 12px;
+  color: var(--sys-accent, #3b82f6);
+  filter: drop-shadow(0 0 8px var(--sys-accent, rgba(59,130,246,0.5)));
+}
+.sys-icon svg { width: 40px; height: 40px; }
+.sys-name {
+  font-family: 'Inter', system-ui, 'Noto Sans SC', sans-serif;
+  font-size: 14px; font-weight: 800;
+  color: #f1f5f9; margin-bottom: 6px; line-height: 1.3;
+}
+.sys-desc {
+  font-size: 11.5px; color: #94a3b8; line-height: 1.5;
+  flex: 1; font-family: system-ui, 'Noto Sans SC', sans-serif;
+}
+
+body.light-mode .sys-card {
+  background: #ffffff; border-color: #cbd5e1;
+  box-shadow: 0 8px 24px rgba(148, 163, 184, 0.12);
+}
+body.light-mode .sys-card:hover { box-shadow: 0 12px 35px rgba(148, 163, 184, 0.2); }
+body.light-mode .sys-tag {
+  background: rgba(100, 116, 139, 0.1);
+  color: #475569; border-color: rgba(100, 116, 139, 0.2);
+}
+body.light-mode .sys-name { color: #0f172a; }
+body.light-mode .sys-desc { color: #64748b; }
+
+@media (max-width: 600px) {
+  .sys-card { flex: 0 1 calc(50% - 6px); padding: 14px 11px 12px; }
+  .sys-icon { height: 38px; margin-bottom: 8px; }
+  .sys-icon svg { width: 30px; height: 30px; }
+  .sys-tag { font-size: 8px; padding: 2px 6px; letter-spacing: 0.8px; margin-bottom: 8px; }
+  .sys-name { font-size: 12px; margin-bottom: 5px; }
+  .sys-desc { font-size: 10.5px; line-height: 1.45; }
+}
+</style>
+
+<div class="sys-section" data-aos="fade-up">
+<div class="sys-grid">
+
+  <div class="sys-card" style="--sys-accent: #64748b;">
+    <span class="sys-tag">Mechanical</span>
+    <div class="sys-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round">
+        <ellipse cx="12" cy="6" rx="8" ry="2.5"/>
+        <path d="M4 6 L4 17 C4 18.6, 7.5 19.5, 12 19.5 C16.5 19.5, 20 18.6, 20 17 L20 6"/>
+        <ellipse cx="12" cy="6" rx="3" ry="1" fill="currentColor" fill-opacity="0.25" stroke="none"/>
+      </svg>
+    </div>
+    <div class="sys-name">Pedestal Housing</div>
+    <div class="sys-desc">3D-printed / machined base providing structural support and cranial fixation.</div>
+  </div>
+
+  <div class="sys-card" style="--sys-accent: #22c55e;">
+    <span class="sys-tag">Electronics</span>
+    <div class="sys-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <rect x="3" y="5" width="18" height="14" rx="1.5"/>
+        <circle cx="7" cy="10" r="0.7" fill="currentColor"/><circle cx="10" cy="10" r="0.7" fill="currentColor"/><circle cx="13" cy="10" r="0.7" fill="currentColor"/><circle cx="16" cy="10" r="0.7" fill="currentColor"/>
+        <circle cx="7" cy="13" r="0.7" fill="currentColor"/><circle cx="10" cy="13" r="0.7" fill="currentColor"/><circle cx="13" cy="13" r="0.7" fill="currentColor"/><circle cx="16" cy="13" r="0.7" fill="currentColor"/>
+      </svg>
+    </div>
+    <div class="sys-name">256Ch Headstage</div>
+    <div class="sys-desc">Form-factor optimized recording interface for high-density 128 / 256-channel acquisition.</div>
+  </div>
+
+  <div class="sys-card" style="--sys-accent: #f472b6;">
+    <span class="sys-tag">Interface</span>
+    <div class="sys-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <circle cx="12" cy="12" r="9"/>
+        <circle cx="12" cy="12" r="4.5" fill="currentColor" fill-opacity="0.18"/>
+      </svg>
+    </div>
+    <div class="sys-name">Foam Washer</div>
+    <div class="sys-desc">Compliant compression layer ensuring uniform contact across the elastomeric interface.</div>
+  </div>
+
+  <div class="sys-card" style="--sys-accent: #eab308;">
+    <span class="sys-tag">Routing</span>
+    <div class="sys-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <rect x="3" y="8" width="18" height="8" rx="1"/>
+        <circle cx="6" cy="12" r="0.7" fill="currentColor"/><circle cx="9" cy="12" r="0.7" fill="currentColor"/><circle cx="12" cy="12" r="0.7" fill="currentColor"/><circle cx="15" cy="12" r="0.7" fill="currentColor"/><circle cx="18" cy="12" r="0.7" fill="currentColor"/>
+        <line x1="0" y1="12" x2="3" y2="12" stroke-dasharray="1,1.5"/>
+        <line x1="21" y1="12" x2="24" y2="12" stroke-dasharray="1,1.5"/>
+      </svg>
+    </div>
+    <div class="sys-name">Adapter PCB</div>
+    <div class="sys-desc">High-density 4-layer PCB routing thin-film probe signals to the headstage BGA array.</div>
+  </div>
+
+  <div class="sys-card" style="--sys-accent: #f59e0b;">
+    <span class="sys-tag">Enclosure</span>
+    <div class="sys-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round">
+        <path d="M5 19 L5 7 C5 5.4 8 4.5 12 4.5 C16 4.5 19 5.4 19 7 L19 19"/>
+        <ellipse cx="12" cy="19" rx="7" ry="1.8"/>
+        <line x1="5" y1="10" x2="19" y2="10" stroke-dasharray="1.2,1.2"/>
+        <line x1="5" y1="13" x2="19" y2="13" stroke-dasharray="1.2,1.2"/>
+        <line x1="5" y1="16" x2="19" y2="16" stroke-dasharray="1.2,1.2"/>
+      </svg>
+    </div>
+    <div class="sys-name">Threaded Cap</div>
+    <div class="sys-desc">Protective enclosure preserving electrical and mechanical integrity in chronic experiments.</div>
+  </div>
+
 </div>
- 
+</div>
+
 ---
  
 <style>
@@ -3495,39 +3616,79 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')off()})}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',go);else go()})();
 </script>
 
-<div align="center">
- <table border="1" style="border-collapse: collapse; width: 90%; text-align: center;">
-  <thead>
-    <tr style="background-color: #f2f2f2;">
-      <th>组件</th>
-      <th>描述</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><b>基座外壳</b></td>
-      <td>3D 打印/机加工的基座结构,提供机械支撑与颅骨固定</td>
-    </tr>
-    <tr>
-      <td><b>定制 256 通道前置放大器</b></td>
-      <td>优化外形的高密度记录接口,支持 128/256 通道信号采集</td>
-    </tr>
-    <tr>
-      <td><b>泡沫垫圈</b></td>
-      <td>提供柔性压缩,确保弹性互连界面上均匀的电接触</td>
-    </tr>
-    <tr>
-      <td><b>转接电路板</b></td>
-      <td>高密度 4 层 PCB,将薄膜探针信号路由至前置放大器 BGA 阵列</td>
-    </tr>
-    <tr>
-      <td><b>螺纹顶盖</b></td>
-      <td>保护性外壳,保障长期慢性实验中的电气与机械完整性</td>
-    </tr>
-  </tbody>
- </table>
+ <div class="sys-section" data-aos="fade-up">
+<div class="sys-grid">
+
+  <div class="sys-card" style="--sys-accent: #64748b;">
+    <span class="sys-tag">结构</span>
+    <div class="sys-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round">
+        <ellipse cx="12" cy="6" rx="8" ry="2.5"/>
+        <path d="M4 6 L4 17 C4 18.6, 7.5 19.5, 12 19.5 C16.5 19.5, 20 18.6, 20 17 L20 6"/>
+        <ellipse cx="12" cy="6" rx="3" ry="1" fill="currentColor" fill-opacity="0.25" stroke="none"/>
+      </svg>
+    </div>
+    <div class="sys-name">基座外壳</div>
+    <div class="sys-desc">3D 打印 / 机加工的基座结构,提供机械支撑与颅骨固定。</div>
+  </div>
+
+  <div class="sys-card" style="--sys-accent: #22c55e;">
+    <span class="sys-tag">电子</span>
+    <div class="sys-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <rect x="3" y="5" width="18" height="14" rx="1.5"/>
+        <circle cx="7" cy="10" r="0.7" fill="currentColor"/><circle cx="10" cy="10" r="0.7" fill="currentColor"/><circle cx="13" cy="10" r="0.7" fill="currentColor"/><circle cx="16" cy="10" r="0.7" fill="currentColor"/>
+        <circle cx="7" cy="13" r="0.7" fill="currentColor"/><circle cx="10" cy="13" r="0.7" fill="currentColor"/><circle cx="13" cy="13" r="0.7" fill="currentColor"/><circle cx="16" cy="13" r="0.7" fill="currentColor"/>
+      </svg>
+    </div>
+    <div class="sys-name">256 通道前置放大器</div>
+    <div class="sys-desc">外形优化的高密度记录接口,支持 128 / 256 通道信号采集。</div>
+  </div>
+
+  <div class="sys-card" style="--sys-accent: #f472b6;">
+    <span class="sys-tag">界面</span>
+    <div class="sys-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <circle cx="12" cy="12" r="9"/>
+        <circle cx="12" cy="12" r="4.5" fill="currentColor" fill-opacity="0.18"/>
+      </svg>
+    </div>
+    <div class="sys-name">泡沫垫圈</div>
+    <div class="sys-desc">柔性压缩层,确保弹性互连界面上均匀的电接触。</div>
+  </div>
+
+  <div class="sys-card" style="--sys-accent: #eab308;">
+    <span class="sys-tag">布线</span>
+    <div class="sys-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <rect x="3" y="8" width="18" height="8" rx="1"/>
+        <circle cx="6" cy="12" r="0.7" fill="currentColor"/><circle cx="9" cy="12" r="0.7" fill="currentColor"/><circle cx="12" cy="12" r="0.7" fill="currentColor"/><circle cx="15" cy="12" r="0.7" fill="currentColor"/><circle cx="18" cy="12" r="0.7" fill="currentColor"/>
+        <line x1="0" y1="12" x2="3" y2="12" stroke-dasharray="1,1.5"/>
+        <line x1="21" y1="12" x2="24" y2="12" stroke-dasharray="1,1.5"/>
+      </svg>
+    </div>
+    <div class="sys-name">转接电路板</div>
+    <div class="sys-desc">高密度 4 层 PCB,将薄膜探针信号路由至放大器 BGA 阵列。</div>
+  </div>
+
+  <div class="sys-card" style="--sys-accent: #f59e0b;">
+    <span class="sys-tag">防护</span>
+    <div class="sys-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round">
+        <path d="M5 19 L5 7 C5 5.4 8 4.5 12 4.5 C16 4.5 19 5.4 19 7 L19 19"/>
+        <ellipse cx="12" cy="19" rx="7" ry="1.8"/>
+        <line x1="5" y1="10" x2="19" y2="10" stroke-dasharray="1.2,1.2"/>
+        <line x1="5" y1="13" x2="19" y2="13" stroke-dasharray="1.2,1.2"/>
+        <line x1="5" y1="16" x2="19" y2="16" stroke-dasharray="1.2,1.2"/>
+      </svg>
+    </div>
+    <div class="sys-name">螺纹顶盖</div>
+    <div class="sys-desc">保护性外壳,保障长期慢性实验中的电气与机械完整性。</div>
+  </div>
+
 </div>
- 
+</div>
+
  ---   
 
 <div class="impedance-section" data-aos="fade-up">
