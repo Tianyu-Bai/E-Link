@@ -2654,7 +2654,53 @@ body.light-mode .scope-win-wrapper * { filter: none !important; }
 
 <span id="en-bom"></span>
 ### 🛠 Bill of Materials (BOM) of the headstage
- 
+<style>
+/* ===================== BOM Component Card Grid ===================== */
+.bom-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; max-width: 760px; margin: 30px auto; padding: 0 5px; box-sizing: border-box; }
+.bom-card { position: relative; background: rgba(11, 17, 33, 0.95); border: 1px solid rgba(59, 130, 246, 0.25); border-radius: 16px; padding: 18px 16px 16px; box-sizing: border-box; box-shadow: inset 0 0 14px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.15); overflow: hidden; transition: transform .3s ease, border-color .3s ease, box-shadow .3s ease; display: flex; flex-direction: column; }
+.bom-card:hover { transform: translateY(-3px); border-color: var(--bom-accent, #3b82f6); box-shadow: 0 12px 35px rgba(59,130,246,0.18); }
+.bom-card::before { content: ''; position: absolute; top: 0; left: 12%; right: 12%; height: 2px; background: var(--bom-accent, #3b82f6); opacity: 0.7; border-radius: 0 0 4px 4px; }
+
+.bom-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; gap: 6px; }
+.bom-pkg { font-family: 'JetBrains Mono', monospace; font-size: 9px; font-weight: 700; letter-spacing: 1px; padding: 3px 8px; border-radius: 4px; background: rgba(148, 163, 184, 0.12); color: #cbd5e1; border: 1px solid rgba(148, 163, 184, 0.2); text-transform: uppercase; }
+.bom-qty { font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 800; padding: 3px 10px; border-radius: 12px; background: var(--bom-accent, #3b82f6); color: #fff; box-shadow: 0 0 12px var(--bom-accent, rgba(59,130,246,0.3)); white-space: nowrap; }
+.bom-qty .bom-qty-x { font-size: 10px; opacity: 0.85; margin-right: 1px; }
+
+.bom-icon { display: flex; justify-content: center; align-items: center; height: 50px; margin-bottom: 12px; color: var(--bom-accent, #3b82f6); filter: drop-shadow(0 0 8px var(--bom-accent, rgba(59,130,246,0.5))); }
+.bom-icon svg { width: 40px; height: 40px; }
+
+.bom-name { font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 800; color: #f1f5f9; letter-spacing: 0.3px; margin-bottom: 3px; line-height: 1.25; }
+.bom-desc { font-family: 'JetBrains Mono', monospace; font-size: 10.5px; color: #94a3b8; margin-bottom: 10px; line-height: 1.3; }
+.bom-note { margin-top: auto; font-size: 10px; color: #94a3b8; padding-top: 8px; border-top: 1px solid rgba(148, 163, 184, 0.12); line-height: 1.4; font-family: system-ui, sans-serif; }
+.bom-note strong { color: #f1f5f9; }
+.bom-note.warn { color: #fbbf24; }
+.bom-note.warn strong { color: #fbbf24; }
+
+/* Light mode */
+body.light-mode .bom-card { background: #ffffff; border-color: #cbd5e1; box-shadow: 0 8px 24px rgba(148, 163, 184, 0.12); }
+body.light-mode .bom-card:hover { box-shadow: 0 12px 35px rgba(148, 163, 184, 0.2); }
+body.light-mode .bom-pkg { background: rgba(100, 116, 139, 0.1); color: #475569; border-color: rgba(100, 116, 139, 0.2); }
+body.light-mode .bom-name { color: #0f172a; }
+body.light-mode .bom-desc { color: #64748b; }
+body.light-mode .bom-note { color: #64748b; border-top-color: rgba(100, 116, 139, 0.15); }
+body.light-mode .bom-note strong { color: #0f172a; }
+body.light-mode .bom-note.warn { color: #d97706; }
+body.light-mode .bom-note.warn strong { color: #d97706; }
+
+/* Mobile */
+@media (max-width: 600px) {
+  .bom-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .bom-card { padding: 14px 11px 12px; backdrop-filter: none; -webkit-backdrop-filter: none; }
+  .bom-icon { height: 38px; margin-bottom: 8px; }
+  .bom-icon svg { width: 30px; height: 30px; }
+  .bom-pkg { font-size: 8px; padding: 2px 6px; letter-spacing: 0.5px; }
+  .bom-qty { font-size: 10px; padding: 2px 7px; }
+  .bom-name { font-size: 11.5px; }
+  .bom-desc { font-size: 9.5px; margin-bottom: 7px; }
+  .bom-note { font-size: 9px; padding-top: 6px; }
+}
+</style>
+
 <div align="center">
  <img src="Images/256HD.png" 
       alt="256Ch Headstage PCBA Assembly" 
@@ -2678,6 +2724,111 @@ body.light-mode .scope-win-wrapper * { filter: none !important; }
   <p style="margin-top: 5px; font-size: 0.9em; color: #64748b;">
    <b> 4-Layer Routing Structure (Top to Bottom)</b>
  </p>
+</div>
+
+<div class="bom-grid" data-aos="fade-up">
+
+  <div class="bom-card" style="--bom-accent: #3b82f6;">
+    <div class="bom-top">
+      <span class="bom-pkg">BGA</span>
+      <span class="bom-qty"><span class="bom-qty-x">×</span>4</span>
+    </div>
+    <div class="bom-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+        <rect x="4" y="4" width="16" height="16" rx="2"/>
+        <circle cx="8" cy="8" r="0.9" fill="currentColor"/><circle cx="12" cy="8" r="0.9" fill="currentColor"/><circle cx="16" cy="8" r="0.9" fill="currentColor"/>
+        <circle cx="8" cy="12" r="0.9" fill="currentColor"/><circle cx="12" cy="12" r="0.9" fill="currentColor"/><circle cx="16" cy="12" r="0.9" fill="currentColor"/>
+        <circle cx="8" cy="16" r="0.9" fill="currentColor"/><circle cx="12" cy="16" r="0.9" fill="currentColor"/><circle cx="16" cy="16" r="0.9" fill="currentColor"/>
+      </svg>
+    </div>
+    <div class="bom-name">Amplifier IC</div>
+    <div class="bom-desc">Intan RHD2164</div>
+    <div class="bom-note warn"><strong>⚠ Critical:</strong> verify orientation before reflow</div>
+  </div>
+
+  <div class="bom-card" style="--bom-accent: #a78bfa;">
+    <div class="bom-top">
+      <span class="bom-pkg">SMT</span>
+      <span class="bom-qty"><span class="bom-qty-x">×</span>2</span>
+    </div>
+    <div class="bom-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+        <rect x="3" y="10" width="14" height="6" rx="1.2"/>
+        <line x1="17" y1="11.5" x2="21" y2="11.5"/><line x1="17" y1="14.5" x2="21" y2="14.5"/>
+        <line x1="6" y1="10" x2="6" y2="5"/><line x1="10" y1="10" x2="10" y2="5"/><line x1="14" y1="10" x2="14" y2="5"/>
+      </svg>
+    </div>
+    <div class="bom-name">SPI Connector</div>
+    <div class="bom-desc">Omnetics A7621</div>
+    <div class="bom-note">12-conductor cable, <strong>32 AWG</strong></div>
+  </div>
+
+  <div class="bom-card" style="--bom-accent: #f59e0b;">
+    <div class="bom-top">
+      <span class="bom-pkg">0402</span>
+      <span class="bom-qty"><span class="bom-qty-x">×</span>7</span>
+    </div>
+    <div class="bom-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round">
+        <path d="M2 12 L6 12 L7.5 7 L10 17 L12.5 7 L15 17 L16.5 12 L22 12"/>
+      </svg>
+    </div>
+    <div class="bom-name">Resistors</div>
+    <div class="bom-desc">Standard SMD</div>
+    <div class="bom-note"><strong>LVDS</strong> termination network</div>
+  </div>
+
+  <div class="bom-card" style="--bom-accent: #10b981;">
+    <div class="bom-top">
+      <span class="bom-pkg">0603</span>
+      <span class="bom-qty"><span class="bom-qty-x">×</span>8</span>
+    </div>
+    <div class="bom-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+        <line x1="2" y1="12" x2="10" y2="12"/><line x1="14" y1="12" x2="22" y2="12"/>
+        <line x1="10" y1="6" x2="10" y2="18"/><line x1="14" y1="6" x2="14" y2="18"/>
+      </svg>
+    </div>
+    <div class="bom-name">Capacitors</div>
+    <div class="bom-desc">Standard SMD</div>
+    <div class="bom-note"><strong>LVDS</strong> coupling / decoupling</div>
+  </div>
+
+  <div class="bom-card" style="--bom-accent: #22c55e;">
+    <div class="bom-top">
+      <span class="bom-pkg">0402</span>
+      <span class="bom-qty"><span class="bom-qty-x">×</span>1</span>
+    </div>
+    <div class="bom-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round">
+        <path d="M2 12 L7 12"/><path d="M17 12 L22 12"/>
+        <path d="M7 6 L7 18 L17 12 Z" fill="currentColor" fill-opacity="0.2"/>
+        <line x1="17" y1="6" x2="17" y2="18"/>
+        <path d="M16 5 L19 2"/><path d="M19 5 L22 2"/>
+      </svg>
+    </div>
+    <div class="bom-name">Power LED</div>
+    <div class="bom-desc">Green indicator</div>
+    <div class="bom-note">Self-test status light</div>
+  </div>
+
+  <div class="bom-card" style="--bom-accent: #64748b;">
+    <div class="bom-top">
+      <span class="bom-pkg">0.4 mm</span>
+      <span class="bom-qty"><span class="bom-qty-x">~</span>300</span>
+    </div>
+    <div class="bom-icon">
+      <svg viewBox="0 0 24 24" fill="currentColor">
+        <circle cx="5" cy="7" r="1.5"/><circle cx="10" cy="7" r="1.5"/><circle cx="15" cy="7" r="1.5"/><circle cx="20" cy="7" r="1.5"/>
+        <circle cx="5" cy="12" r="1.5"/><circle cx="10" cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="20" cy="12" r="1.5"/>
+        <circle cx="5" cy="17" r="1.5"/><circle cx="10" cy="17" r="1.5"/><circle cx="15" cy="17" r="1.5"/><circle cx="20" cy="17" r="1.5"/>
+      </svg>
+    </div>
+    <div class="bom-name">BGA Solder Balls</div>
+    <div class="bom-desc">Lead-free, 0.4 mm pitch</div>
+    <div class="bom-note">For BGA bottom-side assembly</div>
+  </div>
+
 </div>
  
 ---
@@ -3772,62 +3923,109 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
  </div>
 </div>
      
-<div style="width: 100%; max-width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 10px;">
- <table style="margin-left: auto; margin-right: auto; width: 90%; min-width: 600px; text-align: center; border-collapse: collapse; border: 1px solid #e1e4e8;">
-   <thead>
-     <tr style="background-color: #f6f8fa; border-bottom: 2px solid #e1e4e8;">
-       <th style="padding: 10px; border: 1px solid #e1e4e8; text-align: center;">组件</th>
-       <th style="padding: 10px; border: 1px solid #e1e4e8; text-align: center;">描述</th>
-       <th style="padding: 10px; border: 1px solid #e1e4e8; text-align: center;">数量</th>
-       <th style="padding: 10px; border: 1px solid #e1e4e8; text-align: center;">封装</th>
-       <th style="padding: 10px; border: 1px solid #e1e4e8; text-align: center;">备注</th>
-     </tr>
-   </thead>
-   <tbody>
-     <tr>
-       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;"><b>放大器 IC</b></td>
-       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">Intan RHD2164</td>
-       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">4</td>
-       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">BGA</td>
-       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;"><b>关键：</b> 确保方向正确</td>
-     </tr>
-     <tr>
-       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;"><b>SPI 连接器</b></td>
-       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">Omnetics A7621</td>
-       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">2</td>
-       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">-</td>
-       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">12 线线束 (32 AWG)</td>
-     </tr>
-     <tr>
-       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;"><b>电阻</b></td>
-       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">标准贴片</td>
-       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">7</td>
-       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">0402</td>
-       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">LVDS 配置</td>
-     </tr>
-     <tr>
-       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;"><b>电容</b></td>
-       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">标准贴片</td>
-       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">8</td>
-       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">0603</td>
-       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">LVDS 配置</td>
-     </tr>
-     <tr>
-       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;"><b>电源 LED</b></td>
-       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">绿色 LED</td>
-       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">1</td>
-       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">0402</td>
-       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">自检状态灯</td>
-     </tr>
-     <tr>
-       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;"><b> BGA锡球 </b></td>
-       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">0.4 mm 无铅</td>
-       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">约300</td>
-       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">-</td>
-       <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">用于 BGA 组装</td>
-     </tr>
-   </tbody>
- </table>
+<div class="bom-grid" data-aos="fade-up">
+
+  <div class="bom-card" style="--bom-accent: #3b82f6;">
+    <div class="bom-top">
+      <span class="bom-pkg">BGA</span>
+      <span class="bom-qty"><span class="bom-qty-x">×</span>4</span>
+    </div>
+    <div class="bom-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+        <rect x="4" y="4" width="16" height="16" rx="2"/>
+        <circle cx="8" cy="8" r="0.9" fill="currentColor"/><circle cx="12" cy="8" r="0.9" fill="currentColor"/><circle cx="16" cy="8" r="0.9" fill="currentColor"/>
+        <circle cx="8" cy="12" r="0.9" fill="currentColor"/><circle cx="12" cy="12" r="0.9" fill="currentColor"/><circle cx="16" cy="12" r="0.9" fill="currentColor"/>
+        <circle cx="8" cy="16" r="0.9" fill="currentColor"/><circle cx="12" cy="16" r="0.9" fill="currentColor"/><circle cx="16" cy="16" r="0.9" fill="currentColor"/>
+      </svg>
+    </div>
+    <div class="bom-name">放大器 IC</div>
+    <div class="bom-desc">Intan RHD2164</div>
+    <div class="bom-note warn"><strong>⚠ 关键:</strong> 焊接前请确认方向</div>
+  </div>
+
+  <div class="bom-card" style="--bom-accent: #a78bfa;">
+    <div class="bom-top">
+      <span class="bom-pkg">SMT</span>
+      <span class="bom-qty"><span class="bom-qty-x">×</span>2</span>
+    </div>
+    <div class="bom-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+        <rect x="3" y="10" width="14" height="6" rx="1.2"/>
+        <line x1="17" y1="11.5" x2="21" y2="11.5"/><line x1="17" y1="14.5" x2="21" y2="14.5"/>
+        <line x1="6" y1="10" x2="6" y2="5"/><line x1="10" y1="10" x2="10" y2="5"/><line x1="14" y1="10" x2="14" y2="5"/>
+      </svg>
+    </div>
+    <div class="bom-name">SPI 连接器</div>
+    <div class="bom-desc">Omnetics A7621</div>
+    <div class="bom-note">12 芯线缆,<strong>32 AWG</strong></div>
+  </div>
+
+  <div class="bom-card" style="--bom-accent: #f59e0b;">
+    <div class="bom-top">
+      <span class="bom-pkg">0402</span>
+      <span class="bom-qty"><span class="bom-qty-x">×</span>7</span>
+    </div>
+    <div class="bom-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round">
+        <path d="M2 12 L6 12 L7.5 7 L10 17 L12.5 7 L15 17 L16.5 12 L22 12"/>
+      </svg>
+    </div>
+    <div class="bom-name">电阻</div>
+    <div class="bom-desc">标准贴片</div>
+    <div class="bom-note"><strong>LVDS</strong> 终端匹配网络</div>
+  </div>
+
+  <div class="bom-card" style="--bom-accent: #10b981;">
+    <div class="bom-top">
+      <span class="bom-pkg">0603</span>
+      <span class="bom-qty"><span class="bom-qty-x">×</span>8</span>
+    </div>
+    <div class="bom-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+        <line x1="2" y1="12" x2="10" y2="12"/><line x1="14" y1="12" x2="22" y2="12"/>
+        <line x1="10" y1="6" x2="10" y2="18"/><line x1="14" y1="6" x2="14" y2="18"/>
+      </svg>
+    </div>
+    <div class="bom-name">电容</div>
+    <div class="bom-desc">标准贴片</div>
+    <div class="bom-note"><strong>LVDS</strong> 耦合 / 去耦</div>
+  </div>
+
+  <div class="bom-card" style="--bom-accent: #22c55e;">
+    <div class="bom-top">
+      <span class="bom-pkg">0402</span>
+      <span class="bom-qty"><span class="bom-qty-x">×</span>1</span>
+    </div>
+    <div class="bom-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round">
+        <path d="M2 12 L7 12"/><path d="M17 12 L22 12"/>
+        <path d="M7 6 L7 18 L17 12 Z" fill="currentColor" fill-opacity="0.2"/>
+        <line x1="17" y1="6" x2="17" y2="18"/>
+        <path d="M16 5 L19 2"/><path d="M19 5 L22 2"/>
+      </svg>
+    </div>
+    <div class="bom-name">电源 LED</div>
+    <div class="bom-desc">绿色指示灯</div>
+    <div class="bom-note">自检状态指示</div>
+  </div>
+
+  <div class="bom-card" style="--bom-accent: #64748b;">
+    <div class="bom-top">
+      <span class="bom-pkg">0.4 mm</span>
+      <span class="bom-qty"><span class="bom-qty-x">~</span>300</span>
+    </div>
+    <div class="bom-icon">
+      <svg viewBox="0 0 24 24" fill="currentColor">
+        <circle cx="5" cy="7" r="1.5"/><circle cx="10" cy="7" r="1.5"/><circle cx="15" cy="7" r="1.5"/><circle cx="20" cy="7" r="1.5"/>
+        <circle cx="5" cy="12" r="1.5"/><circle cx="10" cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="20" cy="12" r="1.5"/>
+        <circle cx="5" cy="17" r="1.5"/><circle cx="10" cy="17" r="1.5"/><circle cx="15" cy="17" r="1.5"/><circle cx="20" cy="17" r="1.5"/>
+      </svg>
+    </div>
+    <div class="bom-name">BGA 锡球</div>
+    <div class="bom-desc">无铅,0.4 mm 间距</div>
+    <div class="bom-note">用于 BGA 底面组装</div>
+  </div>
+
 </div>
  
 ---
