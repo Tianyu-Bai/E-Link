@@ -1480,12 +1480,22 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 .hm-tooltip::after {
   content: '';
   position: absolute;
-  bottom: -5px; left: 50%;
+  left: 50%;
   width: 8px; height: 8px;
   background: inherit;
+  transform: translateX(-50%) rotate(45deg);
+}
+.hm-tooltip.arrow-down::after {
+  bottom: -5px;
   border-right: 1px solid rgba(96, 165, 250, 0.5);
   border-bottom: 1px solid rgba(96, 165, 250, 0.5);
-  transform: translateX(-50%) rotate(45deg);
+  border-top: none; border-left: none;
+}
+.hm-tooltip.arrow-up::after {
+  top: -5px;
+  border-left: 1px solid rgba(96, 165, 250, 0.5);
+  border-top: 1px solid rgba(96, 165, 250, 0.5);
+  border-right: none; border-bottom: none;
 }
 .hm-tooltip .hm-tt-label {
   color: #94a3b8;
@@ -1874,12 +1884,27 @@ body.light-mode .heatmap-hint {
       highlight.style.top  = (row * cellPxH) + 'px';
       highlight.classList.add('active');
 
-      tooltip.style.left = (col * cellPxW + cellPxW / 2) + 'px';
-      tooltip.style.top  = (row * cellPxH) + 'px';
-      tooltip.style.transform = row < 2
-        ? 'translate(-50%, ' + (cellPxH + 10) + 'px)'
-        : 'translate(-50%, -120%)';
       tooltip.classList.add('active');
+      var tooltipH = tooltip.offsetHeight || 90;
+      var tooltipW = tooltip.offsetWidth || 140;
+      var arrowGap = 8;
+      var cellTopPx = row * cellPxH;
+      var cellCenterX = col * cellPxW + cellPxW / 2;
+
+      if (cellTopPx - tooltipH - arrowGap < 0) {
+        tooltip.style.top = (cellTopPx + cellPxH + arrowGap) + 'px';
+        tooltip.style.transform = 'translateX(-50%)';
+        tooltip.classList.add('arrow-up');
+        tooltip.classList.remove('arrow-down');
+      } else {
+        tooltip.style.top = (cellTopPx - arrowGap) + 'px';
+        tooltip.style.transform = 'translate(-50%, -100%)';
+        tooltip.classList.add('arrow-down');
+        tooltip.classList.remove('arrow-up');
+      }
+
+      tooltip.style.left = Math.max(tooltipW / 2 + 4,
+                                     Math.min(w - tooltipW / 2 - 4, cellCenterX)) + 'px';
     }
 
     function hide() {
