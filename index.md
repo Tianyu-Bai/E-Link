@@ -720,6 +720,42 @@ body.light-mode .thermo-track { background: rgba(0,0,0,0.06); border-color: rgba
 body.light-mode .yield-bar-track { background: rgba(0,0,0,0.06); border-color: rgba(0,0,0,0.06); }
 </style>
 
+<style>
+/* ===================== Quick Spec Tiles (static, no animation) ===================== */
+.spec-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; max-width: 760px; margin: 25px auto; padding: 0 5px; box-sizing: border-box; }
+.spec-tile { position: relative; background: rgba(11, 17, 33, 0.95); border: 1px solid rgba(59, 130, 246, 0.25); border-radius: 16px; padding: 20px 18px; box-sizing: border-box; box-shadow: inset 0 0 14px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.15); overflow: hidden; transition: transform .3s ease, border-color .3s ease, box-shadow .3s ease; }
+.spec-tile:hover { transform: translateY(-3px); border-color: var(--tile-accent, #3b82f6); box-shadow: 0 12px 35px rgba(59,130,246,0.18); }
+.spec-tile::before { content: ''; position: absolute; top: 0; left: 12%; right: 12%; height: 2px; background: var(--tile-accent, #3b82f6); opacity: 0.7; border-radius: 0 0 4px 4px; }
+
+.spec-icon { font-size: 22px; margin-bottom: 8px; display: block; line-height: 1; filter: drop-shadow(0 0 6px var(--tile-accent, rgba(59,130,246,0.4))); }
+.spec-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 700; letter-spacing: 1.5px; color: #94a3b8; text-transform: uppercase; margin-bottom: 8px; }
+.spec-value { font-family: 'JetBrains Mono', monospace; font-size: 17px; font-weight: 800; color: #f1f5f9; line-height: 1.3; }
+.spec-value .spec-unit { font-size: 12px; color: #cbd5e1; font-weight: 600; margin-left: 3px; }
+.spec-sub { font-size: 10.5px; color: rgba(148, 163, 184, 0.8); margin-top: 6px; line-height: 1.4; font-family: system-ui, sans-serif; }
+.spec-stack { font-family: 'JetBrains Mono', monospace; font-size: 12.5px; font-weight: 700; color: #f1f5f9; line-height: 1.55; }
+.spec-stack span { display: block; }
+
+/* Light mode */
+body.light-mode .spec-tile { background: #ffffff; border-color: #cbd5e1; box-shadow: 0 8px 24px rgba(148, 163, 184, 0.12); }
+body.light-mode .spec-tile:hover { box-shadow: 0 12px 35px rgba(148, 163, 184, 0.2); }
+body.light-mode .spec-label { color: #64748b; }
+body.light-mode .spec-value, body.light-mode .spec-stack { color: #0f172a; }
+body.light-mode .spec-value .spec-unit { color: #475569; }
+body.light-mode .spec-sub { color: #64748b; }
+
+/* Mobile */
+@media (max-width: 600px) {
+  .spec-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .spec-tile { padding: 14px 11px; backdrop-filter: none; -webkit-backdrop-filter: none; }
+  .spec-icon { font-size: 18px; margin-bottom: 5px; }
+  .spec-label { font-size: 9px; letter-spacing: 1px; margin-bottom: 5px; }
+  .spec-value { font-size: 14px; }
+  .spec-value .spec-unit { font-size: 10.5px; }
+  .spec-sub { font-size: 9.5px; }
+  .spec-stack { font-size: 11px; }
+}
+</style>
+
 <div class="metrics-grid-v2" data-aos="fade-up">
   <div class="metric-card-v2" style="--card-accent: #10b981;" data-type="ring" data-percent="100" data-value="2.8" data-is-float="true">
     <div class="card-label">WEIGHT</div>
@@ -829,37 +865,54 @@ body.light-mode .yield-bar-track { background: rgba(0,0,0,0.06); border-color: r
 <span id="en-specs"></span>
 ### 📊 Quick Specifications
 
-<div style="width: 100%; max-width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 10px;">
-  <table style="margin-left: auto; margin-right: auto; width: 90%; min-width: 600px; text-align: center; border-collapse: collapse; border: 1px solid #e1e4e8;">
-   <thead>
-     <tr style="background-color: #f6f8fa; border-bottom: 2px solid #e1e4e8;">
-       <th style="padding: 10px; border: 1px solid #e1e4e8;">Specification</th>
-       <th style="padding: 10px; border: 1px solid #e1e4e8;">E-Link(256)_V1.0</th>
-     </tr>
-   </thead>
-   <tbody>
-     <tr>
-       <td style="padding: 8px; border: 1px solid #e1e4e8;"><b>Channel Count</b></td>
-       <td style="padding: 8px; border: 1px solid #e1e4e8;">128 or 256 Channels (Single/Dual SPI Port support)</td>
-     </tr>
-     <tr>
-       <td style="padding: 8px; border: 1px solid #e1e4e8;"><b>Total Mass</b></td>
-       <td style="padding: 8px; border: 1px solid #e1e4e8;">6.6 g (with housing)<br>2.8 g (without housing)</td>
-     </tr>
-     <tr>
-       <td style="padding: 8px; border: 1px solid #e1e4e8;"><b>Interconnect Type</b></td>
-       <td style="padding: 8px; border: 1px solid #e1e4e8;">Solderless Anisotropic Elastomer</td>
-     </tr>
-     <tr>
-       <td style="padding: 8px; border: 1px solid #e1e4e8;"><b>Compatible Acquisition System</b></td>
-       <td style="padding: 8px; border: 1px solid #e1e4e8;">Intan Recording Controller (512ch/1024ch)<br>Open-Ephys DAQ box<br>NeuroNexus Smartbox<br>OmniPlex DAQ box</td>
-     </tr>
-     <tr>
-       <td style="padding: 8px; border: 1px solid #e1e4e8;"><b>Housing Material</b></td>
-       <td style="padding: 8px; border: 1px solid #e1e4e8;">3D-Printed PEEK / Surgical Grade Resin</td>
-     </tr>
-   </tbody>
- </table>
+<div class="spec-grid" data-aos="fade-up">
+
+  <div class="spec-tile" style="--tile-accent: #3b82f6;">
+    <span class="spec-icon">⚡</span>
+    <div class="spec-label">Channel Count</div>
+    <div class="spec-value">128 / 256<span class="spec-unit">ch</span></div>
+    <div class="spec-sub">Single or Dual SPI Port</div>
+  </div>
+
+  <div class="spec-tile" style="--tile-accent: #10b981;">
+    <span class="spec-icon">⚖️</span>
+    <div class="spec-label">Total Mass</div>
+    <div class="spec-value">6.6 / 2.8<span class="spec-unit">g</span></div>
+    <div class="spec-sub">With / without housing</div>
+  </div>
+
+  <div class="spec-tile" style="--tile-accent: #f59e0b;">
+    <span class="spec-icon">⭕</span>
+    <div class="spec-label">Footprint</div>
+    <div class="spec-value">25<span class="spec-unit">mm Ø</span></div>
+    <div class="spec-sub">Pedestal diameter</div>
+  </div>
+
+  <div class="spec-tile" style="--tile-accent: #a78bfa;">
+    <span class="spec-icon">🧬</span>
+    <div class="spec-label">Interconnect</div>
+    <div class="spec-value" style="font-size: 14px;">Anisotropic Elastomer</div>
+    <div class="spec-sub">Solderless · Zero insertion force</div>
+  </div>
+
+  <div class="spec-tile" style="--tile-accent: #f472b6;">
+    <span class="spec-icon">🛡️</span>
+    <div class="spec-label">Housing</div>
+    <div class="spec-value" style="font-size: 14px;">PEEK / Surgical Resin</div>
+    <div class="spec-sub">3D-printed · Biocompatible</div>
+  </div>
+
+  <div class="spec-tile" style="--tile-accent: #22c55e;">
+    <span class="spec-icon">🔌</span>
+    <div class="spec-label">DAQ Compatible</div>
+    <div class="spec-stack">
+      <span>Intan RHX</span>
+      <span>Open-Ephys</span>
+      <span>NeuroNexus</span>
+      <span>OmniPlex</span>
+    </div>
+  </div>
+
 </div>
 
 <style>
@@ -2602,62 +2655,54 @@ body.light-mode .scope-win-wrapper * { filter: none !important; }
  </p>
 </div>
  
-<div style="width: 100%; max-width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 10px;">
- <table style="margin-left: auto; margin-right: auto; width: 90%; min-width: 600px; text-align: center; border-collapse: collapse; border: 1px solid #e1e4e8;">
-  <thead>
-    <tr style="background-color: #f6f8fa; border-bottom: 2px solid #e1e4e8;">
-      <th style="padding: 10px; border: 1px solid #e1e4e8; text-align: center;">Component</th>
-      <th style="padding: 10px; border: 1px solid #e1e4e8; text-align: center;">Description</th>
-      <th style="padding: 10px; border: 1px solid #e1e4e8; text-align: center;">Qty</th>
-      <th style="padding: 10px; border: 1px solid #e1e4e8; text-align: center;">Package</th>
-      <th style="padding: 10px; border: 1px solid #e1e4e8; text-align: center;">Notes</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;"><b>Amplifier IC</b></td>
-      <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">Intan RHD2164</td>
-      <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">4</td>
-      <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">BGA</td>
-      <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;"><b>💡 Tip:</b> Ensure correct orientation</td>
-    </tr>
-    <tr>
-      <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;"><b>SPI Connector</b></td>
-      <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">Omnetics A7621</td>
-      <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">2</td>
-      <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">-</td>
-      <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">12-wire cable harness (32 AWG)</td>
-    </tr>
-    <tr>
-      <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;"><b>Resistors</b></td>
-      <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">Standard SMD</td>
-      <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">7</td>
-      <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">0402</td>
-      <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">LVDS Configuration</td>
-    </tr>
-    <tr>
-      <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;"><b>Capacitors</b></td>
-      <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">Standard SMD</td>
-      <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">8</td>
-      <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">0603</td>
-      <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">LVDS Configuration</td>
-    </tr>
-    <tr>
-      <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;"><b>Power LED</b></td>
-      <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">Green LED</td>
-      <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">1</td>
-      <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">0402</td>
-      <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">Power Indicator</td>
-    </tr>
-    <tr>
-      <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;"><b>Solder Balls</b></td>
-      <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">0.4 mm Lead-free</td>
-      <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">~300</td>
-      <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">-</td>
-      <td style="padding: 8px; border: 1px solid #e1e4e8; text-align: center;">For BGA rework/assembly</td>
-    </tr>
-  </tbody>
- </table>
+<div class="spec-grid" data-aos="fade-up">
+
+  <div class="spec-tile" style="--tile-accent: #3b82f6;">
+    <span class="spec-icon">⚡</span>
+    <div class="spec-label">通道数</div>
+    <div class="spec-value">128 / 256<span class="spec-unit">ch</span></div>
+    <div class="spec-sub">支持单/双 SPI 端口</div>
+  </div>
+
+  <div class="spec-tile" style="--tile-accent: #10b981;">
+    <span class="spec-icon">⚖️</span>
+    <div class="spec-label">总质量</div>
+    <div class="spec-value">6.6 / 2.8<span class="spec-unit">g</span></div>
+    <div class="spec-sub">含 / 不含外壳</div>
+  </div>
+
+  <div class="spec-tile" style="--tile-accent: #f59e0b;">
+    <span class="spec-icon">⭕</span>
+    <div class="spec-label">占地直径</div>
+    <div class="spec-value">25<span class="spec-unit">mm Ø</span></div>
+    <div class="spec-sub">基座外径</div>
+  </div>
+
+  <div class="spec-tile" style="--tile-accent: #a78bfa;">
+    <span class="spec-icon">🧬</span>
+    <div class="spec-label">互连方式</div>
+    <div class="spec-value" style="font-size: 14px;">各向异性弹性体</div>
+    <div class="spec-sub">免焊接 · 零插拔力</div>
+  </div>
+
+  <div class="spec-tile" style="--tile-accent: #f472b6;">
+    <span class="spec-icon">🛡️</span>
+    <div class="spec-label">外壳材料</div>
+    <div class="spec-value" style="font-size: 14px;">PEEK / 手术级树脂</div>
+    <div class="spec-sub">3D 打印 · 生物相容</div>
+  </div>
+
+  <div class="spec-tile" style="--tile-accent: #22c55e;">
+    <span class="spec-icon">🔌</span>
+    <div class="spec-label">兼容系统</div>
+    <div class="spec-stack">
+      <span>Intan RHX</span>
+      <span>Open-Ephys</span>
+      <span>NeuroNexus</span>
+      <span>OmniPlex</span>
+    </div>
+  </div>
+
 </div>
  
 ---
