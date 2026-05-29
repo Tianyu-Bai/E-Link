@@ -3083,7 +3083,7 @@ body.light-mode .bom-note.warn strong { color: #d97706; }
       </svg>
     </div>
     <div class="bom-name">BGA Solder Balls</div>
-    <div class="bom-desc">Lead-free, 0.4 mm pitch</div>
+    <div class="bom-desc">Lead-free, 0.7 mm pitch</div>
     <div class="bom-note">For BGA bottom-side assembly</div>
   </div>
 
