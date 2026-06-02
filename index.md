@@ -133,14 +133,14 @@ title: E-Link Home
 /* ===================== Section Jump Nav (glass pills, no external images) ===================== */
 .elink-jump-nav {
   display: flex; flex-wrap: wrap; justify-content: center;
-  gap: 9px; max-width: 760px; margin: 0 auto 16px; padding: 0 5px;
+  gap: 8px; max-width: 900px; margin: 0 auto 16px; padding: 0 5px;
   box-sizing: border-box;
 }
 .ej-pill {
   position: relative; overflow: hidden;
   display: inline-flex; align-items: center; gap: 6px;
-  padding: 7px 16px; border-radius: 22px;
-  font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700;
+  padding: 7px 14px; border-radius: 22px;
+  font-family: 'JetBrains Mono', monospace; font-size: 11.5px; font-weight: 700;
   letter-spacing: .4px; text-decoration: none; white-space: nowrap;
   color: #cbd5e1;
   background: rgba(15, 23, 42, 0.55);
