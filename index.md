@@ -3153,18 +3153,108 @@ If you utilize these designs, code, or assets in your research, please cite this
 
 ---
  
+<style>
+/* ===================== Download Center ===================== */
+.dl-center { max-width: 760px; margin: 30px auto; }
+.dl-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+.dl-card {
+  position: relative; display: flex; flex-direction: column;
+  background: rgba(11, 17, 33, 0.95);
+  border: 1px solid rgba(59,130,246,.25); border-radius: 16px;
+  padding: 22px 22px 20px; text-decoration: none;
+  box-shadow: inset 0 0 14px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.15);
+  overflow: hidden; transition: transform .3s ease, border-color .3s ease, box-shadow .3s ease;
+}
+.dl-card:hover { transform: translateY(-3px); border-color: var(--dl-accent,#3b82f6); box-shadow: 0 12px 35px rgba(59,130,246,.18); }
+.dl-card::before { content:''; position:absolute; top:0; left:12%; right:12%; height:2px; background: var(--dl-accent,#3b82f6); opacity:.7; border-radius:0 0 4px 4px; }
+.dl-icon { font-size: 26px; margin-bottom: 10px; filter: drop-shadow(0 0 8px var(--dl-accent, rgba(59,130,246,.4))); }
+.dl-title { font-family:'JetBrains Mono',monospace; font-size:15px; font-weight:800; color:#f1f5f9; margin-bottom:6px; }
+.dl-desc { font-size:12px; color:#94a3b8; line-height:1.5; flex:1; margin-bottom:14px; font-family:system-ui,'Noto Sans SC',sans-serif; }
+.dl-action { display:inline-flex; align-items:center; gap:6px; font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:700; color: var(--dl-accent,#60a5fa); letter-spacing:.5px; }
+.dl-action svg { width:14px; height:14px; transition: transform .3s ease; }
+.dl-card:hover .dl-action svg { transform: translate(2px,-2px); }
+.dl-repo-row { display:flex; align-items:center; justify-content:space-between; gap:14px; margin-top:14px; padding:16px 22px; background: rgba(15,23,42,.5); border:1px solid rgba(167,139,250,.3); border-radius:14px; flex-wrap:wrap; }
+.dl-repo-left { display:flex; align-items:center; gap:10px; }
+.dl-repo-text { font-size:13px; color:#cbd5e1; font-family:system-ui,'Noto Sans SC',sans-serif; }
+.dl-repo-text strong { color:#f1f5f9; }
+.dl-repo-btns { display:flex; gap:8px; flex-wrap:wrap; }
+.dl-btn { display:inline-flex; align-items:center; gap:6px; padding:9px 16px; border-radius:10px; font-family:'JetBrains Mono',monospace; font-size:12.5px; font-weight:700; text-decoration:none; letter-spacing:.4px; border:1px solid; transition:all .3s ease; }
+.dl-btn.repo { background: rgba(255,255,255,.04); border-color: rgba(148,163,184,.35); color:#e2e8f0; }
+.dl-btn.repo:hover { background: rgba(255,255,255,.1); border-color:#94a3b8; transform:translateY(-2px); }
+.dl-btn.zip { background: linear-gradient(135deg, rgba(167,139,250,.2), rgba(96,165,250,.12)); border-color: rgba(167,139,250,.5); color:#c4b5fd; }
+.dl-btn.zip:hover { border-color:#a78bfa; color:#fff; transform:translateY(-2px); box-shadow:0 8px 22px rgba(167,139,250,.25); }
+body.light-mode .dl-card { background:#fff; border-color:#cbd5e1; box-shadow:0 8px 24px rgba(148,163,184,.12); }
+body.light-mode .dl-card:hover { box-shadow:0 12px 35px rgba(148,163,184,.2); }
+body.light-mode .dl-title { color:#0f172a; }
+body.light-mode .dl-desc { color:#64748b; }
+body.light-mode .dl-repo-row { background:#f8fafc; border-color:#e2e8f0; }
+body.light-mode .dl-repo-text { color:#334155; }
+body.light-mode .dl-repo-text strong { color:#0f172a; }
+body.light-mode .dl-btn.repo { background:#fff; border-color:#cbd5e1; color:#1e293b; }
+body.light-mode .dl-btn.repo:hover { background:#f1f5f9; }
+@media (max-width: 600px) {
+  .dl-grid { grid-template-columns:1fr; gap:10px; }
+  .dl-card { padding:18px 16px 16px; }
+  .dl-repo-row { flex-direction:column; align-items:flex-start; }
+}
+</style>
+
 <span id="en-downloads"></span>
 ## 🔗 Repository & Downloads
- 
-This project is fully open-source. Upon acceptance of the associated paper, the complete dataset comprising **PCB fabrication files (Gerber/NC Drill)**, **BOM**, and **Mechanical CAD** will be accessible via the link below.
- 
-<div align="center">
- <p><b>👇 Bookmark the repository for future downloads:</b></p>
- 
-<div align="center">
- <a href="https://github.com/Tianyu-Bai/ELINK"><img src="https://img.shields.io/badge/GitHub-View_Source_Repository-181717?style=for-the-badge&logo=github&logoColor=white" alt="View on GitHub"></a>
- <img src="https://img.shields.io/badge/Status-Locked_until_Publication-A31F34?style=for-the-badge&logo=private" alt="Status Locked">
-</div>
+
+This project is fully open-source under the MIT License. The complete design package — **3D-printable housing (STEP/STL)** and **PCB design files** — is now publicly available. Click any card below to jump straight to the source files on GitHub.
+
+<div class="dl-center" data-aos="fade-up">
+  <div class="dl-grid">
+
+    <a class="dl-card" style="--dl-accent:#f59e0b;" href="https://github.com/Tianyu-Bai/E-Link/tree/main/Housing%20and%20Cap" target="_blank" rel="noopener">
+      <div class="dl-icon">🖨️</div>
+      <div class="dl-title">3D Print Files</div>
+      <div class="dl-desc">Pedestal housing, threaded cap & dustproof cap. Includes both <strong>STEP</strong> (editable) and <strong>STL</strong> (print-ready) formats.</div>
+      <span class="dl-action">Open folder
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg>
+      </span>
+    </a>
+
+    <a class="dl-card" style="--dl-accent:#22c55e;" href="https://github.com/Tianyu-Bai/E-Link/tree/main/PCB/Headstage%20board" target="_blank" rel="noopener">
+      <div class="dl-icon">🔌</div>
+      <div class="dl-title">Headstage PCB</div>
+      <div class="dl-desc">4-layer HDI headstage board design files (4× RHD2164, 256-ch BGA fan-out).</div>
+      <span class="dl-action">Open folder
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg>
+      </span>
+    </a>
+
+    <a class="dl-card" style="--dl-accent:#eab308;" href="https://github.com/Tianyu-Bai/E-Link/tree/main/PCB/Adapter%20board" target="_blank" rel="noopener">
+      <div class="dl-icon">📐</div>
+      <div class="dl-title">Adapter PCB</div>
+      <div class="dl-desc">High-density adapter board routing thin-film probe signals to the headstage array.</div>
+      <span class="dl-action">Open folder
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg>
+      </span>
+    </a>
+
+    <a class="dl-card" style="--dl-accent:#3b82f6;" href="https://github.com/Tianyu-Bai/E-Link/tree/main/PCB" target="_blank" rel="noopener">
+      <div class="dl-icon">🗂️</div>
+      <div class="dl-title">All PCB Files</div>
+      <div class="dl-desc">Browse every PCB design folder (adapter + headstage) in one place.</div>
+      <span class="dl-action">Open folder
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg>
+      </span>
+    </a>
+
+  </div>
+
+  <div class="dl-repo-row">
+    <div class="dl-repo-left">
+      <svg width="22" height="22" viewBox="0 0 16 16" fill="#a78bfa"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
+      <span class="dl-repo-text">Want everything at once? Grab the <strong>full repository</strong>.</span>
+    </div>
+    <div class="dl-repo-btns">
+      <a class="dl-btn repo" href="https://github.com/Tianyu-Bai/E-Link" target="_blank" rel="noopener">⭐ View Repo</a>
+      <a class="dl-btn zip" href="https://github.com/Tianyu-Bai/E-Link/archive/refs/heads/main.zip">⬇ Download ZIP</a>
+    </div>
+  </div>
 </div>
  
 ---
@@ -4398,20 +4488,63 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 
  
 ---
- 
 <span id="cn-downloads"></span>
- 
+
 ## 🔗 仓库与下载
- 
-本项目完全开源。相关论文录用后，包含 **PCB 制造文件 (Gerber)** 和 **3D打印文件** 的完整数据集将通过以下链接提供访问。
- 
-<div align="center">
- <p><b>👇 欢迎收藏本仓库以便未来下载：</b></p>
- 
-<div align="center">
- <a href="https://github.com/Tianyu-Bai/ELINK"><img src="https://img.shields.io/badge/GitHub-查看源仓库-181717?style=for-the-badge&logo=github&logoColor=white" alt="View on GitHub"></a>
- <img src="https://img.shields.io/badge/状态-锁定中，直到发表-A31F34?style=for-the-badge&logo=private" alt="Status Locked">
-</div>
+
+本项目完全开源。完整设计包——**3D 打印外壳文件 (STEP/STL)** 与 **PCB 设计文件**——现已全部公开。点击下方任意卡片，即可一键跳转至 GitHub 上的源文件。
+
+<div class="dl-center" data-aos="fade-up">
+  <div class="dl-grid">
+
+    <a class="dl-card" style="--dl-accent:#f59e0b;" href="https://github.com/Tianyu-Bai/E-Link/tree/main/Housing%20and%20Cap" target="_blank" rel="noopener">
+      <div class="dl-icon">🖨️</div>
+      <div class="dl-title">3D 打印文件</div>
+      <div class="dl-desc">基座外壳、螺纹顶盖与防尘盖。包含 <strong>STEP</strong>（可编辑）与 <strong>STL</strong>（可直接打印）两种格式。</div>
+      <span class="dl-action">打开文件夹
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg>
+      </span>
+    </a>
+
+    <a class="dl-card" style="--dl-accent:#22c55e;" href="https://github.com/Tianyu-Bai/E-Link/tree/main/PCB/Headstage%20board" target="_blank" rel="noopener">
+      <div class="dl-icon">🔌</div>
+      <div class="dl-title">放大器 PCB</div>
+      <div class="dl-desc">4 层 HDI 放大器板设计文件（4× RHD2164，256 通道 BGA 扇出）。</div>
+      <span class="dl-action">打开文件夹
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg>
+      </span>
+    </a>
+
+    <a class="dl-card" style="--dl-accent:#eab308;" href="https://github.com/Tianyu-Bai/E-Link/tree/main/PCB/Adapter%20board" target="_blank" rel="noopener">
+      <div class="dl-icon">📐</div>
+      <div class="dl-title">转接 PCB</div>
+      <div class="dl-desc">高密度转接板，将薄膜探针信号布线至放大器 BGA 阵列。</div>
+      <span class="dl-action">打开文件夹
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg>
+      </span>
+    </a>
+
+    <a class="dl-card" style="--dl-accent:#3b82f6;" href="https://github.com/Tianyu-Bai/E-Link/tree/main/PCB" target="_blank" rel="noopener">
+      <div class="dl-icon">🗂️</div>
+      <div class="dl-title">全部 PCB 文件</div>
+      <div class="dl-desc">一次性浏览所有 PCB 设计文件夹（转接板 + 放大器板）。</div>
+      <span class="dl-action">打开文件夹
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg>
+      </span>
+    </a>
+
+  </div>
+
+  <div class="dl-repo-row">
+    <div class="dl-repo-left">
+      <svg width="22" height="22" viewBox="0 0 16 16" fill="#a78bfa"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
+      <span class="dl-repo-text">想一次性拿到全部内容？下载 <strong>完整仓库</strong>。</span>
+    </div>
+    <div class="dl-repo-btns">
+      <a class="dl-btn repo" href="https://github.com/Tianyu-Bai/E-Link" target="_blank" rel="noopener">⭐ 查看仓库</a>
+      <a class="dl-btn zip" href="https://github.com/Tianyu-Bai/E-Link/archive/refs/heads/main.zip">⬇ 下载 ZIP</a>
+    </div>
+  </div>
 </div>
  
 ---
