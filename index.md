@@ -130,35 +130,56 @@ title: E-Link Home
 </div>
 
 <style>
-/* ===================== Section Jump Nav (pure CSS, no external images) ===================== */
+/* ===================== Section Jump Nav (glass pills, no external images) ===================== */
 .elink-jump-nav {
   display: flex; flex-wrap: wrap; justify-content: center;
-  gap: 8px; max-width: 760px; margin: 0 auto 12px; padding: 0 5px;
+  gap: 9px; max-width: 760px; margin: 0 auto 16px; padding: 0 5px;
   box-sizing: border-box;
 }
 .ej-pill {
-  display: inline-flex; align-items: center; gap: 5px;
-  padding: 6px 14px; border-radius: 20px;
+  position: relative; overflow: hidden;
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 7px 16px; border-radius: 22px;
   font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700;
-  letter-spacing: .3px; text-decoration: none; white-space: nowrap;
-  color: #93c5fd;
-  background: rgba(59,130,246,.12);
-  border: 1px solid rgba(59,130,246,.3);
-  transition: transform .25s ease, background .25s ease, border-color .25s ease, box-shadow .25s ease;
+  letter-spacing: .4px; text-decoration: none; white-space: nowrap;
+  color: #cbd5e1;
+  background: rgba(15, 23, 42, 0.55);
+  border: 1px solid rgba(59,130,246,.25);
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  box-shadow: inset 0 0 12px rgba(59,130,246,.06), 0 2px 8px rgba(0,0,0,.2);
+  transition: transform .28s cubic-bezier(.25,.8,.25,1), color .28s ease,
+              border-color .28s ease, box-shadow .28s ease, background .28s ease;
+}
+/* 顶部细微高光，强化玻璃感 */
+.ej-pill::before {
+  content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+  background: linear-gradient(180deg, rgba(255,255,255,.07), transparent 55%);
 }
 .ej-pill:hover {
-  background: rgba(59,130,246,.28); border-color: #60a5fa; color: #fff;
-  transform: translateY(-2px); box-shadow: 0 6px 16px rgba(59,130,246,.25);
+  color: #fff;
+  border-color: rgba(96,165,250,.6);
+  background: linear-gradient(135deg, rgba(59,130,246,.28), rgba(167,139,250,.18));
+  transform: translateY(-3px);
+  box-shadow: 0 8px 22px rgba(59,130,246,.3), inset 0 0 14px rgba(96,165,250,.15);
 }
-.ej-pill:active { transform: translateY(0) scale(.97); }
-.ej-pill .ej-ico { font-size: 13px; line-height: 1; }
+.ej-pill:active { transform: translateY(-1px) scale(.97); }
+.ej-pill .ej-ico { font-size: 13px; line-height: 1; filter: drop-shadow(0 0 5px rgba(96,165,250,.5)); }
 
-body.light-mode .ej-pill { background: rgba(59,130,246,.1); color: #2563eb; border-color: rgba(59,130,246,.3); }
-body.light-mode .ej-pill:hover { background: rgba(59,130,246,.18); color: #1e40af; border-color: #3b82f6; }
+/* Light mode */
+body.light-mode .ej-pill {
+  background: rgba(255,255,255,.7); color: #475569;
+  border-color: rgba(59,130,246,.25);
+  box-shadow: inset 0 0 12px rgba(59,130,246,.04), 0 2px 8px rgba(148,163,184,.15);
+}
+body.light-mode .ej-pill:hover {
+  color: #1e40af; border-color: #60a5fa;
+  background: linear-gradient(135deg, rgba(59,130,246,.12), rgba(167,139,250,.1));
+  box-shadow: 0 8px 22px rgba(148,163,184,.25);
+}
 
 @media (max-width: 600px) {
   .elink-jump-nav { gap: 6px; }
-  .ej-pill { padding: 5px 11px; font-size: 11px; }
+  .ej-pill { padding: 6px 12px; font-size: 11px; }
 }
 </style>
 
@@ -171,7 +192,7 @@ body.light-mode .ej-pill:hover { background: rgba(59,130,246,.18); color: #1e40a
   <a class="ej-pill" href="#en-downloads"><span class="ej-ico">🔗</span>Downloads</a>
 </div>
 
-<div align="center" style="margin-bottom: 5px;" data-aos="fade-up">
+<div align="center" style="margin-top: 26px; margin-bottom: 5px;" data-aos="fade-up">
   <h1 class="header-sync-pulse">
     <span class="logo-mask-container" style="--logo-url: url('{{ "/Images/ELink Logo color.png" | relative_url }}')">
       <img src="{{ '/Images/ELink Logo color.png' | relative_url }}" alt="E-Link Logo color" class="main-logo">
@@ -3366,7 +3387,7 @@ This project is open-source and available under the **MIT License**. Click the b
 }
 </style>
  
-<div align="center" style="margin-bottom: 20px;" data-aos="fade-up">
+<div align="center" style="margin-top: 26px; margin-bottom: 20px;" data-aos="fade-up">
  <h1 class="header-sync-pulse-zh">
    <span class="logo-mask-zh" style="--logo-url: url('{{ "/Images/ELink Logo color.png" | relative_url }}');">
      <img src="{{ '/Images/ELink Logo color.png' | relative_url }}" alt="E-Link Logo color" class="main-logo-zh">
