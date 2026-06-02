@@ -129,13 +129,46 @@ title: E-Link Home
   </p>
 </div>
 
-<div align="center" class="nav-badges">
-  <a href="#en-overview"><img src="https://img.shields.io/badge/📖_Overview-3b82f6?style=flat-square&logoColor=white" alt="Overview"></a>
-  <a href="#en-features"><img src="https://img.shields.io/badge/✨_Features-3b82f6?style=flat-square&logoColor=white" alt="Features"></a>
-  <a href="#en-specs"><img src="https://img.shields.io/badge/📊_Specs-3b82f6?style=flat-square&logoColor=white" alt="Specs"></a>
-  <a href="#en-components"><img src="https://img.shields.io/badge/🧩_Components-3b82f6?style=flat-square&logoColor=white" alt="Components"></a>
-  <a href="#en-bom"><img src="https://img.shields.io/badge/🛠_BOM-3b82f6?style=flat-square&logoColor=white" alt="BOM"></a>
-  <a href="#en-downloads"><img src="https://img.shields.io/badge/🔗_Downloads-3b82f6?style=flat-square&logoColor=white" alt="Downloads"></a>
+<style>
+/* ===================== Section Jump Nav (pure CSS, no external images) ===================== */
+.elink-jump-nav {
+  display: flex; flex-wrap: wrap; justify-content: center;
+  gap: 8px; max-width: 760px; margin: 0 auto 12px; padding: 0 5px;
+  box-sizing: border-box;
+}
+.ej-pill {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 6px 14px; border-radius: 20px;
+  font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700;
+  letter-spacing: .3px; text-decoration: none; white-space: nowrap;
+  color: #93c5fd;
+  background: rgba(59,130,246,.12);
+  border: 1px solid rgba(59,130,246,.3);
+  transition: transform .25s ease, background .25s ease, border-color .25s ease, box-shadow .25s ease;
+}
+.ej-pill:hover {
+  background: rgba(59,130,246,.28); border-color: #60a5fa; color: #fff;
+  transform: translateY(-2px); box-shadow: 0 6px 16px rgba(59,130,246,.25);
+}
+.ej-pill:active { transform: translateY(0) scale(.97); }
+.ej-pill .ej-ico { font-size: 13px; line-height: 1; }
+
+body.light-mode .ej-pill { background: rgba(59,130,246,.1); color: #2563eb; border-color: rgba(59,130,246,.3); }
+body.light-mode .ej-pill:hover { background: rgba(59,130,246,.18); color: #1e40af; border-color: #3b82f6; }
+
+@media (max-width: 600px) {
+  .elink-jump-nav { gap: 6px; }
+  .ej-pill { padding: 5px 11px; font-size: 11px; }
+}
+</style>
+
+<div class="elink-jump-nav">
+  <a class="ej-pill" href="#en-overview"><span class="ej-ico">📖</span>Overview</a>
+  <a class="ej-pill" href="#en-features"><span class="ej-ico">✨</span>Features</a>
+  <a class="ej-pill" href="#en-specs"><span class="ej-ico">📊</span>Specs</a>
+  <a class="ej-pill" href="#en-components"><span class="ej-ico">🧩</span>Components</a>
+  <a class="ej-pill" href="#en-bom"><span class="ej-ico">🛠</span>BOM</a>
+  <a class="ej-pill" href="#en-downloads"><span class="ej-ico">🔗</span>Downloads</a>
 </div>
 
 <div align="center" style="margin-bottom: 5px;" data-aos="fade-up">
@@ -3302,13 +3335,13 @@ This project is open-source and available under the **MIT License**. Click the b
  </p>
 </div>
  
-<div align="center" class="nav-badges">
- <a href="#cn-overview"><img src="https://img.shields.io/badge/📖_概览-3b82f6?style=flat-square&logoColor=white" alt="Overview"></a>
- <a href="#cn-features"><img src="https://img.shields.io/badge/✨_特性-3b82f6?style=flat-square&logoColor=white" alt="Features"></a>
- <a href="#cn-specs"><img src="https://img.shields.io/badge/📊_规格-3b82f6?style=flat-square&logoColor=white" alt="Specs"></a>
- <a href="#cn-components"><img src="https://img.shields.io/badge/🧩_组件-3b82f6?style=flat-square&logoColor=white" alt="Components"></a>
- <a href="#cn-bom"><img src="https://img.shields.io/badge/🛠_物料清单-3b82f6?style=flat-square&logoColor=white" alt="BOM"></a>
- <a href="#cn-downloads"><img src="https://img.shields.io/badge/🔗_下载-3b82f6?style=flat-square&logoColor=white" alt="Downloads"></a>
+<div class="elink-jump-nav">
+  <a class="ej-pill" href="#cn-overview"><span class="ej-ico">📖</span>概览</a>
+  <a class="ej-pill" href="#cn-features"><span class="ej-ico">✨</span>特性</a>
+  <a class="ej-pill" href="#cn-specs"><span class="ej-ico">📊</span>规格</a>
+  <a class="ej-pill" href="#cn-components"><span class="ej-ico">🧩</span>组件</a>
+  <a class="ej-pill" href="#cn-bom"><span class="ej-ico">🛠</span>物料清单</a>
+  <a class="ej-pill" href="#cn-downloads"><span class="ej-ico">🔗</span>下载</a>
 </div>
  
 <style>
@@ -4538,7 +4571,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
   <div class="dl-repo-row">
     <div class="dl-repo-left">
       <svg width="22" height="22" viewBox="0 0 16 16" fill="#a78bfa"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
-      <span class="dl-repo-text">想一次性拿到全部内容？下载 <strong>完整仓库</strong>。</span>
+      <span class="dl-repo-text">希望一次性完整下载全部文件？下载 <strong>完整仓库</strong>。</span>
     </div>
     <div class="dl-repo-btns">
       <a class="dl-btn repo" href="https://github.com/Tianyu-Bai/E-Link" target="_blank" rel="noopener">⭐ 查看仓库</a>
