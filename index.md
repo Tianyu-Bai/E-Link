@@ -130,7 +130,7 @@ title: E-Link Home
 </div>
 
 <style>
-/* ===================== Section Jump Nav (glass pills, no external images) ===================== */
+/* ===================== Section Jump Nav (glass pills) ===================== */
 .elink-jump-nav {
   display: flex; flex-wrap: wrap; justify-content: center;
   gap: 8px; max-width: 900px; margin: 0 auto 16px; padding: 0 5px;
@@ -150,18 +150,19 @@ title: E-Link Home
   transition: transform .28s cubic-bezier(.25,.8,.25,1), color .28s ease,
               border-color .28s ease, box-shadow .28s ease, background .28s ease;
 }
-/* 顶部细微高光，强化玻璃感 */
 .ej-pill::before {
   content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
   background: linear-gradient(180deg, rgba(255,255,255,.07), transparent 55%);
 }
-.ej-pill:hover {
-  color: #fff;
+.ej-pill:hover,
+.ej-pill:focus-visible {
+  color: #fff; outline: none;
   border-color: rgba(96,165,250,.6);
   background: linear-gradient(135deg, rgba(59,130,246,.28), rgba(167,139,250,.18));
   transform: translateY(-3px);
   box-shadow: 0 8px 22px rgba(59,130,246,.3), inset 0 0 14px rgba(96,165,250,.15);
 }
+.ej-pill:focus-visible { box-shadow: 0 0 0 2px rgba(96,165,250,.65), 0 8px 22px rgba(59,130,246,.3); }
 .ej-pill:active { transform: translateY(-1px) scale(.97); }
 .ej-pill .ej-ico { font-size: 13px; line-height: 1; filter: drop-shadow(0 0 5px rgba(96,165,250,.5)); }
 
@@ -171,7 +172,8 @@ body.light-mode .ej-pill {
   border-color: rgba(59,130,246,.25);
   box-shadow: inset 0 0 12px rgba(59,130,246,.04), 0 2px 8px rgba(148,163,184,.15);
 }
-body.light-mode .ej-pill:hover {
+body.light-mode .ej-pill:hover,
+body.light-mode .ej-pill:focus-visible {
   color: #1e40af; border-color: #60a5fa;
   background: linear-gradient(135deg, rgba(59,130,246,.12), rgba(167,139,250,.1));
   box-shadow: 0 8px 22px rgba(148,163,184,.25);
@@ -179,8 +181,20 @@ body.light-mode .ej-pill:hover {
 
 @media (max-width: 600px) {
   .elink-jump-nav { gap: 6px; }
-  .ej-pill { padding: 6px 12px; font-size: 11px; }
+  .ej-pill {
+    padding: 6px 12px; font-size: 11px;
+    backdrop-filter: none; -webkit-backdrop-filter: none;
+    background: rgba(15, 23, 42, 0.82);
+  }
+  body.light-mode .ej-pill { background: rgba(255,255,255,.92); }
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .ej-pill { transition: none; }
+  .ej-pill:hover, .ej-pill:focus-visible { transform: none; }
+}
+
+[id^="en-"], [id^="cn-"] { scroll-margin-top: 30px; }
 </style>
 
 <div class="elink-jump-nav">
@@ -3256,7 +3270,7 @@ body.light-mode .dl-btn.repo:hover { background:#f1f5f9; }
 <span id="en-downloads"></span>
 ## 🔗 Repository & Downloads
 
-This project is fully open-source under the MIT License. The complete design package — **3D-printable housing (STEP/STL)** and **PCB design files** — is now publicly available. Click any card below to jump straight to the source files on GitHub.
+This project is fully open-source under the MIT License. The complete design package — **3D-printable housing (STEP/STL)** and **PCB design files (native Altium Designer project)** — is now publicly available. Click any card below to jump straight to the source files on GitHub.
 
 <div class="dl-center" data-aos="fade-up">
   <div class="dl-grid">
@@ -3273,7 +3287,7 @@ This project is fully open-source under the MIT License. The complete design pac
     <a class="dl-card" style="--dl-accent:#22c55e;" href="https://github.com/Tianyu-Bai/E-Link/tree/main/PCB/Headstage%20board" target="_blank" rel="noopener">
       <div class="dl-icon">🔌</div>
       <div class="dl-title">Headstage PCB</div>
-      <div class="dl-desc">4-layer HDI headstage board design files (4× RHD2164, 256-ch BGA fan-out).</div>
+      <div class="dl-desc">4-layer HDI headstage board (4× RHD2164, 256-ch BGA fan-out). Native <strong>Altium Designer</strong> source — <strong>.PcbDoc</strong>.</div>
       <span class="dl-action">Open folder
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg>
       </span>
@@ -3282,7 +3296,7 @@ This project is fully open-source under the MIT License. The complete design pac
     <a class="dl-card" style="--dl-accent:#eab308;" href="https://github.com/Tianyu-Bai/E-Link/tree/main/PCB/Adapter%20board" target="_blank" rel="noopener">
       <div class="dl-icon">📐</div>
       <div class="dl-title">Adapter PCB</div>
-      <div class="dl-desc">High-density adapter board routing thin-film probe signals to the headstage array.</div>
+      <div class="dl-desc">High-density adapter board routing thin-film probe signals to the headstage array. Native <strong>Altium Designer</strong> project files.</div>
       <span class="dl-action">Open folder
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg>
       </span>
@@ -3291,7 +3305,7 @@ This project is fully open-source under the MIT License. The complete design pac
     <a class="dl-card" style="--dl-accent:#3b82f6;" href="https://github.com/Tianyu-Bai/E-Link/tree/main/PCB" target="_blank" rel="noopener">
       <div class="dl-icon">🗂️</div>
       <div class="dl-title">All PCB Files</div>
-      <div class="dl-desc">Browse every PCB design folder (adapter + headstage) in one place.</div>
+      <div class="dl-desc">Browse every PCB folder (adapter + headstage) — full <strong>Altium Designer</strong> projects in one place.</div>
       <span class="dl-action">Open folder
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg>
       </span>
@@ -4546,7 +4560,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 
 ## 🔗 仓库与下载
 
-本项目完全开源。完整设计包——**3D 打印外壳文件 (STEP/STL)** 与 **PCB 设计文件**——现已全部公开。点击下方任意卡片，即可一键跳转至 GitHub 上的源文件。
+本项目完全开源。完整设计包——**3D 打印外壳文件 (STEP/STL)** 与 **PCB 设计文件（Altium Designer 原生工程）**——现已全部公开。点击下方任意卡片，即可一键跳转至 GitHub 上的源文件。
 
 <div class="dl-center" data-aos="fade-up">
   <div class="dl-grid">
@@ -4563,7 +4577,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
     <a class="dl-card" style="--dl-accent:#22c55e;" href="https://github.com/Tianyu-Bai/E-Link/tree/main/PCB/Headstage%20board" target="_blank" rel="noopener">
       <div class="dl-icon">🔌</div>
       <div class="dl-title">放大器 PCB</div>
-      <div class="dl-desc">4 层 HDI 放大器板设计文件（4× RHD2164，256 通道 BGA 扇出）。</div>
+      <div class="dl-desc">4 层 HDI 放大器板（4× RHD2164，256 通道 BGA 扇出）。<strong>Altium Designer</strong> 原生源文件——<strong>.PcbDoc</strong>。</div>
       <span class="dl-action">打开文件夹
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg>
       </span>
@@ -4572,7 +4586,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
     <a class="dl-card" style="--dl-accent:#eab308;" href="https://github.com/Tianyu-Bai/E-Link/tree/main/PCB/Adapter%20board" target="_blank" rel="noopener">
       <div class="dl-icon">📐</div>
       <div class="dl-title">转接 PCB</div>
-      <div class="dl-desc">高密度转接板，将薄膜探针信号布线至放大器 BGA 阵列。</div>
+      <div class="dl-desc">高密度转接板，将薄膜探针信号布线至放大器 BGA 阵列。<strong>Altium Designer</strong> 原生工程文件。</div>
       <span class="dl-action">打开文件夹
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg>
       </span>
@@ -4581,7 +4595,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
     <a class="dl-card" style="--dl-accent:#3b82f6;" href="https://github.com/Tianyu-Bai/E-Link/tree/main/PCB" target="_blank" rel="noopener">
       <div class="dl-icon">🗂️</div>
       <div class="dl-title">全部 PCB 文件</div>
-      <div class="dl-desc">一次性浏览所有 PCB 设计文件夹（转接板 + 放大器板）。</div>
+      <div class="dl-desc">一次性浏览所有 PCB 文件夹（转接板 + 放大器板）——完整 <strong>Altium Designer</strong> 工程。</div>
       <span class="dl-action">打开文件夹
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg>
       </span>
