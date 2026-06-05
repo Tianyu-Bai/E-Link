@@ -1370,6 +1370,68 @@ body.light-mode .pipe-stat-desc { color: #64748b; }
 @media (max-width: 480px) {
   .pipe-stats { grid-template-columns: 1fr; }
 }
+
+.pipe-circle {
+  animation: pipe-node-pulse 3.5s linear infinite;
+}
+
+.pipe-node:nth-child(2) .pipe-circle { animation-delay: 0.10s; }
+.pipe-node:nth-child(3) .pipe-circle { animation-delay: 0.68s; }
+.pipe-node:nth-child(4) .pipe-circle { animation-delay: 1.26s; }
+.pipe-node:nth-child(5) .pipe-circle { animation-delay: 1.84s; }
+.pipe-node:nth-child(6) .pipe-circle { animation-delay: 2.42s; }
+.pipe-node:nth-child(7) .pipe-circle { animation-delay: 3.00s; }
+
+@keyframes pipe-node-pulse {
+  0%, 14%, 100% {
+    background: #0f172a;
+    color: #93c5fd;
+    border-color: #3b82f6;
+    box-shadow: 0 0 12px rgba(59, 130, 246, 0.3);
+    transform: scale(1);
+  }
+  6% {
+    background: #3b82f6;
+    color: #ffffff;
+    border-color: #93c5fd;
+    box-shadow: 0 0 26px rgba(59, 130, 246, 0.85);
+    transform: scale(1.18);
+  }
+}
+
+body.light-mode .pipe-circle { animation-name: pipe-node-pulse-light; }
+@keyframes pipe-node-pulse-light {
+  0%, 18%, 100% {
+    background: #ffffff;
+    color: #2563eb;
+    border-color: #2563eb;
+    box-shadow: 0 0 10px rgba(37, 99, 235, 0.15);
+    transform: scale(1);
+  }
+  6% {
+    background: #2563eb;
+    color: #ffffff;
+    border-color: #60a5fa;
+    box-shadow: 0 0 26px rgba(37, 99, 235, 0.6);
+    transform: scale(1.18);
+  }
+}
+
+.pipe-node:hover .pipe-circle {
+  background: #3b82f6 !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 24px rgba(59, 130, 246, 0.7) !important;
+  transform: scale(1.15) !important;
+}
+body.light-mode .pipe-node:hover .pipe-circle {
+  background: #2563eb !important;
+  color: #ffffff !important;
+}
+
+/* 尊重无障碍设置：关闭动画偏好时不闪烁 */
+@media (prefers-reduced-motion: reduce) {
+  .pipe-circle { animation: none; }
+}
 </style>
 
 ## ⚙️ Assembly Pipeline
