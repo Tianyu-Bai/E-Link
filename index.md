@@ -5,6 +5,7 @@ title: E-Link Home
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@400;700&display=swap">
 
 <style>
 /* 1. 外层静态阴影容器 */
@@ -56,10 +57,11 @@ title: E-Link Home
   animation: safe-sweep-anim 3s linear infinite;
 }
 
-@keyframes searchlight-sweep {
-  0% { transform: translateX(-100%) skewX(-20deg); }
-  75% { transform: translateX(100%) skewX(-20deg); }
-  100% { transform: translateX(100%) skewX(-20deg); }
+/* Logo 扫光：英文 .logo-mask-container::after 与中文 .logo-mask-zh::after 共用 */
+@keyframes safe-sweep-anim {
+  0%   { background-position: 200% 0; }
+  75%  { background-position: -100% 0; }
+  100% { background-position: -100% 0; }
 }
 
 /* 3. SVG 图标与纯文本双层背景扫光 */
@@ -235,8 +237,6 @@ body.light-mode .ej-pill:focus-visible {
 </div>
 
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@400;700&display=swap');
-
 /* 🚀 终极防溢出护盾：彻底锁死横向滚动条 */
 html { overflow-x: hidden; width: 100%; -webkit-text-size-adjust: 100%; }
 body { overflow-x: hidden; width: 100%; position: relative; margin: 0; padding: 0; font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
@@ -322,7 +322,7 @@ body { overflow-x: hidden; width: 100%; position: relative; margin: 0; padding: 
 kbd { background-color: rgba(255, 255, 255, 0.1); border-radius: 4px; border: 1px solid rgba(255, 255, 255, 0.3); box-shadow: 0 1px 1px rgba(0,0,0,0.2); font-family: inherit; font-size: 0.9em; font-weight: 600; padding: 1px 4px; margin: 0 2px; color: #60a5fa; }
 
 /* ===================== 5. 模型全局基础样式 ===================== */
-.custom-model-viewer { width: 100%; max-width: 100%; box-sizing: border-box; height: 460px; background: rgba(15, 23, 42, 0.45); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-radius: 16px; border: 1px solid rgba(59,130,246,0.3); box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5), inset 0 0 15px rgba(255,255,255,0.05); outline: none; overflow: hidden; transform: translateZ(0); backface-visibility: hidden; touch-action: none; will-change: transform; isolation: isolate; }
+.custom-model-viewer { width: 100%; max-width: 100%; box-sizing: border-box; height: 460px; background: rgba(15, 23, 42, 0.45); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-radius: 16px; border: 1px solid rgba(59,130,246,0.3); box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5), inset 0 0 15px rgba(255,255,255,0.05); outline: none; overflow: hidden; transform: translateZ(0); backface-visibility: hidden; touch-action: none; isolation: isolate; }
 .custom-model-viewer:focus, .custom-model-viewer:active, .custom-model-viewer:focus-visible { outline: none !important; box-shadow: none !important; border: 1px solid rgba(59,130,246,0.3) !important; }
 model-viewer, model-viewer:focus-within, model-viewer:focus-visible { outline: none !important; -webkit-tap-highlight-color: transparent; }
 .model-block { max-width: 100% !important; margin-top: 5px !important;  margin-bottom: 15px !important; }
@@ -2688,7 +2688,7 @@ body.light-mode .pitch-label { color: #64748b; }
 </script>
 
 <style>
-.species-glass-box { position: relative; background: rgba(15, 23, 42, 0.4); border: 1px solid rgba(59, 130, 246, 0.2); border-radius: 16px; padding: 30px 20px 40px 20px; min-height: 380px; overflow: hidden; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2); transform: translateZ(0); backface-visibility: hidden; perspective: 1000; will-change: transform; }
+.species-glass-box { position: relative; background: rgba(15, 23, 42, 0.4); border: 1px solid rgba(59, 130, 246, 0.2); border-radius: 16px; padding: 30px 20px 40px 20px; min-height: 380px; overflow: hidden; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2); transform: translateZ(0); backface-visibility: hidden; perspective: 1000; }
 .connection-lines { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
 .base-line { fill: none; stroke: rgba(255, 255, 255, 0.1); stroke-width: 2; }
 .pulse-line { fill: none; stroke: #60a5fa; stroke-width: 3; stroke-linecap: round; stroke-dasharray: 15 125; animation: data-flow 2.8s linear infinite; filter: drop-shadow(0 0 6px rgba(96, 165, 250, 0.8)); }
@@ -3447,7 +3447,6 @@ This project is open-source and available under the **MIT License**. Click the b
 /* 2. 中文版专属图片遮罩扫光 */
 .logo-mask-zh { position: relative; display: inline-block; line-height: 0; }
 .logo-mask-zh::after { content: ""; position: absolute; inset: 0; -webkit-mask-image: var(--logo-url); mask-image: var(--logo-url); -webkit-mask-size: contain; -webkit-mask-position: center; -webkit-mask-repeat: no-repeat; background: linear-gradient( 105deg, transparent 0%, transparent 20%, rgba(96, 165, 250, 0.4) 35%, rgba(167, 139, 250, 0.95) 50%, rgba(167, 139, 250, 0.95) 60%, rgba(96, 165, 250, 0.4) 75%, transparent 90%, transparent 100% ); background-size: 250% 100%; background-repeat: no-repeat; mix-blend-mode: screen; pointer-events: none; animation: safe-sweep-anim 3s linear infinite; }
-@keyframes safe-sweep-anim { 0%   { background-position: 200% 0; } 75%  { background-position: -100% 0; }   100% { background-position: -100% 0; } }
 /* 3. 中文纯文本渐变扫光 */
 .bi-color-title-sweep-zh { background: linear-gradient(105deg, transparent 0%, rgba(255, 255, 255, 0.5) 25%, rgba(255, 255, 255, 1) 50%, rgba(255, 255, 255, 0.5) 75%, transparent 100%), linear-gradient(90deg, #60a5fa 0%, #a78bfa 55%, #f472b6 100%); background-size: 250% auto, 100% auto; background-repeat: no-repeat; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: transparent; animation: text-searchlight-zh 3s linear infinite; }
 @keyframes text-searchlight-zh { 0%    { background-position: -50% center, 0 center; } 70%   { background-position: 150% center, 0 center; }   100%  { background-position: 150% center, 0 center; } }
@@ -4853,11 +4852,13 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
        });
      };
  
-     window.addEventListener('scroll', () => {
+    window.addEventListener('scroll', () => {
        isScrolling = true;
+       window.isPageScrolling = true;
        clearTimeout(scrollEndTimer);
        scrollEndTimer = setTimeout(() => {
          isScrolling = false;
+         window.isPageScrolling = false;
          checkAndActivateBestModel();
        }, 150);
      }, { passive: true });
@@ -4953,7 +4954,6 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
        scanX = window.innerWidth <= 768 ? 80 : LABEL_WIDTH;
      }
        
-     window.addEventListener('resize', resizeIntanCanvas);
      resizeIntanCanvas();
      new ResizeObserver(resizeIntanCanvas).observe(canvasL.parentElement);
  
@@ -5194,7 +5194,6 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
         ctx.scale(dpr, dpr);
       }
      
-     window.addEventListener('resize', resizeScope);
      resizeScope();
      new ResizeObserver(resizeScope).observe(wrapper);
 
@@ -5387,7 +5386,6 @@ spikes.forEach((spike, idx) => {
         ctx.scale(dpr, dpr);
       }
 
-      window.addEventListener('resize', resizeWaveform);
       resizeWaveform();
       new ResizeObserver(resizeWaveform).observe(canvas.parentElement);
 
