@@ -1181,7 +1181,7 @@ body.light-mode .spec-sub { color: #64748b; }
   width: 60px;
   height: 100%;
   background: linear-gradient(90deg, transparent, #3b82f6, transparent);
-  animation: pipeFlowH 3.5s linear infinite;
+  animation: pipeFlowH 5s linear infinite;
 }
  
 @keyframes pipeFlowH {
@@ -1338,7 +1338,7 @@ body.light-mode .pipe-stat-desc { color: #64748b; }
     left: auto;
     top: -50px;
     background: linear-gradient(180deg, transparent, #3b82f6, transparent);
-    animation: pipeFlowV 3.5s linear infinite;
+    animation: pipeFlowV 5s linear infinite;
   }
  
   @keyframes pipeFlowV {
@@ -1372,15 +1372,15 @@ body.light-mode .pipe-stat-desc { color: #64748b; }
 }
 
 .pipe-circle {
-  animation: pipe-node-pulse 3.5s linear infinite;
+  animation: pipe-node-pulse 5s linear infinite;
 }
 
-.pipe-node:nth-child(2) .pipe-circle { animation-delay: 0.10s; }
-.pipe-node:nth-child(3) .pipe-circle { animation-delay: 0.68s; }
-.pipe-node:nth-child(4) .pipe-circle { animation-delay: 1.26s; }
-.pipe-node:nth-child(5) .pipe-circle { animation-delay: 1.84s; }
-.pipe-node:nth-child(6) .pipe-circle { animation-delay: 2.42s; }
-.pipe-node:nth-child(7) .pipe-circle { animation-delay: 3.00s; }
+.pipe-node:nth-child(2) .pipe-circle { animation-delay: 0.14s; }
+.pipe-node:nth-child(3) .pipe-circle { animation-delay: 0.97s; }
+.pipe-node:nth-child(4) .pipe-circle { animation-delay: 1.80s; }
+.pipe-node:nth-child(5) .pipe-circle { animation-delay: 2.63s; }
+.pipe-node:nth-child(6) .pipe-circle { animation-delay: 3.46s; }
+.pipe-node:nth-child(7) .pipe-circle { animation-delay: 4.29s; }
 
 @keyframes pipe-node-pulse {
   0%, 14%, 100% {
