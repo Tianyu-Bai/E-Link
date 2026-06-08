@@ -3940,7 +3940,7 @@ This project is open-source and available under the **MIT License**. Click the b
 <span class="xs-h" data-c="elast" style="left:17%;top:68.6%;width:65.6%;height:1.88%;--c:#a78bfa;--bg:rgba(167,139,250,.12);--g:rgba(167,139,250,.4)"><span class="xs-b">5</span></span>
 <span class="xs-h" data-c="adapt" style="left:17%;top:70.5%;width:65.6%;height:5%;--c:#eab308;--bg:rgba(234,179,8,.12);--g:rgba(234,179,8,.35)"><span class="xs-b">6</span></span>
 <span class="xs-t" data-k="spi" style="--c:#3b82f6;--g:rgba(59,130,246,.4);right:18%;top:18%">1. SPI 线缆</span>
-<span class="xs-t" data-k="foam" style="--c:#f472b6;--g:rgba(244,114,182,.4);right:18%;top:36%">2. 泡沫垫圈</span>
+<span class="xs-t" data-k="foam" style="--c:#f472b6;--g:rgba(244,114,182,.4);right:18%;top:36%">2. 泡棉垫圈</span>
 <span class="xs-t" data-k="cap" style="--c:#f59e0b;--g:rgba(245,158,11,.35);right:18%;top:33%">3. 顶部螺纹盖</span>
 <span class="xs-t" data-k="pcb" style="--c:#22c55e;--g:rgba(34,197,94,.35);right:18%;top:58%">4. 放大器电路板</span>
 <span class="xs-t" data-k="elast" style="--c:#a78bfa;--g:rgba(167,139,250,.4);right:18%;top:65%">5. 弹性导电体</span>
@@ -3948,7 +3948,7 @@ This project is open-source and available under the **MIT License**. Click the b
 </div>
 <div class="xs-g" id="xG2">
 <div class="xs-i" data-c="spi" style="--c:#3b82f6"><span class="xs-n">1</span><div><div class="xs-cn">SPI 线缆</div><div class="xs-cs">双路 Omnetics A7621</div></div></div>
-<div class="xs-i" data-c="foam" style="--c:#f472b6"><span class="xs-n">2</span><div><div class="xs-cn">泡沫垫圈</div><div class="xs-cs">压力均匀分布</div></div></div>
+<div class="xs-i" data-c="foam" style="--c:#f472b6"><span class="xs-n">2</span><div><div class="xs-cn">泡棉垫圈</div><div class="xs-cs">压力均匀分布</div></div></div>
 <div class="xs-i" data-c="cap" style="--c:#f59e0b"><span class="xs-n">3</span><div><div class="xs-cn">顶部螺纹盖</div><div class="xs-cs">压缩外壳</div></div></div>
 <div class="xs-i" data-c="pcb" style="--c:#22c55e"><span class="xs-n">4</span><div><div class="xs-cn">放大器电路板</div><div class="xs-cs">4个RHD2164芯片 + 4层HDI</div></div></div>
 <div class="xs-i" data-c="elast" style="--c:#a78bfa"><span class="xs-n">5</span><div><div class="xs-cn">弹性导电体</div><div class="xs-cs">Z轴导电介质</div></div></div>
@@ -4016,7 +4016,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
         <circle cx="12" cy="12" r="4.5" fill="currentColor" fill-opacity="0.18"/>
       </svg>
     </div>
-    <div class="sys-name">泡沫垫圈</div>
+    <div class="sys-name">泡棉垫圈</div>
     <div class="sys-desc">柔性压缩层,确保弹性互连界面上均匀的电接触。</div>
   </div>
 
