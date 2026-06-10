@@ -1022,18 +1022,12 @@ if (window.innerWidth > 768) {
   document.body.classList.add('js-cursor-enabled');
 }
  
-if (localStorage.getItem('elink_visited') === 'true') {
-    // 已经访问过，彻底隐藏并解除锁定
-    welcomeModal.style.display = 'none'; 
-    document.body.classList.remove('modal-active');
-  } else {
-    // 首次访问，触发动画
-    setTimeout(() => {
-      welcomeModal.classList.add('show');
-      document.body.classList.add('modal-active');
-      cursorRAFRunning = false; // 🚀 Problem D：modal 激活时停止光标独立rAF
-    }, 10);
-  }
+// 每次访问都显示欢迎弹窗
+setTimeout(() => {
+  welcomeModal.classList.add('show');
+  document.body.classList.add('modal-active');
+  cursorRAFRunning = false;
+}, 10);
 
  document.querySelectorAll('model-viewer').forEach(mv => {
     mv.setAttribute('data-lenis-prevent', 'true');
@@ -1828,8 +1822,6 @@ if (isMobile) {
   function closeModal() {
     welcomeModal.classList.remove('show');
    document.body.classList.remove('modal-active');
-  // 记录用户已看过欢迎弹窗
-  localStorage.setItem('elink_visited', 'true');
    if (!cursorRAFRunning) { cursorRAFRunning = true; requestAnimationFrame(updateCursorOutline); } // 🚀 Problem E：恢复光标
     if (modalIsZh && currentLang !== 'zh') langToggle.click();
     else if (!modalIsZh && currentLang === 'zh') langToggle.click();
