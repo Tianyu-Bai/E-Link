@@ -860,15 +860,6 @@ body:not(.light-mode) #neuro-ambient-bg {
         <span class="lang-zh">● 全球访问数据实时监测</span>
       </div>
 
-      <div style="position: relative; display: flex; align-items: center; min-width: 100px; justify-content: flex-end; animation: live-glow-blue 3s ease-in-out infinite;">
-        <span class="lang-en" style="opacity: 0.8; margin-right: 4px;">LIVE:</span>
-        <span class="lang-zh" style="opacity: 0.8; margin-right: 4px;">在线人数:</span>
-        
-        <span id="live-counter">--</span>
-        <span id="plus-one" style="position: absolute; right: -12px; top: -8px; color: #00f2ff; opacity: 0; font-weight: bold; font-size: 0.6rem; text-shadow: 0 0 5px #00f2ff; pointer-events: none;">+1</span>
-      </div>
-    </div>
-
   <!-- Counter -->
 <div style="text-align:center; margin-bottom:8px; color:#e2e8f0;">
 Visitors since Feb 20th 2026:
@@ -889,61 +880,12 @@ src="https://mapmyvisitors.com/map.js?cl=e2e8f0&w=300&t=tt&d=m5eNlZmkObq22GMdcKl
 
   <style>
     @keyframes text-glow-cyan { 0% { color: #334155; text-shadow: 0 0 0px rgba(0, 242, 255, 0); } 50% { color: #00f2ff; text-shadow: 0 0 8px rgba(0, 242, 255, 0.6); } 100% { color: #334155; text-shadow: 0 0 0px rgba(0, 242, 255, 0); } }
-    @keyframes live-glow-blue { 0% { color: #1d4ed8; opacity: 0.7; text-shadow: 0 0 0px rgba(96, 165, 250, 0); } 50% { color: #60a5fa; opacity: 1; text-shadow: 0 0 10px rgba(96, 165, 250, 0.8); } 100% { color: #1d4ed8; opacity: 0.7; text-shadow: 0 0 0px rgba(96, 165, 250, 0); } }
-    @keyframes float-up-fade { 0% { transform: translateY(0); opacity: 0; } 20% { opacity: 1; } 100% { transform: translateY(-12px); opacity: 0; } }
-    .animate-plus { animation: float-up-fade 1.2s ease-out forwards; }
-     @media (prefers-reduced-motion: reduce) {
+    @media (prefers-reduced-motion: reduce) {
     .aurora, .bot-head, .bot-eye, .bot-antenna::after, .typewriter-cursor, #progress-bar { animation: none !important; }
     .container { transition: none !important; }
   }
   </style>
 
-<script>
-  (function() {
-    let currentDisplay = 1; 
-    
-    function initCounter() {
-      const counterEl = document.getElementById('live-counter');
-      const plusEl = document.getElementById('plus-one');
-      if(!counterEl || !plusEl) return;
-      
-      counterEl.textContent = currentDisplay;
-
-      setInterval(() => {
-        const rand = Math.random();
-        
-        if (currentDisplay < 2 && rand > 0.6) { 
-          plusEl.textContent = '+1';
-          plusEl.classList.remove('animate-plus');
-          void plusEl.offsetWidth; // 触发重绘
-          plusEl.classList.add('animate-plus');
-          
-          currentDisplay++;
-          counterEl.textContent = currentDisplay;
-
-        } else if (currentDisplay === 2 && rand > 0.9) { 
-          currentDisplay++;
-          counterEl.textContent = currentDisplay;
-
-          setTimeout(() => {
-            if (currentDisplay > 2) {
-              currentDisplay--;
-              counterEl.textContent = currentDisplay;
-            }
-          }, Math.random() * 5000 + 5000);
-
-        } else if (rand < 0.3 && currentDisplay > 1) {
-          currentDisplay--;
-          counterEl.textContent = currentDisplay;
-        }
-      }, 16000); // 16秒判定
-    }
-    window.addEventListener('load', initCounter);
-  })();
-</script>
-</footer>
-
-</div></div><script>
   // --- 🌍 双语数据源 ---
   const dialogData_EN = {
     "start": { text: "Hi! I'm the Connector Guardian. I protect your neural interfaces.", options: [ { text: "🎬 Watch Demo Video", next: "play_video" }, { text: "🚀 Let's start!", next: "root_menu" } ] },
