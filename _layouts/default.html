@@ -294,7 +294,8 @@ body:not(.light-mode) #neuro-ambient-bg {
   .welcome-modal { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(5px); z-index: 100001; display: flex; justify-content: center; align-items: center; opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s; padding: 20px; cursor: default !important; }
   .welcome-modal.show { opacity: 1; visibility: visible; }
   .welcome-modal * { cursor: default !important; }
-  .welcome-modal .btn-primary, .welcome-modal .btn-secondary, .welcome-modal .slider { cursor: pointer !important; }
+  .welcome-modal .btn-primary, .welcome-modal .btn-primary *,
+  .welcome-modal .btn-secondary, .welcome-modal .slider { cursor: pointer !important; }
   .welcome-modal:hover ~ .cursor-dot, .welcome-modal:hover ~ .cursor-outline { opacity: 0 !important; }
   
   /* --- 🚀 玻璃切割欢迎弹窗 --- */
@@ -307,9 +308,28 @@ body:not(.light-mode) #neuro-ambient-bg {
 
   /* --- 🚀 触觉拟态按钮 & iOS级开关 --- */
   .btn-primary, .btn-secondary { padding: 12px 24px; border-radius: 12px; font-weight: 600; font-family: inherit; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); border: none; letter-spacing: 0.5px; overflow: hidden; }
-  .btn-primary { background: linear-gradient(180deg, #60a5fa 0%, #3b82f6 100%); color: white; box-shadow: inset 0 1px 1px rgba(255,255,255,0.4), 0 4px 15px rgba(59, 130, 246, 0.3); text-shadow: 0 1px 2px rgba(0,0,0,0.2); }
-  .btn-primary:hover { transform: translateY(-2px); box-shadow: inset 0 1px 1px rgba(255,255,255,0.6), 0 8px 25px rgba(59, 130, 246, 0.5); filter: brightness(1.05); }
-  .btn-primary:active { transform: translateY(1px); box-shadow: inset 0 2px 4px rgba(0,0,0,0.3), 0 2px 5px rgba(59, 130, 246, 0.4); }
+  .btn-primary {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  width: 100%; padding: 14px 24px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 12px;
+  font-family: inherit; font-size: 1rem; font-weight: 600; letter-spacing: 0.3px;
+  color: #ffffff;
+  background: #2f6feb;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.18), 0 8px 22px rgba(47,111,235,0.35);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform .15s ease, box-shadow .25s ease, background .25s ease;
+}
+.btn-primary svg { flex-shrink: 0; transition: transform .25s ease; }
+.btn-primary:hover { background: #3b7bff; transform: translateY(-1px);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.22), 0 10px 26px rgba(47,111,235,0.45); }
+.btn-primary:hover svg { transform: translateX(3px); }
+.btn-primary:active { transform: scale(0.97); box-shadow: inset 0 2px 6px rgba(0,0,0,0.25); }
+
+@media (max-width: 768px) {
+  .btn-primary { padding: 13px 20px; font-size: 0.95rem; border-radius: 11px; }
+}
   .btn-secondary { background: linear-gradient(180deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.02) 100%); color: #e2e8f0; border: 1px solid rgba(255,255,255,0.1); box-shadow: inset 0 1px 0 rgba(255,255,255,0.1); }
   .btn-secondary:hover { background: linear-gradient(180deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.08) 100%); transform: translateY(-2px); color: #fff; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
   .modal-lang-switch-container { position: absolute; bottom: 60px; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 4px; width: 100%; }
@@ -739,10 +759,14 @@ body:not(.light-mode) #neuro-ambient-bg {
 
     <div class="modal-btns">
 
-       <button id="modal-keep-dark-btn" class="btn-primary">
-        <span class="m-en"> Enter Site</span>
-        <span class="m-zh"> 进入网站</span>
-      </button>
+      <button id="modal-keep-dark-btn" class="btn-primary">
+  <span class="m-en">Enter Site</span>
+  <span class="m-zh">进入网站</span>
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+       stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>
+  </svg>
+</button>
 
         <!-- 临时隐藏浅色切换
       <button id="modal-switch-light-btn" class="btn-secondary">
@@ -853,30 +877,22 @@ body:not(.light-mode) #neuro-ambient-bg {
 
 <footer style="margin-top: 40px; padding-top: 20px; border-top: 1px solid rgba(255, 255, 255, 0.1); text-align: center; color: #94a3b8; font-size: 0.85rem;">
  <div class="footer-dashboard">
-    <div style="width: 100%; display: flex; justify-content: space-between; align-items: center; font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; margin-bottom: 12px; padding: 0 5px;">
+    <div style="width: 100%; display: flex; justify-content: center; align-items: center; font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; margin-bottom: 12px; padding: 0 5px;">
       
       <div style="letter-spacing: 0.5px; animation: text-glow-cyan 3s ease-in-out infinite;">
         <span class="lang-en">● Worldwide Pageview Data</span>
         <span class="lang-zh">● 全球访问数据实时监测</span>
       </div>
-
-      <div style="position: relative; display: flex; align-items: center; min-width: 100px; justify-content: flex-end; animation: live-glow-blue 3s ease-in-out infinite;">
-        <span class="lang-en" style="opacity: 0.8; margin-right: 4px;">LIVE:</span>
-        <span class="lang-zh" style="opacity: 0.8; margin-right: 4px;">在线人数:</span>
-        
-        <span id="live-counter">--</span>
-        <span id="plus-one" style="position: absolute; right: -12px; top: -8px; color: #00f2ff; opacity: 0; font-weight: bold; font-size: 0.6rem; text-shadow: 0 0 5px #00f2ff; pointer-events: none;">+1</span>
       </div>
-    </div>
 
   <!-- Counter -->
 <div style="text-align:center; margin-bottom:8px; color:#e2e8f0;">
 Visitors since Feb 20th 2026:
-<script src="https://mapmyvisitors.com/counter.js?d=m5eNlZmkObq22GMdcKlpWq0A9hkoWtNuOIvQwtMspNc"></script>
+<script async src="https://mapmyvisitors.com/counter.js?d=m5eNlZmkObq22GMdcKlpWq0A9hkoWtNuOIvQwtMspNc"></script>
 </div>
 
 <!-- Styled map -->
-<script id="mapmyvisitors"
+<script async id="mapmyvisitors"
 src="https://mapmyvisitors.com/map.js?cl=e2e8f0&w=300&t=tt&d=m5eNlZmkObq22GMdcKlpWq0A9hkoWtNuOIvQwtMspNc&ct=e2e8f0&co=13192a">
 </script>
   </div>
@@ -889,61 +905,16 @@ src="https://mapmyvisitors.com/map.js?cl=e2e8f0&w=300&t=tt&d=m5eNlZmkObq22GMdcKl
 
   <style>
     @keyframes text-glow-cyan { 0% { color: #334155; text-shadow: 0 0 0px rgba(0, 242, 255, 0); } 50% { color: #00f2ff; text-shadow: 0 0 8px rgba(0, 242, 255, 0.6); } 100% { color: #334155; text-shadow: 0 0 0px rgba(0, 242, 255, 0); } }
-    @keyframes live-glow-blue { 0% { color: #1d4ed8; opacity: 0.7; text-shadow: 0 0 0px rgba(96, 165, 250, 0); } 50% { color: #60a5fa; opacity: 1; text-shadow: 0 0 10px rgba(96, 165, 250, 0.8); } 100% { color: #1d4ed8; opacity: 0.7; text-shadow: 0 0 0px rgba(96, 165, 250, 0); } }
-    @keyframes float-up-fade { 0% { transform: translateY(0); opacity: 0; } 20% { opacity: 1; } 100% { transform: translateY(-12px); opacity: 0; } }
-    .animate-plus { animation: float-up-fade 1.2s ease-out forwards; }
-     @media (prefers-reduced-motion: reduce) {
+    @media (prefers-reduced-motion: reduce) {
     .aurora, .bot-head, .bot-eye, .bot-antenna::after, .typewriter-cursor, #progress-bar { animation: none !important; }
     .container { transition: none !important; }
   }
   </style>
 
-<script>
-  (function() {
-    let currentDisplay = 1; 
-    
-    function initCounter() {
-      const counterEl = document.getElementById('live-counter');
-      const plusEl = document.getElementById('plus-one');
-      if(!counterEl || !plusEl) return;
-      
-      counterEl.textContent = currentDisplay;
-
-      setInterval(() => {
-        const rand = Math.random();
-        
-        if (currentDisplay < 2 && rand > 0.6) { 
-          plusEl.textContent = '+1';
-          plusEl.classList.remove('animate-plus');
-          void plusEl.offsetWidth; // 触发重绘
-          plusEl.classList.add('animate-plus');
-          
-          currentDisplay++;
-          counterEl.textContent = currentDisplay;
-
-        } else if (currentDisplay === 2 && rand > 0.9) { 
-          currentDisplay++;
-          counterEl.textContent = currentDisplay;
-
-          setTimeout(() => {
-            if (currentDisplay > 2) {
-              currentDisplay--;
-              counterEl.textContent = currentDisplay;
-            }
-          }, Math.random() * 5000 + 5000);
-
-        } else if (rand < 0.3 && currentDisplay > 1) {
-          currentDisplay--;
-          counterEl.textContent = currentDisplay;
-        }
-      }, 16000); // 16秒判定
-    }
-    window.addEventListener('load', initCounter);
-  })();
-</script>
 </footer>
 
 </div></div><script>
+ 
   // --- 🌍 双语数据源 ---
   const dialogData_EN = {
     "start": { text: "Hi! I'm the Connector Guardian. I protect your neural interfaces.", options: [ { text: "🎬 Watch Demo Video", next: "play_video" }, { text: "🚀 Let's start!", next: "root_menu" } ] },
@@ -1022,18 +993,12 @@ if (window.innerWidth > 768) {
   document.body.classList.add('js-cursor-enabled');
 }
  
-if (localStorage.getItem('elink_visited') === 'true') {
-    // 已经访问过，彻底隐藏并解除锁定
-    welcomeModal.style.display = 'none'; 
-    document.body.classList.remove('modal-active');
-  } else {
-    // 首次访问，触发动画
-    setTimeout(() => {
-      welcomeModal.classList.add('show');
-      document.body.classList.add('modal-active');
-      cursorRAFRunning = false; // 🚀 Problem D：modal 激活时停止光标独立rAF
-    }, 10);
-  }
+// 每次访问都显示欢迎弹窗
+setTimeout(() => {
+  welcomeModal.classList.add('show');
+  document.body.classList.add('modal-active');
+  cursorRAFRunning = false;
+}, 10);
 
  document.querySelectorAll('model-viewer').forEach(mv => {
     mv.setAttribute('data-lenis-prevent', 'true');
@@ -1828,9 +1793,10 @@ if (isMobile) {
   function closeModal() {
     welcomeModal.classList.remove('show');
    document.body.classList.remove('modal-active');
-  // 记录用户已看过欢迎弹窗
-  localStorage.setItem('elink_visited', 'true');
-   if (!cursorRAFRunning) { cursorRAFRunning = true; requestAnimationFrame(updateCursorOutline); } // 🚀 Problem E：恢复光标
+   if (!cursorRAFRunning) {
+  cursorRAFRunning = true;
+  if (typeof updateCursorOutline === 'function') requestAnimationFrame(updateCursorOutline);
+}
     if (modalIsZh && currentLang !== 'zh') langToggle.click();
     else if (!modalIsZh && currentLang === 'zh') langToggle.click();
     setTimeout(() => {
