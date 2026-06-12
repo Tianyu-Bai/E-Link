@@ -208,7 +208,7 @@ body.light-mode .ej-pill:focus-visible {
   <a class="ej-pill" href="#en-downloads"><span class="ej-ico">🔗</span>Downloads</a>
 </div>
 
-<div align="center" style="margin-top: 26px; margin-bottom: 5px;" data-aos="fade-up">
+<div align="center" style="margin-top: 26px; margin-bottom: 5px;">
   <h1 class="header-sync-pulse">
     <span class="logo-mask-container" style="--logo-url: url('{{ "/Images/ELink Logo color.png" | relative_url }}')">
       <img src="{{ '/Images/ELink Logo color.png' | relative_url }}" alt="E-Link Logo color" class="main-logo">
@@ -3462,7 +3462,7 @@ This project is open-source and available under the **MIT License**. Click the b
 }
 </style>
  
-<div align="center" style="margin-top: 26px; margin-bottom: 20px;" data-aos="fade-up">
+<div align="center" style="margin-top: 26px; margin-bottom: 20px;">
  <h1 class="header-sync-pulse-zh">
    <span class="logo-mask-zh" style="--logo-url: url('{{ "/Images/ELink Logo color.png" | relative_url }}');">
      <img src="{{ '/Images/ELink Logo color.png' | relative_url }}" alt="E-Link Logo color" class="main-logo-zh">
