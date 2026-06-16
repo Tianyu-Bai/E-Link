@@ -882,39 +882,36 @@ body:not(.light-mode) #neuro-ambient-bg {
       </div>
       </div>
 
-<!-- Counter + Map：滚到页脚才注入，挂了也只是这块空着 -->
   <div style="text-align:center; margin-bottom:8px; color:#e2e8f0;">
     Visitors since Feb 20th 2026: <span id="mmv-counter"></span>
   </div>
   <div id="mmv-map" style="width:300px; max-width:100%; min-height:160px; margin:0 auto;"></div>
 
   <script>
-  (function () {
-    var DATA = 'm5eNlZmkObq22GMdcKlpWq0A9hkoWtNuOIvQwtMspNc';
-    var loaded = false;
-    function loadMMV() {
-      if (loaded) return; loaded = true;
-      var c = document.createElement('script');
-      c.async = true;
-      c.src = 'https://mapmyvisitors.com/counter.js?d=' + DATA;
-      document.getElementById('mmv-counter').appendChild(c);
-
-      var m = document.createElement('script');
-      m.async = true; m.id = 'mapmyvisitors';
-      m.src = 'https://mapmyvisitors.com/map.js?cl=e2e8f0&w=300&t=tt&d=' + DATA + '&ct=e2e8f0&co=13192a';
-      document.getElementById('mmv-map').appendChild(m);
-    }
-    var slot = document.getElementById('mmv-map');
-    if ('IntersectionObserver' in window && slot) {
-      new IntersectionObserver(function (e, obs) {
-        if (e[0].isIntersecting) { loadMMV(); obs.disconnect(); }
-      }, { rootMargin: '200px' }).observe(slot);
-    } else {
-      window.addEventListener('load', loadMMV);
-    }
-  })();
+ (function () {
+  var DATA = 'm5eNlZmkObq22GMdcKlpWq0A9hkoWtNuOIvQwtMspNc';
+  var c = document.createElement('script');
+  c.async = true;
+  c.src = 'https://mapmyvisitors.com/counter.js?d=' + DATA;
+  document.getElementById('mmv-counter').appendChild(c);
+  var mapLoaded = false;
+  function loadMap() {
+    if (mapLoaded) return; mapLoaded = true;
+    var m = document.createElement('script');
+    m.async = true; m.id = 'mapmyvisitors';
+    m.src = 'https://mapmyvisitors.com/map.js?cl=e2e8f0&w=300&t=tt&d=' + DATA + '&ct=e2e8f0&co=13192a';
+    document.getElementById('mmv-map').appendChild(m);
+  }
+  var slot = document.getElementById('mmv-map');
+  if ('IntersectionObserver' in window && slot) {
+    new IntersectionObserver(function (e, obs) {
+      if (e[0].isIntersecting) { loadMap(); obs.disconnect(); }
+    }, { rootMargin: '200px' }).observe(slot);
+  } else {
+    window.addEventListener('load', loadMap);
+  }
+})();
   </script>
-  
   </div>
 
 
